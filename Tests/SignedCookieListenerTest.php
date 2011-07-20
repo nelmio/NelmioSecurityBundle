@@ -73,6 +73,13 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
 
         $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $this->dispatcher->dispatch(KernelEvents::RESPONSE, $event);
+
+        $responseCookieValues = array();
+        foreach ($response->headers->getCookies() as $cookie) {
+            $responseCookieValues[$cookie->getName()] = $cookie->getValue();
+        }
+
+        $this->assertSame($expectedCookies, $responseCookieValues);
     }
 
     public function provideCookieWriting()

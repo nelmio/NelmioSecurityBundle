@@ -2,6 +2,7 @@
 
 namespace Nelmio\SecurityBundle;
 
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
@@ -34,12 +35,13 @@ class SignedCookieListener
 
     public function onKernelResponse(FilterResponseEvent $e)
     {
-        $request = $e->getRequest();
+        $response = $e->getResponse();
 
         foreach ($this->signedCookieNames as $name) {
-            if ($request->cookies->has($name)) {
-                $cookie = $request->cookies->get($name);
-                $request->cookies->set($name, $this->signer->getSignedValue($cookie));
+            if ($response->headers->hasCookie($name)) {
+                $cookie = $response->headers->getCookie($name);
+                $signedCookie = new Cookie($name, $this->signer->getSignedValue($cookie->getValue()));
+                $response->headers->setCookie($signedCookie);
             }
         }
     }

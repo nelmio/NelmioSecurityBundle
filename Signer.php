@@ -8,7 +8,7 @@ class Signer
     private $algo;
     private $separator = '!$*-';
 
-    public function __construct($secret, $algo = 'sha256')
+    public function __construct($secret, $algo)
     {
         $this->secret = $secret;
         $this->algo = $algo;

@@ -21,6 +21,7 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                         ->end()
                         ->scalarNode('secret')->defaultValue('%secret%')->end()
+                        ->scalarNode('hash_algo')->defaultValue('sha256')->end()
                     ->end()
                 ->end()
             ->end()

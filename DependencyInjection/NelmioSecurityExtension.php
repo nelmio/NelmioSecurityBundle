@@ -22,14 +22,13 @@ class NelmioSecurityExtension extends Extension
         $configuration = new Configuration();
         $config = $processor->processConfiguration($configuration, $configs);
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
-
         if (!empty($config['signed_cookie'])) {
+            $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+            $loader->load('signed_cookie.yml');
+
             $container->setParameter('nelmio_security.signed_cookie.names', $config['signed_cookie']['names']);
             $container->setParameter('nelmio_security.signer.secret', $config['signed_cookie']['secret']);
-        } else {
-            $container->removeDefinition('nelmio_security.signed_cookie_listener');
+            $container->setParameter('nelmio_security.signer.hash_algo', $config['signed_cookie']['hash_algo']);
         }
     }
 }

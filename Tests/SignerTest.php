@@ -16,7 +16,7 @@ class SignerTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldVerifyValidSignature()
     {
-        $signer = new Signer('secret');
+        $signer = new Signer('secret', 'sha1');
 
         $value = 'foobar';
         $signedValue = $signer->getSignedValue($value);
@@ -28,7 +28,7 @@ class SignerTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldRejectInvalidSignature()
     {
-        $signer = new Signer('secret');
+        $signer = new Signer('secret', 'sha1');
 
         $value = 'foobar';
         $signedValue = $signer->getSignedValue($value, 'fake signature');
@@ -38,8 +38,8 @@ class SignerTest extends \PHPUnit_Framework_TestCase
 
     public function testSignatureShouldDependOnSecret()
     {
-        $signer1 = new Signer('secret1');
-        $signer2 = new Signer('secret2');
+        $signer1 = new Signer('secret1', 'sha1');
+        $signer2 = new Signer('secret2', 'sha1');
 
         $this->assertNotSame($signer1->getSignedValue('foobar'), $signer2->getSignedValue('foobar'));
     }
