@@ -11,4 +11,4 @@ services:
     nelmio_security.signer:
         class: Nelmio\SecurityBundle\Signer
         arguments:
-            - %secret%
+            - %nelmio_security.signer.secret%

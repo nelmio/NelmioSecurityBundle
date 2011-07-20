@@ -5,11 +5,18 @@ namespace Nelmio\SecurityBundle;
 class Signer
 {
     private $secret;
+    private $algo;
     private $separator = '!$*-';
 
-    public function __construct($secret)
+    public function __construct($secret, $algo = 'sha256')
     {
         $this->secret = $secret;
+        $this->algo = $algo;
+
+        if (!in_array($this->algo, hash_algos())) {
+            throw new \InvalidArgumentException(sprintf("The supplied hashing algorithm '%s' is not supported by this system.",
+                $this->algo));
+        }
     }
 
     public function getSignedValue($value, $signature = null)
@@ -39,7 +46,7 @@ class Signer
 
     private function generateSignature($value)
     {
-        return hash_hmac('sha1', $value, $this->secret);
+        return hash_hmac($this->algo, $value, $this->secret);
     }
 
     private function splitSignatureFromSignedValue($signedValue)

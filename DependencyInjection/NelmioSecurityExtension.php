@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class NelmioSecurityExtension extends Extension
 {
     /**
-     * Responds to the twig configuration parameter.
+     * Parses the configuration.
      *
      * @param array            $configs
      * @param ContainerBuilder $container
@@ -27,6 +27,7 @@ class NelmioSecurityExtension extends Extension
 
         if (!empty($config['signed_cookie'])) {
             $container->setParameter('nelmio_security.signed_cookie.names', $config['signed_cookie']['names']);
+            $container->setParameter('nelmio_security.signer.secret', $config['signed_cookie']['secret']);
         } else {
             $container->removeDefinition('nelmio_security.signed_cookie_listener');
         }

@@ -20,6 +20,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('names')
                             ->prototype('scalar')->end()
                         ->end()
+                        ->scalarNode('secret')->defaultValue('%secret%')->end()
                     ->end()
                 ->end()
             ->end()
