@@ -30,8 +30,8 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    * @dataProvider provideCookieReading
-    */
+     * @dataProvider provideCookieReading
+     */
     public function testCookieReading($signedCookieNames, $inputCookies, $expectedCookies)
     {
         $listener = new SignedCookieListener($this->signer, $signedCookieNames);
@@ -57,8 +57,8 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    * @dataProvider provideCookieWriting
-    */
+     * @dataProvider provideCookieWriting
+     */
     public function testCookieWriting($signedCookieNames, $inputCookies, $expectedCookies)
     {
         $listener = new SignedCookieListener($this->signer, $signedCookieNames);

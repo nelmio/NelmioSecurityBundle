@@ -7,8 +7,8 @@ use Nelmio\SecurityBundle\Signer;
 class SignerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-    * @expectedException InvalidArgumentException
-    */
+     * @expectedException InvalidArgumentException
+     */
     public function testConstructorShouldVerifyHashAlgo()
     {
         $signer = new Signer('secret', 'invalid_hash_algo');
