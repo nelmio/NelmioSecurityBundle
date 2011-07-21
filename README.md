@@ -19,6 +19,13 @@ everything would just needlessly slow down your app.
         signed_cookie:
             names: [test1, test2]
 
+Additional, optional configuration settings:
+
+    nelmio_security:
+        signed_cookie:
+            secret: this_is_very_secret (defaults to global %secret%)
+            hash_algo: sha1 (defaults to sha256)
+
 ## Installation
 
 Put the NelmioSecurityBundle into the ``vendor/bundles/Nelmio`` directory:
