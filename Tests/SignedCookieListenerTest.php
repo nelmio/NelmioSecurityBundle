@@ -25,16 +25,12 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
 {
-    private $dispatcher;
     private $signer;
     private $kernel;
 
     protected function setUp()
     {
-        $this->dispatcher = new EventDispatcher();
-
         $this->signer = new Signer('secret', 'sha1');
-
         $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
     }
 
@@ -44,16 +40,13 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
     public function testCookieReading($signedCookieNames, $inputCookies, $expectedCookies)
     {
         $listener = new SignedCookieListener($this->signer, $signedCookieNames);
-        $this->dispatcher->addListener(KernelEvents::REQUEST, array($listener, 'onKernelRequest'));
-
         $request = Request::create('/', 'GET', array(), $inputCookies);
 
         $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
-        $this->dispatcher->dispatch(KernelEvents::REQUEST, $event);
+        $listener->onKernelRequest($event);
 
         $this->assertSame($expectedCookies, $request->cookies->all());
     }
-
 
     public function provideCookieReading()
     {
@@ -72,8 +65,6 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
     public function testCookieWriting($signedCookieNames, $inputCookies, $expectedCookies)
     {
         $listener = new SignedCookieListener($this->signer, $signedCookieNames);
-        $this->dispatcher->addListener(KernelEvents::RESPONSE, array($listener, 'onKernelResponse'));
-
         $request = Request::create('/');
 
         $response = new Response();
@@ -82,7 +73,7 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
         }
 
         $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
-        $this->dispatcher->dispatch(KernelEvents::RESPONSE, $event);
+        $listener->onKernelResponse($event);
 
         $responseCookieValues = array();
         foreach ($response->headers->getCookies() as $cookie) {
