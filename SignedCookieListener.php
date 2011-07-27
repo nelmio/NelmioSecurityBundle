@@ -24,14 +24,19 @@ class SignedCookieListener
     public function __construct(Signer $signer, $signedCookieNames)
     {
         $this->signer = $signer;
-        $this->signedCookieNames = $signedCookieNames;
+        if (in_array('*', $signedCookieNames)) {
+            $this->signedCookieNames = true;
+        } else {
+            $this->signedCookieNames = $signedCookieNames;
+        }
     }
 
     public function onKernelRequest(GetResponseEvent $e)
     {
         $request = $e->getRequest();
 
-        foreach ($this->signedCookieNames as $name) {
+        $names = $this->signedCookieNames === true ? $request->cookies->keys() : $this->signedCookieNames;
+        foreach ($names as $name) {
             if ($request->cookies->has($name)) {
                 $cookie = $request->cookies->get($name);
                 if ($this->signer->verifySignedValue($cookie)) {
@@ -46,13 +51,12 @@ class SignedCookieListener
     public function onKernelResponse(FilterResponseEvent $e)
     {
         $response = $e->getResponse();
-        $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
 
-        foreach ($this->signedCookieNames as $name) {
-            if (null !== $cookie = $this->findCookieByName($name, $cookies)) {
+        foreach ($response->headers->getCookies() as $cookie) {
+            if (true === $this->signedCookieNames || in_array($cookie->getName(), $this->signedCookieNames)) {
                 $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
                 $signedCookie = new Cookie(
-                    $name,
+                    $cookie->getName(),
                     $this->signer->getSignedValue($cookie->getValue()),
                     $cookie->getExpiresTime(),
                     $cookie->getPath(),
@@ -60,18 +64,7 @@ class SignedCookieListener
                     $cookie->isSecure(),
                     $cookie->isHttpOnly()
                 );
-                $response->headers->setCookie($signedCookie);
-            }
-        }
-    }
-
-    private function findCookieByName($name, $cookieContainer)
-    {
-        foreach ($cookieContainer as $host => $paths) {
-            foreach ($paths as $path => $cookies) {
-                if (isset($cookies[$name])) {
-                    return $cookies[$name];
-                }
+                $response->headers->setCookie($signedCookie, $cookie->getPath(), $cookie->getDomain());
             }
         }
     }

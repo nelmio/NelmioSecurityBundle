@@ -28,6 +28,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->arrayNode('names')
                             ->prototype('scalar')->end()
+                            ->defaultValue(array('*'))
                         ->end()
                         ->scalarNode('secret')->defaultValue('%secret%')->end()
                         ->scalarNode('hash_algo')->defaultValue('sha256')->end()
