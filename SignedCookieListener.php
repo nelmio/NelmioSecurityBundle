@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class SignedCookieListener
 {
@@ -33,6 +34,10 @@ class SignedCookieListener
 
     public function onKernelRequest(GetResponseEvent $e)
     {
+        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+            return;
+        }
+
         $request = $e->getRequest();
 
         $names = $this->signedCookieNames === true ? $request->cookies->keys() : $this->signedCookieNames;
@@ -50,6 +55,10 @@ class SignedCookieListener
 
     public function onKernelResponse(FilterResponseEvent $e)
     {
+        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+            return;
+        }
+
         $response = $e->getResponse();
 
         foreach ($response->headers->getCookies() as $cookie) {

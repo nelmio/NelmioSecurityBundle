@@ -21,7 +21,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -91,5 +90,30 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
             array(array('foo'), array('foo' => 'bar'), array('foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e')),
             array(array('*'), array('foo' => 'bar'), array('foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e')),
         );
+    }
+
+    public function testCookieReadingSkipsSubReqs()
+    {
+        $listener = new SignedCookieListener($this->signer, array('*'));
+        $request = Request::create('/', 'GET', array(), array('foo' => 'bar'));
+
+        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST);
+        $listener->onKernelRequest($event);
+
+        $this->assertEquals('bar', $request->cookies->get('foo'));
+    }
+
+    public function testCookieWritingSkipsSubReqs()
+    {
+        $listener = new SignedCookieListener($this->signer, array('*'));
+        $request = Request::create('/');
+
+        $response = new Response();
+        $response->headers->setCookie(new Cookie('foo', 'bar'));
+
+        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
+        $listener->onKernelResponse($event);
+
+        $this->assertEquals('bar', $response->headers->getCookie('foo')->getValue());
     }
 }
