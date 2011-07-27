@@ -15,7 +15,6 @@ class Signer
 {
     private $secret;
     private $algo;
-    private $separator = '!$*-';
 
     public function __construct($secret, $algo)
     {
@@ -33,7 +32,7 @@ class Signer
         if (null === $signature) {
             $signature = $this->generateSignature($value);
         }
-        return $value.$this->separator.$signature;
+        return $value.'.'.$signature;
     }
 
     public function verifySignedValue($signedValue)
@@ -60,10 +59,11 @@ class Signer
 
     private function splitSignatureFromSignedValue($signedValue)
     {
-        if (false === strpos($signedValue, $this->separator)) {
+        $pos = strrpos($signedValue, '.');
+        if (false === $pos) {
             return array($signedValue, null);
         }
 
-        return explode($this->separator, $signedValue, 2);
+        return array(substr($signedValue, 0, $pos), substr($signedValue, $pos+1));
     }
 }

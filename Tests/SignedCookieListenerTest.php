@@ -54,8 +54,8 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
             array(array(), array(), array()),
             array(array(), array('foo' => 'bar'), array('foo' => 'bar')),
             array(array('foo'), array('foo' => 'bar'), array()),
-            array(array('foo'), array('foo' => 'bar!$*-ca3756f81d3728a023bdc8a622c0906f373b795e'), array('foo' => 'bar')),
-            array(array('*'), array('foo' => 'bar!$*-ca3756f81d3728a023bdc8a622c0906f373b795e'), array('foo' => 'bar')),
+            array(array('foo'), array('foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e'), array('foo' => 'bar')),
+            array(array('*'), array('foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e'), array('foo' => 'bar')),
         );
     }
 
@@ -88,8 +88,8 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
         return array(
             array(array(), array(), array()),
             array(array(), array('foo' => 'bar'), array('foo' => 'bar')),
-            array(array('foo'), array('foo' => 'bar'), array('foo' => 'bar!$*-ca3756f81d3728a023bdc8a622c0906f373b795e')),
-            array(array('*'), array('foo' => 'bar'), array('foo' => 'bar!$*-ca3756f81d3728a023bdc8a622c0906f373b795e')),
+            array(array('foo'), array('foo' => 'bar'), array('foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e')),
+            array(array('*'), array('foo' => 'bar'), array('foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e')),
         );
     }
 }
