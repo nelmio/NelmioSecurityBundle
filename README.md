@@ -9,22 +9,38 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
 * **Signed Cookies**: Specify certain cookies to be signed, so that the user cannot modify
   them.
 
-## Configuration
+## Maximum Security Configuration
 
-You must explicitly specify which cookies to sign. The reason for this is simple. Cookies are
-sent with each request. Signatures are often longer than the cookie value itself, so signing
-everything would just needlessly slow down your app.
+    nelmio_security:
+        signed_cookie:
+            names: ['*']
+
+## Configuration Detail
+
+* **Signed Cookies**:
+
+Ideally you should explicitly specify which cookies to sign. The reason for this is simple.
+Cookies are sent with each request. Signatures are often longer than the cookie values themselves,
+so signing everything would just needlessly slow down your app and increase bandwidth usage for
+your users.
 
     nelmio_security:
         signed_cookie:
             names: [test1, test2]
 
+However, for simplicity reasons, and to start with a high security and optimize later, you can
+specify '*' as a cookie name to have all cookies signed automatically.
+
+    nelmio_security:
+        signed_cookie:
+            names: ['*']
+
 Additional, optional configuration settings:
 
     nelmio_security:
         signed_cookie:
-            secret: this_is_very_secret (defaults to global %secret%)
-            hash_algo: sha1 (defaults to sha256)
+            secret: this_is_very_secret # defaults to global %secret%
+            hash_algo: sha1 # defaults to sha256
 
 ## Installation
 
