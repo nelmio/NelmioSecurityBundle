@@ -30,14 +30,18 @@ class NelmioSecurityExtension extends Extension
         $processor = new Processor();
         $configuration = new Configuration();
         $config = $processor->processConfiguration($configuration, $configs);
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         if (!empty($config['signed_cookie'])) {
-            $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
             $loader->load('signed_cookie.yml');
-
             $container->setParameter('nelmio_security.signed_cookie.names', $config['signed_cookie']['names']);
             $container->setParameter('nelmio_security.signer.secret', $config['signed_cookie']['secret']);
             $container->setParameter('nelmio_security.signer.hash_algo', $config['signed_cookie']['hash_algo']);
+        }
+
+        if (!empty($config['clickjacking'])) {
+            $loader->load('clickjacking.yml');
+            $container->setParameter('nelmio_security.clickjacking.paths', $config['clickjacking']['paths']);
         }
     }
 }

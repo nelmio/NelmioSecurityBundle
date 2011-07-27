@@ -1,0 +1,8 @@
+services:
+    nelmio_security.clickjacking_listener:
+        scope: request
+        class: Nelmio\SecurityBundle\ClickjackingListener
+        arguments:
+            - %nelmio_security.clickjacking.paths%
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }

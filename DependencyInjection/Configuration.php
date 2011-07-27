@@ -34,6 +34,38 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('hash_algo')->defaultValue('sha256')->end()
                     ->end()
                 ->end()
+
+                ->arrayNode('clickjacking')
+                    ->fixXmlConfig('path')
+                    ->children()
+                        ->arrayNode('paths')
+                            ->useAttributeAsKey('pattern')
+                            ->prototype('array')
+                                ->beforeNormalization()
+                                    ->always(function($v) {
+                                        if (!is_array($v)) {
+                                            return array('header' => strtoupper($v ?: 'DENY'));
+                                        }
+                                        if (isset($v['header'])) {
+                                            $v['header'] = strtoupper($v['header']);
+                                        }
+                                        return $v;
+                                    })
+                                ->end()
+                                ->beforeNormalization()
+                                    ->ifTrue(function($v) {
+                                        return isset($v['header']) && !in_array($v['header'], array('DENY', 'SAMEORIGIN', 'ALLOW'));
+                                    })
+                                    ->thenInvalid('nelmio_security.clickjacking.paths: possible header values are DENY, SAMEORIGIN and ALLOW, got: %s')
+                                ->end()
+                                ->children()
+                                    ->scalarNode('header')->defaultValue('DENY')->end()
+                                ->end()
+                            ->end()
+                            ->defaultValue(array('^/.*' => array('header' => 'DENY')))
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ->end();
 
