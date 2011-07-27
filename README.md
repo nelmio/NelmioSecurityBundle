@@ -12,8 +12,7 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
 ## Maximum Security Configuration
 
     nelmio_security:
-        signed_cookie:
-            names: ['*']
+        signed_cookie: ~ # signs/verifies all cookies
 
 ## Configuration Detail
 
