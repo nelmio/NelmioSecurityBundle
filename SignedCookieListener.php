@@ -12,6 +12,7 @@
 namespace Nelmio\SecurityBundle;
 
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
@@ -45,12 +46,32 @@ class SignedCookieListener
     public function onKernelResponse(FilterResponseEvent $e)
     {
         $response = $e->getResponse();
+        $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
 
         foreach ($this->signedCookieNames as $name) {
-            if ($response->headers->hasCookie($name)) {
-                $cookie = $response->headers->getCookie($name);
-                $signedCookie = new Cookie($name, $this->signer->getSignedValue($cookie->getValue()));
+            if (null !== $cookie = $this->findCookieByName($name, $cookies)) {
+                $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
+                $signedCookie = new Cookie(
+                    $name,
+                    $this->signer->getSignedValue($cookie->getValue()),
+                    $cookie->getExpiresTime(),
+                    $cookie->getPath(),
+                    $cookie->getDomain(),
+                    $cookie->isSecure(),
+                    $cookie->isHttpOnly()
+                );
                 $response->headers->setCookie($signedCookie);
+            }
+        }
+    }
+
+    private function findCookieByName($name, $cookieContainer)
+    {
+        foreach ($cookieContainer as $host => $paths) {
+            foreach ($paths as $path => $cookies) {
+                if (isset($cookies[$name])) {
+                    return $cookies[$name];
+                }
             }
         }
     }
