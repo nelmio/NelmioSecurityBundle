@@ -1,0 +1,12 @@
+services:
+    nelmio_security.external_redirect_listener:
+        scope: request
+        class: Nelmio\SecurityBundle\ExternalRedirectListener
+        arguments:
+            - %nelmio_security.external_redirects.abort%
+            - %nelmio_security.external_redirects.override%
+            - @?logger
+            - @?router
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+            - { name: monolog.logger, channel: security }

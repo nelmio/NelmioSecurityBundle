@@ -66,10 +66,23 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+
+                ->arrayNode('external_redirects')
+                    ->beforeNormalization()
+                        ->ifTrue(function($v) {
+                            return isset($v['abort']) && $v['abort'] && isset($v['override']) && $v['override'];
+                        })
+                        ->thenInvalid('Configuration error at nelmio_security.external_redirects: abort and override can not be combined')
+                    ->end()
+                    ->children()
+                        ->booleanNode('abort')->defaultFalse()->end()
+                        ->scalarNode('override')->defaultNull()->end()
+                        ->booleanNode('log')->defaultFalse()->end()
+                    ->end()
+                ->end()
             ->end()
         ->end();
 
         return $treeBuilder;
     }
-
 }

@@ -43,5 +43,15 @@ class NelmioSecurityExtension extends Extension
             $loader->load('clickjacking.yml');
             $container->setParameter('nelmio_security.clickjacking.paths', $config['clickjacking']['paths']);
         }
+
+        if (!empty($config['external_redirects'])) {
+            $loader->load('external_redirects.yml');
+            $container->setParameter('nelmio_security.external_redirects.override', $config['external_redirects']['override']);
+            $container->setParameter('nelmio_security.external_redirects.abort', $config['external_redirects']['abort']);
+            if (!$config['external_redirects']['log']) {
+                $def = $container->getDefinition('nelmio_security.external_redirect_listener');
+                $def->replaceArgument(2, null);
+            }
+        }
     }
 }

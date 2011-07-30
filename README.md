@@ -10,10 +10,16 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
   them.
 
 * **Clickjacking Protection**: X-Frame-Options header is added to all responses to prevent your
-  site from being put in a frame/iframe. You can allow framing from the site itself or from
-  anywhere on a per-URL basis.
+  site from being put in a frame/iframe. This can have serious security implications as it has
+  been demonstrated time and time again with Facebook and others. You can allow framing of your
+  site from itself or from anywhere on a per-URL basis.
 
-## Maximum Security Configuration
+* **External Redirects Detection**: Redirecting from your site to arbitrary URLs based on user
+  input can be exploited to confuse users into clicking links that seemingly point to valid
+  sites while they in fact lead to malicious content. It also may be possible to gain PageRank
+  that way.
+
+## Maximum Security Configuration (Read on for detailed recommendations!)
 
     nelmio_security:
         # signs/verifies all cookies
@@ -23,6 +29,10 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
         clickjacking:
             paths:
                 '^/.*': DENY
+        # prevents redirections outside the website's domain
+        external_redirects:
+            abort: true
+            log: true
 
 ## Configuration Detail
 
@@ -55,7 +65,8 @@ Additional, optional configuration settings:
 
 Most websites do not use frames and do not need to be frame-able. This is a common attack vector
 for which all current browsers (IE8+, Opera10.5+, Safari4+, Chrome4+ and Firefox3.7+) have a
-solution.
+solution. An extra header sent by your site will tell the browser that it can not be displayed in
+an frame. Browsers react by showing a short explanation instead of the content, or a blank page.
 
 The valid values for the `X-Frame-Options` header are `DENY` (prevent framing from all pages) and
 `SAMEORIGIN` (prevent framing from all pages not on the same domain). Additionally this bundle
@@ -84,6 +95,36 @@ You can also of course only deny a few critical URLs, while leaving the rest alo
         clickjacking:
             paths:
                 '^/message/write': DENY
+
+* **External Redirects Detection**:
+
+This feature helps you detect and prevent redirects to external sites. This can easily happen
+by accident if you carelessly take query parameters as redirection target.
+
+You can only log those (it's logged at warning level) by turning on logging:
+
+    nelmio_security:
+        external_redirects:
+            log: true
+
+You can abort (they are replaced by a 403 response) the redirects:
+
+    nelmio_security:
+        external_redirects:
+            abort: true
+
+Or you can override them, replacing the redirect's `Location` header by a route name or
+another URL:
+
+    # redirect to the 'home' route
+    nelmio_security:
+        external_redirects:
+            override: home
+
+    # redirect to another URL
+    nelmio_security:
+        external_redirects:
+            override: /foo
 
 ## Installation
 
