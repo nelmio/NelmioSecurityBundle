@@ -7,7 +7,8 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
 ## Features
 
 * **Signed Cookies**: Specify certain cookies to be signed, so that the user cannot modify
-  them.
+  them. Note that they will not be encrypted, but signed only. The contents will still be
+  visible to the user.
 
 * **Clickjacking Protection**: X-Frame-Options header is added to all responses to prevent your
   site from being put in a frame/iframe. This can have serious security implications as it has
