@@ -1,3 +1,6 @@
+parameters:
+    nelmio_security.external_redirects.whitelist: ~
+
 services:
     nelmio_security.external_redirect_listener:
         scope: request
@@ -5,6 +8,7 @@ services:
         arguments:
             - %nelmio_security.external_redirects.abort%
             - %nelmio_security.external_redirects.override%
+            - %nelmio_security.external_redirects.whitelist%
             - @?logger
             - @?router
         tags:

@@ -48,6 +48,14 @@ class NelmioSecurityExtension extends Extension
             $loader->load('external_redirects.yml');
             $container->setParameter('nelmio_security.external_redirects.override', $config['external_redirects']['override']);
             $container->setParameter('nelmio_security.external_redirects.abort', $config['external_redirects']['abort']);
+            if ($config['external_redirects']['whitelist']) {
+                $whitelist = array_map(function($el) {
+                    return ltrim($el, '.');
+                }, $config['external_redirects']['whitelist']);
+                $whitelist = array_map('preg_quote', $whitelist);
+                $whitelist = '(?:.*\.'.implode('|.*\.', $whitelist).'|'.implode('|', $whitelist).')';
+                $container->setParameter('nelmio_security.external_redirects.whitelist', $whitelist);
+            }
             if (!$config['external_redirects']['log']) {
                 $def = $container->getDefinition('nelmio_security.external_redirect_listener');
                 $def->replaceArgument(2, null);

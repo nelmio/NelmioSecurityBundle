@@ -126,6 +126,18 @@ another URL:
         external_redirects:
             override: /foo
 
+Since it's quite common to have to redirect outside the website for legit reasons,
+typically OAuth logins and such, you can whitelist a few domain names. All their subdomains
+will be whitelisted as well, so that allows you to whitelist your own website's subdomains
+if needed.
+
+    nelmio_security:
+        external_redirects:
+            abort: true
+            whitelist:
+                - twitter.com
+                - facebook.com
+
 ## Installation
 
 Put the NelmioSecurityBundle into the ``vendor/bundles/Nelmio`` directory:

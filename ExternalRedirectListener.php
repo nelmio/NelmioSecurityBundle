@@ -21,16 +21,36 @@ class ExternalRedirectListener
 {
     private $abort;
     private $override;
+    private $whitelist;
     private $logger;
     private $generator;
 
-    public function __construct($abort = true, $override = null, LoggerInterface $logger = null, UrlGeneratorInterface $generator = null)
+    /**
+     * @param Boolean $abort If true, the offending redirects are turned into 403 responses, can't be combined with $override
+     * @param string $override Absolute path, complete URL or route name that must be used instead of the offending redirect's url
+     * @param mixed $whitelist array of hosts to be whitelisted, or regex that matches whitelisted hosts
+     * @param LoggerInterface $logger A logger, if it's present, detected offenses are logged at the warning level
+     * @param UrlGeneratorInterface $generator Router or equivalent that can generate a route, only if override is a route name
+     */
+    public function __construct($abort = true, $override = null, $whitelist = null, LoggerInterface $logger = null, UrlGeneratorInterface $generator = null)
     {
         if ($override && $abort) {
             throw new \LogicException('The ExternalRedirectListener can not abort *and* override redirects at the same time.');
         }
         $this->abort = $abort;
         $this->override = $override;
+        if (is_array($whitelist)) {
+            if ($whitelist) {
+                $whitelist = array_map(function($el) {
+                    return ltrim($el, '.');
+                }, $whitelist);
+                $whitelist = array_map('preg_quote', $whitelist);
+                $whitelist = '(?:.*\.'.implode('|.*\.', $whitelist).'|'.implode('|', $whitelist).')';
+            } else {
+                $whitelist = null;
+            }
+        }
+        $this->whitelist = $whitelist;
         $this->logger = $logger;
         $this->generator = $generator;
     }
@@ -47,7 +67,12 @@ class ExternalRedirectListener
             return;
         }
 
-        if (!$this->isExternalRedirect($e->getRequest()->getUri(), $response->headers->get('Location'))) {
+        $target = $response->headers->get('Location');
+        if (!$this->isExternalRedirect($e->getRequest()->getUri(), $target)) {
+            return;
+        }
+
+        if ($this->whitelist && preg_match('{^'.$this->whitelist.'$}i', parse_url($target, PHP_URL_HOST))) {
             return;
         }
 

@@ -71,11 +71,43 @@ class ExternalRedirectListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testRedirectOverrides()
     {
-        $listener = new ExternalRedirectListener(false, 'override');
+        $listener = new ExternalRedirectListener(false, '/override');
         $response = $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
 
         $this->assertSame(true, $response->isRedirect());
-        $this->assertSame('override', $response->headers->get('Location'));
+        $this->assertSame('/override', $response->headers->get('Location'));
+    }
+
+    /**
+     * @depends testRedirectMatcher
+     * @dataProvider provideRedirectWhitelists
+     */
+    public function testRedirectSkipsWhitelistedDomains($whitelist, $domain, $pass)
+    {
+        $listener = new ExternalRedirectListener(true, null, $whitelist);
+
+        if (!$pass) {
+            $this->setExpectedException('Symfony\Component\HttpKernel\Exception\HttpException');
+        }
+
+        $response = $this->filterResponse($listener, 'http://foo.com/', 'http://'.$domain.'/');
+
+        $this->assertSame($pass, $response->isRedirect());
+    }
+
+    public function provideRedirectWhitelists()
+    {
+        return array(
+            array(array('bar.com','baz.com'), 'bar.com', true),
+            array(array('bar.com','baz.com'), '.baz.com', true),
+            array(array('bar.com','baz.com'), 'abaz.com', false),
+            array(array('bar.com','baz.com'), 'foo.baz.com', true),
+            array(array('bar.com','baz.com'), 'moo.com', false),
+            array(array('.co.uk'), 'telco.uk', false),
+            array(array('.co.uk'), 'tel.co.uk', true),
+            array(array(), 'bar.com', false),
+            array(array(), '', true),
+        );
     }
 
     public function testListenerSkipsSubReqs()
