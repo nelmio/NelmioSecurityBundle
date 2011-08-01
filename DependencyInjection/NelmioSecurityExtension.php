@@ -61,5 +61,10 @@ class NelmioSecurityExtension extends Extension
                 $def->replaceArgument(2, null);
             }
         }
+
+        if (!empty($config['flexible_ssl'])) {
+            $loader->load('flexible_ssl.yml');
+            $container->setParameter('nelmio_security.flexible_ssl.cookie_name', $config['flexible_ssl']['cookie_name']);
+        }
     }
 }

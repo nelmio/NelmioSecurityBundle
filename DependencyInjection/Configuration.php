@@ -84,6 +84,12 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+
+                ->arrayNode('flexible_ssl')
+                    ->children()
+                        ->scalarNode('cookie_name')->defaultValue('auth')->end()
+                    ->end()
+                ->end()
             ->end()
         ->end();
 

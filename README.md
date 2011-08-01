@@ -20,6 +20,11 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
   sites while they in fact lead to malicious content. It also may be possible to gain PageRank
   that way.
 
+* **Flexible HTTPS/SSL Handling**: Usually you have to either force all users to use HTTPS or have
+  logged-in users appear logged-out when they access a non-HTTPS resource. This is not really a
+  good solution. This will make the application detect logged-in users and redirect them to a
+  secure URL, without making the session cookie insecure.
+
 ## Maximum Security Configuration (Read on for detailed recommendations!)
 
     nelmio_security:
@@ -34,6 +39,11 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
         external_redirects:
             abort: true
             log: true
+
+        # flexible HTTPS handling, please read the detailed config info
+        # and make sure you have SSL working on your site before enabling this
+    #    flexible_ssl:
+    #        cookie_name: auth
 
 ## Configuration Detail
 
@@ -138,6 +148,56 @@ if needed.
             whitelist:
                 - twitter.com
                 - facebook.com
+
+* **Flexible HTTPS/SSL Handling**:
+
+The best way to handle SSL securely is to [enable it for your entire site](http://symfony.com/doc/2.0/cookbook/security/force_https.html).
+However in some cases this is not desirable, be it for caching or performance reasons,
+or simply because most visitors of your site are anonymous and don't benefit much from SSL.
+
+If you don't want to enable SSL across the board, you need to avoid that people on insecure
+networks (typically open Wi-Fi) get their session cookie stolen by sending it non-encrypted.
+The way to achieve this is to set your session cookie to be secure as such - but don't do
+it just yet, keep reading to the end.
+
+    framework:
+        session:
+            secure: true
+
+If you use the remember-me functionality, you would also mark that one as secure:
+
+    security:
+        firewalls:
+            somename:
+                remember_me:
+                    secure: true
+
+Now if you do this, you have two problems. First, insecure pages will not be able to use
+the session anymore, which can be inconvenient. Second, if a logged in user gets to a
+non-https page of your site, it is seen as anonymous since his browser will not send the
+session cookie. To fix this, this bundle sets a new insecure cookie
+(`flexible_ssl.cookie_name`, defaults to `auth`) once a user logs in. That way, if any page
+is accessed insecurely by a logged in user, he is redirected to the secure version of the
+page, and his session is then visible to the framework.
+
+Enabling the `flexible_ssl` option of the NelmioSecurityBundle will make sure that
+logged-in users are always seeing secure pages, and it will make sure their session cookie
+is secure, but anonymous users will still be able to have an insecure session, if you need
+to use it to store non critical data like language settings and whatnot. That is why you
+should leave your framework.session.cookie setting to false. The remember-me cookie will
+also be made always secure, even if you leave the setting to false.
+
+You have to configure one more thing in your security configuration though, every firewall
+should have our logout listener added, so that the special `auth` cookie can be cleared when
+users log out. You can do it as such:
+
+    security:
+        firewalls:
+            somename:
+                # ...
+                logout:
+                    handlers:
+                        - nelmio_security.flexible_ssl_listener
 
 ## Installation
 
