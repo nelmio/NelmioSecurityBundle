@@ -25,7 +25,7 @@ use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class FlexibleSSLListener implements LogoutHandlerInterface
+class FlexibleSslListener implements LogoutHandlerInterface
 {
     private $cookieName;
     private $dispatcher;
