@@ -20,10 +20,16 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
   sites while they in fact lead to malicious content. It also may be possible to gain PageRank
   that way.
 
-* **Flexible HTTPS/SSL Handling**: Usually you have to either force all users to use HTTPS or have
-  logged-in users appear logged-out when they access a non-HTTPS resource. This is not really a
-  good solution. This will make the application detect logged-in users and redirect them to a
-  secure URL, without making the session cookie insecure.
+* **Forced HTTPS/SSL Handling**: This forces by all requests to go through SSL. It will also
+  send [HSTS](http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02) headers so that
+  modern browsers supporting it can make users use HTTPS even if they enter URLs without https,
+  avoiding attacks on public Wi-Fi.
+
+* **Flexible HTTPS/SSL Handling**: If you don't want to force all users to use HTTPS, you should
+  at least use secure session cookies and force SSL for logged-in users. But then logged-in users
+  appear logged-out when they access a non-HTTPS resource. This is not really a good solution.
+  This will make the application detect logged-in users and redirect them to a secure URL,
+  without making the session cookie insecure.
 
 ## Maximum Security Configuration (Read on for detailed recommendations!)
 
@@ -40,7 +46,13 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
             abort: true
             log: true
 
-        # flexible HTTPS handling, please read the detailed config info
+        # forced HTTPS handling, don't combine with flexible mode
+        # and make sure you have SSL working on your site before enabling this
+    #    forced_ssl:
+    #        hsts_max_age: 2592000 # 30 days
+    #        hsts_subdomains: true
+
+        # flexible HTTPS handling, read the detailed config info
         # and make sure you have SSL working on your site before enabling this
     #    flexible_ssl:
     #        cookie_name: auth
@@ -149,11 +161,51 @@ if needed.
                 - twitter.com
                 - facebook.com
 
+* **Forced HTTPS/SSL Handling**:
+
+By default, this option forces your entire site to use SSL, always. It redirect all users
+reaching the site with a http:// URL to a https:// URL.
+
+The base configuration for this is the following:
+
+    nelmio_security:
+        forced_ssl: ~
+
+If you turn this option on, it's recommended to also set your session cookie to be secure,
+and all other cookies your send for that matter. You can do the former using:
+
+    framework:
+        session:
+            secure: true
+
+Then if you want to push it further, you can enable
+[HTTP Strict Transport Security (HSTS)](http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02).
+This is basically sending a header to tell the browser that your site must always be
+accessed using SSL. If a user enters a http:// URL, the browser will convert it to https://
+automatically, and will do so before making any request, which prevents man-in-the-middle
+attacks.
+
+The browser will cache the value for as long as the specified `hsts_max_age` (in seconds), and if
+you turn on the `hsts_subdomains` option, the behavior will be applied to all subdomains as well.
+
+    nelmio_security:
+        forced_ssl:
+            hsts_max_age: 2592000 # 30 days
+            hsts_subdomains: false
+
+A small word of caution though. While HSTS is great for security, it means that if the browser
+can not establish your SSL certificate is valid, it will not allow the user to query your site.
+That just means you should be careful and renew your certificate in due time.
+
+Note: HSTS presently (Aug. 2011) only works in Firefox4+ and Chrome 4+.
+
 * **Flexible HTTPS/SSL Handling**:
 
-The best way to handle SSL securely is to [enable it for your entire site](http://symfony.com/doc/2.0/cookbook/security/force_https.html).
+The best way to handle SSL securely is to enable it for your entire site.
+
 However in some cases this is not desirable, be it for caching or performance reasons,
-or simply because most visitors of your site are anonymous and don't benefit much from SSL.
+or simply because most visitors of your site are anonymous and don't benefit much from the
+added privacy and security of SSL.
 
 If you don't want to enable SSL across the board, you need to avoid that people on insecure
 networks (typically open Wi-Fi) get their session cookie stolen by sending it non-encrypted.

@@ -1,0 +1,8 @@
+services:
+    nelmio_security.forced_ssl_listener:
+        class: Nelmio\SecurityBundle\ForcedSslListener
+        arguments:
+            - %nelmio_security.forced_ssl.hsts_max_age%
+            - %nelmio_security.forced_ssl.hsts_subdomains%
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 30000 }

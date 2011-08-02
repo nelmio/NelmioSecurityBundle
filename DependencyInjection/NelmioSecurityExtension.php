@@ -66,5 +66,15 @@ class NelmioSecurityExtension extends Extension
             $loader->load('flexible_ssl.yml');
             $container->setParameter('nelmio_security.flexible_ssl.cookie_name', $config['flexible_ssl']['cookie_name']);
         }
+
+        if (!empty($config['forced_ssl'])) {
+            $loader->load('forced_ssl.yml');
+            if ($config['forced_ssl']['hsts_max_age'] > 0) {
+                $def = $container->getDefinition('nelmio_security.forced_ssl_listener');
+                $def->addTag('kernel.event_listener', array('event' => 'kernel.response', 'method' => 'onKernelResponse'));
+            }
+            $container->setParameter('nelmio_security.forced_ssl.hsts_max_age', $config['forced_ssl']['hsts_max_age']);
+            $container->setParameter('nelmio_security.forced_ssl.hsts_subdomains', $config['forced_ssl']['hsts_subdomains']);
+        }
     }
 }

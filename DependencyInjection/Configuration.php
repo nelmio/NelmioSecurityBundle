@@ -22,6 +22,12 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('nelmio_security', 'array');
 
         $rootNode
+            ->beforeNormalization()
+                ->ifTrue(function($v) {
+                    return array_key_exists('forced_ssl', $v) && array_key_exists('flexible_ssl', $v);
+                })
+                ->thenInvalid('Configuration error at nelmio_security: forced_ssl and flexible_ssl can not be used together')
+            ->end()
             ->children()
                 ->arrayNode('signed_cookie')
                     ->fixXmlConfig('name')
@@ -88,6 +94,13 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('flexible_ssl')
                     ->children()
                         ->scalarNode('cookie_name')->defaultValue('auth')->end()
+                    ->end()
+                ->end()
+
+                ->arrayNode('forced_ssl')
+                    ->children()
+                        ->scalarNode('hsts_max_age')->defaultNull()->end()
+                        ->booleanNode('hsts_subdomains')->defaultFalse()->end()
                     ->end()
                 ->end()
             ->end()
