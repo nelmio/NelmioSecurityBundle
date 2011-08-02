@@ -1,6 +1,5 @@
 services:
     nelmio_security.flexible_ssl_listener:
-        scope: request
         class: Nelmio\SecurityBundle\FlexibleSslListener
         arguments:
             - %nelmio_security.flexible_ssl.cookie_name%

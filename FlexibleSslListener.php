@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Http\RememberMe\RememberMeServicesInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
@@ -69,10 +70,8 @@ class FlexibleSslListener implements LogoutHandlerInterface
         }
 
         // set the auth cookie
-        if ('1' !== $e->getRequest()->cookies->get($this->cookieName)) {
-            $expiration = isset($rememberMeCookie) ? $rememberMeCookie->getExpiresTime() : 0;
-            $response->headers->setCookie(new Cookie($this->cookieName, '1', $expiration));
-        }
+        $expiration = isset($rememberMeCookie) ? $rememberMeCookie->getExpiresTime() : 0;
+        $response->headers->setCookie(new Cookie($this->cookieName, '1', $expiration));
 
         // force remember-me cookie to be secure
         if (isset($rememberMeCookie) && !$rememberMeCookie->isSecure()) {
@@ -92,17 +91,18 @@ class FlexibleSslListener implements LogoutHandlerInterface
         $response->headers->setCookie(new Cookie(
             session_name(),
             session_id(),
-            $params['lifetime'],
+            0,
             $params['path'],
             $params['domain'],
-            $params['secure'],
+            true,
             $params['httponly']
         ));
     }
 
-    // TODO this needs to be hooked into LogoutListener::addHandler of every firewall (security.logout_listener.*)
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
-        $response->headers->clearCookie($this->cookieName);
+        // TODO uncomment & remove setCookie in next bugfix release of sf2
+        //$response->headers->clearCookie($this->cookieName);
+        $response->headers->setCookie(new Cookie($this->cookieName, null, 1));
     }
 }
