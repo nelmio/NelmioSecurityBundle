@@ -17,6 +17,7 @@ use Nelmio\SecurityBundle\SignedCookieListener;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -114,6 +115,7 @@ class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
         $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
-        $this->assertEquals('bar', $response->headers->getCookie('foo')->getValue());
+        $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
+        $this->assertEquals('bar', $cookies['']['/']['foo']->getValue());
     }
 }
