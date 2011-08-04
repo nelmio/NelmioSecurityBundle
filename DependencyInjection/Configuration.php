@@ -22,11 +22,11 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('nelmio_security', 'array');
 
         $rootNode
-            ->beforeNormalization()
+            ->validate()
                 ->ifTrue(function($v) {
                     return array_key_exists('forced_ssl', $v) && array_key_exists('flexible_ssl', $v);
                 })
-                ->thenInvalid('Configuration error at nelmio_security: forced_ssl and flexible_ssl can not be used together')
+                ->thenInvalid('"forced_ssl" and "flexible_ssl" can not be used together')
             ->end()
             ->children()
                 ->arrayNode('signed_cookie')
@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                             ->defaultValue(array('*'))
                         ->end()
-                        ->scalarNode('secret')->defaultValue('%secret%')->end()
+                        ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
                         ->scalarNode('hash_algo')->defaultValue('sha256')->end()
                     ->end()
                 ->end()
@@ -58,11 +58,11 @@ class Configuration implements ConfigurationInterface
                                         return $v;
                                     })
                                 ->end()
-                                ->beforeNormalization()
+                                ->validate()
                                     ->ifTrue(function($v) {
                                         return isset($v['header']) && !in_array($v['header'], array('DENY', 'SAMEORIGIN', 'ALLOW'));
                                     })
-                                    ->thenInvalid('nelmio_security.clickjacking.paths: possible header values are DENY, SAMEORIGIN and ALLOW, got: %s')
+                                    ->thenInvalid('Possible header values are DENY, SAMEORIGIN and ALLOW, got: %s')
                                 ->end()
                                 ->children()
                                     ->scalarNode('header')->defaultValue('DENY')->end()
@@ -74,18 +74,17 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->arrayNode('external_redirects')
-                    ->beforeNormalization()
+                    ->validate()
                         ->ifTrue(function($v) {
                             return isset($v['abort']) && $v['abort'] && isset($v['override']) && $v['override'];
                         })
-                        ->thenInvalid('Configuration error at nelmio_security.external_redirects: abort and override can not be combined')
+                        ->thenInvalid('"abort" and "override" can not be combined')
                     ->end()
                     ->children()
                         ->booleanNode('abort')->defaultFalse()->end()
                         ->scalarNode('override')->defaultNull()->end()
                         ->booleanNode('log')->defaultFalse()->end()
                         ->arrayNode('whitelist')
-                            ->defaultNull()
                             ->prototype('scalar')->end()
                         ->end()
                     ->end()
