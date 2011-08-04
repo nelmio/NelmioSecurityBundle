@@ -38,8 +38,18 @@ class Signer
     public function verifySignedValue($signedValue)
     {
         list($value, $signature) = $this->splitSignatureFromSignedValue($signedValue);
+        $signature2 = $this->generateSignature($value);
 
-        return $signature === $this->generateSignature($value);
+        if (strlen($signature) !== strlen($signature2)) {
+            return false;
+        }
+
+        $result = 0;
+        for ($i = 0, $j = strlen($signature); $i < $j; $i++) {
+            $result |= ord($signature[$i]) ^ ord($signature2[$i]);
+        }
+
+        return 0 === $result;
     }
 
     public function getVerifiedRawValue($signedValue)
