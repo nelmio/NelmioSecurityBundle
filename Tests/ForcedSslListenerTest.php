@@ -28,28 +28,25 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
         $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
     }
 
-    public function testStstHeaders()
+    /**
+     * @dataProvider provideHstsHeaders
+     */
+    public function testHstsHeaders($hstsMaxAge, $hstsSubdomains, $result)
     {
-        $listener = new ForcedSslListener(60, true);
+        $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains);
 
         $response = $this->callListener($listener, '/', true);
-        $this->assertContains('max-age=60', $response->headers->get('Strict-Transport-Security'));
+        $this->assertSame($result, $response->headers->get('Strict-Transport-Security'));
     }
 
-    public function testStstHeadersWithSubdomains()
+    public function provideHstsHeaders()
     {
-        $listener = new ForcedSslListener(60, true);
-
-        $response = $this->callListener($listener, '/', true);
-        $this->assertContains('includeSubDomains', $response->headers->get('Strict-Transport-Security'));
-    }
-
-    public function testStstHeadersWithoutSubdomains()
-    {
-        $listener = new ForcedSslListener(60, false);
-
-        $response = $this->callListener($listener, '/', true);
-        $this->assertNotContains('includeSubDomains', $response->headers->get('Strict-Transport-Security'));
+        return array(
+            array(60, true, 'max-age=60; includeSubDomains'),
+            array(60, false, 'max-age=60'),
+            array(3600, true, 'max-age=3600; includeSubDomains'),
+            array(3600, false, 'max-age=3600'),
+        );
     }
 
     public function testForcedSslSkipsSubReqs()
