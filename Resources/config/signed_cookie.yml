@@ -1,7 +1,7 @@
 services:
     nelmio_security.signed_cookie_listener:
         scope: request
-        class: Nelmio\SecurityBundle\SignedCookieListener
+        class: Nelmio\SecurityBundle\Listener\SignedCookieListener
         arguments:
             - @nelmio_security.signer
             - %nelmio_security.signed_cookie.names%

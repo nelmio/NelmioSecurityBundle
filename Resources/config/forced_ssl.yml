@@ -1,6 +1,6 @@
 services:
     nelmio_security.forced_ssl_listener:
-        class: Nelmio\SecurityBundle\ForcedSslListener
+        class: Nelmio\SecurityBundle\Listener\ForcedSslListener
         arguments:
             - %nelmio_security.forced_ssl.hsts_max_age%
             - %nelmio_security.forced_ssl.hsts_subdomains%

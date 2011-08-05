@@ -4,7 +4,7 @@ parameters:
 services:
     nelmio_security.external_redirect_listener:
         scope: request
-        class: Nelmio\SecurityBundle\ExternalRedirectListener
+        class: Nelmio\SecurityBundle\Listener\ExternalRedirectListener
         arguments:
             - %nelmio_security.external_redirects.abort%
             - %nelmio_security.external_redirects.override%
