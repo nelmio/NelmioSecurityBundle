@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Nelmio\SecurityBundle;
+namespace Nelmio\SecurityBundle\Listener;
 
+use Nelmio\SecurityBundle\Signer;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;

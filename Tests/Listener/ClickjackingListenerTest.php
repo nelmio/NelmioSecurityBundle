@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Nelmio\SecurityBundle\Tests;
+namespace Nelmio\SecurityBundle\Tests\Listener;
 
-use Nelmio\SecurityBundle\ClickjackingListener;
+use Nelmio\SecurityBundle\Listener\ClickjackingListener;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

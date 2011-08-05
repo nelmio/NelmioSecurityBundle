@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Nelmio\SecurityBundle\Tests;
+namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\Signer;
-use Nelmio\SecurityBundle\SignedCookieListener;
+use Nelmio\SecurityBundle\Listener\SignedCookieListener;
 
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;

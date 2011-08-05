@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Nelmio\SecurityBundle\Tests;
+namespace Nelmio\SecurityBundle\Tests\Listener;
 
-use Nelmio\SecurityBundle\ExternalRedirectListener;
+use Nelmio\SecurityBundle\Listener\ExternalRedirectListener;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;

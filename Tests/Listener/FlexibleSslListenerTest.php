@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Nelmio\SecurityBundle\Tests;
+namespace Nelmio\SecurityBundle\Tests\Listener;
 
-use Nelmio\SecurityBundle\FlexibleSslListener;
+use Nelmio\SecurityBundle\Listener\FlexibleSslListener;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
