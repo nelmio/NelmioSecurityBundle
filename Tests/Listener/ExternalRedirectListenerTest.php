@@ -11,7 +11,7 @@
 
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
-use Nelmio\SecurityBundle\Listener\ExternalRedirectListener;
+use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;

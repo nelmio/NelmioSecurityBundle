@@ -11,7 +11,7 @@
 
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
-use Nelmio\SecurityBundle\Listener\ClickjackingListener;
+use Nelmio\SecurityBundle\EventListener\ClickjackingListener;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

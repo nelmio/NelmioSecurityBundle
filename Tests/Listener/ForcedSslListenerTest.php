@@ -11,7 +11,7 @@
 
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
-use Nelmio\SecurityBundle\Listener\ForcedSslListener;
+use Nelmio\SecurityBundle\EventListener\ForcedSslListener;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

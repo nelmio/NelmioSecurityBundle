@@ -1,6 +1,6 @@
 services:
     nelmio_security.flexible_ssl_listener:
-        class: Nelmio\SecurityBundle\Listener\FlexibleSslListener
+        class: Nelmio\SecurityBundle\EventListener\FlexibleSslListener
         arguments:
             - %nelmio_security.flexible_ssl.cookie_name%
             - @event_dispatcher

@@ -1,7 +1,7 @@
 services:
     nelmio_security.clickjacking_listener:
         scope: request
-        class: Nelmio\SecurityBundle\Listener\ClickjackingListener
+        class: Nelmio\SecurityBundle\EventListener\ClickjackingListener
         arguments:
             - %nelmio_security.clickjacking.paths%
         tags:
