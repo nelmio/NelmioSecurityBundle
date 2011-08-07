@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Nelmio\SecurityBundle\Listener;
+namespace Nelmio\SecurityBundle\EventListener;
 
 use Nelmio\SecurityBundle\Signer;
 use Symfony\Component\HttpFoundation\Cookie;
