@@ -1,0 +1,24 @@
+{
+    "name": "nelmio/security-bundle",
+    "description": "Extra security-related features for Symfony2",
+    "keywords": ["security"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nelmio",
+            "homepage": "http://nelm.io"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://github.com/nelmio/NelmioSecurityBundle/contributors"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "2.*"
+    },
+    "autoload": {
+        "psr-0": { "Nelmio\\SecurityBundle": "" }
+    },
+    "target-dir": "Nelmio/SecurityBundle"
+}
