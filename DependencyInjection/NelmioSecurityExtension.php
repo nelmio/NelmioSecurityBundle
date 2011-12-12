@@ -65,6 +65,7 @@ class NelmioSecurityExtension extends Extension
         if (!empty($config['flexible_ssl'])) {
             $loader->load('flexible_ssl.yml');
             $container->setParameter('nelmio_security.flexible_ssl.cookie_name', $config['flexible_ssl']['cookie_name']);
+            $container->setParameter('nelmio_security.flexible_ssl.unsecured_logout', $config['flexible_ssl']['unsecured_logout']);
         }
 
         if (!empty($config['forced_ssl'])) {

@@ -93,6 +93,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('flexible_ssl')
                     ->children()
                         ->scalarNode('cookie_name')->defaultValue('auth')->end()
+                        ->booleanNode('unsecured_logout')->defaultFalse()->end()
                     ->end()
                 ->end()
 
