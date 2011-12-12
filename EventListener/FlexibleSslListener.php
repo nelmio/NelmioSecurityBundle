@@ -29,11 +29,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class FlexibleSslListener implements LogoutHandlerInterface
 {
     private $cookieName;
+    private $unsecuredLogout;
     private $dispatcher;
 
-    public function __construct($cookieName, EventDispatcherInterface $dispatcher)
+    public function __construct($cookieName, $unsecuredLogout, EventDispatcherInterface $dispatcher)
     {
         $this->cookieName = $cookieName;
+        $this->unsecuredLogout = $unsecuredLogout;
         $this->dispatcher = $dispatcher;
     }
 
@@ -101,6 +103,11 @@ class FlexibleSslListener implements LogoutHandlerInterface
 
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
+        if ($this->unsecuredLogout) {
+            $location = $response->headers->get('location');
+            $response->headers->set('location', preg_replace('/^https/', 'http', $location));
+        }
+
         // TODO uncomment & remove setCookie in next bugfix release of sf2
         //$response->headers->clearCookie($this->cookieName);
         $response->headers->setCookie(new Cookie($this->cookieName, null, 1));

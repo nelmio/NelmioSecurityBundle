@@ -56,6 +56,7 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
         # and make sure you have SSL working on your site before enabling this
     #    flexible_ssl:
     #        cookie_name: auth
+    #        unsecured_logout: false
 
 ## Configuration Detail
 
@@ -250,6 +251,9 @@ users log out. You can do it as such:
                 logout:
                     handlers:
                         - nelmio_security.flexible_ssl_listener
+
+On logout, if you would like users to be redirected to an unsecure page set ``unsecured_logout``
+to true;
 
 ## Installation
 
