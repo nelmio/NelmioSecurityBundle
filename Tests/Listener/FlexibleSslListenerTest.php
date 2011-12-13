@@ -20,6 +20,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,7 +31,8 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
     {
         $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
         $this->dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $this->listener = new FlexibleSslListener('auth', $this->dispatcher);
+        $this->listener1 = new FlexibleSslListener('auth', false, $this->dispatcher);
+        $this->listener2 = new FlexibleSslListener('auth', true, $this->dispatcher);
     }
 
     public function testKernelRequestWithNonAuthedNonSslRequest()
@@ -38,7 +40,7 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
         $request = Request::create('http://localhost/');
 
         $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
-        $this->listener->onKernelRequest($event);
+        $this->listener1->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
     }
@@ -49,7 +51,7 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
         $request->cookies->set('auth', '1');
 
         $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
-        $this->listener->onKernelRequest($event);
+        $this->listener1->onKernelRequest($event);
 
         $this->assertTrue($event->hasResponse());
         $this->assertTrue($event->getResponse()->isRedirection());
@@ -60,7 +62,7 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
         $request = Request::create('https://localhost/');
 
         $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
-        $this->listener->onKernelRequest($event);
+        $this->listener1->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
     }
@@ -71,7 +73,7 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
         $request->cookies->set('auth', '1');
 
         $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
-        $this->listener->onKernelRequest($event);
+        $this->listener1->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
     }
@@ -83,7 +85,7 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
-        $this->listener->onPostLoginKernelResponse($event);
+        $this->listener1->onPostLoginKernelResponse($event);
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
         $this->assertTrue(isset($cookies['']['/']['auth']));
@@ -101,7 +103,7 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
         $request->cookies->set('auth', '1');
 
         $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST);
-        $this->listener->onKernelRequest($event);
+        $this->listener1->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
     }
@@ -113,9 +115,31 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
-        $this->listener->onPostLoginKernelResponse($event);
+        $this->listener1->onPostLoginKernelResponse($event);
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
         $this->assertFalse(isset($cookies['']['/']['auth']));
+    }
+
+    public function testSecureLogout()
+    {
+        $response = new RedirectResponse('https://foo');
+        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
+        $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
+
+        $this->listener1->logout($request, $response, $token);
+
+        $this->assertSame('https://foo', $response->headers->get('location'));
+    }
+
+    public function testUnsecuredLogout()
+    {
+        $response = new RedirectResponse('https://foo');
+        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
+        $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
+
+        $this->listener2->logout($request, $response, $token);
+
+        $this->assertSame('http://foo', $response->headers->get('location'));
     }
 }
