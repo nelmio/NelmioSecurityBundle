@@ -104,8 +104,8 @@ class FlexibleSslListener implements LogoutHandlerInterface
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
         if ($this->unsecuredLogout) {
-            $location = $response->headers->get('location');
-            $response->headers->set('location', preg_replace('/^https/', 'http', $location));
+            $location = $response->headers->get('Location');
+            $response->headers->set('Location', preg_replace('/^https/', 'http', $location));
         }
 
         // TODO uncomment & remove setCookie in next bugfix release of sf2

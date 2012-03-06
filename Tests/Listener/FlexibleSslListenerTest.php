@@ -129,7 +129,7 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->listener1->logout($request, $response, $token);
 
-        $this->assertSame('https://foo', $response->headers->get('location'));
+        $this->assertSame('https://foo', $response->headers->get('Location'));
     }
 
     public function testUnsecuredLogout()
@@ -140,6 +140,6 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->listener2->logout($request, $response, $token);
 
-        $this->assertSame('http://foo', $response->headers->get('location'));
+        $this->assertSame('http://foo', $response->headers->get('Location'));
     }
 }

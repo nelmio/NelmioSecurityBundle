@@ -253,7 +253,7 @@ users log out. You can do it as such:
                         - nelmio_security.flexible_ssl_listener
 
 On logout, if you would like users to be redirected to an unsecure page set ``unsecured_logout``
-to true;
+to true.
 
 ## Installation
 
