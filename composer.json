@@ -15,7 +15,8 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "2.*"
+        "symfony/framework-bundle": "2.*",
+        "symfony/security": "2.*"
     },
     "autoload": {
         "psr-0": { "Nelmio\\SecurityBundle": "" }
