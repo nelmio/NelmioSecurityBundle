@@ -108,8 +108,6 @@ class FlexibleSslListener implements LogoutHandlerInterface
             $response->headers->set('Location', preg_replace('/^https/', 'http', $location));
         }
 
-        // TODO uncomment & remove setCookie in next bugfix release of sf2
-        //$response->headers->clearCookie($this->cookieName);
-        $response->headers->setCookie(new Cookie($this->cookieName, null, 1));
+        $response->headers->clearCookie($this->cookieName);
     }
 }
