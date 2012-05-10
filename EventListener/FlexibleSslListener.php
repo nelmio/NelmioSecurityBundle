@@ -73,7 +73,7 @@ class FlexibleSslListener implements LogoutHandlerInterface
 
         // set the auth cookie
         $expiration = isset($rememberMeCookie) ? $rememberMeCookie->getExpiresTime() : 0;
-        $response->headers->setCookie(new Cookie($this->cookieName, '1', $expiration));
+        $response->headers->setCookie(new Cookie($this->cookieName, '1', $expiration, '/', null, false, false));
 
         // force remember-me cookie to be secure
         if (isset($rememberMeCookie) && !$rememberMeCookie->isSecure()) {
