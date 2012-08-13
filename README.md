@@ -37,6 +37,9 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
         # signs/verifies all cookies
         signed_cookie:
             names: ['*']
+		# encrypt all cookies
+        encrypted_cookie:
+            names: ['*']
         # prevents framing of the entire site
         clickjacking:
             paths:
@@ -84,6 +87,22 @@ Additional, optional configuration settings:
         signed_cookie:
             secret: this_is_very_secret # defaults to global %secret%
             hash_algo: sha1 # defaults to sha256
+
+* **Encrypted Cookies**:
+
+Encrypts the cookie values using `nelmio_security.encrypted_cookie.secret`. It works the same as
+Signed Cookies:
+
+	nelmio_security:
+	    encrypted_cookie:
+	        names: [test1, test2]
+	
+Additional, optional configuration settings:
+
+    nelmio_security:
+        encrypted_cookie:
+            secret: this_is_very_secret # defaults to global %secret%
+            algoritm: rijndael-128
 
 * **Clickjacking Protection**:
 

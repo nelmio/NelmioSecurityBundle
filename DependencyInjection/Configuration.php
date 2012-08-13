@@ -41,6 +41,18 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
+                ->arrayNode('encrypted_cookie')
+                    ->fixXmlConfig('name')
+                    ->children()
+                        ->arrayNode('names')
+                            ->prototype('scalar')->end()
+                            ->defaultValue(array('*'))
+                        ->end()
+                        ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
+                        ->scalarNode('algorithm')->defaultValue('rijndael-128')->end()
+                    ->end()
+                ->end()
+
                 ->arrayNode('clickjacking')
                     ->fixXmlConfig('path')
                     ->children()
