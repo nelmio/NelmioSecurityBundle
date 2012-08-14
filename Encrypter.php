@@ -34,6 +34,10 @@ class Encrypter
 
     public function encrypt($input)
     {
+        if (empty($input)) {
+            return null;
+        }
+        
         $iv = mcrypt_create_iv($this->ivSize, MCRYPT_RAND);
 
         mcrypt_generic_init($this->module, $this->secret, $iv);
@@ -43,19 +47,24 @@ class Encrypter
 
     public function decrypt($input)
     {
+        if (empty($input)) {
+            return null;
+        }
+
         $encryptedData = base64_decode($input, true);
 
         $iv = substr($encryptedData, 0, $this->ivSize);
 
-        if(strlen($iv) < $this->ivSize) {
+        if (strlen($iv) < $this->ivSize) {
             return null;
         }
 
         $encryptedData = substr($encryptedData, $this->ivSize);
 
         $init = @mcrypt_generic_init($this->module, $this->secret, $iv);
-        if($init === false || $init < 0)
+        if ($init === false || $init < 0) {
             return null;
+        }
 
         return rtrim(mdecrypt_generic($this->module, $encryptedData), "\0");
     }
