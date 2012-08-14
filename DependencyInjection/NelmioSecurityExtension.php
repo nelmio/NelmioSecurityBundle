@@ -39,6 +39,13 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.signer.hash_algo', $config['signed_cookie']['hash_algo']);
         }
 
+        if (!empty($config['encrypted_cookie'])) {
+            $loader->load('encrypted_cookie.yml');
+            $container->setParameter('nelmio_security.encrypted_cookie.names', $config['encrypted_cookie']['names']);
+            $container->setParameter('nelmio_security.encrypter.secret', $config['encrypted_cookie']['secret']);
+            $container->setParameter('nelmio_security.encrypter.algorithm', $config['encrypted_cookie']['algorithm']);
+        }
+
         if (!empty($config['clickjacking'])) {
             $loader->load('clickjacking.yml');
             $container->setParameter('nelmio_security.clickjacking.paths', $config['clickjacking']['paths']);
