@@ -32,6 +32,7 @@ class Signer
         if (null === $signature) {
             $signature = $this->generateSignature($value);
         }
+
         return $value.'.'.$signature;
     }
 
@@ -59,6 +60,7 @@ class Signer
         }
 
         list($value, $signature) = $this->splitSignatureFromSignedValue($signedValue);
+
         return $value;
     }
 

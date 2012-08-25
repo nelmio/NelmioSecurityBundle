@@ -67,6 +67,7 @@ class Configuration implements ConfigurationInterface
                                         if (isset($v['header'])) {
                                             $v['header'] = strtoupper($v['header']);
                                         }
+
                                         return $v;
                                     })
                                 ->end()

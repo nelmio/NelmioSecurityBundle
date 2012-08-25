@@ -24,7 +24,7 @@ class Encrypter
         $this->algorithm = $algorithm;
 
         $this->module = @mcrypt_module_open($this->algorithm, '', MCRYPT_MODE_CBC, '');
-        if($this->module === false) {
+        if ($this->module === false) {
             throw new \InvalidArgumentException(sprintf("The supplied encryption algorithm '%s' is not supported by this system.",
                 $this->algorithm));
         }
@@ -37,12 +37,12 @@ class Encrypter
         if (empty($input)) {
             return null;
         }
-        
+
         $iv = mcrypt_create_iv($this->ivSize, MCRYPT_RAND);
 
         mcrypt_generic_init($this->module, $this->secret, $iv);
 
-        return rtrim(base64_encode($iv . mcrypt_generic($this->module, (string)$input)), '=');
+        return rtrim(base64_encode($iv . mcrypt_generic($this->module, (string) $input)), '=');
     }
 
     public function decrypt($input)

@@ -39,6 +39,7 @@ class ClickjackingListener
                 } else {
                     $response->headers->set('X-Frame-Options', $options['header']);
                 }
+
                 return;
             }
         }

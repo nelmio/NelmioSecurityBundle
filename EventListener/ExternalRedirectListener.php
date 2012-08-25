@@ -26,10 +26,10 @@ class ExternalRedirectListener
     private $generator;
 
     /**
-     * @param Boolean $abort If true, the offending redirects are turned into 403 responses, can't be combined with $override
-     * @param string $override Absolute path, complete URL or route name that must be used instead of the offending redirect's url
-     * @param mixed $whitelist array of hosts to be whitelisted, or regex that matches whitelisted hosts
-     * @param LoggerInterface $logger A logger, if it's present, detected offenses are logged at the warning level
+     * @param Boolean               $abort     If true, the offending redirects are turned into 403 responses, can't be combined with $override
+     * @param string                $override  Absolute path, complete URL or route name that must be used instead of the offending redirect's url
+     * @param mixed                 $whitelist array of hosts to be whitelisted, or regex that matches whitelisted hosts
+     * @param LoggerInterface       $logger    A logger, if it's present, detected offenses are logged at the warning level
      * @param UrlGeneratorInterface $generator Router or equivalent that can generate a route, only if override is a route name
      */
     public function __construct($abort = true, $override = null, $whitelist = null, LoggerInterface $logger = null, UrlGeneratorInterface $generator = null)
