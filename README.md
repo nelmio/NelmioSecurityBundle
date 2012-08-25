@@ -37,7 +37,7 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
         # signs/verifies all cookies
         signed_cookie:
             names: ['*']
-		# encrypt all cookies
+        # encrypt all cookies
         encrypted_cookie:
             names: ['*']
         # prevents framing of the entire site
@@ -96,7 +96,7 @@ Signed Cookies:
 	nelmio_security:
 	    encrypted_cookie:
 	        names: [test1, test2]
-	
+
 Additional, optional configuration settings:
 
     nelmio_security:
