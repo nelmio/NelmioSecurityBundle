@@ -10,6 +10,9 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
   them. Note that they will not be encrypted, but signed only. The contents will still be
   visible to the user.
 
+* **Encrypted Cookies**: Specify certain cookies to be encrypted, so that the value cannot be
+  read. When you retreive the cookie it will be automatically decrypted.
+
 * **Clickjacking Protection**: X-Frame-Options header is added to all responses to prevent your
   site from being put in a frame/iframe. This can have serious security implications as it has
   been demonstrated time and time again with Facebook and others. You can allow framing of your
@@ -63,7 +66,7 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
 
 ## Configuration Detail
 
-* **Signed Cookies**:
+### **Signed Cookies**:
 
 Ideally you should explicitly specify which cookies to sign. The reason for this is simple.
 Cookies are sent with each request. Signatures are often longer than the cookie values themselves,
@@ -88,7 +91,7 @@ Additional, optional configuration settings:
             secret: this_is_very_secret # defaults to global %secret%
             hash_algo: sha1 # defaults to sha256
 
-* **Encrypted Cookies**:
+### **Encrypted Cookies**:
 
 Encrypts the cookie values using `nelmio_security.encrypted_cookie.secret`. It works the same as
 Signed Cookies:
@@ -104,7 +107,7 @@ Additional, optional configuration settings:
             secret: this_is_very_secret # defaults to global %secret%
             algoritm: rijndael-128
 
-* **Clickjacking Protection**:
+### **Clickjacking Protection**:
 
 Most websites do not use frames and do not need to be frame-able. This is a common attack vector
 for which all current browsers (IE8+, Opera10.5+, Safari4+, Chrome4+ and Firefox3.7+) have a
@@ -139,7 +142,7 @@ You can also of course only deny a few critical URLs, while leaving the rest alo
             paths:
                 '^/message/write': DENY
 
-* **External Redirects Detection**:
+### **External Redirects Detection**:
 
 This feature helps you detect and prevent redirects to external sites. This can easily happen
 by accident if you carelessly take query parameters as redirection target.
@@ -181,7 +184,7 @@ if needed.
                 - twitter.com
                 - facebook.com
 
-* **Forced HTTPS/SSL Handling**:
+### **Forced HTTPS/SSL Handling**:
 
 By default, this option forces your entire site to use SSL, always. It redirect all users
 reaching the site with a http:// URL to a https:// URL.
@@ -219,7 +222,7 @@ That just means you should be careful and renew your certificate in due time.
 
 Note: HSTS presently (Aug. 2011) only works in Firefox4+ and Chrome 4+.
 
-* **Flexible HTTPS/SSL Handling**:
+### **Flexible HTTPS/SSL Handling**:
 
 The best way to handle SSL securely is to enable it for your entire site.
 
