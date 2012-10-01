@@ -6,29 +6,29 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
 
 ## Features
 
-* **Signed Cookies**: Specify certain cookies to be signed, so that the user cannot modify
+* **[Signed Cookies](#signed-cookies)**: Specify certain cookies to be signed, so that the user cannot modify
   them. Note that they will not be encrypted, but signed only. The contents will still be
   visible to the user.
 
-* **Encrypted Cookies**: Specify certain cookies to be encrypted, so that the value cannot be
+* **[Encrypted Cookies](#encrypted-cookies)**: Specify certain cookies to be encrypted, so that the value cannot be
   read. When you retreive the cookie it will be automatically decrypted.
 
-* **Clickjacking Protection**: X-Frame-Options header is added to all responses to prevent your
+* **[Clickjacking Protection](#clickjacking-protection)**: X-Frame-Options header is added to all responses to prevent your
   site from being put in a frame/iframe. This can have serious security implications as it has
   been demonstrated time and time again with Facebook and others. You can allow framing of your
   site from itself or from anywhere on a per-URL basis.
 
-* **External Redirects Detection**: Redirecting from your site to arbitrary URLs based on user
+* **[External Redirects Detection](#external-redirects-detection)**: Redirecting from your site to arbitrary URLs based on user
   input can be exploited to confuse users into clicking links that seemingly point to valid
   sites while they in fact lead to malicious content. It also may be possible to gain PageRank
   that way.
 
-* **Forced HTTPS/SSL Handling**: This forces by all requests to go through SSL. It will also
+* **[Forced HTTPS/SSL Handling](#forced-httpsssl-handling)**: This forces by all requests to go through SSL. It will also
   send [HSTS](http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02) headers so that
   modern browsers supporting it can make users use HTTPS even if they enter URLs without https,
   avoiding attacks on public Wi-Fi.
 
-* **Flexible HTTPS/SSL Handling**: If you don't want to force all users to use HTTPS, you should
+* **[Flexible HTTPS/SSL Handling](#flexible-httpsssl-handling)**: If you don't want to force all users to use HTTPS, you should
   at least use secure session cookies and force SSL for logged-in users. But then logged-in users
   appear logged-out when they access a non-HTTPS resource. This is not really a good solution.
   This will make the application detect logged-in users and redirect them to a secure URL,
