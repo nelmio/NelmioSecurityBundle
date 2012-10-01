@@ -279,15 +279,9 @@ to true.
 
 ## Installation
 
-Put the NelmioSecurityBundle into the ``vendor/bundles/Nelmio`` directory:
+Add a requirement in your composer.json for the `nelmio/security-bundle` package:
 
-    $ git clone git://github.com/nelmio/NelmioSecurityBundle.git vendor/bundles/Nelmio/SecurityBundle
-
-Register the `Nelmio` namespace in your project's autoload script (app/autoload.php):
-
-    $loader->registerNamespaces(array(
-        'Nelmio'                        => __DIR__.'/../vendor/bundles',
-    ));
+            "nelmio/security-bundle": "*"
 
 Add the NelmioSecurityBundle to your application's kernel:
 
