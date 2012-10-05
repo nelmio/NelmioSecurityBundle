@@ -69,13 +69,13 @@ class NelmioSecurityExtension extends Extension
             }
         }
 
-        if (!empty($config['flexible_ssl'])) {
+        if (!empty($config['flexible_ssl']) && $config['flexible_ssl']['enabled']) {
             $loader->load('flexible_ssl.yml');
             $container->setParameter('nelmio_security.flexible_ssl.cookie_name', $config['flexible_ssl']['cookie_name']);
             $container->setParameter('nelmio_security.flexible_ssl.unsecured_logout', $config['flexible_ssl']['unsecured_logout']);
         }
 
-        if (!empty($config['forced_ssl'])) {
+        if (!empty($config['forced_ssl']) && $config['forced_ssl']['enabled']) {
             $loader->load('forced_ssl.yml');
             if ($config['forced_ssl']['hsts_max_age'] > 0) {
                 $def = $container->getDefinition('nelmio_security.forced_ssl_listener');

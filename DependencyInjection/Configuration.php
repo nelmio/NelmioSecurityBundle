@@ -105,6 +105,7 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('flexible_ssl')
                     ->children()
+                        ->booleanNode('enabled')->defaultTrue()->end()
                         ->scalarNode('cookie_name')->defaultValue('auth')->end()
                         ->booleanNode('unsecured_logout')->defaultFalse()->end()
                     ->end()
@@ -112,6 +113,7 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('forced_ssl')
                     ->children()
+                        ->booleanNode('enabled')->defaultTrue()->end()
                         ->scalarNode('hsts_max_age')->defaultNull()->end()
                         ->booleanNode('hsts_subdomains')->defaultFalse()->end()
                     ->end()
