@@ -54,6 +54,7 @@ class NelmioSecurityExtension extends Extension
         if (!empty($config['external_redirects'])) {
             $loader->load('external_redirects.yml');
             $container->setParameter('nelmio_security.external_redirects.override', $config['external_redirects']['override']);
+            $container->setParameter('nelmio_security.external_redirects.overrideurlparametername', $config['external_redirects']['override_url_parameter_name']);
             $container->setParameter('nelmio_security.external_redirects.abort', $config['external_redirects']['abort']);
             if ($config['external_redirects']['whitelist']) {
                 $whitelist = array_map(function($el) {
