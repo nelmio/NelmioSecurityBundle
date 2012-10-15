@@ -21,6 +21,7 @@ class ExternalRedirectListener
 {
     private $abort;
     private $override;
+    private $overrideurlparametername;
     private $whitelist;
     private $logger;
     private $generator;
@@ -28,17 +29,19 @@ class ExternalRedirectListener
     /**
      * @param Boolean               $abort     If true, the offending redirects are turned into 403 responses, can't be combined with $override
      * @param string                $override  Absolute path, complete URL or route name that must be used instead of the offending redirect's url
+     * @param string                $overrideurlparametername  Name of the route-/query string parameter the blocked url will be passed to destination location
      * @param mixed                 $whitelist array of hosts to be whitelisted, or regex that matches whitelisted hosts
      * @param LoggerInterface       $logger    A logger, if it's present, detected offenses are logged at the warning level
      * @param UrlGeneratorInterface $generator Router or equivalent that can generate a route, only if override is a route name
      */
-    public function __construct($abort = true, $override = null, $whitelist = null, LoggerInterface $logger = null, UrlGeneratorInterface $generator = null)
+    public function __construct($abort = true, $override = null, $overrideurlparametername=null, $whitelist = null, LoggerInterface $logger = null, UrlGeneratorInterface $generator = null)
     {
         if ($override && $abort) {
             throw new \LogicException('The ExternalRedirectListener can not abort *and* override redirects at the same time.');
         }
         $this->abort = $abort;
         $this->override = $override;
+        $this->overrideurlparametername = $overrideurlparametername;
         if (is_array($whitelist)) {
             if ($whitelist) {
                 $whitelist = array_map(function($el) {
@@ -85,14 +88,26 @@ class ExternalRedirectListener
         }
 
         if ($this->override) {
+            $parameters = array();
+            if ($this->overrideurlparametername) {
+                $parameters[$this->overrideurlparametername] = $response->headers->get('Location');
+            }
+
             if (false === strpos($this->override, '/')) {
                 if (!$this->generator) {
                     throw new \UnexpectedValueException('The listener needs a router/UrlGeneratorInterface object to override invalid redirects with routes');
                 }
-                $response->headers->set('Location', $this->generator->generate($this->override));
+                $response->headers->set('Location', $this->generator->generate($this->override, $parameters));
+
             } else {
-                $response->headers->set('Location', $this->override);
+                $query = '';
+                if (count($parameters) > 0) {
+                    $query = (strpos($this->override, '?') === false) ? '?' : '&';
+                    $query .= http_build_query($parameters, null, '&');
+                }
+                $response->headers->set('Location', $this->override.$query);
             }
+
         }
     }
 
