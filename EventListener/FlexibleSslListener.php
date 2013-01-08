@@ -65,26 +65,34 @@ class FlexibleSslListener implements LogoutHandlerInterface
         $request = $e->getRequest();
         $response = $e->getResponse();
 
-        if ($request->attributes->has(RememberMeServicesInterface::COOKIE_ATTR_NAME)) {
-            $rememberMeCookie = $request->attributes->get(RememberMeServicesInterface::COOKIE_ATTR_NAME);
+        $longestExpire = 0;
+        foreach ($response->headers->getCookies() as $cookie) {
+            // find longest expiration time
+            $longestExpire = max($longestExpire, $cookie->getExpiresTime());
+            if (!$cookie->isSecure()) {
+                // force existing cookies (remember-me most likely) to be secure
+                $response->headers->setCookie(new Cookie(
+                    $cookie->getName(),
+                    $cookie->getValue(),
+                    $cookie->getExpiresTime(),
+                    $cookie->getPath(),
+                    $cookie->getDomain(),
+                    true,
+                    $cookie->isHttpOnly()
+                ));
+            }
         }
 
         // set the auth cookie
-        $expiration = isset($rememberMeCookie) ? $rememberMeCookie->getExpiresTime() : 0;
-        $response->headers->setCookie(new Cookie($this->cookieName, '1', $expiration, '/', null, false, false));
-
-        // force remember-me cookie to be secure
-        if (isset($rememberMeCookie) && !$rememberMeCookie->isSecure()) {
-            $response->headers->setCookie(new Cookie(
-                $rememberMeCookie->getName(),
-                $rememberMeCookie->getValue(),
-                $rememberMeCookie->getExpiresTime(),
-                $rememberMeCookie->getPath(),
-                $rememberMeCookie->getDomain(),
-                true,
-                $rememberMeCookie->isHttpOnly()
-            ));
-        }
+        $response->headers->setCookie(new Cookie(
+            $this->cookieName,
+            '1',
+            $longestExpire,
+            '/',
+            null,
+            false,
+            false
+        ));
 
         // force session cookie to be secure
         $params = session_get_cookie_params();

@@ -269,9 +269,13 @@ page, and his session is then visible to the framework.
 Enabling the `flexible_ssl` option of the NelmioSecurityBundle will make sure that
 logged-in users are always seeing secure pages, and it will make sure their session cookie
 is secure, but anonymous users will still be able to have an insecure session, if you need
-to use it to store non critical data like language settings and whatnot. That is why you
-should leave your framework.session.cookie setting to false. The remember-me cookie will
-also be made always secure, even if you leave the setting to false.
+to use it to store non critical data like language settings and whatnot. The remember-me
+cookie will also be made always secure, even if you leave the setting to false.
+
+    nelmio_security:
+        flexible_ssl:
+            cookie_name: auth
+            unsecured_logout: false
 
 You have to configure one more thing in your security configuration though, every firewall
 should have our logout listener added, so that the special `auth` cookie can be cleared when
