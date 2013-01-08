@@ -8,7 +8,7 @@ services:
         arguments:
             - %nelmio_security.external_redirects.abort%
             - %nelmio_security.external_redirects.override%
-            - %nelmio_security.external_redirects.overrideurlparametername%
+            - %nelmio_security.external_redirects.forward_as%
             - %nelmio_security.external_redirects.whitelist%
             - @?logger
             - @?router

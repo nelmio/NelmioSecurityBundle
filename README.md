@@ -147,7 +147,7 @@ You can also of course only deny a few critical URLs, while leaving the rest alo
 This feature helps you detect and prevent redirects to external sites. This can easily happen
 by accident if you carelessly take query parameters as redirection target.
 
-You can only log those (it's logged at warning level) by turning on logging:
+You can log those (it's logged at warning level) by turning on logging:
 
     nelmio_security:
         external_redirects:
@@ -171,6 +171,17 @@ another URL:
     nelmio_security:
         external_redirects:
             override: /foo
+
+If you want to display the URL that was blocked on the overriding page you can
+specify the `forward_as` parameter, which defines which query parameter will
+receive the URL. For example using the config below, doing a redirect to
+`http://example.org/` will be overridden to `/external-redirect?redirUrl=http://example.org/`.
+
+    # redirect and forward the overridden URL
+    nelmio_security:
+        external_redirects:
+            override: /external-redirect
+            forward_as: redirUrl
 
 Since it's quite common to have to redirect outside the website for legit reasons,
 typically OAuth logins and such, you can whitelist a few domain names. All their subdomains

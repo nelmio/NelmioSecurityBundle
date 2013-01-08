@@ -83,7 +83,7 @@ class ExternalRedirectListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testRedirectSkipsWhitelistedDomains($whitelist, $domain, $pass)
     {
-        $listener = new ExternalRedirectListener(true, null, $whitelist);
+        $listener = new ExternalRedirectListener(true, null, null, $whitelist);
 
         if (!$pass) {
             $this->setExpectedException('Symfony\Component\HttpKernel\Exception\HttpException');
