@@ -96,6 +96,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->booleanNode('abort')->defaultFalse()->end()
                         ->scalarNode('override')->defaultNull()->end()
+                        ->scalarNode('override_url_parameter_name')->defaultNull()->end()
                         ->booleanNode('log')->defaultFalse()->end()
                         ->arrayNode('whitelist')
                             ->prototype('scalar')->end()
