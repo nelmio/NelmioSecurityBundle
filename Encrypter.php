@@ -22,8 +22,12 @@ class Encrypter
     {
         $this->secret = substr($secret, 0, 32);
         $this->algorithm = $algorithm;
+        
+        if (!function_exists('mcrypt_module_open')) {
+            throw new \RuntimeException('You need to install mcrypt if you want to encrypt your cookies.');
+        }
 
-        $this->module = mcrypt_module_open($this->algorithm, '', MCRYPT_MODE_CBC, '');
+        $this->module = @mcrypt_module_open($this->algorithm, '', MCRYPT_MODE_CBC, '');
         if ($this->module === false) {
             throw new \InvalidArgumentException(sprintf("The supplied encryption algorithm '%s' is not supported by this system.",
                 $this->algorithm));
