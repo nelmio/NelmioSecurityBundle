@@ -23,7 +23,7 @@ class Encrypter
         $this->secret = substr($secret, 0, 32);
         $this->algorithm = $algorithm;
 
-        $this->module = @mcrypt_module_open($this->algorithm, '', MCRYPT_MODE_CBC, '');
+        $this->module = mcrypt_module_open($this->algorithm, '', MCRYPT_MODE_CBC, '');
         if ($this->module === false) {
             throw new \InvalidArgumentException(sprintf("The supplied encryption algorithm '%s' is not supported by this system.",
                 $this->algorithm));
