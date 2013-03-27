@@ -76,6 +76,16 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.flexible_ssl.unsecured_logout', $config['flexible_ssl']['unsecured_logout']);
         }
 
+        if (!empty($config['cookie_session']) && $config['cookie_session']['enabled']) {
+            $loader->load('cookie_session.yml');
+            $container->setParameter('nelmio_security.cookie_session.name', $config['cookie_session']['name']);
+            $container->setParameter('nelmio_security.cookie_session.lifetime', $config['cookie_session']['lifetime']);
+            $container->setParameter('nelmio_security.cookie_session.path', $config['cookie_session']['path']);
+            $container->setParameter('nelmio_security.cookie_session.domain', $config['cookie_session']['domain']);
+            $container->setParameter('nelmio_security.cookie_session.secure', $config['cookie_session']['secure']);
+            $container->setParameter('nelmio_security.cookie_session.httponly', $config['cookie_session']['httponly']);
+        }
+
         if (!empty($config['forced_ssl']) && $config['forced_ssl']['enabled']) {
             $loader->load('forced_ssl.yml');
             if ($config['forced_ssl']['hsts_max_age'] > 0) {

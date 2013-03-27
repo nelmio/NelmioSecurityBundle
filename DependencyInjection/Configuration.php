@@ -119,6 +119,18 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('hsts_subdomains')->defaultFalse()->end()
                     ->end()
                 ->end()
+
+                ->arrayNode('cookie_session')
+                    ->children()
+                        ->booleanNode('enabled')->defaultTrue()->end()
+                        ->scalarNode('name')->defaultValue('session')->end()
+                        ->scalarNode('lifetime')->defaultValue(0)->end()
+                        ->scalarNode('path')->defaultValue('/')->end()
+                        ->scalarNode('domain')->defaultNull()->end()
+                        ->booleanNode('secure')->defaultFalse()->end()
+                        ->booleanNode('httponly')->defaultTrue()->end()
+                    ->end()
+                ->end()
             ->end()
         ->end();
 
