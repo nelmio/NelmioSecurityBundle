@@ -34,6 +34,11 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
   This will make the application detect logged-in users and redirect them to a secure URL,
   without making the session cookie insecure.
 
+* **[Cookie Session Handler](#cookie-session-handler)**: You can configure the session handler to use a cookie based storage.
+  **WARNING**: by default the session is not encrypted, it is your responsibility to properly configure the Encrypted Cookies
+  section to include the session cookie (default name: session). The size limit of a cookie is 4KB, so make sure you are not
+  storing object or long text into session.
+
 ## Maximum Security Configuration (Read on for detailed recommendations!)
 
     nelmio_security:
@@ -96,9 +101,9 @@ Additional, optional configuration settings:
 Encrypts the cookie values using `nelmio_security.encrypted_cookie.secret`. It works the same as
 Signed Cookies:
 
-	nelmio_security:
-	    encrypted_cookie:
-	        names: [test1, test2]
+    nelmio_security:
+        encrypted_cookie:
+            names: [test1, test2]
 
 Additional, optional configuration settings:
 
@@ -291,6 +296,28 @@ users log out. You can do it as such:
 
 On logout, if you would like users to be redirected to an unsecure page set ``unsecured_logout``
 to true.
+
+### Cookie Session Handler:
+
+You can configure the session handler to use a cookie based storage.
+
+**WARNING**: by default the session is not encrypted, it is your responsibility to properly configure the Encrypted Cookies
+section to include the session cookie (default name: session). The size limit of a cookie is 4KB, so make sure you are not
+storing object or long text into session.
+
+    framework:
+        session:
+            handler_id: nelmio_security.session.handler
+
+    nelmio_security:
+        cookie_session:
+            enabled: true
+            cookie_name: session
+
+        encrypted_cookie:
+            names: [session]
+
+
 
 ## Installation
 
