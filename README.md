@@ -323,7 +323,7 @@ storing object or long text into session.
 
 Add a requirement in your composer.json for the `nelmio/security-bundle` package:
 
-            "nelmio/security-bundle": "*"
+            "nelmio/security-bundle": "~1.0"
 
 Add the NelmioSecurityBundle to your application's kernel:
 
