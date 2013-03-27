@@ -93,8 +93,8 @@ Additional, optional configuration settings:
 
     nelmio_security:
         signed_cookie:
-            secret: this_is_very_secret # defaults to global %secret%
-            hash_algo: sha1 # defaults to sha256
+            secret: this_is_very_secret # defaults to global %secret% parameter
+            hash_algo: sha512 # defaults to sha256, see `hash_algos()` for available algorithms
 
 ### **Encrypted Cookies**:
 
@@ -109,8 +109,8 @@ Additional, optional configuration settings:
 
     nelmio_security:
         encrypted_cookie:
-            secret: this_is_very_secret # defaults to global %secret%
-            algoritm: rijndael-128
+            secret: this_is_very_secret # defaults to global %secret% parameter
+            algorithm: rijndael-256 # defaults to rijndael-128, see `mcrypt_list_algorithms()` for available algorithms
 
 ### **Clickjacking Protection**:
 
@@ -299,11 +299,12 @@ to true.
 
 ### Cookie Session Handler:
 
-You can configure the session handler to use a cookie based storage.
+You can configure the session handler to use a cookie based storage. There are various reasons to do this, but generally speaking unless you have a very good one [you should avoid it](http://wonko.com/post/why-you-probably-shouldnt-use-cookies-to-store-session-data).
 
-**WARNING**: by default the session is not encrypted, it is your responsibility to properly configure the Encrypted Cookies
-section to include the session cookie (default name: session). The size limit of a cookie is 4KB, so make sure you are not
-storing object or long text into session.
+**WARNING**: by default the session is not encrypted, it is your responsibility to properly
+configure the Encrypted Cookies section to include the session cookie (default name: session).
+The size limit of a cookie is 4KB, so make sure you are not storing objects or long
+strings in the session.
 
     framework:
         session:
@@ -316,8 +317,6 @@ storing object or long text into session.
 
         encrypted_cookie:
             names: [session]
-
-
 
 ## Installation
 
