@@ -19,87 +19,93 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testDefault()
     {
-        $default = "hostname 'self'";
+        $default = "default.example.org 'self'";
 
         $listener = new ContentSecurityPolicyListener($default);
         $response = $this->callListener($listener, '/', true);
 
-        $this->assertEquals("default-src hostname 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertEquals(
+            "default-src default.example.org 'self'",
+            $response->headers->get('Content-Security-Policy')
+        );
     }
 
     public function testScript()
     {
-        $script = "hostname 'self' 'unsafe-eval' 'unsafe-inline'";
+        $script = "script.example.org 'self' 'unsafe-eval' 'unsafe-inline'";
 
         $listener = new ContentSecurityPolicyListener(null, $script);
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals(
-            "script-src hostname 'self' 'unsafe-eval' 'unsafe-inline'",
+            "script-src script.example.org 'self' 'unsafe-eval' 'unsafe-inline'",
             $response->headers->get('Content-Security-Policy')
         );
     }
 
     public function testObject()
     {
-        $object = "hostname 'self'";
+        $object = "object.example.org 'self'";
 
         $listener = new ContentSecurityPolicyListener(null, null, $object);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("object-src hostname 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertEquals("object-src object.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testStyle()
     {
-        $style = "hostname 'self'";
+        $style = "style.example.org 'self'";
 
         $listener = new ContentSecurityPolicyListener(null, null, null, $style);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("style-src hostname 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertEquals("style-src style.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testImg()
     {
-        $img = "hostname 'self'";
+        $img = "img.example.org 'self'";
 
         $listener = new ContentSecurityPolicyListener(null, null, null, null, $img);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("img-src hostname 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertEquals("img-src img.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testMedia()
     {
-        $media = "hostname 'self'";
+        $media = "media.example.org 'self'";
 
         $listener = new ContentSecurityPolicyListener(null, null, null, null, null, $media);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("media-src hostname 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertEquals("media-src media.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testFrame()
     {
-        $frame = "hostname 'self'";
+        $frame = "frame.example.org 'self'";
 
         $listener = new ContentSecurityPolicyListener(null, null, null, null, null, null, $frame);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("frame-src hostname 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertEquals("frame-src frame.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testFont()
     {
-        $font = "hostname 'self'";
+        $font = "font.example.org 'self'";
 
         $listener = new ContentSecurityPolicyListener(null, null, null, null, null, null, null, $font);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("font-src hostname 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertEquals("font-src font.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testConnect()
     {
-        $connect = "hostname 'self'";
+        $connect = "connect.example.org 'self'";
 
         $listener = new ContentSecurityPolicyListener(null, null, null, null, null, null, null, null, $connect);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("connect-src hostname 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertEquals(
+            "connect-src connect.example.org 'self'",
+            $response->headers->get('Content-Security-Policy')
+        );
     }
 
     public function testEmpty()
@@ -111,35 +117,35 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testAll()
     {
-        $spec     = "hostname 'self'";
+        $spec     = "example.org 'self'";
         $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec);
         $response = $this->callListener($listener, '/', true);
 
         $header = $response->headers->get('Content-Security-Policy');
 
-        $this->assertContains("default-src hostname 'self'", $header, 'Header should contain default-src');
-        $this->assertContains("script-src hostname 'self'", $header, 'Header should contain script-src');
-        $this->assertContains("object-src hostname 'self'", $header, 'Header should contain object-src');
-        $this->assertContains("style-src hostname 'self'", $header, 'Header should contain style-src');
-        $this->assertContains("img-src hostname 'self'", $header, 'Header should contain img-src');
-        $this->assertContains("media-src hostname 'self'", $header, 'Header should contain media-src');
-        $this->assertContains("frame-src hostname 'self'", $header, 'Header should contain frame-src');
-        $this->assertContains("font-src hostname 'self'", $header, 'Header should contain font-src');
-        $this->assertContains("connect-src hostname 'self'", $header, 'Header should contain connect-src');
+        $this->assertContains("default-src example.org 'self'", $header, 'Header should contain default-src');
+        $this->assertContains("script-src example.org 'self'", $header, 'Header should contain script-src');
+        $this->assertContains("object-src example.org 'self'", $header, 'Header should contain object-src');
+        $this->assertContains("style-src example.org 'self'", $header, 'Header should contain style-src');
+        $this->assertContains("img-src example.org 'self'", $header, 'Header should contain img-src');
+        $this->assertContains("media-src example.org 'self'", $header, 'Header should contain media-src');
+        $this->assertContains("frame-src example.org 'self'", $header, 'Header should contain frame-src');
+        $this->assertContains("font-src example.org 'self'", $header, 'Header should contain font-src');
+        $this->assertContains("connect-src example.org 'self'", $header, 'Header should contain connect-src');
     }
 
     public function testDelimiter()
     {
-        $spec     = "hostname";
+        $spec     = "example.org";
         $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec);
         $response = $this->callListener($listener, '/', true);
 
         $header = $response->headers->get('Content-Security-Policy');
 
         $this->assertRegExp(
-            '/^((default|script|object|style|img|media|frame|font|connect)-src hostname;\s?){8}(default|script|object|style|img|media|frame|font|connect)-src hostname/',
+            '/^((default|script|object|style|img|media|frame|font|connect)-src example.org;\s?){8}(default|script|object|style|img|media|frame|font|connect)-src example.org/',
             $header,
-            'The header should contain all directives  separated by a semicolon'
+            'The header should contain all directives separated by a semicolon'
         );
 
     }
