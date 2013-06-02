@@ -7,39 +7,37 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ContentSecurityPolicyListener
 {
-    protected $keywords = array('self', 'none', 'unsafe-inline', 'unsafe-eval');
-
-    protected $default = array();
-    protected $script = array();
-    protected $object = array();
-    protected $img = array();
-    protected $media = array();
-    protected $frame = array();
-    protected $font = array();
-    protected $connect = array();
-    protected $style = array();
+    protected $default;
+    protected $script;
+    protected $object;
+    protected $img;
+    protected $media;
+    protected $frame;
+    protected $font;
+    protected $connect;
+    protected $style;
 
     public function __construct(
-        array $default = array(),
-        array $script = array(),
-        array $object = array(),
-        array $img = array(),
-        array $media = array(),
-        array $frame = array(),
-        array $font = array(),
-        array $connect = array(),
-        array $style = array(),
+        $default = '',
+        $script = '',
+        $object = '',
+        $style = '',
+        $img = '',
+        $media = '',
+        $frame = '',
+        $font = '',
+        $connect = '',
         $reportUri = ''
     ) {
         $this->default = $default;
         $this->script  = $script;
         $this->object  = $object;
+        $this->style   = $style;
         $this->img     = $img;
         $this->media   = $media;
         $this->frame   = $frame;
         $this->font    = $font;
         $this->connect = $connect;
-        $this->style   = $style;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -53,28 +51,43 @@ class ContentSecurityPolicyListener
         $policy = array();
 
         if ($this->default) {
-            $policy[] = 'default-src ' . join(' ', $this->quoteKeywords($this->default));
+            $policy[] = 'default-src ' . $this->default;
+        }
+
+        if ($this->script) {
+            $policy[] = 'script-src ' . $this->script;
+        }
+
+        if ($this->object) {
+            $policy[] = 'object-src ' . $this->object;
+        }
+
+        if ($this->style) {
+            $policy[] = 'style-src ' . $this->style;
+        }
+
+        if ($this->img) {
+            $policy[] = 'img-src ' . $this->img;
+        }
+
+        if ($this->media) {
+            $policy[] = 'media-src ' . $this->media;
+        }
+
+        if ($this->frame) {
+            $policy[] = 'frame-src ' . $this->frame;
+        }
+
+        if ($this->font) {
+            $policy[] = 'font-src ' . $this->font;
+        }
+
+        if ($this->connect) {
+            $policy[] = 'connect-src ' . $this->connect;
         }
 
         if ($policy) {
             $response->headers->add(array('Content-Security-Policy' => join('; ', $policy)));
         }
     }
-
-    protected function quoteKeywords(array $input)
-    {
-        $keywords = $this->keywords;
-
-        return array_map(
-            function ($keyword) use ($keywords) {
-                if (in_array($keyword, $keywords)) {
-                    return sprintf("'%s'", $keyword);
-                }
-
-                return $keyword;
-            },
-            $input
-        );
-    }
-
 }
