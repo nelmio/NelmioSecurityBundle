@@ -16,6 +16,7 @@ class ContentSecurityPolicyListener
     protected $font;
     protected $connect;
     protected $style;
+    protected $reportUri;
 
     public function __construct(
         $default = '',
@@ -29,15 +30,16 @@ class ContentSecurityPolicyListener
         $connect = '',
         $reportUri = ''
     ) {
-        $this->default = $default;
-        $this->script  = $script;
-        $this->object  = $object;
-        $this->style   = $style;
-        $this->img     = $img;
-        $this->media   = $media;
-        $this->frame   = $frame;
-        $this->font    = $font;
-        $this->connect = $connect;
+        $this->default   = $default;
+        $this->script    = $script;
+        $this->object    = $object;
+        $this->style     = $style;
+        $this->img       = $img;
+        $this->media     = $media;
+        $this->frame     = $frame;
+        $this->font      = $font;
+        $this->connect   = $connect;
+        $this->reportUri = $reportUri;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -84,6 +86,10 @@ class ContentSecurityPolicyListener
 
         if ($this->connect) {
             $policy[] = 'connect-src ' . $this->connect;
+        }
+
+        if ($this->reportUri) {
+            $policy[] = 'report-uri ' . $this->reportUri;
         }
 
         if ($policy) {

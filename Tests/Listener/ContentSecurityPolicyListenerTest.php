@@ -108,6 +108,18 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testReportUri()
+    {
+        $reportUri = 'http://example.org/CSPReport';
+
+        $listener = new ContentSecurityPolicyListener(null, null, null, null, null, null, null, null, null, $reportUri);
+        $response = $this->callListener($listener, '/', true);
+        $this->assertEquals(
+            'report-uri http://example.org/CSPReport',
+            $response->headers->get('Content-Security-Policy')
+        );
+    }
+
     public function testEmpty()
     {
         $listener = new ContentSecurityPolicyListener();
@@ -117,8 +129,10 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testAll()
     {
-        $spec     = "example.org 'self'";
-        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec);
+        $spec      = "example.org 'self'";
+        $reportUri = 'http://example.org/CSPReport';
+
+        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $reportUri);
         $response = $this->callListener($listener, '/', true);
 
         $header = $response->headers->get('Content-Security-Policy');
@@ -132,6 +146,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertContains("frame-src example.org 'self'", $header, 'Header should contain frame-src');
         $this->assertContains("font-src example.org 'self'", $header, 'Header should contain font-src');
         $this->assertContains("connect-src example.org 'self'", $header, 'Header should contain connect-src');
+        $this->assertContains("report-uri http://example.org/CSPReport", $header, 'Header should contain report-uri');
     }
 
     public function testDelimiter()
