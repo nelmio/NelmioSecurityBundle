@@ -51,6 +51,20 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.clickjacking.paths', $config['clickjacking']['paths']);
         }
 
+        if (!empty($config['csp'])) {
+            $loader->load('csp.yml');
+            $container->setParameter('nelmio_security.csp.default', join(' ', $config['csp']['default']));
+            $container->setParameter('nelmio_security.csp.script', join(' ', $config['csp']['script']));
+            $container->setParameter('nelmio_security.csp.object', join(' ', $config['csp']['object']));
+            $container->setParameter('nelmio_security.csp.style', join(' ', $config['csp']['style']));
+            $container->setParameter('nelmio_security.csp.img', join(' ', $config['csp']['img']));
+            $container->setParameter('nelmio_security.csp.media', join(' ', $config['csp']['media']));
+            $container->setParameter('nelmio_security.csp.frame', join(' ', $config['csp']['frame']));
+            $container->setParameter('nelmio_security.csp.font', join(' ', $config['csp']['font']));
+            $container->setParameter('nelmio_security.csp.connect', join(' ', $config['csp']['connect']));
+            $container->setParameter('nelmio_security.csp.reportUri', $config['csp']['reportUri']);
+        }
+
         if (!empty($config['external_redirects'])) {
             $loader->load('external_redirects.yml');
             $container->setParameter('nelmio_security.external_redirects.override', $config['external_redirects']['override']);
