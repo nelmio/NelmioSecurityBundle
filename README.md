@@ -39,6 +39,8 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
   section to include the session cookie (default name: session). The size limit of a cookie is 4KB, so make sure you are not
   storing object or long text into session.
 
+* **[Content Security Policy](#content-security-policy)**: Cross site scripting attacks (XSS) can be mitigated in modern browsers using a policy which instructs the browser never to execute inline scripts, or never to load content from another domain than the page domain.
+
 ## Maximum Security Configuration (Read on for detailed recommendations!)
 
     nelmio_security:
@@ -56,6 +58,10 @@ The NelmioSecurityBundle provides additional security features for your Symfony2
         external_redirects:
             abort: true
             log: true
+
+        # prevents inline scripts, unsafe eval, external scripts/images/styles/frames, etc     
+        csp:
+            default: [ self ]
 
         # forced HTTPS handling, don't combine with flexible mode
         # and make sure you have SSL working on your site before enabling this
@@ -317,6 +323,37 @@ strings in the session.
 
         encrypted_cookie:
             names: [session]
+
+### Content Security Policy:
+
+Using CSP you can set a policy which modern browsers understand and will honor. The policy contains nine different content types; `default`, `script`, `object`, `style`, `img`, `media`, `frame`, `font`, `connect`. You can provide an array of directives per content type. Empty content types will inherit from `default`, specified content types will never inherit from `default`.
+
+Each directive should be a domain, URI or keyword. The keyword `self` will allow content from the same origin as the page. If you need to allow inline scripts or `eval()` you can use `unsafe-inline` and `unsafe-eval`. 
+
+**WARNING:** By using `unsafe-inline` or `unsafe-eval` you're effectively disabling the XSS protection mechanism of CSP. 
+
+Apart from content types, the policy also accepts `reportUri` which should be a URI where a browser can POST a JSON payload to whenever a policy directive is violated. Setting `reportOnly` to `true` will enable report only mode where the policy is not enforced.
+
+    nelmio_security: 
+        csp:
+            reportUri: /report
+            reportOnly: true
+            default: [ self ]
+            frame: [ 'https://www.youtube.com' ]
+            script: 
+                - self
+                - 'https:'
+            img:
+                - self
+                - facebook.com
+                - flickr.com
+
+The above configuration would allow: 
+
+* Default is to allow from same origin as the page
+* Frames only from secure youtube connections
+* JavaScript from same origin and any secure external URL
+* Images from same origin, `facebook.com` and `flickr.com`
 
 ## Installation
 
