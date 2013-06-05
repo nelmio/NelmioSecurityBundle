@@ -93,7 +93,15 @@ class ContentSecurityPolicyListener
         }
 
         if ($policy) {
-            $response->headers->add(array('Content-Security-Policy' => join('; ', $policy)));
+            $header = join('; ', $policy);
+
+            $response->headers->add(
+                array(
+                    'Content-Security-Policy'   => $header,
+                    'X-Content-Security-Policy' => $header,
+                    'X-Webkit-CSP'              => $header
+                )
+            );
         }
     }
 }

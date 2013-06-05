@@ -162,6 +162,25 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             $header,
             'The header should contain all directives separated by a semicolon'
         );
+    }
+
+    public function testVendorPrefixes()
+    {
+        $spec     = "example.org";
+        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec);
+        $response = $this->callListener($listener, '/', true);
+
+        $this->assertEquals(
+            $response->headers->get('Content-Security-Policy'),
+            $response->headers->get('X-Content-Security-Policy'),
+            'Response should contain non-standard X-Content-Security-Policy header'
+        );
+
+        $this->assertEquals(
+            $response->headers->get('Content-Security-Policy'),
+            $response->headers->get('X-Webkit-CSP'),
+            'Response should contain vendor specific X-Webkit-CSP header'
+        );
 
     }
 
