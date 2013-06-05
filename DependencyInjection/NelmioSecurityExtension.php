@@ -67,6 +67,7 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.csp.font', $parser->parseSourceList($config['csp']['font']));
             $container->setParameter('nelmio_security.csp.connect', $parser->parseSourceList($config['csp']['connect']));
             $container->setParameter('nelmio_security.csp.reportUri', $config['csp']['reportUri']);
+            $container->setParameter('nelmio_security.csp.reportOnly', !!$config['csp']['reportOnly']);
         }
 
         if (!empty($config['external_redirects'])) {

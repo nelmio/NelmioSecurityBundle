@@ -28,18 +28,20 @@ class ContentSecurityPolicyListener
         $frame = '',
         $font = '',
         $connect = '',
-        $reportUri = ''
+        $reportUri = '',
+        $reportOnly = false
     ) {
-        $this->default   = $default;
-        $this->script    = $script;
-        $this->object    = $object;
-        $this->style     = $style;
-        $this->img       = $img;
-        $this->media     = $media;
-        $this->frame     = $frame;
-        $this->font      = $font;
-        $this->connect   = $connect;
-        $this->reportUri = $reportUri;
+        $this->default    = $default;
+        $this->script     = $script;
+        $this->object     = $object;
+        $this->style      = $style;
+        $this->img        = $img;
+        $this->media      = $media;
+        $this->frame      = $frame;
+        $this->font       = $font;
+        $this->connect    = $connect;
+        $this->reportUri  = $reportUri;
+        $this->reportOnly = $reportOnly;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -93,13 +95,23 @@ class ContentSecurityPolicyListener
         }
 
         if ($policy) {
-            $header = join('; ', $policy);
+            $value = join('; ', $policy);
+
+            $key       = 'Content-Security-Policy';
+            $keyX      = 'X-Content-Security-Policy';
+            $keyWebkit = 'X-Webkit-CSP';
+
+            if ($this->reportOnly) {
+                $key .= '-Report-Only';
+                $keyX .= '-Report-Only';
+                $keyWebkit .= '-Report-Only';
+            }
 
             $response->headers->add(
                 array(
-                    'Content-Security-Policy'   => $header,
-                    'X-Content-Security-Policy' => $header,
-                    'X-Webkit-CSP'              => $header
+                    $key       => $value,
+                    $keyX      => $value,
+                    $keyWebkit => $value
                 )
             );
         }

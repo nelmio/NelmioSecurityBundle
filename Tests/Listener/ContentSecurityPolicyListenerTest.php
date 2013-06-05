@@ -181,7 +181,16 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             $response->headers->get('X-Webkit-CSP'),
             'Response should contain vendor specific X-Webkit-CSP header'
         );
+    }
 
+    public function testReportOnly()
+    {
+        $spec     = "example.org";
+        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, '', true);
+        $response = $this->callListener($listener, '/', true);
+
+        $this->assertNull($response->headers->get('Content-Security-Policy'));
+        $this->assertNotNull($response->headers->get('Content-Security-Policy-Report-Only'));
     }
 
     protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq)

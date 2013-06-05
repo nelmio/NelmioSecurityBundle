@@ -171,6 +171,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(array())
                         ->end()
                         ->scalarNode('reportUri')->defaultValue('')
+                        ->booleanNode('reportOnly')->defaultValue(false)
                     ->end()
                 ->end()
             ->end()
