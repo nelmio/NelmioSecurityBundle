@@ -35,7 +35,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     protected $httpOnly;
 
-    protected $cookie;
+    protected $cookie = false;
 
     /**
      * @param string          $cookieName
@@ -72,7 +72,18 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
         $this->request->getSession()->save();
 
+        if ($this->cookie === false) {
+            if ($this->logger) {
+                $this->logger->debug('CookieSessionHandler::onKernelResponse - COOKIE not opened');
+            }
+
+            return;
+        }
+
         if ($this->cookie === null) {
+            if ($this->logger) {
+                $this->logger->debug('CookieSessionHandler::onKernelResponse - CLEAR COOKIE');
+            }
             $e->getResponse()->headers->clearCookie($this->cookieName);
         } else {
             $e->getResponse()->headers->setCookie($this->cookie);
