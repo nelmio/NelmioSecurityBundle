@@ -78,4 +78,28 @@ class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', $cookies[0]->getValue());
         $this->assertEquals('s', $cookies[0]->getName());
     }
+
+    /**
+     * Cookie not opened
+     */
+    public function testCookieNotOpened()
+    {
+        $session = $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
+        $headers = $this->getMock('Symfony\Component\HttpFoundation\ResponseHeaderBag');
+        $headers
+            ->expects($this->any())
+            ->method('clearCookie');
+        $headers
+            ->expects($this->any())
+            ->method('setCookie');
+
+        $response = new Response();
+        $request = new Request();
+        $request->setSession($session);
+        $response->headers = $headers;
+
+        $this->handler->onKernelRequest(new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $this->handler->onKernelResponse(new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
+
+    }
 }
