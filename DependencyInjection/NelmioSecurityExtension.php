@@ -11,6 +11,7 @@
 
 namespace Nelmio\SecurityBundle\DependencyInjection;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ContentSecurityPolicyParser;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -49,6 +50,24 @@ class NelmioSecurityExtension extends Extension
         if (!empty($config['clickjacking'])) {
             $loader->load('clickjacking.yml');
             $container->setParameter('nelmio_security.clickjacking.paths', $config['clickjacking']['paths']);
+        }
+
+        if (!empty($config['csp'])) {
+            $loader->load('csp.yml');
+            
+            $parser = new ContentSecurityPolicyParser();
+            
+            $container->setParameter('nelmio_security.csp.default', $parser->parseSourceList($config['csp']['default']));
+            $container->setParameter('nelmio_security.csp.script', $parser->parseSourceList($config['csp']['script']));
+            $container->setParameter('nelmio_security.csp.object', $parser->parseSourceList($config['csp']['object']));
+            $container->setParameter('nelmio_security.csp.style', $parser->parseSourceList($config['csp']['style']));
+            $container->setParameter('nelmio_security.csp.img', $parser->parseSourceList($config['csp']['img']));
+            $container->setParameter('nelmio_security.csp.media', $parser->parseSourceList($config['csp']['media']));
+            $container->setParameter('nelmio_security.csp.frame', $parser->parseSourceList($config['csp']['frame']));
+            $container->setParameter('nelmio_security.csp.font', $parser->parseSourceList($config['csp']['font']));
+            $container->setParameter('nelmio_security.csp.connect', $parser->parseSourceList($config['csp']['connect']));
+            $container->setParameter('nelmio_security.csp.reportUri', $config['csp']['reportUri']);
+            $container->setParameter('nelmio_security.csp.reportOnly', !!$config['csp']['reportOnly']);
         }
 
         if (!empty($config['external_redirects'])) {
