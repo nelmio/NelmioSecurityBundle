@@ -117,6 +117,9 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('enabled')->defaultTrue()->end()
                         ->scalarNode('hsts_max_age')->defaultNull()->end()
                         ->booleanNode('hsts_subdomains')->defaultFalse()->end()
+                        ->arrayNode('whitelist')
+                            ->prototype('scalar')->end()
+                        ->end()
                     ->end()
                 ->end()
 

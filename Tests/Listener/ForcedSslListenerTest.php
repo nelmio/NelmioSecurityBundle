@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +35,7 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
     {
         $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains);
 
-        $response = $this->callListener($listener, '/', true);
+        $response = $this->callListenerResp($listener, '/', true);
         $this->assertSame($result, $response->headers->get('Strict-Transport-Security'));
     }
 
@@ -52,11 +53,35 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
     {
         $listener = new ForcedSslListener(60, true);
 
-        $response = $this->callListener($listener, '/', false);
+        $response = $this->callListenerResp($listener, '/', false);
         $this->assertSame(null, $response->headers->get('Strict-Transport-Security'));
     }
 
-    protected function callListener($listener, $path, $masterReq)
+    public function testForcedSslSkipsWhitelisted()
+    {
+        $listener = new ForcedSslListener(60, true, array('^/foo/', 'bar'));
+
+        $response = $this->callListenerReq($listener, '/foo/lala', true);
+        $this->assertSame(null, $response);
+
+        $response = $this->callListenerReq($listener, '/lala/foo/lala', true);
+        $this->assertSame('https://localhost/lala/foo/lala', $response->headers->get('Location'));
+
+        $response = $this->callListenerReq($listener, '/lala/abarb', true);
+        $this->assertSame(null, $response);
+    }
+
+    protected function callListenerReq($listener, $path, $masterReq)
+    {
+        $request = Request::create($path);
+
+        $event = new GetResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST);
+        $listener->onKernelRequest($event);
+
+        return $event->getResponse();
+    }
+
+    protected function callListenerResp($listener, $path, $masterReq)
     {
         $request = Request::create($path);
         $response = new Response();

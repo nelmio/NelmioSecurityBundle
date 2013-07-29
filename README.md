@@ -265,6 +265,15 @@ and all other cookies your send for that matter. You can do the former using:
         session:
             secure: true
 
+To keep a few URLs from being force-redirected to SSL you can define a whitelist of regular
+expressions:
+
+    nelmio_security:
+        forced_ssl:
+            enabled: true
+            whitelist:
+                - ^/unsecure/
+
 Then if you want to push it further, you can enable
 [HTTP Strict Transport Security (HSTS)](http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02).
 This is basically sending a header to tell the browser that your site must always be
@@ -280,11 +289,11 @@ you turn on the `hsts_subdomains` option, the behavior will be applied to all su
             hsts_max_age: 2592000 # 30 days
             hsts_subdomains: false
 
-A small word of caution though. While HSTS is great for security, it means that if the browser
+A small word of caution: While HSTS is great for security, it means that if the browser
 can not establish your SSL certificate is valid, it will not allow the user to query your site.
 That just means you should be careful and renew your certificate in due time.
 
-Note: HSTS presently (Aug. 2011) only works in Firefox4+ and Chrome 4+.
+Note: HSTS presently (Aug. 2013) only works in Firefox 4+, Chrome 4+ and Opera 12+.
 
 ### **Flexible HTTPS/SSL Handling**:
 

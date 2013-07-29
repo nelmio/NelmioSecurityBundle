@@ -22,11 +22,13 @@ class ForcedSslListener
 {
     private $hstsMaxAge;
     private $hstsSubdomains;
+    private $whitelist;
 
-    public function __construct($hstsMaxAge, $hstsSubdomains)
+    public function __construct($hstsMaxAge, $hstsSubdomains, array $whitelist = array())
     {
         $this->hstsMaxAge = $hstsMaxAge;
         $this->hstsSubdomains = $hstsSubdomains;
+        $this->whitelist = $whitelist ? '('.implode('|', $whitelist).')' : null;
     }
 
     public function onKernelRequest(GetResponseEvent $e)
@@ -39,6 +41,11 @@ class ForcedSslListener
 
         // skip SSL & non-GET/HEAD requests
         if ($request->isSecure() || !$request->isMethodSafe()) {
+            return;
+        }
+
+        // skip whitelisted URLs
+        if ($this->whitelist && preg_match('{'.$this->whitelist.'}i', $request->getPathInfo() ?: '/')) {
             return;
         }
 
