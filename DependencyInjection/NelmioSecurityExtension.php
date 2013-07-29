@@ -54,9 +54,9 @@ class NelmioSecurityExtension extends Extension
 
         if (!empty($config['csp'])) {
             $loader->load('csp.yml');
-            
+
             $parser = new ContentSecurityPolicyParser();
-            
+
             $container->setParameter('nelmio_security.csp.default', $parser->parseSourceList($config['csp']['default']));
             $container->setParameter('nelmio_security.csp.script', $parser->parseSourceList($config['csp']['script']));
             $container->setParameter('nelmio_security.csp.object', $parser->parseSourceList($config['csp']['object']));
@@ -66,8 +66,8 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.csp.frame', $parser->parseSourceList($config['csp']['frame']));
             $container->setParameter('nelmio_security.csp.font', $parser->parseSourceList($config['csp']['font']));
             $container->setParameter('nelmio_security.csp.connect', $parser->parseSourceList($config['csp']['connect']));
-            $container->setParameter('nelmio_security.csp.reportUri', $config['csp']['reportUri']);
-            $container->setParameter('nelmio_security.csp.reportOnly', !!$config['csp']['reportOnly']);
+            $container->setParameter('nelmio_security.csp.report_uri', $config['csp']['report_uri']);
+            $container->setParameter('nelmio_security.csp.report_only', !!$config['csp']['report_only']);
         }
 
         if (!empty($config['external_redirects'])) {

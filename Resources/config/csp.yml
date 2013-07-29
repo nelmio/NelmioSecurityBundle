@@ -12,8 +12,8 @@ services:
             - %nelmio_security.csp.frame%
             - %nelmio_security.csp.font%
             - %nelmio_security.csp.connect%
-            - %nelmio_security.csp.reportUri%
-            - %nelmio_security.csp.reportOnly%
+            - %nelmio_security.csp.report_uri%
+            - %nelmio_security.csp.report_only%
 
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
