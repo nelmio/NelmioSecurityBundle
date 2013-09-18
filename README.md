@@ -263,7 +263,7 @@ and all other cookies your send for that matter. You can do the former using:
 
     framework:
         session:
-            secure: true
+            cookie_secure: true
 
 To keep a few URLs from being force-redirected to SSL you can define a whitelist of regular
 expressions:
@@ -310,7 +310,7 @@ it just yet, keep reading to the end.
 
     framework:
         session:
-            secure: true
+            cookie_secure: true
 
 If you use the remember-me functionality, you would also mark that one as secure:
 
