@@ -43,6 +43,10 @@ load content from another domain than the page's domain.
   section to include the session cookie (default name: session). The size limit of a cookie is 4KB, so make sure you are not
   storing object or long text into session.
 
+* **[Disable Content Type Sniffing](#content-type-sniffing)**: Require that scripts are loaded using the correct mime type.
+  This disables the feature that some browsers have which uses content sniffing to determine if the response is a valid
+  script file or not.
+
 ## Maximum Security Configuration (Read on for detailed recommendations!)
 
     nelmio_security:
@@ -64,6 +68,10 @@ load content from another domain than the page's domain.
         # prevents inline scripts, unsafe eval, external scripts/images/styles/frames, etc
         csp:
             default: [ self ]
+
+        # disables content type sniffing for script resources
+        content_type:
+            nosniff: true
 
         # forced HTTPS handling, don't combine with flexible mode
         # and make sure you have SSL working on your site before enabling this
@@ -374,6 +382,16 @@ strings in the session.
 
         encrypted_cookie:
             names: [session]
+
+### Content Type Sniffing
+
+Disables the content type sniffing for script resources. Forces the browser to only execute script files with valid
+content type headers. This is a non-standard header from Microsoft, more information can be found in
+[their documentation at MSDN](http://msdn.microsoft.com/en-us/library/ie/gg622941.aspx).
+
+    nelmio_security:
+        content_type:
+            nosniff: true
 
 ## Installation
 

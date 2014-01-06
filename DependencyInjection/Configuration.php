@@ -135,6 +135,12 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
+                ->arrayNode('content_type')
+                    ->children()
+                        ->booleanNode('nosniff')->defaultFalse()->end()
+                    ->end()
+                ->end()
+
                 ->arrayNode('csp')
                     ->children()
                         ->arrayNode('default')
