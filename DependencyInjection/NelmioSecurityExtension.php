@@ -70,6 +70,11 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.csp.report_only', !!$config['csp']['report_only']);
         }
 
+        if (!empty($config['content_type'])) {
+            $loader->load('content_type.yml');
+            $container->setParameter('nelmio_security.content_type.nosniff', !!$config['content_type']['nosniff']);
+        }
+
         if (!empty($config['external_redirects'])) {
             $loader->load('external_redirects.yml');
             $container->setParameter('nelmio_security.external_redirects.override', $config['external_redirects']['override']);
