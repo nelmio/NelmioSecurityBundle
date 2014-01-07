@@ -1,3 +1,7 @@
+### 1.3.0 (2014-01-08)
+
+  * Added support for setting the X-Content-Type-Options header
+
 ### 1.2.0 (2013-07-29)
 
   * Added Content-Security-Policy (CSP) 1.0 support
