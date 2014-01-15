@@ -67,6 +67,7 @@ load content from another domain than the page's domain.
 
         # prevents inline scripts, unsafe eval, external scripts/images/styles/frames, etc
         csp:
+            report_uri: /nelmio/csp/report
             default: [ self ]
 
         # disables content type sniffing for script resources
@@ -101,12 +102,12 @@ the page. If you need to allow inline scripts or `eval()` you can use `unsafe-in
 
 Apart from content types, the policy also accepts `report_uri` which should be a URI where a browser can POST a
 [JSON payload](https://developer.mozilla.org/en-US/docs/Security/CSP/Using_CSP_violation_reports#Sample_violation_report)
-to whenever a policy directive is violated. Setting `report_only` to `true` will enable reporting but the policy
-will not be enforced.
+to whenever a policy directive is violated.
+Setting `report_only` to `true` will enable reporting but the policy will not be enforced.
 
     nelmio_security:
         csp:
-            report_uri: /report
+            report_uri: /nelmio/csp/report
             report_only: false
             default: [ self ]
             frame: [ 'https://www.youtube.com' ]
@@ -125,7 +126,30 @@ The above configuration would allow:
 * JavaScript from same origin and any secure external URL
 * Images from same origin, `facebook.com` and `flickr.com`
 
-And would post any violations to /report
+And would post any violations to /nelmio/csp/report, a default reporting implementation that logs violations
+as notices to one of the following loggers (in order):
+
+* nelmio_security.csp_report_logger
+* security.logger
+* logger
+
+To enable add the following to your routing.yml:
+
+    nelmio_security:
+        resource: "@NelmioSecurityBundle/Controller/"
+        type:     annotation
+        prefix:   /nelmio/
+
+(Optional) Add a logger that logs to a separate channel by defining the following in one of your bundles service configuration:
+
+    <services>
+        <service id="nelmio_security.csp_report_logger" parent="monolog.logger_prototype">
+            <argument index="0">security</argument>
+        </service>
+    </services>
+
+Which allows you to
+[log all security related events to a separate file](http://symfony.com/doc/current/cookbook/logging/channels_handlers.html).
 
 ### **Signed Cookies**:
 
