@@ -108,6 +108,7 @@ Setting `report_only` to `true` will enable reporting but the policy will not be
     nelmio_security:
         csp:
             report_uri: /nelmio/csp/report
+            report_logger_service: logger
             report_only: false
             default: [ self ]
             frame: [ 'https://www.youtube.com' ]
@@ -126,30 +127,19 @@ The above configuration would allow:
 * JavaScript from same origin and any secure external URL
 * Images from same origin, `facebook.com` and `flickr.com`
 
-And would post any violations to /nelmio/csp/report, a default reporting implementation that logs violations
-as notices to one of the following loggers (in order):
-
-* nelmio_security.csp_report_logger
-* security.logger
-* logger
-
-To enable add the following to your routing.yml:
+And would post any violations to /nelmio/csp/report, a default reporting implementation that logs violations as notices
+to the default logger, to enable add the following to your routing.yml:
 
     nelmio_security:
-        resource: "@NelmioSecurityBundle/Controller/"
-        type:     annotation
-        prefix:   /nelmio/
+        path:     /nelmio/csp/report
+        defaults: { _controller: nelmio_security.csp_reporter_controller:indexAction }
+        methods:  [POST]
 
-(Optional) Add a logger that logs to a separate channel by defining the following in one of your bundles service configuration:
+(Optional) Use *report_logger_id* to log to the 'security' channel:
 
-    <services>
-        <service id="nelmio_security.csp_report_logger" parent="monolog.logger_prototype">
-            <argument index="0">security</argument>
-        </service>
-    </services>
-
-Which allows you to
-[log all security related events to a separate file](http://symfony.com/doc/current/cookbook/logging/channels_handlers.html).
+    nelmio_security:
+        csp:
+            report_logger_service: monolog.logger.security
 
 ### **Signed Cookies**:
 

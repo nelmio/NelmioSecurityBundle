@@ -181,6 +181,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->scalarNode('report_uri')->defaultValue('')->end()
                         ->booleanNode('report_only')->defaultValue(false)->end()
+                        ->scalarNode('report_logger_service')->end()
                     ->end()
                 ->end()
             ->end()
