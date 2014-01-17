@@ -25,18 +25,21 @@ class ContentSecurityPolicyController
     {
         $violationReport = $request->getContent();
         if (empty($violationReport)) {
-            $this->logger->notice('Content-Security-Policy Endpoint called without data?');
+            $this->logger->notice('Content-Security-Policy Endpoint called without data');
+
             return new Response('No report data sent?', 411);
         }
 
         $violationReport = json_decode($violationReport, true);
-        if ($violationReport === NULL) {
-            $this->logger->notice('Content-Security-Policy Endpoint called with invalid JSON data?');
+        if ($violationReport === null) {
+            $this->logger->notice('Content-Security-Policy Endpoint called with invalid JSON data');
+
             return new Response('Invalid JSON data supplied?', 400);
         }
 
         if (!isset($violationReport['csp-report'])) {
-            $this->logger->notice('Content-Security-Policy Endpoint called without "csp-report" data?');
+            $this->logger->notice('Content-Security-Policy Endpoint called without "csp-report" data');
+
             return new Response('Invalid report data, no "csp-report" data supplied.', 400);
         }
 
@@ -45,6 +48,6 @@ class ContentSecurityPolicyController
             $violationReport
         );
 
-        return new Response('Thanks! This has been reported to the administrator.', 200);
+        return new Response('', 204);
     }
 }
