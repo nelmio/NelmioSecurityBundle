@@ -16,6 +16,7 @@ use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class NelmioSecurityExtension extends Extension
@@ -68,6 +69,8 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.csp.connect', $parser->parseSourceList($config['csp']['connect']));
             $container->setParameter('nelmio_security.csp.report_uri', $config['csp']['report_uri']);
             $container->setParameter('nelmio_security.csp.report_only', !!$config['csp']['report_only']);
+            $container->getDefinition('nelmio_security.csp_reporter_controller')
+                ->setArguments(array(new Reference($config['csp']['report_logger_service'])));
         }
 
         if (!empty($config['content_type'])) {

@@ -17,3 +17,7 @@ services:
 
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+    nelmio_security.csp_reporter_controller:
+        class: Nelmio\SecurityBundle\Controller\ContentSecurityPolicyController
+        arguments: [@logger]
