@@ -15,7 +15,7 @@ load content from another domain than the page's domain.
   visible to the user.
 
 * **[Encrypted Cookies](#encrypted-cookies)**: Specify certain cookies to be encrypted, so that the value cannot be
-  read. When you retreive the cookie it will be automatically decrypted.
+  read. When you retrieve the cookie it will be automatically decrypted.
 
 * **[Clickjacking Protection](#clickjacking-protection)**: X-Frame-Options header is added to all responses to prevent your
   site from being put in a frame/iframe. This can have serious security implications as it has
