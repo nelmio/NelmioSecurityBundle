@@ -1,3 +1,8 @@
+### 1.4.0 (2014-02-13)
+
+  * Added default controller to log CSP violations
+  * Added a flag to remove outdated non-standard CSP headers and only send the `Content-Security-Policy` one
+
 ### 1.3.0 (2014-01-08)
 
   * Added support for setting the X-Content-Type-Options header
