@@ -193,6 +193,17 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($response->headers->get('Content-Security-Policy-Report-Only'));
     }
 
+    public function testNoCompatHeaders()
+    {
+        $spec     = "example.org";
+        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, '', false, false);
+        $response = $this->callListener($listener, '/', true);
+
+        $this->assertNull($response->headers->get('X-Webkit-CSP'));
+        $this->assertNull($response->headers->get('X-Content-Security-Policy'));
+        $this->assertNotNull($response->headers->get('Content-Security-Policy'));
+    }
+
     protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq)
     {
         $request  = Request::create($path);

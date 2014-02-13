@@ -181,6 +181,8 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->scalarNode('report_uri')->defaultValue('')->end()
                         ->booleanNode('report_only')->defaultValue(false)->end()
+                        // leaving this enabled can cause issues with older iOS (5.x) versions and possibly other early CSP implementations
+                        ->booleanNode('compat_headers')->defaultValue(true)->end()
                         ->scalarNode('report_logger_service')->defaultValue('logger')->end()
                     ->end()
                 ->end()

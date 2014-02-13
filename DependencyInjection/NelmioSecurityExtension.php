@@ -69,6 +69,7 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.csp.connect', $parser->parseSourceList($config['csp']['connect']));
             $container->setParameter('nelmio_security.csp.report_uri', $config['csp']['report_uri']);
             $container->setParameter('nelmio_security.csp.report_only', !!$config['csp']['report_only']);
+            $container->setParameter('nelmio_security.csp.compat_headers', !!$config['csp']['compat_headers']);
             $container->getDefinition('nelmio_security.csp_reporter_controller')
                 ->setArguments(array(new Reference($config['csp']['report_logger_service'])));
         }

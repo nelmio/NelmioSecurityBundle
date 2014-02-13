@@ -14,6 +14,7 @@ services:
             - %nelmio_security.csp.connect%
             - %nelmio_security.csp.report_uri%
             - %nelmio_security.csp.report_only%
+            - %nelmio_security.csp.compat_headers%
 
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }

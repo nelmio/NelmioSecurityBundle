@@ -6,7 +6,6 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\ContentSecurityPolicyParser;
 
 class ContentSecurityPolicyParserTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @dataProvider keywordsProvider
      */
@@ -33,5 +32,4 @@ class ContentSecurityPolicyParserTest extends \PHPUnit_Framework_TestCase
             array('https://example.com', 'https://example.com'),
         );
     }
-
 }

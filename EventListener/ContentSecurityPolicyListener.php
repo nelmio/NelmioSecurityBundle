@@ -17,6 +17,7 @@ class ContentSecurityPolicyListener
     protected $connect;
     protected $style;
     protected $reportUri;
+    protected $compatHeaders;
 
     public function __construct(
         $default = '',
@@ -29,7 +30,8 @@ class ContentSecurityPolicyListener
         $font = '',
         $connect = '',
         $reportUri = '',
-        $reportOnly = false
+        $reportOnly = false,
+        $compatHeaders = true
     ) {
         $this->default    = $default;
         $this->script     = $script;
@@ -42,6 +44,7 @@ class ContentSecurityPolicyListener
         $this->connect    = $connect;
         $this->reportUri  = $reportUri;
         $this->reportOnly = $reportOnly;
+        $this->compatHeaders = $compatHeaders;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -107,13 +110,17 @@ class ContentSecurityPolicyListener
                 $keyWebkit .= '-Report-Only';
             }
 
-            $response->headers->add(
-                array(
-                    $key       => $value,
-                    $keyX      => $value,
-                    $keyWebkit => $value
-                )
-            );
+            if ($this->compatHeaders) {
+                $response->headers->add(
+                    array(
+                        $key       => $value,
+                        $keyX      => $value,
+                        $keyWebkit => $value
+                    )
+                );
+            } else {
+                $response->headers->add(array($key => $value));
+            }
         }
     }
 }
