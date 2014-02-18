@@ -34,14 +34,14 @@ class NelmioSecurityExtension extends Extension
         $config = $processor->processConfiguration($configuration, $configs);
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        if (!empty($config['signed_cookie'])) {
+        if (!empty($config['signed_cookie']['names'])) {
             $loader->load('signed_cookie.yml');
             $container->setParameter('nelmio_security.signed_cookie.names', $config['signed_cookie']['names']);
             $container->setParameter('nelmio_security.signer.secret', $config['signed_cookie']['secret']);
             $container->setParameter('nelmio_security.signer.hash_algo', $config['signed_cookie']['hash_algo']);
         }
 
-        if (!empty($config['encrypted_cookie'])) {
+        if (!empty($config['encrypted_cookie']['names'])) {
             $loader->load('encrypted_cookie.yml');
             $container->setParameter('nelmio_security.encrypted_cookie.names', $config['encrypted_cookie']['names']);
             $container->setParameter('nelmio_security.encrypter.secret', $config['encrypted_cookie']['secret']);
