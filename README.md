@@ -407,7 +407,7 @@ strings in the session.
     nelmio_security:
         cookie_session:
             enabled: true
-            cookie_name: session
+            name: session
 
         encrypted_cookie:
             names: [session]
