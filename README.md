@@ -203,6 +203,11 @@ The valid values for the `X-Frame-Options` header are `DENY` (prevent framing fr
 supports the `ALLOW` option which skips the creation of the header for the matched URLs, if you
 want to whitelist a few URLs and then DENY everything else.
 
+One more option, as of yet [not well supported](https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options),
+is to use `ALLOW FROM uri` where `uri` can be any origin URL, from
+`example.org` to `https://example.org:123/sub/path`. This lets you specify
+exactly which domain can embed your site, in case you have a multi-domain setup.
+
 Default configuration (deny everything):
 
     nelmio_security:
@@ -216,6 +221,7 @@ Whitelist configuration (deny all but a few URLs):
         clickjacking:
             paths:
                 '^/iframes/': ALLOW
+                '^/business/': 'ALLOW FROM https://biz.example.org'
                 '^/local/': SAMEORIGIN
                 '^/.*': DENY
 
