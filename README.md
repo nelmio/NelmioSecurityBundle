@@ -49,42 +49,44 @@ load content from another domain than the page's domain.
 
 ## Maximum Security Configuration (Read on for detailed recommendations!)
 
-    nelmio_security:
-        # signs/verifies all cookies
-        signed_cookie:
-            names: ['*']
-        # encrypt all cookies
-        encrypted_cookie:
-            names: ['*']
-        # prevents framing of the entire site
-        clickjacking:
-            paths:
-                '^/.*': DENY
-        # prevents redirections outside the website's domain
-        external_redirects:
-            abort: true
-            log: true
+```yaml
+nelmio_security:
+    # signs/verifies all cookies
+    signed_cookie:
+        names: ['*']
+    # encrypt all cookies
+    encrypted_cookie:
+        names: ['*']
+    # prevents framing of the entire site
+    clickjacking:
+        paths:
+            '^/.*': DENY
+    # prevents redirections outside the website's domain
+    external_redirects:
+        abort: true
+        log: true
 
-        # prevents inline scripts, unsafe eval, external scripts/images/styles/frames, etc
-        csp:
-            report_uri: /nelmio/csp/report
-            default: [ self ]
+    # prevents inline scripts, unsafe eval, external scripts/images/styles/frames, etc
+    csp:
+        report_uri: /nelmio/csp/report
+        default: [ self ]
 
-        # disables content type sniffing for script resources
-        content_type:
-            nosniff: true
+    # disables content type sniffing for script resources
+    content_type:
+        nosniff: true
 
-        # forced HTTPS handling, don't combine with flexible mode
-        # and make sure you have SSL working on your site before enabling this
-    #    forced_ssl:
-    #        hsts_max_age: 2592000 # 30 days
-    #        hsts_subdomains: true
+    # forced HTTPS handling, don't combine with flexible mode
+    # and make sure you have SSL working on your site before enabling this
+#    forced_ssl:
+#        hsts_max_age: 2592000 # 30 days
+#        hsts_subdomains: true
 
-        # flexible HTTPS handling, read the detailed config info
-        # and make sure you have SSL working on your site before enabling this
-    #    flexible_ssl:
-    #        cookie_name: auth
-    #        unsecured_logout: false
+    # flexible HTTPS handling, read the detailed config info
+    # and make sure you have SSL working on your site before enabling this
+#    flexible_ssl:
+#        cookie_name: auth
+#        unsecured_logout: false
+```
 
 ## Configuration Detail
 
@@ -105,20 +107,22 @@ Apart from content types, the policy also accepts `report_uri` which should be a
 to whenever a policy directive is violated.
 Setting `report_only` to `true` will enable reporting but the policy will not be enforced.
 
-    nelmio_security:
-        csp:
-            report_uri: /nelmio/csp/report
-            report_logger_service: logger
-            report_only: false
-            default: [ self ]
-            frame: [ 'https://www.youtube.com' ]
-            script:
-                - self
-                - 'https:'
-            img:
-                - self
-                - facebook.com
-                - flickr.com
+```yaml
+nelmio_security:
+    csp:
+        report_uri: /nelmio/csp/report
+        report_logger_service: logger
+        report_only: false
+        default: [ self ]
+        frame: [ 'https://www.youtube.com' ]
+        script:
+            - self
+            - 'https:'
+        img:
+            - self
+            - facebook.com
+            - flickr.com
+```
 
 The above configuration would allow:
 
@@ -130,25 +134,31 @@ The above configuration would allow:
 And would post any violations to /nelmio/csp/report, a default reporting implementation that logs violations as notices
 to the default logger, to enable add the following to your routing.yml:
 
-    nelmio_security:
-        path:     /nelmio/csp/report
-        defaults: { _controller: nelmio_security.csp_reporter_controller:indexAction }
-        methods:  [POST]
+```yaml
+nelmio_security:
+    path:     /nelmio/csp/report
+    defaults: { _controller: nelmio_security.csp_reporter_controller:indexAction }
+    methods:  [POST]
+```
 
 (Optional) Use *report_logger_id* to log to the 'security' channel:
 
-    nelmio_security:
-        csp:
-            report_logger_service: monolog.logger.security
+```yaml
+nelmio_security:
+    csp:
+        report_logger_service: monolog.logger.security
+```
 
 (Optional) Disable *compat_headers* to avoid sending X-Content-Security-Policy
 (IE10, IE11, Firefox < 23) and X-Webkit-CSP (Chrome < 25, Safari < 7). This will
 mean those browsers get no more CSP instructions, but it can help if you are
 experience issues with old iOS 5.0 or 5.1 versions that had buggy CSP implementations.
 
-    nelmio_security:
-        csp:
-            compat_headers: false
+```yaml
+nelmio_security:
+    csp:
+        compat_headers: false
+```
 
 ### **Signed Cookies**:
 
@@ -157,39 +167,49 @@ Cookies are sent with each request. Signatures are often longer than the cookie 
 so signing everything would just needlessly slow down your app and increase bandwidth usage for
 your users.
 
-    nelmio_security:
-        signed_cookie:
-            names: [test1, test2]
+```yaml
+nelmio_security:
+    signed_cookie:
+        names: [test1, test2]
+```
 
 However, for simplicity reasons, and to start with a high security and optimize later, you can
 specify '*' as a cookie name to have all cookies signed automatically.
 
-    nelmio_security:
-        signed_cookie:
-            names: ['*']
+```
+nelmio_security:
+    signed_cookie:
+        names: ['*']
+```
 
 Additional, optional configuration settings:
 
-    nelmio_security:
-        signed_cookie:
-            secret: this_is_very_secret # defaults to global %secret% parameter
-            hash_algo: sha512 # defaults to sha256, see `hash_algos()` for available algorithms
+```yaml
+nelmio_security:
+    signed_cookie:
+        secret: this_is_very_secret # defaults to global %secret% parameter
+        hash_algo: sha512 # defaults to sha256, see `hash_algos()` for available algorithms
+```
 
 ### **Encrypted Cookies**:
 
 Encrypts the cookie values using `nelmio_security.encrypted_cookie.secret`. It works the same as
 Signed Cookies:
 
-    nelmio_security:
-        encrypted_cookie:
-            names: [test1, test2]
+```yaml
+nelmio_security:
+    encrypted_cookie:
+        names: [test1, test2]
+```
 
 Additional, optional configuration settings:
 
-    nelmio_security:
-        encrypted_cookie:
-            secret: this_is_very_secret # defaults to global %secret% parameter
-            algorithm: rijndael-256 # defaults to rijndael-128, see `mcrypt_list_algorithms()` for available algorithms
+```yaml
+nelmio_security:
+    encrypted_cookie:
+        secret: this_is_very_secret # defaults to global %secret% parameter
+        algorithm: rijndael-256 # defaults to rijndael-128, see `mcrypt_list_algorithms()` for available algorithms
+```
 
 ### **Clickjacking Protection**:
 
@@ -210,27 +230,33 @@ exactly which domain can embed your site, in case you have a multi-domain setup.
 
 Default configuration (deny everything):
 
-    nelmio_security:
-        clickjacking:
-            paths:
-                '^/.*': DENY
+```yaml
+nelmio_security:
+    clickjacking:
+        paths:
+            '^/.*': DENY
+```
 
 Whitelist configuration (deny all but a few URLs):
 
-    nelmio_security:
-        clickjacking:
-            paths:
-                '^/iframes/': ALLOW
-                '^/business/': 'ALLOW FROM https://biz.example.org'
-                '^/local/': SAMEORIGIN
-                '^/.*': DENY
+```yaml
+nelmio_security:
+    clickjacking:
+        paths:
+            '^/iframes/': ALLOW
+            '^/business/': 'ALLOW FROM https://biz.example.org'
+            '^/local/': SAMEORIGIN
+            '^/.*': DENY
+```
 
 You can also of course only deny a few critical URLs, while leaving the rest alone:
 
-    nelmio_security:
-        clickjacking:
-            paths:
-                '^/message/write': DENY
+```yaml
+nelmio_security:
+    clickjacking:
+        paths:
+            '^/message/write': DENY
+```
 
 ### **External Redirects Detection**:
 
@@ -239,51 +265,61 @@ by accident if you carelessly take query parameters as redirection target.
 
 You can log those (it's logged at warning level) by turning on logging:
 
-    nelmio_security:
-        external_redirects:
-            log: true
+```yaml
+nelmio_security:
+    external_redirects:
+        log: true
+```
 
 You can abort (they are replaced by a 403 response) the redirects:
 
-    nelmio_security:
-        external_redirects:
-            abort: true
+```yaml
+nelmio_security:
+    external_redirects:
+        abort: true
+```
 
 Or you can override them, replacing the redirect's `Location` header by a route name or
 another URL:
 
-    # redirect to the 'home' route
-    nelmio_security:
-        external_redirects:
-            override: home
+```yaml
+# redirect to the 'home' route
+nelmio_security:
+    external_redirects:
+        override: home
 
-    # redirect to another URL
-    nelmio_security:
-        external_redirects:
-            override: /foo
+# redirect to another URL
+nelmio_security:
+    external_redirects:
+        override: /foo
+```
 
 If you want to display the URL that was blocked on the overriding page you can
 specify the `forward_as` parameter, which defines which query parameter will
 receive the URL. For example using the config below, doing a redirect to
 `http://example.org/` will be overridden to `/external-redirect?redirUrl=http://example.org/`.
 
-    # redirect and forward the overridden URL
-    nelmio_security:
-        external_redirects:
-            override: /external-redirect
-            forward_as: redirUrl
+```yaml
+# redirect and forward the overridden URL
+nelmio_security:
+    external_redirects:
+        override: /external-redirect
+        forward_as: redirUrl
+```
 
 Since it's quite common to have to redirect outside the website for legit reasons,
 typically OAuth logins and such, you can whitelist a few domain names. All their subdomains
 will be whitelisted as well, so that allows you to whitelist your own website's subdomains
 if needed.
 
-    nelmio_security:
-        external_redirects:
-            abort: true
-            whitelist:
-                - twitter.com
-                - facebook.com
+```yaml
+nelmio_security:
+    external_redirects:
+        abort: true
+        whitelist:
+            - twitter.com
+            - facebook.com
+```
 
 ### **Forced HTTPS/SSL Handling**:
 
@@ -292,24 +328,30 @@ reaching the site with a http:// URL to a https:// URL.
 
 The base configuration for this is the following:
 
-    nelmio_security:
-        forced_ssl: ~
+```yaml
+nelmio_security:
+    forced_ssl: ~
+```
 
 If you turn this option on, it's recommended to also set your session cookie to be secure,
 and all other cookies your send for that matter. You can do the former using:
 
-    framework:
-        session:
-            cookie_secure: true
+```yaml
+framework:
+    session:
+        cookie_secure: true
+```
 
 To keep a few URLs from being force-redirected to SSL you can define a whitelist of regular
 expressions:
 
-    nelmio_security:
-        forced_ssl:
-            enabled: true
-            whitelist:
-                - ^/unsecure/
+```yaml
+nelmio_security:
+    forced_ssl:
+        enabled: true
+        whitelist:
+            - ^/unsecure/
+```
 
 Then if you want to push it further, you can enable
 [HTTP Strict Transport Security (HSTS)](http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02).
@@ -321,10 +363,12 @@ attacks.
 The browser will cache the value for as long as the specified `hsts_max_age` (in seconds), and if
 you turn on the `hsts_subdomains` option, the behavior will be applied to all subdomains as well.
 
-    nelmio_security:
-        forced_ssl:
-            hsts_max_age: 2592000 # 30 days
-            hsts_subdomains: false
+```yaml
+nelmio_security:
+    forced_ssl:
+        hsts_max_age: 2592000 # 30 days
+        hsts_subdomains: false
+```
 
 A small word of caution: While HSTS is great for security, it means that if the browser
 can not establish your SSL certificate is valid, it will not allow the user to query your site.
@@ -345,17 +389,21 @@ networks (typically open Wi-Fi) get their session cookie stolen by sending it no
 The way to achieve this is to set your session cookie to be secure as such - but don't do
 it just yet, keep reading to the end.
 
-    framework:
-        session:
-            cookie_secure: true
+```yaml
+framework:
+    session:
+        cookie_secure: true
+```
 
 If you use the remember-me functionality, you would also mark that one as secure:
 
-    security:
-        firewalls:
-            somename:
-                remember_me:
-                    secure: true
+```yaml
+security:
+    firewalls:
+        somename:
+            remember_me:
+                secure: true
+```
 
 Now if you do this, you have two problems. First, insecure pages will not be able to use
 the session anymore, which can be inconvenient. Second, if a logged in user gets to a
@@ -371,22 +419,26 @@ is secure, but anonymous users will still be able to have an insecure session, i
 to use it to store non critical data like language settings and whatnot. The remember-me
 cookie will also be made always secure, even if you leave the setting to false.
 
-    nelmio_security:
-        flexible_ssl:
-            cookie_name: auth
-            unsecured_logout: false
+```yaml
+nelmio_security:
+    flexible_ssl:
+        cookie_name: auth
+        unsecured_logout: false
+```
 
 You have to configure one more thing in your security configuration though, every firewall
 should have our logout listener added, so that the special `auth` cookie can be cleared when
 users log out. You can do it as such:
 
-    security:
-        firewalls:
-            somename:
-                # ...
-                logout:
-                    handlers:
-                        - nelmio_security.flexible_ssl_listener
+```yaml
+security:
+    firewalls:
+        somename:
+            # ...
+            logout:
+                handlers:
+                    - nelmio_security.flexible_ssl_listener
+```
 
 On logout, if you would like users to be redirected to an unsecure page set ``unsecured_logout``
 to true.
@@ -400,17 +452,19 @@ configure the Encrypted Cookies section to include the session cookie (default n
 The size limit of a cookie is 4KB, so make sure you are not storing objects or long
 strings in the session.
 
-    framework:
-        session:
-            handler_id: nelmio_security.session.handler
+```yaml
+framework:
+    session:
+        handler_id: nelmio_security.session.handler
 
-    nelmio_security:
-        cookie_session:
-            enabled: true
-            name: session
+nelmio_security:
+    cookie_session:
+        enabled: true
+        name: session
 
-        encrypted_cookie:
-            names: [session]
+    encrypted_cookie:
+        names: [session]
+```
 
 ### Content Type Sniffing
 
@@ -418,27 +472,33 @@ Disables the content type sniffing for script resources. Forces the browser to o
 content type headers. This is a non-standard header from Microsoft, more information can be found in
 [their documentation at MSDN](http://msdn.microsoft.com/en-us/library/ie/gg622941.aspx).
 
-    nelmio_security:
-        content_type:
-            nosniff: true
+```yaml
+nelmio_security:
+    content_type:
+        nosniff: true
+```
 
 ## Installation
 
 Add a requirement in your composer.json for the `nelmio/security-bundle` package:
 
-            "nelmio/security-bundle": "~1.0"
+```json
+    "nelmio/security-bundle": "~1.0"
+```
 
 Add the NelmioSecurityBundle to your application's kernel:
 
-    public function registerBundles()
-    {
-        $bundles = array(
-            ...
-            new Nelmio\SecurityBundle\NelmioSecurityBundle(),
-            ...
-        );
+```php
+public function registerBundles()
+{
+    $bundles = array(
         ...
-    }
+        new Nelmio\SecurityBundle\NelmioSecurityBundle(),
+        ...
+    );
+    ...
+}
+```
 
 ## License
 
