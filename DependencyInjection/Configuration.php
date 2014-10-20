@@ -13,6 +13,7 @@ namespace Nelmio\SecurityBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder,
     Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 
 class Configuration implements ConfigurationInterface
 {
@@ -142,54 +143,50 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
-                ->arrayNode('csp')
-                    ->children()
-                        ->arrayNode('default')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('script')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('object')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('style')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('img')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('media')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('frame')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('font')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('connect')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->scalarNode('report_uri')->defaultValue('')->end()
-                        ->booleanNode('report_only')->defaultValue(false)->end()
-                        // leaving this enabled can cause issues with older iOS (5.x) versions and possibly other early CSP implementations
-                        ->booleanNode('compat_headers')->defaultValue(true)->end()
-                        ->scalarNode('report_logger_service')->defaultValue('logger')->end()
-                    ->end()
-                ->end()
+                ->append($this->addCspNode())
             ->end()
         ->end();
 
         return $treeBuilder;
+    }
+
+    private function addCspNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('csp');
+        $children = $node->children();
+
+        $this->addDirectives($children);
+
+        $children
+            ->scalarNode('report_uri')->defaultValue('')->end()
+            ->booleanNode('report_only')->defaultValue(false)->end()
+            // leaving this enabled can cause issues with older iOS (5.x) versions and possibly other early CSP implementations
+            ->booleanNode('compat_headers')->defaultValue(true)->end()
+            ->scalarNode('report_logger_service')->defaultValue('logger')->end()
+            ->end();
+
+        return $node;
+    }
+
+    private function addDirectives(NodeBuilder $node) {
+        $directives = array(
+            'default',
+            'script',
+            'object',
+            'style',
+            'img',
+            'media',
+            'frame',
+            'font',
+            'connect'
+        );
+
+        foreach($directives as $directive) {
+            $node
+                ->arrayNode($directive)
+                ->prototype('scalar')
+                ->end();
+        }
     }
 }
