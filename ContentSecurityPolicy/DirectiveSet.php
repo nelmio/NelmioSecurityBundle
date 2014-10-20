@@ -68,6 +68,10 @@ class DirectiveSet
         return $directiveSet;
     }
 
+    public static function getNames() {
+        return self::$directiveNames;
+    }
+
     /**
      * @deprecated
      */

@@ -14,6 +14,7 @@ namespace Nelmio\SecurityBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder,
     Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\NodeBuilder;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
 class Configuration implements ConfigurationInterface
 {
@@ -154,19 +155,48 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder();
         $node = $builder->root('csp');
-        $children = $node->children();
 
-        $this->addDirectives($children);
-
-        $children
-            ->scalarNode('report_uri')->defaultValue('')->end()
-            ->booleanNode('report_only')->defaultValue(false)->end()
-            // leaving this enabled can cause issues with older iOS (5.x) versions and possibly other early CSP implementations
-            ->booleanNode('compat_headers')->defaultValue(true)->end()
-            ->scalarNode('report_logger_service')->defaultValue('logger')->end()
-            ->end();
+        $this
+            ->addDirectives($node->children())
+                ->scalarNode('report_uri')->defaultValue('')->end()
+                ->booleanNode('report_only')->end()
+                // leaving this enabled can cause issues with older iOS (5.x) versions and possibly other early CSP implementations
+                ->booleanNode('compat_headers')->defaultValue(true)->end()
+                ->scalarNode('report_logger_service')->defaultValue('logger')->end()
+                ->append($this->addReportOrEnforceNode('report'))
+                ->append($this->addReportOrEnforceNode('enforce'))
+            ->end()
+            ->validate()
+                ->ifTrue(function($v) {
+                    return array_key_exists('report_only', $v)
+                        && (array_key_exists('report', $v) || array_key_exists('enforce', $v));
+                })
+                ->thenInvalid('"report_only" and "(report|enforce)" can not be used together')
+            ->end()
+            ->validate()
+                ->ifTrue(function($v){return !array_key_exists('report', $v) && !array_key_exists('enforce', $v) && !array_key_exists('report_only', $v);})
+                ->then(function($c){
+                    $c['report_only'] = false;
+                    return $c;
+                })
+            ->end()
+                ;
 
         return $node;
+    }
+
+    private function addReportOrEnforceNode($reportOrEnforce) {
+        $builder = new TreeBuilder();
+        $node = $builder->root($reportOrEnforce);
+        $children = $node->children();
+
+        foreach(DirectiveSet::getNames() as $name) {
+            $children
+                ->arrayNode($name)
+                ->prototype('scalar')
+                ->end();
+        }
+        return $children->end();
     }
 
     private function addDirectives(NodeBuilder $node) {
@@ -188,5 +218,7 @@ class Configuration implements ConfigurationInterface
                 ->prototype('scalar')
                 ->end();
         }
+
+        return $node;
     }
 }
