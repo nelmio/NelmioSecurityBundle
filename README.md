@@ -4,6 +4,26 @@
 
 The NelmioSecurityBundle provides additional security features for your Symfony2 application.
 
+## Installation
+
+Require the `nelmio/security-bundle` package in your composer.json and update your dependencies.
+
+    $ composer require nelmio/security-bundle
+
+Add the NelmioSecurityBundle to your application's kernel:
+
+```php
+public function registerBundles()
+{
+    $bundles = array(
+        ...
+        new Nelmio\SecurityBundle\NelmioSecurityBundle(),
+        ...
+    );
+    ...
+}
+```
+
 ## Features
 
 * **[Content Security Policy](#content-security-policy)**: Cross site scripting attacks (XSS) can be mitigated
@@ -476,28 +496,6 @@ content type headers. This is a non-standard header from Microsoft, more informa
 nelmio_security:
     content_type:
         nosniff: true
-```
-
-## Installation
-
-Add a requirement in your composer.json for the `nelmio/security-bundle` package:
-
-```json
-    "nelmio/security-bundle": "~1.0"
-```
-
-Add the NelmioSecurityBundle to your application's kernel:
-
-```php
-public function registerBundles()
-{
-    $bundles = array(
-        ...
-        new Nelmio\SecurityBundle\NelmioSecurityBundle(),
-        ...
-    );
-    ...
-}
 ```
 
 ## License
