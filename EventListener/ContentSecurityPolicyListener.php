@@ -4,8 +4,10 @@ namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class ContentSecurityPolicyListener
+class ContentSecurityPolicyListener implements EventSubscriberInterface
 {
     protected $default;
     protected $script;
@@ -123,4 +125,9 @@ class ContentSecurityPolicyListener
             }
         }
     }
+
+    public static function getSubscribedEvents() {
+        return array(KernelEvents::RESPONSE => 'onKernelResponse');
+    }
+
 }

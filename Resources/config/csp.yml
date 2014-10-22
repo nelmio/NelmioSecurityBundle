@@ -14,9 +14,8 @@ services:
             - %nelmio_security.csp.report_uri%
             - %nelmio_security.csp.report_only%
             - %nelmio_security.csp.compat_headers%
-
         tags:
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+            - { name: kernel.event_subscriber }
 
     nelmio_security.csp_reporter_controller:
         class: Nelmio\SecurityBundle\Controller\ContentSecurityPolicyController
