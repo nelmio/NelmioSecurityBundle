@@ -1,6 +1,5 @@
 services:
     nelmio_security.csp_listener:
-        scope: request
         class: Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener
         arguments:
             - %nelmio_security.csp.default%
