@@ -68,6 +68,21 @@ class DirectiveSet
         return $directiveSet;
     }
 
+    public static function fromConfig(array $config, $kind) {
+        $directiveSet = new self();
+        if(!array_key_exists($kind, $config)) {
+            return $directiveSet;
+        }
+
+        $parser = new ContentSecurityPolicyParser();
+        foreach(self::getNames() as $name) {
+            if(!array_key_exists($name, $config[$kind])) continue;
+
+            $directiveSet->setDirective($name, $parser->parseSourceList($config[$kind][$name]));
+        }
+        return $directiveSet;
+    }
+
     public static function getNames() {
         return self::$directiveNames;
     }

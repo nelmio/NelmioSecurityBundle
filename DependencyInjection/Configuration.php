@@ -189,6 +189,8 @@ class Configuration implements ConfigurationInterface
         $builder = new TreeBuilder();
         $node = $builder->root($reportOrEnforce);
         $children = $node->children();
+        // Symfony should not normalize dashes to underlines, e.g. img-src to img_src
+        $node->normalizeKeys(false);
 
         foreach(DirectiveSet::getNames() as $name) {
             $children

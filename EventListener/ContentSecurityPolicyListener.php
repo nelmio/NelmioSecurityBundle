@@ -61,15 +61,21 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
         return array(KernelEvents::RESPONSE => 'onKernelResponse');
     }
 
-    public static function fromConfig(array $config) {
-        $directiveSet = DirectiveSet::fromLegacyConfig($config);
+    public static function fromConfig(array $config)
+    {
+        if(array_key_exists('report', $config) || array_key_exists('enforce', $config)){
+            $enforce = DirectiveSet::fromConfig($config, 'enforce');
+            $report = DirectiveSet::fromConfig($config, 'report');
+        } else { // legacy config
+            $directiveSet = DirectiveSet::fromLegacyConfig($config);
 
-        if(!!$config['report_only']) {
-            $enforce = new DirectiveSet();
-            $report = $directiveSet;
-        } else {
-            $enforce = $directiveSet;
-            $report = new DirectiveSet();
+            if(!!$config['report_only']) {
+                $enforce = new DirectiveSet();
+                $report = $directiveSet;
+            } else {
+                $enforce = $directiveSet;
+                $report = new DirectiveSet();
+            }
         }
 
         return new self($report, $enforce, !!$config['compat_headers']);
