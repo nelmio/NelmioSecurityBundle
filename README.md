@@ -88,8 +88,21 @@ nelmio_security:
 
     # prevents inline scripts, unsafe eval, external scripts/images/styles/frames, etc
     csp:
-        report_uri: /nelmio/csp/report
-        default: [ self ]
+        report:
+            report-uri: [/nelmio/csp/report]
+            default-src: [ 'self' ]
+            # There's no flash on our site
+            object-src:
+                - 'none'
+            script-src:
+                - 'unsafe-inline'
+                - 'unsafe-eval'
+                - 'self'
+        enforce:
+            # see https://github.com/nelmio/NelmioSecurityBundle/issues/32
+            report-uri: [/nelmio/csp/report]
+            script-src:
+                - 'self'
 
     # disables content type sniffing for script resources
     content_type:
@@ -113,45 +126,55 @@ nelmio_security:
 ### Content Security Policy:
 
 Using CSP you can set a policy which modern browsers understand and will honor. The policy contains nine different
-content types; `default`, `script`, `object`, `style`, `img`, `media`, `frame`, `font`, `connect`. You can provide
-an array of directives per content type. Empty content types will inherit from `default`, specified content types
-will never inherit from `default`.
+directives; `default-src`, `script-src`, `object-src`, `style-src`, `img-src`, `media-src`, `frame-src`,
+`font-src`, `connect-src`, `report-uri`. You can provide an array of directives per content type. Empty content
+types will inherit from `default-src`, specified content types will never inherit from `default-src`. Please see
+the [Content Security Policy 1.0](http://www.w3.org/TR/CSP) specification for details.
 
-Each directive should be a domain, URI or keyword. The keyword `self` will allow content from the same origin as
-the page. If you need to allow inline scripts or `eval()` you can use `unsafe-inline` and `unsafe-eval`.
+Each directive should be a domain, URI or keyword. The keyword `'self'` will allow content from the same origin as
+the page. If you need to allow inline scripts or `eval()` you can use `'unsafe-inline'` and `'unsafe-eval'`.
 
-**WARNING:** By using `unsafe-inline` or `unsafe-eval` you're effectively disabling the XSS protection mechanism of CSP.
+**WARNING:** By using `'unsafe-inline'` or `'unsafe-eval'` you're effectively disabling the XSS protection
+mechanism of CSP.
 
-Apart from content types, the policy also accepts `report_uri` which should be a URI where a browser can POST a
+Apart from content types, the policy also accepts `report-uri` which should be a URI where a browser can POST a
 [JSON payload](https://developer.mozilla.org/en-US/docs/Security/CSP/Using_CSP_violation_reports#Sample_violation_report)
 to whenever a policy directive is violated.
-Setting `report_only` to `true` will enable reporting but the policy will not be enforced.
 
 ```yaml
 nelmio_security:
     csp:
-        report_uri: /nelmio/csp/report
         report_logger_service: logger
-        report_only: false
-        default: [ self ]
-        frame: [ 'https://www.youtube.com' ]
-        script:
-            - self
-            - 'https:'
-        img:
-            - self
-            - facebook.com
-            - flickr.com
+        enforce:
+            report-uri: /nelmio/csp/report
+            default-src: [ 'self' ]
+            frame-src: [ 'https://www.youtube.com' ]
+            script-src:
+                - 'self'
+                - 'unsafe-inline'
+            img-src:
+                - 'self'
+                - facebook.com
+                - flickr.com
+        report:
+            report-uri: /nelmio/csp/report
+            script-src:
+                - 'self'
 ```
 
-The above configuration would allow:
+The above configuration would enforce the following policy:
 
 * Default is to allow from same origin as the page
 * Frames only from secure youtube connections
-* JavaScript from same origin and any secure external URL
+* JavaScript from same origin and from inline `<script>` tags
 * Images from same origin, `facebook.com` and `flickr.com`
 
-And would post any violations to /nelmio/csp/report, a default reporting implementation that logs violations as notices
+Any violation of the enforced policy would be posted to /nelmio/csp/report.
+
+In addition, the configuration only reports but doesn't enforce the policy that JavaScript may only be executed
+when it comes from the same server.
+
+The bundle provides a default reporting implementation that logs violations as notices
 to the default logger, to enable add the following to your routing.yml:
 
 ```yaml
