@@ -23,7 +23,7 @@ class DirectiveSet
     {
         $this->checkDirectiveName($name);
 
-        if(array_key_exists($name, $this->directiceValues)) {
+        if (array_key_exists($name, $this->directiceValues)) {
             return $this->directiceValues[$name];
         }
 
@@ -36,17 +36,20 @@ class DirectiveSet
         $this->directiceValues[$name] = $value;
     }
 
-    public function setDirectives(array $directives) {
-        foreach($directives as $name => $value) {
+    public function setDirectives(array $directives)
+    {
+        foreach ($directives as $name => $value) {
             $this->setDirective($name, $value);
         }
     }
 
-    public function buildHeaderValue() {
+    public function buildHeaderValue()
+    {
         $policy = array();
-        foreach($this->directiceValues as $name => $value) {
+        foreach ($this->directiceValues as $name => $value) {
             $policy[] = $name . ' ' . $value;
         }
+
         return join('; ', $policy);
     }
 
@@ -55,10 +58,12 @@ class DirectiveSet
         $directiveSet = new self();
         $parser = new ContentSecurityPolicyParser();
 
-        foreach(self::getLegacyNamesMap() as $old => $new) {
-            if(!array_key_exists($old, $config)) continue;
+        foreach (self::getLegacyNamesMap() as $old => $new) {
+            if (!array_key_exists($old, $config)) {
+                continue;
+            }
 
-            if($old === 'report_uri') {
+            if ($old === 'report_uri') {
                 $directiveSet->setDirective($new, $config[$old]);
             } else {
                 $directiveSet->setDirective($new, $parser->parseSourceList($config[$old]));
@@ -68,22 +73,27 @@ class DirectiveSet
         return $directiveSet;
     }
 
-    public static function fromConfig(array $config, $kind) {
+    public static function fromConfig(array $config, $kind)
+    {
         $directiveSet = new self();
-        if(!array_key_exists($kind, $config)) {
+        if (!array_key_exists($kind, $config)) {
             return $directiveSet;
         }
 
         $parser = new ContentSecurityPolicyParser();
-        foreach(self::getNames() as $name) {
-            if(!array_key_exists($name, $config[$kind])) continue;
+        foreach (self::getNames() as $name) {
+            if (!array_key_exists($name, $config[$kind])) {
+                continue;
+            }
 
             $directiveSet->setDirective($name, $parser->parseSourceList($config[$kind][$name]));
         }
+
         return $directiveSet;
     }
 
-    public static function getNames() {
+    public static function getNames()
+    {
         return self::$directiveNames;
     }
 
@@ -108,7 +118,7 @@ class DirectiveSet
 
     private function checkDirectiveName($name)
     {
-        if(!in_array($name, self::$directiveNames)) {
+        if (!in_array($name, self::$directiveNames)) {
             throw new \InvalidArgumentException('Unknown CSP directive name: ' . $name);
         }
     }

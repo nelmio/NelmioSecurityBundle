@@ -35,7 +35,9 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
     private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders)
     {
         $headerValue = $directiveSet->buildHeaderValue();
-        if(!$headerValue) return array();
+        if (!$headerValue) {
+            return array();
+        }
 
         $hn = function($name) use ($reportOnly) {
             return $name . ($reportOnly ? '-Report-Only' : '');
@@ -45,7 +47,7 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
             $hn('Content-Security-Policy') => $headerValue
         );
 
-        if($compatHeaders) {
+        if ($compatHeaders) {
             $headers[$hn('X-Content-Security-Policy')] = $headerValue;
             $headers[$hn('X-Webkit-CSP')] = $headerValue;
         }
@@ -53,23 +55,26 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
         return $headers;
     }
 
-    private function buildHeaderName($baseName, $reportOnly) {
+    private function buildHeaderName($baseName, $reportOnly)
+    {
         return $baseName . ($reportOnly ? '-Report-Only' : '');
     }
 
-    public static function getSubscribedEvents() {
+    public static function getSubscribedEvents()
+    {
         return array(KernelEvents::RESPONSE => 'onKernelResponse');
     }
 
     public static function fromConfig(array $config)
     {
-        if(array_key_exists('report', $config) || array_key_exists('enforce', $config)){
+        if (array_key_exists('report', $config) || array_key_exists('enforce', $config)) {
             $enforce = DirectiveSet::fromConfig($config, 'enforce');
             $report = DirectiveSet::fromConfig($config, 'report');
-        } else { // legacy config
+        } else {
+            // legacy config
             $directiveSet = DirectiveSet::fromLegacyConfig($config);
 
-            if(!!$config['report_only']) {
+            if (!!$config['report_only']) {
                 $enforce = new DirectiveSet();
                 $report = $directiveSet;
             } else {

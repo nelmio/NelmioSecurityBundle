@@ -131,7 +131,8 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $spec      = "example.org 'self'";
         $reportUri = 'http://example.org/CSPReport';
 
-        $listener = $this->buildSimpleListener(array(
+        $listener = $this->buildSimpleListener(
+            array(
                 'default-src' => $spec,
                 'script-src' => $spec,
                 'object-src' => $spec,
@@ -163,7 +164,8 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     public function testDelimiter()
     {
         $spec     = "example.org";
-        $listener = $this->buildSimpleListener(array(
+        $listener = $this->buildSimpleListener(
+            array(
                 'default-src' => $spec,
                 'script-src' => $spec,
                 'object-src' => $spec,
@@ -180,7 +182,8 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $header = $response->headers->get('Content-Security-Policy');
 
         $this->assertRegExp(
-            '/^((default|script|object|style|img|media|frame|font|connect)-src example.org;\s?){8}(default|script|object|style|img|media|frame|font|connect)-src example.org/',
+            '/^((default|script|object|style|img|media|frame|font|connect)-src\ example.org;\s?){8}
+                (default|script|object|style|img|media|frame|font|connect)-src\ example.org/x',
             $header,
             'The header should contain all directives separated by a semicolon'
         );
@@ -189,7 +192,8 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     public function testVendorPrefixes()
     {
         $spec     = "example.org";
-        $listener = $this->buildSimpleListener(array(
+        $listener = $this->buildSimpleListener(
+            array(
                 'default-src' => $spec,
                 'script-src' => $spec,
                 'object-src' => $spec,
@@ -257,11 +261,12 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($response->headers->get('Content-Security-Policy'));
     }
 
-    protected function buildSimpleListener(array $directives, $reportOnly = false, $compatHeaders = true) {
+    protected function buildSimpleListener(array $directives, $reportOnly = false, $compatHeaders = true)
+    {
         $directiveSet = new DirectiveSet();
         $directiveSet->setDirectives($directives);
 
-        if($reportOnly) {
+        if ($reportOnly) {
             return new ContentSecurityPolicyListener($directiveSet, new DirectiveSet(), $compatHeaders);
         } else {
             return new ContentSecurityPolicyListener(new DirectiveSet(), $directiveSet, $compatHeaders);
@@ -273,7 +278,12 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $request  = Request::create($path);
         $response = new Response();
 
-        $event = new FilterResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new FilterResponseEvent(
+            $this->kernel,
+            $request,
+            $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,
+            $response
+        );
         $listener->onKernelResponse($event);
 
         return $response;

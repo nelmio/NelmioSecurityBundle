@@ -160,7 +160,8 @@ class Configuration implements ConfigurationInterface
             ->addDirectives($node->children())
                 ->scalarNode('report_uri')->defaultValue('')->end()
                 ->booleanNode('report_only')->end()
-                // leaving this enabled can cause issues with older iOS (5.x) versions and possibly other early CSP implementations
+                // leaving this enabled can cause issues with older iOS (5.x) versions
+                // and possibly other early CSP implementations
                 ->booleanNode('compat_headers')->defaultValue(true)->end()
                 ->scalarNode('report_logger_service')->defaultValue('logger')->end()
                 ->append($this->addReportOrEnforceNode('report'))
@@ -174,25 +175,32 @@ class Configuration implements ConfigurationInterface
                 ->thenInvalid('"report_only" and "(report|enforce)" can not be used together')
             ->end()
             ->validate()
-                ->ifTrue(function($v){return !array_key_exists('report', $v) && !array_key_exists('enforce', $v) && !array_key_exists('report_only', $v);})
-                ->then(function($c){
+                ->ifTrue(
+                    function($v) {
+                        return
+                            !array_key_exists('report', $v)
+                            && !array_key_exists('enforce', $v)
+                            && !array_key_exists('report_only', $v);
+                    }
+                )
+                ->then(function($c) {
                     $c['report_only'] = false;
                     return $c;
                 })
-            ->end()
-                ;
+            ->end();
 
         return $node;
     }
 
-    private function addReportOrEnforceNode($reportOrEnforce) {
+    private function addReportOrEnforceNode($reportOrEnforce)
+    {
         $builder = new TreeBuilder();
         $node = $builder->root($reportOrEnforce);
         $children = $node->children();
         // Symfony should not normalize dashes to underlines, e.g. img-src to img_src
         $node->normalizeKeys(false);
 
-        foreach(DirectiveSet::getNames() as $name) {
+        foreach (DirectiveSet::getNames() as $name) {
             $children
                 ->arrayNode($name)
                 ->prototype('scalar')
@@ -201,7 +209,8 @@ class Configuration implements ConfigurationInterface
         return $children->end();
     }
 
-    private function addDirectives(NodeBuilder $node) {
+    private function addDirectives(NodeBuilder $node)
+    {
         $directives = array(
             'default',
             'script',
@@ -214,7 +223,7 @@ class Configuration implements ConfigurationInterface
             'connect'
         );
 
-        foreach($directives as $directive) {
+        foreach ($directives as $directive) {
             $node
                 ->arrayNode($directive)
                 ->prototype('scalar')
