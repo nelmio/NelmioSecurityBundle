@@ -1,24 +1,11 @@
 services:
     nelmio_security.csp_listener:
-        scope: request
         class: Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener
-        arguments:
-            - %nelmio_security.csp.default%
-            - %nelmio_security.csp.script%
-            - %nelmio_security.csp.object%
-            - %nelmio_security.csp.style%
-            - %nelmio_security.csp.img%
-            - %nelmio_security.csp.media%
-            - %nelmio_security.csp.frame%
-            - %nelmio_security.csp.font%
-            - %nelmio_security.csp.connect%
-            - %nelmio_security.csp.report_uri%
-            - %nelmio_security.csp.report_only%
-            - %nelmio_security.csp.compat_headers%
-
         tags:
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+            - { name: kernel.event_subscriber }
+        factory_class: Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener
+        factory_method: fromConfig
 
     nelmio_security.csp_reporter_controller:
         class: Nelmio\SecurityBundle\Controller\ContentSecurityPolicyController
-        arguments: [@logger]
+        arguments: ["@logger"]

@@ -13,6 +13,8 @@ namespace Nelmio\SecurityBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder,
     Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
 class Configuration implements ConfigurationInterface
 {
@@ -142,54 +144,92 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
-                ->arrayNode('csp')
-                    ->children()
-                        ->arrayNode('default')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('script')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('object')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('style')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('img')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('media')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('frame')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('font')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->arrayNode('connect')
-                            ->prototype('scalar')->end()
-                            ->defaultValue(array())
-                        ->end()
-                        ->scalarNode('report_uri')->defaultValue('')->end()
-                        ->booleanNode('report_only')->defaultValue(false)->end()
-                        // leaving this enabled can cause issues with older iOS (5.x) versions and possibly other early CSP implementations
-                        ->booleanNode('compat_headers')->defaultValue(true)->end()
-                        ->scalarNode('report_logger_service')->defaultValue('logger')->end()
-                    ->end()
-                ->end()
+                ->append($this->addCspNode())
             ->end()
         ->end();
 
         return $treeBuilder;
+    }
+
+    private function addCspNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('csp');
+
+        $this
+            ->addDirectives($node->children())
+                ->scalarNode('report_uri')->defaultValue('')->end()
+                ->booleanNode('report_only')->end()
+                // leaving this enabled can cause issues with older iOS (5.x) versions
+                // and possibly other early CSP implementations
+                ->booleanNode('compat_headers')->defaultValue(true)->end()
+                ->scalarNode('report_logger_service')->defaultValue('logger')->end()
+                ->append($this->addReportOrEnforceNode('report'))
+                ->append($this->addReportOrEnforceNode('enforce'))
+            ->end()
+            ->validate()
+                ->ifTrue(function($v) {
+                    return array_key_exists('report_only', $v)
+                        && (array_key_exists('report', $v) || array_key_exists('enforce', $v));
+                })
+                ->thenInvalid('"report_only" and "(report|enforce)" can not be used together')
+            ->end()
+            ->validate()
+                ->ifTrue(
+                    function($v) {
+                        return
+                            !array_key_exists('report', $v)
+                            && !array_key_exists('enforce', $v)
+                            && !array_key_exists('report_only', $v);
+                    }
+                )
+                ->then(function($c) {
+                    $c['report_only'] = false;
+                    return $c;
+                })
+            ->end();
+
+        return $node;
+    }
+
+    private function addReportOrEnforceNode($reportOrEnforce)
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root($reportOrEnforce);
+        $children = $node->children();
+        // Symfony should not normalize dashes to underlines, e.g. img-src to img_src
+        $node->normalizeKeys(false);
+
+        foreach (DirectiveSet::getNames() as $name) {
+            $children
+                ->arrayNode($name)
+                ->prototype('scalar')
+                ->end();
+        }
+        return $children->end();
+    }
+
+    private function addDirectives(NodeBuilder $node)
+    {
+        $directives = array(
+            'default',
+            'script',
+            'object',
+            'style',
+            'img',
+            'media',
+            'frame',
+            'font',
+            'connect'
+        );
+
+        foreach ($directives as $directive) {
+            $node
+                ->arrayNode($directive)
+                ->prototype('scalar')
+                ->end();
+        }
+
+        return $node;
     }
 }

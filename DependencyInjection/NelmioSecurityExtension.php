@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
 class NelmioSecurityExtension extends Extension
 {
@@ -56,20 +57,9 @@ class NelmioSecurityExtension extends Extension
         if (!empty($config['csp'])) {
             $loader->load('csp.yml');
 
-            $parser = new ContentSecurityPolicyParser();
+            $container->getDefinition('nelmio_security.csp_listener')
+                ->setArguments(array($config['csp']));
 
-            $container->setParameter('nelmio_security.csp.default', $parser->parseSourceList($config['csp']['default']));
-            $container->setParameter('nelmio_security.csp.script', $parser->parseSourceList($config['csp']['script']));
-            $container->setParameter('nelmio_security.csp.object', $parser->parseSourceList($config['csp']['object']));
-            $container->setParameter('nelmio_security.csp.style', $parser->parseSourceList($config['csp']['style']));
-            $container->setParameter('nelmio_security.csp.img', $parser->parseSourceList($config['csp']['img']));
-            $container->setParameter('nelmio_security.csp.media', $parser->parseSourceList($config['csp']['media']));
-            $container->setParameter('nelmio_security.csp.frame', $parser->parseSourceList($config['csp']['frame']));
-            $container->setParameter('nelmio_security.csp.font', $parser->parseSourceList($config['csp']['font']));
-            $container->setParameter('nelmio_security.csp.connect', $parser->parseSourceList($config['csp']['connect']));
-            $container->setParameter('nelmio_security.csp.report_uri', $config['csp']['report_uri']);
-            $container->setParameter('nelmio_security.csp.report_only', !!$config['csp']['report_only']);
-            $container->setParameter('nelmio_security.csp.compat_headers', !!$config['csp']['compat_headers']);
             $container->getDefinition('nelmio_security.csp_reporter_controller')
                 ->setArguments(array(new Reference($config['csp']['report_logger_service'])));
         }

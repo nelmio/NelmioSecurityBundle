@@ -62,7 +62,7 @@ class ExternalRedirectListenerTest extends \PHPUnit_Framework_TestCase
     public function testRedirectAbort()
     {
         $listener = new ExternalRedirectListener(true);
-        $response = $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
+        $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
     }
 
     /**

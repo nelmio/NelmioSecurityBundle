@@ -62,7 +62,6 @@ class FlexibleSslListener implements LogoutHandlerInterface
             return;
         }
 
-        $request = $e->getRequest();
         $response = $e->getResponse();
 
         $longestExpire = 0;

@@ -4,46 +4,20 @@ namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
-class ContentSecurityPolicyListener
+class ContentSecurityPolicyListener implements EventSubscriberInterface
 {
-    protected $default;
-    protected $script;
-    protected $object;
-    protected $img;
-    protected $media;
-    protected $frame;
-    protected $font;
-    protected $connect;
-    protected $style;
-    protected $reportUri;
+    protected $report;
+    protected $enforce;
     protected $compatHeaders;
 
-    public function __construct(
-        $default = '',
-        $script = '',
-        $object = '',
-        $style = '',
-        $img = '',
-        $media = '',
-        $frame = '',
-        $font = '',
-        $connect = '',
-        $reportUri = '',
-        $reportOnly = false,
-        $compatHeaders = true
-    ) {
-        $this->default    = $default;
-        $this->script     = $script;
-        $this->object     = $object;
-        $this->style      = $style;
-        $this->img        = $img;
-        $this->media      = $media;
-        $this->frame      = $frame;
-        $this->font       = $font;
-        $this->connect    = $connect;
-        $this->reportUri  = $reportUri;
-        $this->reportOnly = $reportOnly;
+    public function __construct(DirectiveSet $report, DirectiveSet $enforce, $compatHeaders = true)
+    {
+        $this->report = $report;
+        $this->enforce = $enforce;
         $this->compatHeaders = $compatHeaders;
     }
 
@@ -54,73 +28,61 @@ class ContentSecurityPolicyListener
         }
 
         $response = $e->getResponse();
+        $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
+        $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
+    }
 
-        $policy = array();
-
-        if ($this->default) {
-            $policy[] = 'default-src ' . $this->default;
+    private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders)
+    {
+        $headerValue = $directiveSet->buildHeaderValue();
+        if (!$headerValue) {
+            return array();
         }
 
-        if ($this->script) {
-            $policy[] = 'script-src ' . $this->script;
+        $hn = function($name) use ($reportOnly) {
+            return $name . ($reportOnly ? '-Report-Only' : '');
+        };
+
+        $headers = array(
+            $hn('Content-Security-Policy') => $headerValue
+        );
+
+        if ($compatHeaders) {
+            $headers[$hn('X-Content-Security-Policy')] = $headerValue;
+            $headers[$hn('X-Webkit-CSP')] = $headerValue;
         }
 
-        if ($this->object) {
-            $policy[] = 'object-src ' . $this->object;
-        }
+        return $headers;
+    }
 
-        if ($this->style) {
-            $policy[] = 'style-src ' . $this->style;
-        }
+    private function buildHeaderName($baseName, $reportOnly)
+    {
+        return $baseName . ($reportOnly ? '-Report-Only' : '');
+    }
 
-        if ($this->img) {
-            $policy[] = 'img-src ' . $this->img;
-        }
+    public static function getSubscribedEvents()
+    {
+        return array(KernelEvents::RESPONSE => 'onKernelResponse');
+    }
 
-        if ($this->media) {
-            $policy[] = 'media-src ' . $this->media;
-        }
+    public static function fromConfig(array $config)
+    {
+        if (array_key_exists('report', $config) || array_key_exists('enforce', $config)) {
+            $enforce = DirectiveSet::fromConfig($config, 'enforce');
+            $report = DirectiveSet::fromConfig($config, 'report');
+        } else {
+            // legacy config
+            $directiveSet = DirectiveSet::fromLegacyConfig($config);
 
-        if ($this->frame) {
-            $policy[] = 'frame-src ' . $this->frame;
-        }
-
-        if ($this->font) {
-            $policy[] = 'font-src ' . $this->font;
-        }
-
-        if ($this->connect) {
-            $policy[] = 'connect-src ' . $this->connect;
-        }
-
-        if ($this->reportUri) {
-            $policy[] = 'report-uri ' . $this->reportUri;
-        }
-
-        if ($policy) {
-            $value = join('; ', $policy);
-
-            $key       = 'Content-Security-Policy';
-            $keyX      = 'X-Content-Security-Policy';
-            $keyWebkit = 'X-Webkit-CSP';
-
-            if ($this->reportOnly) {
-                $key .= '-Report-Only';
-                $keyX .= '-Report-Only';
-                $keyWebkit .= '-Report-Only';
-            }
-
-            if ($this->compatHeaders) {
-                $response->headers->add(
-                    array(
-                        $key       => $value,
-                        $keyX      => $value,
-                        $keyWebkit => $value
-                    )
-                );
+            if (!!$config['report_only']) {
+                $enforce = new DirectiveSet();
+                $report = $directiveSet;
             } else {
-                $response->headers->add(array($key => $value));
+                $enforce = $directiveSet;
+                $report = new DirectiveSet();
             }
         }
+
+        return new self($report, $enforce, !!$config['compat_headers']);
     }
 }

@@ -20,7 +20,7 @@ class SignerTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorShouldVerifyHashAlgo()
     {
-        $signer = new Signer('secret', 'invalid_hash_algo');
+        new Signer('secret', 'invalid_hash_algo');
     }
 
     public function testShouldVerifyValidSignature()
