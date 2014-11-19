@@ -59,9 +59,9 @@ class Signer
             throw new \InvalidArgumentException(sprintf("The signature for '%s' was invalid.", $signedValue));
         }
 
-        list($value, $signature) = $this->splitSignatureFromSignedValue($signedValue);
+        $valueSignatureTuple = $this->splitSignatureFromSignedValue($signedValue);
 
-        return $value;
+        return $valueSignatureTuple[0];
     }
 
     private function generateSignature($value)

@@ -20,7 +20,7 @@ class EncrypterTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorShouldVerifyAlgoritm()
     {
-        $encrypter = new Encrypter('secret', 'invalid_algoritm');
+        new Encrypter('secret', 'invalid_algoritm');
     }
 
     public function testEncryption()

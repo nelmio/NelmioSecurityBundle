@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
 class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,9 +20,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testDefault()
     {
-        $default = "default.example.org 'self'";
-
-        $listener = new ContentSecurityPolicyListener($default);
+        $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'"));
         $response = $this->callListener($listener, '/', true);
 
         $this->assertEquals(
@@ -34,7 +33,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $script = "script.example.org 'self' 'unsafe-eval' 'unsafe-inline'";
 
-        $listener = new ContentSecurityPolicyListener(null, $script);
+        $listener = $this->buildSimpleListener(array('script-src' => $script));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals(
             "script-src script.example.org 'self' 'unsafe-eval' 'unsafe-inline'",
@@ -46,7 +45,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $object = "object.example.org 'self'";
 
-        $listener = new ContentSecurityPolicyListener(null, null, $object);
+        $listener = $this->buildSimpleListener(array('object-src' => $object));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals("object-src object.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
@@ -55,7 +54,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $style = "style.example.org 'self'";
 
-        $listener = new ContentSecurityPolicyListener(null, null, null, $style);
+        $listener = $this->buildSimpleListener(array('style-src' => $style));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals("style-src style.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
@@ -64,7 +63,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $img = "img.example.org 'self'";
 
-        $listener = new ContentSecurityPolicyListener(null, null, null, null, $img);
+        $listener = $this->buildSimpleListener(array('img-src' => $img));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals("img-src img.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
@@ -73,7 +72,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $media = "media.example.org 'self'";
 
-        $listener = new ContentSecurityPolicyListener(null, null, null, null, null, $media);
+        $listener = $this->buildSimpleListener(array('media-src' => $media));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals("media-src media.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
@@ -82,7 +81,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $frame = "frame.example.org 'self'";
 
-        $listener = new ContentSecurityPolicyListener(null, null, null, null, null, null, $frame);
+        $listener = $this->buildSimpleListener(array('frame-src' => $frame));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals("frame-src frame.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
@@ -91,7 +90,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $font = "font.example.org 'self'";
 
-        $listener = new ContentSecurityPolicyListener(null, null, null, null, null, null, null, $font);
+        $listener = $this->buildSimpleListener(array('font-src' => $font));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals("font-src font.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
@@ -100,7 +99,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $connect = "connect.example.org 'self'";
 
-        $listener = new ContentSecurityPolicyListener(null, null, null, null, null, null, null, null, $connect);
+        $listener = $this->buildSimpleListener(array('connect-src' => $connect));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals(
             "connect-src connect.example.org 'self'",
@@ -112,7 +111,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $reportUri = 'http://example.org/CSPReport';
 
-        $listener = new ContentSecurityPolicyListener(null, null, null, null, null, null, null, null, null, $reportUri);
+        $listener = $this->buildSimpleListener(array('report-uri' => $reportUri));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals(
             'report-uri http://example.org/CSPReport',
@@ -122,7 +121,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testEmpty()
     {
-        $listener = new ContentSecurityPolicyListener();
+        $listener = $this->buildSimpleListener(array());
         $response = $this->callListener($listener, '/', true);
         $this->assertNull($response->headers->get('Content-Security-Policy'));
     }
@@ -132,7 +131,20 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $spec      = "example.org 'self'";
         $reportUri = 'http://example.org/CSPReport';
 
-        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $reportUri);
+        $listener = $this->buildSimpleListener(
+            array(
+                'default-src' => $spec,
+                'script-src' => $spec,
+                'object-src' => $spec,
+                'style-src' => $spec,
+                'img-src' => $spec,
+                'media-src' => $spec,
+                'frame-src' => $spec,
+                'font-src' => $spec,
+                'connect-src' => $spec,
+                'report-uri' => $reportUri
+            )
+        );
         $response = $this->callListener($listener, '/', true);
 
         $header = $response->headers->get('Content-Security-Policy');
@@ -152,13 +164,26 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     public function testDelimiter()
     {
         $spec     = "example.org";
-        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec);
+        $listener = $this->buildSimpleListener(
+            array(
+                'default-src' => $spec,
+                'script-src' => $spec,
+                'object-src' => $spec,
+                'style-src' => $spec,
+                'img-src' => $spec,
+                'media-src' => $spec,
+                'frame-src' => $spec,
+                'font-src' => $spec,
+                'connect-src' => $spec
+            )
+        );
         $response = $this->callListener($listener, '/', true);
 
         $header = $response->headers->get('Content-Security-Policy');
 
         $this->assertRegExp(
-            '/^((default|script|object|style|img|media|frame|font|connect)-src example.org;\s?){8}(default|script|object|style|img|media|frame|font|connect)-src example.org/',
+            '/^((default|script|object|style|img|media|frame|font|connect)-src\ example.org;\s?){8}
+                (default|script|object|style|img|media|frame|font|connect)-src\ example.org/x',
             $header,
             'The header should contain all directives separated by a semicolon'
         );
@@ -167,7 +192,19 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     public function testVendorPrefixes()
     {
         $spec     = "example.org";
-        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec);
+        $listener = $this->buildSimpleListener(
+            array(
+                'default-src' => $spec,
+                'script-src' => $spec,
+                'object-src' => $spec,
+                'style-src' => $spec,
+                'img-src' => $spec,
+                'media-src' => $spec,
+                'frame-src' => $spec,
+                'font-src' => $spec,
+                'connect-src' => $spec
+            )
+        );
         $response = $this->callListener($listener, '/', true);
 
         $this->assertEquals(
@@ -186,7 +223,17 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     public function testReportOnly()
     {
         $spec     = "example.org";
-        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, '', true);
+        $listener = $this->buildSimpleListener(array(
+                'default-src' => $spec,
+                'script-src' => $spec,
+                'object-src' => $spec,
+                'style-src' => $spec,
+                'img-src' => $spec,
+                'media-src' => $spec,
+                'frame-src' => $spec,
+                'font-src' => $spec,
+                'connect-src' => $spec
+        ), true);
         $response = $this->callListener($listener, '/', true);
 
         $this->assertNull($response->headers->get('Content-Security-Policy'));
@@ -196,7 +243,17 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     public function testNoCompatHeaders()
     {
         $spec     = "example.org";
-        $listener = new ContentSecurityPolicyListener($spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, $spec, '', false, false);
+        $listener = $this->buildSimpleListener(array(
+                'default-src' => $spec,
+                'script-src' => $spec,
+                'object-src' => $spec,
+                'style-src' => $spec,
+                'img-src' => $spec,
+                'media-src' => $spec,
+                'frame-src' => $spec,
+                'font-src' => $spec,
+                'connect-src' => $spec
+        ), false, false);
         $response = $this->callListener($listener, '/', true);
 
         $this->assertNull($response->headers->get('X-Webkit-CSP'));
@@ -204,12 +261,29 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($response->headers->get('Content-Security-Policy'));
     }
 
+    protected function buildSimpleListener(array $directives, $reportOnly = false, $compatHeaders = true)
+    {
+        $directiveSet = new DirectiveSet();
+        $directiveSet->setDirectives($directives);
+
+        if ($reportOnly) {
+            return new ContentSecurityPolicyListener($directiveSet, new DirectiveSet(), $compatHeaders);
+        } else {
+            return new ContentSecurityPolicyListener(new DirectiveSet(), $directiveSet, $compatHeaders);
+        }
+    }
+
     protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq)
     {
         $request  = Request::create($path);
         $response = new Response();
 
-        $event = new FilterResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new FilterResponseEvent(
+            $this->kernel,
+            $request,
+            $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,
+            $response
+        );
         $listener->onKernelResponse($event);
 
         return $response;
