@@ -33,7 +33,9 @@ class DirectiveSet
     public function setDirective($name, $value)
     {
         $this->checkDirectiveName($name);
-        $this->directiveValues[$name] = $value;
+        if ($value) {
+            $this->directiveValues[$name] = $value;
+        }
     }
 
     public function setDirectives(array $directives)
@@ -47,7 +49,9 @@ class DirectiveSet
     {
         $policy = array();
         foreach ($this->directiveValues as $name => $value) {
-            $policy[] = $name . ' ' . $value;
+            if ($name == 'default-src' || $value != $this->getDirective('default-src')) {
+                $policy[] = $name . ' ' . $value;
+            }
         }
 
         return join('; ', $policy);
