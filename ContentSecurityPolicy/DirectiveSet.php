@@ -17,14 +17,14 @@ class DirectiveSet
         'report-uri'
     );
 
-    private $directiceValues = array();
+    private $directiveValues = array();
 
     public function getDirective($name)
     {
         $this->checkDirectiveName($name);
 
-        if (array_key_exists($name, $this->directiceValues)) {
-            return $this->directiceValues[$name];
+        if (array_key_exists($name, $this->directiveValues)) {
+            return $this->directiveValues[$name];
         }
 
         return '';
@@ -33,7 +33,9 @@ class DirectiveSet
     public function setDirective($name, $value)
     {
         $this->checkDirectiveName($name);
-        $this->directiceValues[$name] = $value;
+        if ($value) {
+            $this->directiveValues[$name] = $value;
+        }
     }
 
     public function setDirectives(array $directives)
@@ -46,8 +48,10 @@ class DirectiveSet
     public function buildHeaderValue()
     {
         $policy = array();
-        foreach ($this->directiceValues as $name => $value) {
-            $policy[] = $name . ' ' . $value;
+        foreach ($this->directiveValues as $name => $value) {
+            if ($name == 'default-src' || $value != $this->getDirective('default-src')) {
+                $policy[] = $name . ' ' . $value;
+            }
         }
 
         return join('; ', $policy);
