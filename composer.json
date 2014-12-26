@@ -19,12 +19,11 @@
         "symfony/security": "~2.1"
     },
     "autoload": {
-        "psr-0": { "Nelmio\\SecurityBundle": "" }
+        "psr-4": { "Nelmio\\SecurityBundle\\": "" }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "1.4.x-dev"
         }
-    },
-    "target-dir": "Nelmio/SecurityBundle"
+    }
 }
