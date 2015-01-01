@@ -1,3 +1,10 @@
+### 1.5.0 (2015-01-01)
+
+  * Added ability to have different configs for both reported and enforced CSP rules
+  * Added support for ALLOW and ALLOW FROM syntaxes in the Clickjacking Protection
+  * Added support for HHvM and PHP 5.6
+  * Fixed enabling of cookie signing when the cookie list is empty
+
 ### 1.4.0 (2014-02-13)
 
   * Added default controller to log CSP violations
