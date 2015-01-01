@@ -35,6 +35,8 @@ class DirectiveSet
         $this->checkDirectiveName($name);
         if ($value) {
             $this->directiveValues[$name] = $value;
+        } else {
+            unset($this->directiveValues[$name]);
         }
     }
 

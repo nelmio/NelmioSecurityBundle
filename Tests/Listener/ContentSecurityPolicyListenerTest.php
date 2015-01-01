@@ -128,83 +128,110 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testAll()
     {
-        $spec      = "example.org 'self'";
         $reportUri = 'http://example.org/CSPReport';
 
-        $listener = $this->buildSimpleListener(
-            array(
-                'default-src' => $spec,
-                'script-src' => $spec,
-                'object-src' => $spec,
-                'style-src' => $spec,
-                'img-src' => $spec,
-                'media-src' => $spec,
-                'frame-src' => $spec,
-                'font-src' => $spec,
-                'connect-src' => $spec,
-                'report-uri' => $reportUri
-            )
-        );
+        $listener = $this->buildSimpleListener(array(
+            'default-src' => "example.org 'self'",
+            'script-src' => "script.example.org 'self'",
+            'object-src' => "object.example.org 'self'",
+            'style-src' => "style.example.org 'self'",
+            'img-src' => "img.example.org 'self'",
+            'media-src' => "media.example.org 'self'",
+            'frame-src' => "frame.example.org 'self'",
+            'font-src' => "font.example.org 'self'",
+            'connect-src' => "connect.example.org 'self'",
+            'report-uri' => $reportUri
+        ));
         $response = $this->callListener($listener, '/', true);
 
         $header = $response->headers->get('Content-Security-Policy');
 
         $this->assertContains("default-src example.org 'self'", $header, 'Header should contain default-src');
-        $this->assertContains("script-src example.org 'self'", $header, 'Header should contain script-src');
-        $this->assertContains("object-src example.org 'self'", $header, 'Header should contain object-src');
-        $this->assertContains("style-src example.org 'self'", $header, 'Header should contain style-src');
-        $this->assertContains("img-src example.org 'self'", $header, 'Header should contain img-src');
-        $this->assertContains("media-src example.org 'self'", $header, 'Header should contain media-src');
-        $this->assertContains("frame-src example.org 'self'", $header, 'Header should contain frame-src');
-        $this->assertContains("font-src example.org 'self'", $header, 'Header should contain font-src');
-        $this->assertContains("connect-src example.org 'self'", $header, 'Header should contain connect-src');
+        $this->assertContains("script-src script.example.org 'self'", $header, 'Header should contain script-src');
+        $this->assertContains("object-src object.example.org 'self'", $header, 'Header should contain object-src');
+        $this->assertContains("style-src style.example.org 'self'", $header, 'Header should contain style-src');
+        $this->assertContains("img-src img.example.org 'self'", $header, 'Header should contain img-src');
+        $this->assertContains("media-src media.example.org 'self'", $header, 'Header should contain media-src');
+        $this->assertContains("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
+        $this->assertContains("font-src font.example.org 'self'", $header, 'Header should contain font-src');
+        $this->assertContains("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
         $this->assertContains("report-uri http://example.org/CSPReport", $header, 'Header should contain report-uri');
     }
 
     public function testDelimiter()
     {
         $spec     = "example.org";
-        $listener = $this->buildSimpleListener(
-            array(
-                'default-src' => $spec,
-                'script-src' => $spec,
-                'object-src' => $spec,
-                'style-src' => $spec,
-                'img-src' => $spec,
-                'media-src' => $spec,
-                'frame-src' => $spec,
-                'font-src' => $spec,
-                'connect-src' => $spec
-            )
-        );
+        $listener = $this->buildSimpleListener(array(
+            'default-src' => "default.example.org 'self'",
+            'script-src' => "script.example.org 'self'",
+            'object-src' => "object.example.org 'self'",
+            'style-src' => "style.example.org 'self'",
+            'img-src' => "img.example.org 'self'",
+            'media-src' => "media.example.org 'self'",
+            'frame-src' => "frame.example.org 'self'",
+            'font-src' => "font.example.org 'self'",
+            'connect-src' => "connect.example.org 'self'",
+        ));
         $response = $this->callListener($listener, '/', true);
 
         $header = $response->headers->get('Content-Security-Policy');
 
-        $this->assertRegExp(
-            '/^((default|script|object|style|img|media|frame|font|connect)-src\ example.org;\s?){8}
-                (default|script|object|style|img|media|frame|font|connect)-src\ example.org/x',
+        $this->assertSame(
+            "default-src default.example.org 'self'; script-src script.example.org 'self'; ".
+            "object-src object.example.org 'self'; style-src style.example.org 'self'; ".
+            "img-src img.example.org 'self'; media-src media.example.org 'self'; ".
+            "frame-src frame.example.org 'self'; font-src font.example.org 'self'; ".
+            "connect-src connect.example.org 'self'",
             $header,
             'The header should contain all directives separated by a semicolon'
+        );
+    }
+
+    public function testAvoidDuplicates()
+    {
+        $spec     = "example.org";
+        $listener = $this->buildSimpleListener(array(
+            'default-src' => $spec,
+            'script-src' => $spec,
+            'object-src' => $spec,
+            'style-src' => $spec,
+            'img-src' => $spec,
+            'media-src' => $spec,
+            'frame-src' => $spec,
+            'font-src' => $spec,
+            'connect-src' => $spec
+        ));
+        $response = $this->callListener($listener, '/', true);
+
+        $header = $response->headers->get('Content-Security-Policy');
+
+        $this->assertEquals(
+            'default-src example.org',
+            $header,
+            'Response should contain only the default as the others are equivalent'
+        );
+
+        $this->assertEquals(
+            $response->headers->get('Content-Security-Policy'),
+            $response->headers->get('X-Webkit-CSP'),
+            'Response should contain vendor specific X-Webkit-CSP header'
         );
     }
 
     public function testVendorPrefixes()
     {
         $spec     = "example.org";
-        $listener = $this->buildSimpleListener(
-            array(
-                'default-src' => $spec,
-                'script-src' => $spec,
-                'object-src' => $spec,
-                'style-src' => $spec,
-                'img-src' => $spec,
-                'media-src' => $spec,
-                'frame-src' => $spec,
-                'font-src' => $spec,
-                'connect-src' => $spec
-            )
-        );
+        $listener = $this->buildSimpleListener(array(
+            'default-src' => $spec,
+            'script-src' => $spec,
+            'object-src' => $spec,
+            'style-src' => $spec,
+            'img-src' => $spec,
+            'media-src' => $spec,
+            'frame-src' => $spec,
+            'font-src' => $spec,
+            'connect-src' => $spec
+        ));
         $response = $this->callListener($listener, '/', true);
 
         $this->assertEquals(
@@ -224,15 +251,15 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $spec     = "example.org";
         $listener = $this->buildSimpleListener(array(
-                'default-src' => $spec,
-                'script-src' => $spec,
-                'object-src' => $spec,
-                'style-src' => $spec,
-                'img-src' => $spec,
-                'media-src' => $spec,
-                'frame-src' => $spec,
-                'font-src' => $spec,
-                'connect-src' => $spec
+            'default-src' => $spec,
+            'script-src' => $spec,
+            'object-src' => $spec,
+            'style-src' => $spec,
+            'img-src' => $spec,
+            'media-src' => $spec,
+            'frame-src' => $spec,
+            'font-src' => $spec,
+            'connect-src' => $spec
         ), true);
         $response = $this->callListener($listener, '/', true);
 
@@ -244,21 +271,30 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
     {
         $spec     = "example.org";
         $listener = $this->buildSimpleListener(array(
-                'default-src' => $spec,
-                'script-src' => $spec,
-                'object-src' => $spec,
-                'style-src' => $spec,
-                'img-src' => $spec,
-                'media-src' => $spec,
-                'frame-src' => $spec,
-                'font-src' => $spec,
-                'connect-src' => $spec
+            'default-src' => $spec,
+            'script-src' => $spec,
+            'object-src' => $spec,
+            'style-src' => $spec,
+            'img-src' => $spec,
+            'media-src' => $spec,
+            'frame-src' => $spec,
+            'font-src' => $spec,
+            'connect-src' => $spec
         ), false, false);
         $response = $this->callListener($listener, '/', true);
 
         $this->assertNull($response->headers->get('X-Webkit-CSP'));
         $this->assertNull($response->headers->get('X-Content-Security-Policy'));
         $this->assertNotNull($response->headers->get('Content-Security-Policy'));
+    }
+
+    public function testDirectiveSetUnset()
+    {
+        $directiveSet = new DirectiveSet();
+        $directiveSet->setDirectives(array('default-src' => 'foo'));
+        $this->assertEquals('default-src foo', $directiveSet->buildHeaderValue());
+        $directiveSet->setDirective('default-src', '');
+        $this->assertEquals('', $directiveSet->buildHeaderValue());
     }
 
     protected function buildSimpleListener(array $directives, $reportOnly = false, $compatHeaders = true)
