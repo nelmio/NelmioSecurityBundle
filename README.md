@@ -417,8 +417,9 @@ A small word of caution: While HSTS is great for security, it means that if the 
 can not establish your SSL certificate is valid, it will not allow the user to query your site.
 That just means you should be careful and renew your certificate in due time.
 
-Note: HSTS presently (Aug. 2013) only works in Firefox 4+, Chrome 4+ and Opera 12+.
-
+Note: HSTS presently (Jan. 2015) works in Firefox 4+, Chrome 4+ and Opera 12+.
+      Check [caniuse](http://caniuse.com/#feat=stricttransportsecurity) for HSTS support in other browsers.
+      
 ### **Flexible HTTPS/SSL Handling**:
 
 The best way to handle SSL securely is to enable it for your entire site.
