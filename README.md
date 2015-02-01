@@ -410,7 +410,7 @@ you turn on the `hsts_subdomains` option, the behavior will be applied to all su
 nelmio_security:
     forced_ssl:
         hsts_max_age: 2592000 # 30 days
-        hsts_subdomains: false
+        hsts_subdomains: true
 ```
 
 You can also tell the browser to add your site to the list of known HSTS sites, by enabling
@@ -424,8 +424,9 @@ nelmio_security:
         hsts_preload: true
 ```
 
-Note: A value of at least 18 weeks is currently required by [Chrome](https://hstspreload.appspot.com)
-and [Firefox](https://blog.mozilla.org/security/2012/11/01/preloading-hsts/).
+> **Note:** A value of at least 18 weeks is currently required by [Chrome](https://hstspreload.appspot.com)
+> and [Firefox](https://blog.mozilla.org/security/2012/11/01/preloading-hsts/). It seems
+> `hsts_subdomains` must also be enabled for preloading to work.
 
 You can speed up the inclusion process by submitting your site to the [HSTS Preload List](https://hstspreload.appspot.com).
 
