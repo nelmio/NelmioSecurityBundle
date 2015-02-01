@@ -22,12 +22,14 @@ class ForcedSslListener
 {
     private $hstsMaxAge;
     private $hstsSubdomains;
+    private $hstsPreload;
     private $whitelist;
 
-    public function __construct($hstsMaxAge, $hstsSubdomains, array $whitelist = array())
+    public function __construct($hstsMaxAge, $hstsSubdomains, $hstsPreload = false, array $whitelist = array())
     {
         $this->hstsMaxAge = $hstsMaxAge;
         $this->hstsSubdomains = $hstsSubdomains;
+        $this->hstsPreload = $hstsPreload;
         $this->whitelist = $whitelist ? '('.implode('|', $whitelist).')' : null;
     }
 
@@ -62,7 +64,10 @@ class ForcedSslListener
         $response = $e->getResponse();
 
         if (!$response->headers->has('Strict-Transport-Security')) {
-            $response->headers->set('Strict-Transport-Security', 'max-age='.$this->hstsMaxAge . ($this->hstsSubdomains ? '; includeSubDomains' : ''));
+            $header = 'max-age='.$this->hstsMaxAge;
+            $header .= ($this->hstsSubdomains ? '; includeSubDomains' : '');
+            $header .= ($this->hstsPreload ? '; preload' : '');
+            $response->headers->set('Strict-Transport-Security',  $header);
         }
     }
 }

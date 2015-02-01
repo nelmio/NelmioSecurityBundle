@@ -413,6 +413,22 @@ nelmio_security:
         hsts_subdomains: false
 ```
 
+You can also tell the browser to add your site to the list of known HSTS sites, by enabling
+`hsts_preload`. Once your site has appeared in the Chrome and Firefox preload lists, then new
+users who come to your site will already be redirected to https urls.
+
+```yaml
+nelmio_security:
+    forced_ssl:
+        hsts_max_age: 10886400 # 18 weeks
+        hsts_preload: true
+```
+
+Note: A value of at least 18 weeks is currently required by [Chrome](https://hstspreload.appspot.com)
+and [Firefox](https://blog.mozilla.org/security/2012/11/01/preloading-hsts/).
+
+You can speed up the inclusion process by submitting your site to the [HSTS Preload List](https://hstspreload.appspot.com).
+
 A small word of caution: While HSTS is great for security, it means that if the browser
 can not establish your SSL certificate is valid, it will not allow the user to query your site.
 That just means you should be careful and renew your certificate in due time.

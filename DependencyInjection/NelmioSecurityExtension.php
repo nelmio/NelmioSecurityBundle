@@ -112,6 +112,7 @@ class NelmioSecurityExtension extends Extension
             }
             $container->setParameter('nelmio_security.forced_ssl.hsts_max_age', $config['forced_ssl']['hsts_max_age']);
             $container->setParameter('nelmio_security.forced_ssl.hsts_subdomains', $config['forced_ssl']['hsts_subdomains']);
+            $container->setParameter('nelmio_security.forced_ssl.hsts_preload', $config['forced_ssl']['hsts_preload']);
             $container->setParameter('nelmio_security.forced_ssl.whitelist', $config['forced_ssl']['whitelist'] ?: array());
         }
     }
