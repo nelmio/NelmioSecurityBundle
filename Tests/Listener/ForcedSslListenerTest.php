@@ -31,9 +31,9 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideHstsHeaders
      */
-    public function testHstsHeaders($hstsMaxAge, $hstsSubdomains, $result)
+    public function testHstsHeaders($hstsMaxAge, $hstsSubdomains, $hstsPreload, $result)
     {
-        $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains);
+        $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains, $hstsPreload);
 
         $response = $this->callListenerResp($listener, '/', true);
         $this->assertSame($result, $response->headers->get('Strict-Transport-Security'));
@@ -42,10 +42,12 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
     public function provideHstsHeaders()
     {
         return array(
-            array(60, true, 'max-age=60; includeSubDomains'),
-            array(60, false, 'max-age=60'),
-            array(3600, true, 'max-age=3600; includeSubDomains'),
-            array(3600, false, 'max-age=3600'),
+            array(60, true, false, 'max-age=60; includeSubDomains'),
+            array(60, false, false, 'max-age=60'),
+            array(3600, true, false, 'max-age=3600; includeSubDomains'),
+            array(3600, false, false, 'max-age=3600'),
+            array(3600, true, true, 'max-age=3600; includeSubDomains; preload'),
+            array(3600, false, true, 'max-age=3600; preload'),
         );
     }
 
@@ -59,7 +61,7 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testForcedSslSkipsWhitelisted()
     {
-        $listener = new ForcedSslListener(60, true, array('^/foo/', 'bar'));
+        $listener = new ForcedSslListener(60, true, false, array('^/foo/', 'bar'));
 
         $response = $this->callListenerReq($listener, '/foo/lala', true);
         $this->assertSame(null, $response);
