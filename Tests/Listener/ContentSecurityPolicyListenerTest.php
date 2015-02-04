@@ -210,41 +210,6 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             $header,
             'Response should contain only the default as the others are equivalent'
         );
-
-        $this->assertEquals(
-            $response->headers->get('Content-Security-Policy'),
-            $response->headers->get('X-Webkit-CSP'),
-            'Response should contain vendor specific X-Webkit-CSP header'
-        );
-    }
-
-    public function testVendorPrefixes()
-    {
-        $spec     = "example.org";
-        $listener = $this->buildSimpleListener(array(
-            'default-src' => $spec,
-            'script-src' => $spec,
-            'object-src' => $spec,
-            'style-src' => $spec,
-            'img-src' => $spec,
-            'media-src' => $spec,
-            'frame-src' => $spec,
-            'font-src' => $spec,
-            'connect-src' => $spec
-        ));
-        $response = $this->callListener($listener, '/', true);
-
-        $this->assertEquals(
-            $response->headers->get('Content-Security-Policy'),
-            $response->headers->get('X-Content-Security-Policy'),
-            'Response should contain non-standard X-Content-Security-Policy header'
-        );
-
-        $this->assertEquals(
-            $response->headers->get('Content-Security-Policy'),
-            $response->headers->get('X-Webkit-CSP'),
-            'Response should contain vendor specific X-Webkit-CSP header'
-        );
     }
 
     public function testReportOnly()
@@ -283,8 +248,6 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         ), false, false);
         $response = $this->callListener($listener, '/', true);
 
-        $this->assertNull($response->headers->get('X-Webkit-CSP'));
-        $this->assertNull($response->headers->get('X-Content-Security-Policy'));
         $this->assertNotNull($response->headers->get('Content-Security-Policy'));
     }
 
