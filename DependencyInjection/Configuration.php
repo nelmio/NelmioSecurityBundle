@@ -163,7 +163,7 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('report_only')->end()
                 // leaving this enabled can cause issues with older iOS (5.x) versions
                 // and possibly other early CSP implementations
-                ->booleanNode('compat_headers')->defaultValue(true)->end()
+                ->booleanNode('compat_headers')->defaultFalse()->end()
                 ->scalarNode('report_logger_service')->defaultValue('logger')->end()
                 ->append($this->addReportOrEnforceNode('report'))
                 ->append($this->addReportOrEnforceNode('enforce'))
