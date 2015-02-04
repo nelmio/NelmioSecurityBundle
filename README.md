@@ -192,17 +192,6 @@ nelmio_security:
         report_logger_service: monolog.logger.security
 ```
 
-(Optional) Disable *compat_headers* to avoid sending X-Content-Security-Policy
-(IE10, IE11, Firefox < 23) and X-Webkit-CSP (Chrome < 25, Safari < 7). This will
-mean those browsers get no more CSP instructions, but it can help if you are
-experience issues with old iOS 5.0 or 5.1 versions that had buggy CSP implementations.
-
-```yaml
-nelmio_security:
-    csp:
-        compat_headers: false
-```
-
 ### **Signed Cookies**:
 
 Ideally you should explicitly specify which cookies to sign. The reason for this is simple.

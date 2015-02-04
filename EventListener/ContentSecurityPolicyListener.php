@@ -12,13 +12,11 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
 {
     protected $report;
     protected $enforce;
-    protected $compatHeaders;
 
-    public function __construct(DirectiveSet $report, DirectiveSet $enforce, $compatHeaders = true)
+    public function __construct(DirectiveSet $report, DirectiveSet $enforce)
     {
         $this->report = $report;
         $this->enforce = $enforce;
-        $this->compatHeaders = $compatHeaders;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -28,11 +26,11 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
         }
 
         $response = $e->getResponse();
-        $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
-        $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
+        $response->headers->add($this->buildHeaders($this->report, true));
+        $response->headers->add($this->buildHeaders($this->enforce, false));
     }
 
-    private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders)
+    private function buildHeaders(DirectiveSet $directiveSet, $reportOnly)
     {
         $headerValue = $directiveSet->buildHeaderValue();
         if (!$headerValue) {
@@ -46,11 +44,6 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
         $headers = array(
             $hn('Content-Security-Policy') => $headerValue
         );
-
-        if ($compatHeaders) {
-            $headers[$hn('X-Content-Security-Policy')] = $headerValue;
-            $headers[$hn('X-Webkit-CSP')] = $headerValue;
-        }
 
         return $headers;
     }
@@ -83,6 +76,6 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
             }
         }
 
-        return new self($report, $enforce, !!$config['compat_headers']);
+        return new self($report, $enforce);
     }
 }
