@@ -24,7 +24,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $config = $this->processYamlConfiguration(
             "csp: ~"
         );
-        $this->assertContains('report_only', $config['csp']);
+        $this->assertArrayHasKey('report_only', $config['csp']);
         $this->assertFalse($config['csp']['report_only'], 'default value for report_only config should be false');
     }
 
