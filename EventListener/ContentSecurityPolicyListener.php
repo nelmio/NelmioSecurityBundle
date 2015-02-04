@@ -49,7 +49,6 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
 
         if ($compatHeaders) {
             $headers[$hn('X-Content-Security-Policy')] = $headerValue;
-            $headers[$hn('X-Webkit-CSP')] = $headerValue;
         }
 
         return $headers;

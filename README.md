@@ -193,9 +193,7 @@ nelmio_security:
 ```
 
 (Optional) Disable *compat_headers* to avoid sending X-Content-Security-Policy
-(IE10, IE11, Firefox < 23) and X-Webkit-CSP (Chrome < 25, Safari < 7). This will
-mean those browsers get no more CSP instructions, but it can help if you are
-experience issues with old iOS 5.0 or 5.1 versions that had buggy CSP implementations.
+(IE10, IE11, Firefox < 23). This will mean those browsers get no CSP instructions.
 
 ```yaml
 nelmio_security:
