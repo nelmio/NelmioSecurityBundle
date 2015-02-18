@@ -54,11 +54,6 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
         return $headers;
     }
 
-    private function buildHeaderName($baseName, $reportOnly)
-    {
-        return $baseName . ($reportOnly ? '-Report-Only' : '');
-    }
-
     public static function getSubscribedEvents()
     {
         return array(KernelEvents::RESPONSE => 'onKernelResponse');
