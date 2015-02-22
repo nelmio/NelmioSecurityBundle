@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->validate()
                 ->ifTrue(function($v) {
-                    return array_key_exists('forced_ssl', $v) && array_key_exists('flexible_ssl', $v);
+                    return $v['forced_ssl']['enabled'] && $v['flexible_ssl']['enabled'];
                 })
                 ->thenInvalid('"forced_ssl" and "flexible_ssl" can not be used together')
             ->end()
@@ -108,16 +108,16 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->arrayNode('flexible_ssl')
+                    ->canBeEnabled()
                     ->children()
-                        ->booleanNode('enabled')->defaultTrue()->end()
                         ->scalarNode('cookie_name')->defaultValue('auth')->end()
                         ->booleanNode('unsecured_logout')->defaultFalse()->end()
                     ->end()
                 ->end()
 
                 ->arrayNode('forced_ssl')
+                    ->canBeEnabled()
                     ->children()
-                        ->booleanNode('enabled')->defaultTrue()->end()
                         ->scalarNode('hsts_max_age')->defaultNull()->end()
                         ->booleanNode('hsts_subdomains')->defaultFalse()->end()
                         ->booleanNode('hsts_preload')->defaultFalse()->end()
@@ -128,8 +128,8 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->arrayNode('cookie_session')
+                    ->canBeEnabled()
                     ->children()
-                        ->booleanNode('enabled')->defaultTrue()->end()
                         ->scalarNode('name')->defaultValue('session')->end()
                         ->scalarNode('lifetime')->defaultValue(0)->end()
                         ->scalarNode('path')->defaultValue('/')->end()
