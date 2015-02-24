@@ -1,4 +1,5 @@
 parameters:
+    nelmio_security.external_redirects.target_validator.class: Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator
     nelmio_security.external_redirects.whitelist: ~
 
 services:
@@ -9,9 +10,18 @@ services:
             - %nelmio_security.external_redirects.abort%
             - %nelmio_security.external_redirects.override%
             - %nelmio_security.external_redirects.forward_as%
-            - %nelmio_security.external_redirects.whitelist%
+            - @?nelmio_security.external_redirect.target_validator
             - @?logger
             - @?router
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
             - { name: monolog.logger, channel: security }
+
+    nelmio_security.external_redirect.target_validator:
+        alias: nelmio_security.external_redirect.target_validator.whitelist
+
+    nelmio_security.external_redirect.target_validator.whitelist:
+        public: false
+        class: %nelmio_security.external_redirects.target_validator.class%
+        arguments:
+            - %nelmio_security.external_redirects.whitelist%

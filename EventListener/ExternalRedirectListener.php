@@ -11,6 +11,8 @@
 
 namespace Nelmio\SecurityBundle\EventListener;
 
+use Nelmio\SecurityBundle\ExternalRedirect\TargetValidator;
+use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
@@ -22,7 +24,7 @@ class ExternalRedirectListener
     private $abort;
     private $override;
     private $forwardAs;
-    private $whitelist;
+    private $targetValidator;
     private $logger;
     private $generator;
 
@@ -30,11 +32,11 @@ class ExternalRedirectListener
      * @param Boolean               $abort     If true, the offending redirects are turned into 403 responses, can't be combined with $override
      * @param string                $override  Absolute path, complete URL or route name that must be used instead of the offending redirect's url
      * @param string                $forwardAs Name of the route-/query string parameter the blocked url will be passed to destination location
-     * @param mixed                 $whitelist array of hosts to be whitelisted, or regex that matches whitelisted hosts
+     * @param mixed                 $targetValidator array of hosts to be whitelisted, or regex that matches whitelisted hosts, or implementation of TargetValidator
      * @param LoggerInterface       $logger    A logger, if it's present, detected offenses are logged at the warning level
      * @param UrlGeneratorInterface $generator Router or equivalent that can generate a route, only if override is a route name
      */
-    public function __construct($abort = true, $override = null, $forwardAs = null, $whitelist = null, LoggerInterface $logger = null, UrlGeneratorInterface $generator = null)
+    public function __construct($abort = true, $override = null, $forwardAs = null, $targetValidator = null, LoggerInterface $logger = null, UrlGeneratorInterface $generator = null)
     {
         if ($override && $abort) {
             throw new \LogicException('The ExternalRedirectListener can not abort *and* override redirects at the same time.');
@@ -42,18 +44,14 @@ class ExternalRedirectListener
         $this->abort = $abort;
         $this->override = $override;
         $this->forwardAs = $forwardAs;
-        if (is_array($whitelist)) {
-            if ($whitelist) {
-                $whitelist = array_map(function($el) {
-                    return ltrim($el, '.');
-                }, $whitelist);
-                $whitelist = array_map('preg_quote', $whitelist);
-                $whitelist = '(?:.*\.'.implode('|.*\.', $whitelist).'|'.implode('|', $whitelist).')';
-            } else {
-                $whitelist = null;
-            }
+
+        if (is_string($targetValidator) || is_array($targetValidator)) {
+            $targetValidator = new WhitelistBasedTargetValidator($targetValidator);
+        } elseif ($targetValidator !== null) {
+            throw new \LogicException('$targetValidator should be an array of hosts, a regular expression, or an implementation of TargetValidator.');
         }
-        $this->whitelist = $whitelist;
+        $this->targetValidator = $targetValidator;
+
         $this->logger = $logger;
         $this->generator = $generator;
     }
@@ -75,7 +73,7 @@ class ExternalRedirectListener
             return;
         }
 
-        if ($this->whitelist && preg_match('{^'.$this->whitelist.'$}i', parse_url($target, PHP_URL_HOST))) {
+        if (null !== $this->targetValidator && $this->targetValidator->isTargetAllowed($target)) {
             return;
         }
 
