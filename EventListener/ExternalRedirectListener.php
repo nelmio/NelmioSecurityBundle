@@ -47,7 +47,7 @@ class ExternalRedirectListener
 
         if (is_string($targetValidator) || is_array($targetValidator)) {
             $targetValidator = new WhitelistBasedTargetValidator($targetValidator);
-        } elseif ($targetValidator !== null) {
+        } elseif ($targetValidator !== null && ! $targetValidator instanceof TargetValidator) {
             throw new \LogicException('$targetValidator should be an array of hosts, a regular expression, or an implementation of TargetValidator.');
         }
         $this->targetValidator = $targetValidator;

@@ -13,6 +13,7 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 
+use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -75,6 +76,17 @@ class ExternalRedirectListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(true, $response->isRedirect());
         $this->assertSame('/override', $response->headers->get('Location'));
+    }
+
+    /**
+     * @depends testRedirectMatcher
+     */
+    public function testRedirectSkipsAllowedTargets()
+    {
+        $listener = new ExternalRedirectListener(true, null, null, new WhitelistBasedTargetValidator(array('bar.com')));
+
+        $response = $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com');
+        $this->assertTrue($response->isRedirect());
     }
 
     /**
