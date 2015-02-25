@@ -11,9 +11,8 @@ class WhitelistBasedTargetValidator implements TargetValidator
         if (is_array($whitelist)) {
             if ($whitelist) {
                 $whitelist = array_map(function($el) {
-                    return ltrim($el, '.');
+                    return preg_quote(ltrim($el, '.'));
                 }, $whitelist);
-                $whitelist = array_map('preg_quote', $whitelist);
                 $whitelist = '(?:.*\.'.implode('|.*\.', $whitelist).'|'.implode('|', $whitelist).')';
             } else {
                 $whitelist = null;
