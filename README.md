@@ -257,7 +257,7 @@ nelmio_security:
 Most websites do not use frames and do not need to be frame-able. This is a common attack vector
 for which all current browsers (IE8+, Opera10.5+, Safari4+, Chrome4+ and Firefox3.7+) have a
 solution. An extra header sent by your site will tell the browser that it can not be displayed in
-an frame. Browsers react by showing a short explanation instead of the content, or a blank page.
+a frame. Browsers react by showing a short explanation instead of the content, or a blank page.
 
 The valid values for the `X-Frame-Options` header are `DENY` (prevent framing from all pages) and
 `SAMEORIGIN` (prevent framing from all pages not on the same domain). Additionally this bundle
