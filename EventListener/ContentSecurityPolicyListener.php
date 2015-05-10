@@ -13,12 +13,14 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
     protected $report;
     protected $enforce;
     protected $compatHeaders;
+    protected $hosts;
 
-    public function __construct(DirectiveSet $report, DirectiveSet $enforce, $compatHeaders = true)
+    public function __construct(DirectiveSet $report, DirectiveSet $enforce, $compatHeaders = true, array $hosts = array())
     {
         $this->report = $report;
         $this->enforce = $enforce;
         $this->compatHeaders = $compatHeaders;
+        $this->hosts = $hosts;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -28,8 +30,10 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
         }
 
         $response = $e->getResponse();
-        $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
-        $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
+        if (empty($this->hosts) || in_array($e->getRequest()->server->get('HTTP_HOST'), $this->hosts)) {
+            $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
+            $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
+        }
     }
 
     private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders)
@@ -77,6 +81,6 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
             }
         }
 
-        return new self($report, $enforce, !!$config['compat_headers']);
+        return new self($report, $enforce, !!$config['compat_headers'], $config['hosts']);
     }
 }

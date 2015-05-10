@@ -161,6 +161,7 @@ class Configuration implements ConfigurationInterface
             ->addDirectives($node->children())
                 ->scalarNode('report_uri')->defaultValue('')->end()
                 ->booleanNode('report_only')->end()
+                ->arrayNode('hosts')->prototype('scalar')->end()->defaultValue(array())->end()
                 // leaving this enabled can cause issues with older iOS (5.x) versions
                 // and possibly other early CSP implementations
                 ->booleanNode('compat_headers')->defaultValue(true)->end()
