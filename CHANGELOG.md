@@ -1,3 +1,10 @@
+### 1.7.0 (2015-05-10)
+
+  * Added a `Nelmio\SecurityBundle\ExternalRedirect\TargetValidator` interface to implement custom rules for the external_redirects feature. You can override the `nelmio_security.external_redirect.target_validator` service to change the default.
+  * Added a `hosts` key in the CSP configuration to restrict CSP-checks to some host names
+  * Fixed a bug in `flexible_ssl` where the auth cookie was updated with a wrong expiration time the second time the visitor comes to the site.
+  * Removed X-Webkit-CSP header as none of the webkits using it are still current.
+
 ### 1.6.0 (2015-02-01)
 
   * Added a `forced_ssl.hsts_preload` flag to allow adding the preload attribute on HSTS headers
