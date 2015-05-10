@@ -82,16 +82,18 @@ class FlexibleSslListener implements LogoutHandlerInterface
             }
         }
 
-        // set the auth cookie
-        $response->headers->setCookie(new Cookie(
-            $this->cookieName,
-            '1',
-            $longestExpire,
-            '/',
-            null,
-            false,
-            false
-        ));
+        if (null === $e->getRequest()->cookies->get($this->cookieName)) {
+            // set the auth cookie
+            $response->headers->setCookie(new Cookie(
+                $this->cookieName,
+                '1',
+                $longestExpire,
+                '/',
+                null,
+                false,
+                false
+            ));
+        }
 
         // force session cookie to be secure
         $params = session_get_cookie_params();
