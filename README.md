@@ -98,6 +98,7 @@ nelmio_security:
                 - 'unsafe-inline'
                 - 'unsafe-eval'
                 - 'self'
+            hosts: []
         enforce:
             # see https://github.com/nelmio/NelmioSecurityBundle/issues/32
             report-uri: [/nelmio/csp/report]
@@ -141,6 +142,10 @@ Apart from content types, the policy also accepts `report-uri` which should be a
 [JSON payload](https://developer.mozilla.org/en-US/docs/Security/CSP/Using_CSP_violation_reports#Sample_violation_report)
 to whenever a policy directive is violated.
 
+Finally, an optional `hosts` key lets you configure which hostnames (e.g. `foo.example.org`)
+the CSP rule should be enforced on. If the list is empty (it is by default), all
+hostnames will use the CSP rule.
+
 ```yaml
 nelmio_security:
     csp:
@@ -156,6 +161,7 @@ nelmio_security:
                 - 'self'
                 - facebook.com
                 - flickr.com
+            hosts: []
         report:
             report-uri: /nelmio/csp/report
             script-src:
@@ -184,7 +190,7 @@ nelmio_security:
     methods:  [POST]
 ```
 
-(Optional) Use *report_logger_id* to log to the 'security' channel:
+(Optional) Use *report_logger_service* to log to the 'security' channel:
 
 ```yaml
 nelmio_security:
