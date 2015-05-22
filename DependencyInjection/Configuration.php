@@ -86,6 +86,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->defaultValue(array('^/.*' => array('header' => 'DENY')))
                         ->end()
+                        ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
                     ->end()
                 ->end()
 

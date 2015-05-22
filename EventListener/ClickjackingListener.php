@@ -13,19 +13,30 @@ namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class ClickjackingListener
+class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
     private $paths;
 
-    public function __construct($paths)
+    public function __construct($paths, $contentTypes)
     {
         $this->paths = $paths;
+        $this->contentTypes = $contentTypes;
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(KernelEvents::RESPONSE => 'onKernelResponse');
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+            return;
+        }
+
+        if (!$this->isContentTypeValid($e->getResponse())) {
             return;
         }
 

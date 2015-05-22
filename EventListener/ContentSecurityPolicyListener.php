@@ -2,20 +2,17 @@
 
 namespace Nelmio\SecurityBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
-class ContentSecurityPolicyListener implements EventSubscriberInterface
+class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListener
 {
     protected $report;
     protected $enforce;
     protected $compatHeaders;
     protected $hosts;
-    protected $contentTypes;
 
     public function __construct(DirectiveSet $report, DirectiveSet $enforce, $compatHeaders = true, array $hosts = array(), array $contentTypes = array())
     {
@@ -37,17 +34,6 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
             $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
             $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
         }
-    }
-
-    private function isContentTypeValid(Response $response)
-    {
-        if (empty($this->contentTypes)) {
-            return true;
-        }
-
-        $contentTypeData = explode(';', $response->headers->get('content-type'), 2);
-
-        return in_array(trim($contentTypeData[0]), $this->contentTypes, true);
     }
 
     private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders)
