@@ -100,6 +100,5 @@ class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->handler->onKernelRequest(new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
         $this->handler->onKernelResponse(new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
-
     }
 }
