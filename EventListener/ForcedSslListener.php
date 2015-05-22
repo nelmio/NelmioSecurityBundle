@@ -67,7 +67,7 @@ class ForcedSslListener
             $header = 'max-age='.$this->hstsMaxAge;
             $header .= ($this->hstsSubdomains ? '; includeSubDomains' : '');
             $header .= ($this->hstsPreload ? '; preload' : '');
-            $response->headers->set('Strict-Transport-Security',  $header);
+            $response->headers->set('Strict-Transport-Security', $header);
         }
     }
 }

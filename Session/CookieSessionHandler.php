@@ -142,7 +142,6 @@ class CookieSessionHandler implements \SessionHandlerInterface
     public function open($savePath, $sessionId)
     {
         if (!$this->request) {
-
             if ($this->logger) {
                 $this->logger->crit('CookieSessionHandler::open - The Request object is missing');
             }
@@ -163,7 +162,6 @@ class CookieSessionHandler implements \SessionHandlerInterface
     public function read($sessionId)
     {
         if (!$this->request) {
-
             if ($this->logger) {
                 $this->logger->crit('CookieSessionHandler::read - The Request object is missing');
             }
