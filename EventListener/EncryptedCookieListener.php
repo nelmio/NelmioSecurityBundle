@@ -25,7 +25,7 @@ class EncryptedCookieListener
     public function __construct(Encrypter $encrypter, $encryptedCookieNames)
     {
         $this->encrypter = $encrypter;
-        if (in_array('*', $encryptedCookieNames)) {
+        if (in_array('*', $encryptedCookieNames, true)) {
             $this->encryptedCookieNames = true;
         } else {
             $this->encryptedCookieNames = $encryptedCookieNames;
@@ -62,7 +62,7 @@ class EncryptedCookieListener
         $response = $e->getResponse();
 
         foreach ($response->headers->getCookies() as $cookie) {
-            if (true === $this->encryptedCookieNames || in_array($cookie->getName(), $this->encryptedCookieNames)) {
+            if (true === $this->encryptedCookieNames || in_array($cookie->getName(), $this->encryptedCookieNames, true)) {
                 $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
                 $encryptedCookie = new Cookie(
                     $cookie->getName(),

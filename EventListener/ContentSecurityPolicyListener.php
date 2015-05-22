@@ -30,7 +30,7 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
         }
 
         $response = $e->getResponse();
-        if (empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts)) {
+        if (empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) {
             $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
             $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
         }

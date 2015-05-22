@@ -51,7 +51,7 @@ class DirectiveSet
     {
         $policy = array();
         foreach ($this->directiveValues as $name => $value) {
-            if ($name == 'default-src' || $value != $this->getDirective('default-src')) {
+            if ($name === 'default-src' || $value !== $this->getDirective('default-src')) {
                 $policy[] = $name . ' ' . $value;
             }
         }
@@ -124,7 +124,7 @@ class DirectiveSet
 
     private function checkDirectiveName($name)
     {
-        if (!in_array($name, self::$directiveNames)) {
+        if (!in_array($name, self::$directiveNames, true)) {
             throw new \InvalidArgumentException('Unknown CSP directive name: ' . $name);
         }
     }
