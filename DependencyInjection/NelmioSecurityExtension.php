@@ -66,7 +66,7 @@ class NelmioSecurityExtension extends Extension
 
         if (!empty($config['content_type'])) {
             $loader->load('content_type.yml');
-            $container->setParameter('nelmio_security.content_type.nosniff', (bool) $config['content_type']['nosniff']);
+            $container->setParameter('nelmio_security.content_type.nosniff', $config['content_type']['nosniff']);
         }
 
         if (!empty($config['external_redirects'])) {
