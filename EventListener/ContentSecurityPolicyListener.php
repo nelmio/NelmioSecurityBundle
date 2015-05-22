@@ -2,6 +2,7 @@
 
 namespace Nelmio\SecurityBundle\EventListener;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -14,13 +15,15 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
     protected $enforce;
     protected $compatHeaders;
     protected $hosts;
+    protected $contentTypes;
 
-    public function __construct(DirectiveSet $report, DirectiveSet $enforce, $compatHeaders = true, array $hosts = array())
+    public function __construct(DirectiveSet $report, DirectiveSet $enforce, $compatHeaders = true, array $hosts = array(), array $contentTypes = array())
     {
         $this->report = $report;
         $this->enforce = $enforce;
         $this->compatHeaders = $compatHeaders;
         $this->hosts = $hosts;
+        $this->contentTypes = $contentTypes;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -30,10 +33,21 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
         }
 
         $response = $e->getResponse();
-        if (empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) {
+        if ((empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
             $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
             $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
         }
+    }
+
+    private function isContentTypeValid(Response $response)
+    {
+        if (empty($this->contentTypes)) {
+            return true;
+        }
+
+        $contentTypeData = explode(';', $response->headers->get('content-type'), 2);
+
+        return in_array(trim($contentTypeData[0]), $this->contentTypes, true);
     }
 
     private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders)
@@ -81,6 +95,6 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
             }
         }
 
-        return new self($report, $enforce, (bool) $config['compat_headers'], $config['hosts']);
+        return new self($report, $enforce, !!$config['compat_headers'], $config['hosts']);
     }
 }
