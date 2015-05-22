@@ -60,14 +60,39 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
     }
 
-    protected function callListener($listener, $path, $masterReq)
+    protected function callListener($listener, $path, $masterReq, $contentType = 'text/html')
     {
         $request = Request::create($path);
         $response = new Response();
+        $response->headers->add(array('content-type' => $contentType));
 
         $event = new FilterResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         return $response;
+    }
+
+    /**
+     * @dataProvider provideContentTypeForrestrictions
+     */
+    public function testClickjackingWithContentTypes($contentType, $result)
+    {
+        $this->listener = new ClickjackingListener(array(
+            '^/frames/' => array('header' => 'ALLOW'),
+            '/frames/' => array('header' => 'SAMEORIGIN'),
+            '^/.*' => array('header' => 'DENY'),
+            '.*' => array('header' => 'ALLOW'),
+        ), array('text/html'));
+
+        $response = $this->callListener($this->listener, '/', true, $contentType);
+        $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
+    }
+
+    public function provideContentTypeForrestrictions()
+    {
+        return array(
+            array('application/json', null),
+            array('text/html', 'DENY'),
+        );
     }
 }

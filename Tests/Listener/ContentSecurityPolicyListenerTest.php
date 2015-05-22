@@ -29,6 +29,14 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testWithContentTypeRestriction()
+    {
+        $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'"), false, true, array('text/html'));
+        $response = $this->callListener($listener, '/', true, 'application/json');
+
+        $this->assertEquals(null, $response->headers->get('Content-Security-Policy'));
+    }
+
     public function testScript()
     {
         $script = "script.example.org 'self' 'unsafe-eval' 'unsafe-inline'";
@@ -284,22 +292,23 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', $directiveSet->buildHeaderValue());
     }
 
-    protected function buildSimpleListener(array $directives, $reportOnly = false, $compatHeaders = true)
+    protected function buildSimpleListener(array $directives, $reportOnly = false, $compatHeaders = true, $contentTypes = array())
     {
         $directiveSet = new DirectiveSet();
         $directiveSet->setDirectives($directives);
 
         if ($reportOnly) {
-            return new ContentSecurityPolicyListener($directiveSet, new DirectiveSet(), $compatHeaders);
+            return new ContentSecurityPolicyListener($directiveSet, new DirectiveSet(), $compatHeaders, $contentTypes);
         } else {
-            return new ContentSecurityPolicyListener(new DirectiveSet(), $directiveSet, $compatHeaders);
+            return new ContentSecurityPolicyListener(new DirectiveSet(), $directiveSet, $compatHeaders, $contentTypes);
         }
     }
 
-    protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq)
+    protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq, $contentType = 'text/html')
     {
         $request  = Request::create($path);
         $response = new Response();
+        $response->headers->add(array('content-type' => $contentType));
 
         $event = new FilterResponseEvent(
             $this->kernel,

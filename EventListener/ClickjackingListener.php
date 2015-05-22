@@ -19,7 +19,7 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
     private $paths;
 
-    public function __construct($paths, $contentTypes)
+    public function __construct($paths, $contentTypes = array())
     {
         $this->paths = $paths;
         $this->contentTypes = $contentTypes;
