@@ -96,7 +96,6 @@ class ExternalRedirectListener
                     throw new \UnexpectedValueException('The listener needs a router/UrlGeneratorInterface object to override invalid redirects with routes');
                 }
                 $response->headers->set('Location', $this->generator->generate($this->override, $parameters));
-
             } else {
                 $query = '';
                 if (count($parameters) > 0) {
@@ -105,7 +104,6 @@ class ExternalRedirectListener
                 }
                 $response->headers->set('Location', $this->override.$query);
             }
-
         }
     }
 

@@ -21,7 +21,7 @@ class Signer
         $this->secret = $secret;
         $this->algo = $algo;
 
-        if (!in_array($this->algo, hash_algos())) {
+        if (!in_array($this->algo, hash_algos(), true)) {
             throw new \InvalidArgumentException(sprintf("The supplied hashing algorithm '%s' is not supported by this system.",
                 $this->algo));
         }

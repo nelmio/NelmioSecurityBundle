@@ -30,7 +30,7 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
         }
 
         $response = $e->getResponse();
-        if (empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts)) {
+        if (empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) {
             $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
             $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
         }
@@ -72,7 +72,7 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
             // legacy config
             $directiveSet = DirectiveSet::fromLegacyConfig($config);
 
-            if (!!$config['report_only']) {
+            if ((bool) $config['report_only']) {
                 $enforce = new DirectiveSet();
                 $report = $directiveSet;
             } else {
@@ -81,6 +81,6 @@ class ContentSecurityPolicyListener implements EventSubscriberInterface
             }
         }
 
-        return new self($report, $enforce, !!$config['compat_headers'], $config['hosts']);
+        return new self($report, $enforce, (bool) $config['compat_headers'], $config['hosts']);
     }
 }

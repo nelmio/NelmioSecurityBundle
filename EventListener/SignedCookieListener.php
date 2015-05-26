@@ -25,7 +25,7 @@ class SignedCookieListener
     public function __construct(Signer $signer, $signedCookieNames)
     {
         $this->signer = $signer;
-        if (in_array('*', $signedCookieNames)) {
+        if (in_array('*', $signedCookieNames, true)) {
             $this->signedCookieNames = true;
         } else {
             $this->signedCookieNames = $signedCookieNames;
@@ -62,7 +62,7 @@ class SignedCookieListener
         $response = $e->getResponse();
 
         foreach ($response->headers->getCookies() as $cookie) {
-            if (true === $this->signedCookieNames || in_array($cookie->getName(), $this->signedCookieNames)) {
+            if (true === $this->signedCookieNames || in_array($cookie->getName(), $this->signedCookieNames, true)) {
                 $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
                 $signedCookie = new Cookie(
                     $cookie->getName(),

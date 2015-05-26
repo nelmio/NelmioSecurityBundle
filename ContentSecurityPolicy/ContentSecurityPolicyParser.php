@@ -29,7 +29,7 @@ class ContentSecurityPolicyParser
 
         return array_map(
             function ($source) use ($keywords) {
-                if (in_array($source, $keywords)) {
+                if (in_array($source, $keywords, true)) {
                     return sprintf("'%s'", $source);
                 }
 
