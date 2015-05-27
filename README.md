@@ -67,6 +67,8 @@ load content from another domain than the page's domain.
   This disables the feature that some browsers have which uses content sniffing to determine if the response is a valid
   script file or not.
 
+* **[XSS Protection](#xss-protection)**: Enables/Disables Microsoft XSS Protection on compatible browsers (IE 8 and newer).
+
 ## Maximum Security Configuration (Read on for detailed recommendations!)
 
 ```yaml
@@ -109,6 +111,12 @@ nelmio_security:
     # disables content type sniffing for script resources
     content_type:
         nosniff: true
+
+    # Forces Microsoft's XSS-Protection with
+    # its block mode
+    xss_protection:
+        enabled: true
+        mode_block: true
 
     # forced HTTPS handling, don't combine with flexible mode
     # and make sure you have SSL working on your site before enabling this
@@ -552,6 +560,19 @@ content type headers. This is a non-standard header from Microsoft, more informa
 nelmio_security:
     content_type:
         nosniff: true
+```
+
+### XSS Protection
+
+Enables or disables Microsoft XSS Protection on compatible browsers. 
+This is a non-standard header from Microsoft, more information can be found in
+[their documentation at MSDN](http://blogs.msdn.com/b/ieinternals/archive/2011/01/31/controlling-the-internet-explorer-xss-filter-with-the-x-xss-protection-http-header.aspx).
+
+```yaml
+nelmio_security:
+    xss_protection:
+        enabled: true
+        mode_block: true
 ```
 
 ## License
