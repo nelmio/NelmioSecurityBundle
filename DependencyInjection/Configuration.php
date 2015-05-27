@@ -146,6 +146,13 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
+                ->arrayNode('xss_protection')
+                    ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
+                        ->booleanNode('mode_block')->defaultFalse()->end()
+                    ->end()
+                ->end()
+
                 ->append($this->addCspNode())
             ->end()
         ->end();

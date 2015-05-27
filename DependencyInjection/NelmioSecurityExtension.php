@@ -65,6 +65,13 @@ class NelmioSecurityExtension extends Extension
                 ->setArguments(array(new Reference($config['csp']['report_logger_service'])));
         }
 
+        if (!empty($config['xss_protection'])) {
+            $loader->load('xss_protection.yml');
+
+            $container->getDefinition('nelmio_security.xss_protection_listener')
+                ->setArguments(array($config['xss_protection']));
+        }
+
         if (!empty($config['content_type'])) {
             $loader->load('content_type.yml');
             $container->setParameter('nelmio_security.content_type.nosniff', $config['content_type']['nosniff']);
