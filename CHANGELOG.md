@@ -1,3 +1,7 @@
+### 1.8.0 (2015-xx-xx)
+
+  * Add HTTP response's content-type restriction for Clickjacking and CSP headers.
+
 ### 1.7.0 (2015-05-10)
 
   * Added a `Nelmio\SecurityBundle\ExternalRedirect\TargetValidator` interface to implement custom rules for the external_redirects feature. You can override the `nelmio_security.external_redirect.target_validator` service to change the default.

@@ -99,6 +99,7 @@ nelmio_security:
                 - 'unsafe-eval'
                 - 'self'
             hosts: []
+            content_types: []
         enforce:
             # see https://github.com/nelmio/NelmioSecurityBundle/issues/32
             report-uri: [/nelmio/csp/report]
@@ -142,6 +143,9 @@ Apart from content types, the policy also accepts `report-uri` which should be a
 [JSON payload](https://developer.mozilla.org/en-US/docs/Security/CSP/Using_CSP_violation_reports#Sample_violation_report)
 to whenever a policy directive is violated.
 
+An optional `content_types` key lets you restrict the Content Security Policy headers only on some HTTP 
+response given their content type.
+
 Finally, an optional `hosts` key lets you configure which hostnames (e.g. `foo.example.org`)
 the CSP rule should be enforced on. If the list is empty (it is by default), all
 hostnames will use the CSP rule.
@@ -162,6 +166,7 @@ nelmio_security:
                 - facebook.com
                 - flickr.com
             hosts: []
+            content_types: []
         report:
             report-uri: /nelmio/csp/report
             script-src:
@@ -282,6 +287,7 @@ nelmio_security:
     clickjacking:
         paths:
             '^/.*': DENY
+        content_types: []
 ```
 
 Whitelist configuration (deny all but a few URLs):
@@ -294,6 +300,7 @@ nelmio_security:
             '^/business/': 'ALLOW FROM https://biz.example.org'
             '^/local/': SAMEORIGIN
             '^/.*': DENY
+        content_types: []
 ```
 
 You can also of course only deny a few critical URLs, while leaving the rest alone:
@@ -303,7 +310,11 @@ nelmio_security:
     clickjacking:
         paths:
             '^/message/write': DENY
+        content_types: []
 ```
+
+An optional `content_types` key lets you restrict the X-Frame-Options header only on some HTTP 
+response given their content type.
 
 ### **External Redirects Detection**:
 

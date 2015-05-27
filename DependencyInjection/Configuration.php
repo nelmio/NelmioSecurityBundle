@@ -86,6 +86,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->defaultValue(array('^/.*' => array('header' => 'DENY')))
                         ->end()
+                        ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
                     ->end()
                 ->end()
 
@@ -162,6 +163,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('report_uri')->defaultValue('')->end()
                 ->booleanNode('report_only')->end()
                 ->arrayNode('hosts')->prototype('scalar')->end()->defaultValue(array())->end()
+                ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
                 // leaving this enabled can cause issues with older iOS (5.x) versions
                 // and possibly other early CSP implementations
                 ->booleanNode('compat_headers')->defaultValue(true)->end()
