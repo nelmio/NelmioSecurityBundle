@@ -26,6 +26,10 @@ class ContentTypeListener
 
         $response = $e->getResponse();
 
+        if ($response->isRedirection()) {
+            return;
+        }
+
         $response->headers->add(array('X-Content-Type-Options' => 'nosniff'));
     }
 }
