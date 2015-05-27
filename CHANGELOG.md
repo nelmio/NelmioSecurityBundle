@@ -1,6 +1,7 @@
 ### 1.8.0 (2015-xx-xx)
 
   * Add HTTP response's content-type restriction for Clickjacking and CSP headers.
+  * Disable Clickjacking, CSP and NoSniff headers in context of HTTP redirection
 
 ### 1.7.0 (2015-05-10)
 

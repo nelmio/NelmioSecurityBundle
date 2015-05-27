@@ -41,6 +41,11 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
         }
 
         $response = $e->getResponse();
+
+        if ($response->isRedirection()) {
+            return;
+        }
+
         $currentPath = $e->getRequest()->getPathInfo() ?: '/';
 
         foreach ($this->paths as $path => $options) {
