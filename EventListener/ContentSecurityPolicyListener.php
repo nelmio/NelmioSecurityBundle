@@ -86,6 +86,6 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
             }
         }
 
-        return new self($report, $enforce, !!$config['compat_headers'], $config['hosts']);
+        return new self($report, $enforce, (bool) $config['compat_headers'], $config['hosts'], $config['content_types']);
     }
 }
