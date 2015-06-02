@@ -3,5 +3,4 @@ services:
         class: Nelmio\SecurityBundle\EventListener\XssProtectionListener
         tags:
             - { name: kernel.event_subscriber }
-        factory_class: Nelmio\SecurityBundle\EventListener\XssProtectionListener
-        factory_method: fromConfig
+        factory: ["Nelmio\\SecurityBundle\\EventListener\\XssProtectionListener", fromConfig]
