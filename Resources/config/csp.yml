@@ -1,10 +1,18 @@
+parameters:
+    nelmio_security.nonce_generator.number_of_bytes: 16
+
 services:
     nelmio_security.csp_listener:
         class: Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener
         tags:
             - { name: kernel.event_subscriber }
-        factory: [Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener, fromConfig]
 
     nelmio_security.csp_reporter_controller:
         class: Nelmio\SecurityBundle\Controller\ContentSecurityPolicyController
         arguments: ['@logger']
+
+    nelmio_security.nonce_generator:
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator
+        arguments: ["@security.secure_random", "%nelmio_security.nonce_generator.number_of_bytes%"]
+
+

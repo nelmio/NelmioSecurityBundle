@@ -87,7 +87,33 @@ class DirectiveSet
             }
         }
 
-        return implode('; ', $policy);
+        return join('; ', $policy);
+    }
+
+    public function buildHeaderValueWithNonce($nonce)
+    {
+        $policy = array();
+        foreach ($this->directiveValues as $name => $value) {
+            if (in_array($name, array('script-src', 'style-src'))) {
+                $policy[] = $name . ' ' . $value . ' ' . $nonce;
+            } elseif ($name === 'default-src' || $value !== $this->getDirective('default-src')) {
+                $policy[] = $name . ' ' . $value;
+            }
+        }
+
+        $isDefaultSrcSet = $this->getDirective('default-src') !== '';
+        if ($isDefaultSrcSet) {
+            if (empty($this->directiveValues['script-src'])) {
+                $policy[] = 'script-src ' . $this->getDirective('default-src') . ' ' . $nonce;
+            }
+
+            if (empty($this->directiveValues['style-src'])) {
+                $policy[] = 'style-src ' . $this->getDirective('default-src') . ' ' . $nonce;
+            }
+
+        }
+
+        return join('; ', $policy);
     }
 
     public static function fromConfig(array $config, $kind)
