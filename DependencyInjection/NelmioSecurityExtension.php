@@ -14,6 +14,7 @@ namespace Nelmio\SecurityBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -61,11 +62,23 @@ class NelmioSecurityExtension extends Extension
                 $loader->load('csp_legacy.yml');
             }
 
-            $container->getDefinition('nelmio_security.csp_listener')
-                ->setArguments(array($config['csp']));
+            $cspConfig = $config['csp'];
+
+            if (array_key_exists('report', $cspConfig) || array_key_exists('enforce', $cspConfig)) {
+                $enforceDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'enforce');
+                $reportDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'report');
+            } else {
+                list($enforceDefinition, $reportDefinition) = $this->buildDirectiveSetDefinitionFromLegacyConfig($cspConfig);
+            }
+
+            $cspListenerDefinition = $container->getDefinition('nelmio_security.csp_listener');
+            $cspListenerDefinition->setArguments(array($reportDefinition, $enforceDefinition, (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']));
+            if ($cspConfig['enable_nonce']) {
+                $cspListenerDefinition->addMethodCall('setNonceGenerator', array(new Reference('nelmio_security.nonce_generator')));
+            }
 
             $container->getDefinition('nelmio_security.csp_reporter_controller')
-                ->setArguments(array(new Reference($config['csp']['report_logger_service'])));
+                ->setArguments(array(new Reference($cspConfig['report_logger_service'])));
         }
 
         if (!empty($config['xss_protection'])) {
@@ -135,5 +148,59 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.forced_ssl.whitelist', $config['forced_ssl']['whitelist']);
             $container->setParameter('nelmio_security.forced_ssl.hosts', $config['forced_ssl']['hosts']);
         }
+    }
+
+    /**
+     * @param array $config
+     * @param string $type
+     * @return Definition
+     */
+    private function buildDirectiveSetDefinition($config, $type)
+    {
+        $directiveDefinition = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
+        $directiveDefinition->setFactoryClass('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
+        $directiveDefinition->setFactoryMethod('fromConfig');
+        $directiveDefinition->setArguments(array($config, $type));
+        return $directiveDefinition;
+    }
+
+    /**
+     * @param array $config
+     * @return array
+     */
+    private function buildDirectiveSetDefinitionFromLegacyConfig($config)
+    {
+        $directiveSet = $this->loadLegacyDirectiveValues($config);
+
+        if ((bool)$config['report_only']) {
+            $enforce = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
+            $report = $directiveSet;
+            return array($enforce, $report);
+
+        } else {
+            $enforce = $directiveSet;
+            $report = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
+            return array($enforce, $report);
+        }
+    }
+
+    private function loadLegacyDirectiveValues(array $config)
+    {
+        $directiveSetDefinition = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
+        $parser = new ContentSecurityPolicyParser();
+
+        foreach (DirectiveSet::getLegacyNamesMap() as $old => $new) {
+            if (!array_key_exists($old, $config)) {
+                continue;
+            }
+
+            if ($old === 'report_uri') {
+                $directiveSetDefinition->addMethodCall('setDirective', array($new, $config[$old]));
+            } else {
+                $directiveSetDefinition->addMethodCall('setDirective', array($new, $parser->parseSourceList($config[$old])));
+            }
+        }
+
+        return $directiveSetDefinition;
     }
 }

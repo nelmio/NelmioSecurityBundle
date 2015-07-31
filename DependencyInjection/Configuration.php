@@ -181,6 +181,7 @@ class Configuration implements ConfigurationInterface
                 // and possibly other early CSP implementations
                 ->booleanNode('compat_headers')->defaultValue(true)->end()
                 ->scalarNode('report_logger_service')->defaultValue('logger')->end()
+                ->booleanNode('enable_nonce')->defaultValue(false)->end()
                 ->append($this->addReportOrEnforceNode('report'))
                 ->append($this->addReportOrEnforceNode('enforce'))
             ->end()

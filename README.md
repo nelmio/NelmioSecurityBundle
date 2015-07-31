@@ -220,6 +220,16 @@ nelmio_security:
         compat_headers: false
 ```
 
+(Optional) Use *enable_nonce* to add a nonce value to your every request.
+
+```yaml
+nelmio_security:
+    csp:
+        enable_nonce: true
+```
+
+The nonce token that was used in the current request can be retrieved by using the *nelmio_security.nonce_generator* service.
+
 ### **Signed Cookies**:
 
 Ideally you should explicitly specify which cookies to sign. The reason for this is simple.

@@ -59,24 +59,18 @@ class DirectiveSet
         return join('; ', $policy);
     }
 
-    public static function fromLegacyConfig(array $config)
+    public function buildHeaderValueWithNonce($nonce)
     {
-        $directiveSet = new self();
-        $parser = new ContentSecurityPolicyParser();
-
-        foreach (self::getLegacyNamesMap() as $old => $new) {
-            if (!array_key_exists($old, $config)) {
-                continue;
-            }
-
-            if ($old === 'report_uri') {
-                $directiveSet->setDirective($new, $config[$old]);
-            } else {
-                $directiveSet->setDirective($new, $parser->parseSourceList($config[$old]));
+        $policy = array();
+        foreach ($this->directiveValues as $name => $value) {
+            if (in_array($name, array('script-src', 'style-src'))) {
+                $policy[] = $name . ' ' . $value . ' ' . $nonce;
+            } elseif ($name === 'default-src' || $value !== $this->getDirective('default-src')) {
+                $policy[] = $name . ' ' . $value;
             }
         }
 
-        return $directiveSet;
+        return join('; ', $policy);
     }
 
     public static function fromConfig(array $config, $kind)

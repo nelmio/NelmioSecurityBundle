@@ -92,4 +92,13 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $configDefinition = new Configuration();
         return $processor->processConfiguration($configDefinition, array($parsedYaml));
     }
+
+    public function testCspEnableNonceDefaultsToFalse()
+    {
+        $config = $this->processYamlConfiguration(
+            "csp: ~"
+        );
+        $this->assertArrayHasKey('enable_nonce', $config['csp']);
+        $this->assertFalse($config['csp']['enable_nonce'], 'default value for csp.enable_nonce config should be false');
+    }
 }
