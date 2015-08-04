@@ -20,7 +20,8 @@ class NonceGeneratorTest extends \PHPUnit_Framework_TestCase
         ;
 
         /** @var NonceGenerator $nonceGenerator */
-        $this->assertEquals("'nonce-12345'", $nonceGenerator->generate());
-        $this->assertEquals("12345", $nonceGenerator->getCurrentToken());
+        $this->assertEquals('12345', $nonceGenerator->generate());
+        $this->assertEquals('12345', $nonceGenerator->getCurrentNonce());
+        $this->assertEquals("'nonce-12345'", $nonceGenerator->getCurrentNonceForHeaders());
     }
 }

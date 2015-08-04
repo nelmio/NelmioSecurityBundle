@@ -39,6 +39,13 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $this->enforce;
     }
 
+    public function onKernelRequest()
+    {
+        if ($this->nonceGenerator !== null) {
+            $this->nonceGenerator->generate();
+        }
+    }
+
     public function onKernelResponse(FilterResponseEvent $e)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
@@ -54,7 +61,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         if ((empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
             $nonce = null;
             if ($this->nonceGenerator !== null) {
-                $nonce = $this->nonceGenerator->generate();
+                $nonce = $this->nonceGenerator->getCurrentNonceForHeaders();
             }
 
             $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders, $nonce));
@@ -102,6 +109,9 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
 
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::RESPONSE => 'onKernelResponse');
+        return array(
+            KernelEvents::REQUEST => 'onKernelRequest',
+            KernelEvents::RESPONSE => 'onKernelResponse',
+        );
     }
 }

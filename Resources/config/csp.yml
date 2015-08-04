@@ -13,6 +13,6 @@ services:
 
     nelmio_security.nonce_generator:
         class: Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator
-        arguments: ["@logger", "%nelmio_security.nonce_generator.number_of_bytes%"]
+        arguments: ["@security.secure_random", "%nelmio_security.nonce_generator.number_of_bytes%"]
 
 
