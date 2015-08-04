@@ -56,6 +56,10 @@ class NonceGenerator
      */
     public function getCurrentNonceForHeaders()
     {
+        if ($this->currentNonce === null) {
+            return null;
+        }
+
         return $this->prepareNonceForHeaders($this->currentNonce);
     }
 
