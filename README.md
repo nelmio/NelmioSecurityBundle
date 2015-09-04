@@ -221,15 +221,13 @@ nelmio_security:
 ```
 
 (Optional) Use *enable_nonce* to add a nonce value to your every request.
-**Note:** You have to set *style-src* or/and *script-src* explicitly. Setting the default-src directive is not enough.
 
 ```yaml
 nelmio_security:
     csp:
         enable_nonce: true
         enforce:
-            style-src: ['self']
-            script-src: ['self']
+            default-src: ['self']
 ```
 
 The nonce value that was used in the current request can be retrieved by using the *nelmio_security.nonce_generator* service:

@@ -70,6 +70,18 @@ class DirectiveSet
             }
         }
 
+        $isDefaultSrcSet = $this->getDirective('default-src') !== '';
+        if ($isDefaultSrcSet) {
+            if (empty($this->directiveValues['script-src'])) {
+                $policy[] = 'script-src ' . $this->getDirective('default-src') . ' ' . $nonce;
+            }
+
+            if (empty($this->directiveValues['style-src'])) {
+                $policy[] = 'style-src ' . $this->getDirective('default-src') . ' ' . $nonce;
+            }
+
+        }
+
         return join('; ', $policy);
     }
 
