@@ -38,7 +38,6 @@ class NonceGeneratorTest extends \PHPUnit_Framework_TestCase
             ->will($this->onConsecutiveCalls('first-nonce', 'second-nonce'))
         ;
 
-
         // nonce should stay the same after the first generate call
         /** @var NonceGenerator $nonceGenerator */
         $this->assertEquals('first-nonce', $nonceGenerator->generate());
