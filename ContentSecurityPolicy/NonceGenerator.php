@@ -35,7 +35,9 @@ class NonceGenerator
      */
     public function generate()
     {
-        $this->currentNonce = $this->buildNonce();
+        if ($this->currentNonce === null) {
+            $this->currentNonce = $this->buildNonce();
+        }
         return $this->currentNonce;
     }
 
