@@ -1,8 +1,9 @@
-### 1.8.0 (2015-xx-xx)
+### 1.8.0 (2015-09-12)
 
-  * Add HTTP response's content-type restriction for Clickjacking and CSP headers.
-  * Add Microsoft's XSS-Protection support
-  * Disable Clickjacking, CSP and NoSniff headers in context of HTTP redirection
+  * Added HTTP response's content-type restriction for Clickjacking and CSP headers.
+  * Added Microsoft's XSS-Protection support
+  * Disabled Clickjacking, CSP and NoSniff headers in the context of HTTP redirects
+  * Fixed bug in handling of 
 
 ### 1.7.0 (2015-05-10)
 
