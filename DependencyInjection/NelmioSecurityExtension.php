@@ -92,7 +92,7 @@ class NelmioSecurityExtension extends Extension
             }
             if (!$config['external_redirects']['log']) {
                 $def = $container->getDefinition('nelmio_security.external_redirect_listener');
-                $def->replaceArgument(2, null);
+                $def->replaceArgument(4, null);
             }
         }
 
