@@ -3,7 +3,7 @@
   * Added HTTP response's content-type restriction for Clickjacking and CSP headers.
   * Added Microsoft's XSS-Protection support
   * Disabled Clickjacking, CSP and NoSniff headers in the context of HTTP redirects
-  * Fixed bug in handling of 
+  * Fixed bug in handling of the external_redirects.log being disabled
 
 ### 1.7.0 (2015-05-10)
 
