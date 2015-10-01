@@ -27,10 +27,10 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
     {
         $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
         $this->listener = new ClickjackingListener(array(
-            '^/frames/' => array('header' => 'ALLOW'),
-            '/frames/' => array('header' => 'SAMEORIGIN'),
-            '^/.*' => array('header' => 'DENY'),
-            '.*' => array('header' => 'ALLOW'),
+            array('path' => '^/frames/', 'header' => 'ALLOW'),
+            array('path' => '/frames/', 'header' => 'SAMEORIGIN'),
+            array('path' => '^/.*', 'header' => 'DENY'),
+            array('path' => '.*', 'header' => 'ALLOW'),
         ));
     }
 
@@ -78,10 +78,10 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
     public function testClickjackingWithContentTypes($contentType, $result)
     {
         $this->listener = new ClickjackingListener(array(
-            '^/frames/' => array('header' => 'ALLOW'),
-            '/frames/' => array('header' => 'SAMEORIGIN'),
-            '^/.*' => array('header' => 'DENY'),
-            '.*' => array('header' => 'ALLOW'),
+            array('path' => '^/frames/', 'header' => 'ALLOW'),
+            array('path' => '/frames/', 'header' => 'SAMEORIGIN'),
+            array('path' => '^/.*', 'header' => 'DENY'),
+            array('path' => '.*', 'header' => 'ALLOW'),
         ), array('text/html'));
 
         $response = $this->callListener($this->listener, '/', true, $contentType);

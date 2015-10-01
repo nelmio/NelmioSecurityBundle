@@ -1,3 +1,7 @@
+### 1.9.0 (2015-xx-xx)
+
+  * Deprecate clickjacking "paths" configuration in favor of "rules"
+
 ### 1.8.0 (2015-09-12)
 
   * Added HTTP response's content-type restriction for Clickjacking and CSP headers.

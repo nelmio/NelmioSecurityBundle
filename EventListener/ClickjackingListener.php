@@ -17,11 +17,11 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
-    private $paths;
+    private $rules;
 
-    public function __construct($paths, $contentTypes = array())
+    public function __construct($rules, $contentTypes = array())
     {
-        $this->paths = $paths;
+        $this->rules = $rules;
         $this->contentTypes = $contentTypes;
     }
 
@@ -48,12 +48,12 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
 
         $currentPath = $e->getRequest()->getPathInfo() ?: '/';
 
-        foreach ($this->paths as $path => $options) {
-            if (preg_match('{'.$path.'}i', $currentPath)) {
-                if ('ALLOW' === $options['header']) {
+        foreach ($this->rules as $rule) {
+            if (preg_match('{'.$rule['path'].'}i', $currentPath)) {
+                if ('ALLOW' === $rule['header']) {
                     $response->headers->remove('X-Frame-Options');
                 } else {
-                    $response->headers->set('X-Frame-Options', $options['header']);
+                    $response->headers->set('X-Frame-Options', $rule['header']);
                 }
 
                 return;

@@ -58,6 +58,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('clickjacking')
                     ->fixXmlConfig('path')
                     ->children()
+                        // Let's keep this node for BC until 2.0
                         ->arrayNode('paths')
                             ->useAttributeAsKey('pattern')
                             ->prototype('array')
@@ -84,7 +85,33 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('header')->defaultValue('DENY')->end()
                                 ->end()
                             ->end()
-                            ->defaultValue(array('^/.*' => array('header' => 'DENY')))
+                            ->defaultValue(array())
+                        ->end()
+                        ->arrayNode('rules')
+                            ->prototype('array')
+                                ->validate()
+                                    ->ifTrue(function($v) {
+                                        return isset($v['header']) && !in_array($v['header'], array('DENY', 'SAMEORIGIN', 'ALLOW'), true)
+                                        && !preg_match('{^ALLOW FROM \S+}', $v['header']);
+                                    })
+                                    ->thenInvalid('Possible header values are DENY, SAMEORIGIN, ALLOW and ALLOW FROM [url], got: %s')
+                                ->end()
+                                ->children()
+                                    ->scalarNode('path')->defaultValue('DENY')->end()
+                                    ->scalarNode('header')
+                                        ->defaultValue('DENY')
+                                        ->beforeNormalization()
+                                            ->always(function($v) {
+                                                return preg_replace_callback('{^(?:ALLOW|DENY|SAMEORIGIN)(?: FROM)?}i', function ($m) { return strtoupper($m[0]); }, $v);
+                                            })
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                            // For BC, drop this when releasing 2.0
+                            ->defaultValue(array())
+                            // For BC, uncomment this when releasing 2.0
+                            ////->defaultValue(array(array('path'=> '^/.*', 'header' => 'DENY')))
                         ->end()
                         ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
                     ->end()

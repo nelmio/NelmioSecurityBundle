@@ -293,21 +293,22 @@ Default configuration (deny everything):
 ```yaml
 nelmio_security:
     clickjacking:
-        paths:
-            '^/.*': DENY
+        rules:
+            - { path: '^/.*', header: 'DENY' }
         content_types: []
 ```
 
-Whitelist configuration (deny all but a few URLs):
+Whitelist configuration (deny all but a few URLs). First rule that match, from top to bottom, 
+stops and apply the corresponding header:
 
 ```yaml
 nelmio_security:
     clickjacking:
-        paths:
-            '^/iframes/': ALLOW
-            '^/business/': 'ALLOW FROM https://biz.example.org'
-            '^/local/': SAMEORIGIN
-            '^/.*': DENY
+        rules:
+            - { path: '^/iframes/', header: 'ALLOW' }
+            - { path: '^/business/', header: 'ALLOW FROM https://biz.example.org' }
+            - { path: '^/local/', header: 'SAMEORIGIN' }
+            - { path: '^/.*', header: 'DENY' }
         content_types: []
 ```
 
@@ -316,8 +317,8 @@ You can also of course only deny a few critical URLs, while leaving the rest alo
 ```yaml
 nelmio_security:
     clickjacking:
-        paths:
-            '^/message/write': DENY
+        rules:
+            - { path: '^/message/write', header: 'DENY' }
         content_types: []
 ```
 
