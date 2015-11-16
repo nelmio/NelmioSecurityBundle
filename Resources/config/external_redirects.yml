@@ -6,12 +6,12 @@ services:
         scope: request
         class: Nelmio\SecurityBundle\EventListener\ExternalRedirectListener
         arguments:
-            - %nelmio_security.external_redirects.abort%
-            - %nelmio_security.external_redirects.override%
-            - %nelmio_security.external_redirects.forward_as%
-            - @?nelmio_security.external_redirect.target_validator
-            - @?logger
-            - @?router
+            - '%nelmio_security.external_redirects.abort%'
+            - '%nelmio_security.external_redirects.override%'
+            - '%nelmio_security.external_redirects.forward_as%'
+            - '@?nelmio_security.external_redirect.target_validator'
+            - '@?logger'
+            - '@?router'
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
             - { name: monolog.logger, channel: security }
@@ -23,4 +23,4 @@ services:
         public: false
         class: Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator
         arguments:
-            - %nelmio_security.external_redirects.whitelist%
+            - '%nelmio_security.external_redirects.whitelist%'
