@@ -8,4 +8,4 @@ services:
 
     nelmio_security.csp_reporter_controller:
         class: Nelmio\SecurityBundle\Controller\ContentSecurityPolicyController
-        arguments: ["@logger"]
+        arguments: ['@logger']

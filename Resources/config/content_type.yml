@@ -3,7 +3,7 @@ services:
         scope: request
         class: Nelmio\SecurityBundle\EventListener\ContentTypeListener
         arguments:
-            - %nelmio_security.content_type.nosniff%
+            - '%nelmio_security.content_type.nosniff%'
 
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
