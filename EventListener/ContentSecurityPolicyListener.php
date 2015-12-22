@@ -23,6 +23,16 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->contentTypes = $contentTypes;
     }
 
+    public function getReport()
+    {
+        return $this->report;
+    }
+
+    public function getEnforcement()
+    {
+        return $this->enforce;
+    }
+
     public function onKernelResponse(FilterResponseEvent $e)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
