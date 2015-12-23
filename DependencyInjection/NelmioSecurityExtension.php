@@ -51,7 +51,21 @@ class NelmioSecurityExtension extends Extension
 
         if (!empty($config['clickjacking'])) {
             $loader->load('clickjacking.yml');
-            $container->setParameter('nelmio_security.clickjacking.paths', $config['clickjacking']['paths']);
+
+            // Keep this for BC until 2.0
+            $rules = [];
+            foreach ($config['clickjacking']['paths'] as $path => $option) {
+                $rules[] = array('path' => $path, 'header' => $option['header']);
+            }
+
+            $rules = array_merge($rules, $config['clickjacking']['rules']);
+
+            // For BC, drop this when releasing 2.0
+            if (empty($rules)) {
+                $rules[] = array('path' => '^/.*', 'header' => 'DENY');
+            }
+
+            $container->setParameter('nelmio_security.clickjacking.rules', $rules);
             $container->setParameter('nelmio_security.clickjacking.content_types', $config['clickjacking']['content_types']);
         }
 
