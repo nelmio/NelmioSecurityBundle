@@ -3,8 +3,7 @@ services:
         class: Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener
         tags:
             - { name: kernel.event_subscriber }
-        factory_class: Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener
-        factory_method: fromConfig
+        factory: [Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener, fromConfig]
 
     nelmio_security.csp_reporter_controller:
         class: Nelmio\SecurityBundle\Controller\ContentSecurityPolicyController
