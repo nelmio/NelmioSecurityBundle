@@ -59,6 +59,7 @@ class Configuration implements ConfigurationInterface
                     ->fixXmlConfig('path')
                     ->children()
                         ->arrayNode('paths')
+                            ->normalizeKeys(false)
                             ->useAttributeAsKey('pattern')
                             ->prototype('array')
                                 ->beforeNormalization()
