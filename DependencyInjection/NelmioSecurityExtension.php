@@ -11,14 +11,13 @@
 
 namespace Nelmio\SecurityBundle\DependencyInjection;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\ContentSecurityPolicyParser;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
+use Symfony\Component\HttpKernel\Kernel;
 
 class NelmioSecurityExtension extends Extension
 {
@@ -56,7 +55,11 @@ class NelmioSecurityExtension extends Extension
         }
 
         if (!empty($config['csp'])) {
-            $loader->load('csp.yml');
+            if (version_compare(Kernel::VERSION, '2.6', '>=')) {
+                $loader->load('csp.yml');
+            } else {
+                $loader->load('csp_legacy.yml');
+            }
 
             $container->getDefinition('nelmio_security.csp_listener')
                 ->setArguments(array($config['csp']));
@@ -66,7 +69,11 @@ class NelmioSecurityExtension extends Extension
         }
 
         if (!empty($config['xss_protection'])) {
-            $loader->load('xss_protection.yml');
+            if (version_compare(Kernel::VERSION, '2.6', '>=')) {
+                $loader->load('xss_protection.yml');
+            } else {
+                $loader->load('xss_protection_legacy.yml');
+            }
 
             $container->getDefinition('nelmio_security.xss_protection_listener')
                 ->setArguments(array($config['xss_protection']));
