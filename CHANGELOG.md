@@ -1,3 +1,10 @@
+### 1.9.0 (2016-01-xx)
+
+  * Add Symfony 3 compatibility
+  * external_redirects definition can now contains full URL
+  * Allow dynamic CSP configuration
+  * BugFix: Fix clickjacking URL normalization when containing dash and no underscore
+
 ### 1.8.0 (2015-09-12)
 
   * Added HTTP response's content-type restriction for Clickjacking and CSP headers.
