@@ -1,4 +1,4 @@
-### 1.9.0 (2016-01-xx)
+### 1.9.0 (2016-01-04)
 
   * Add Symfony 3 compatibility
   * external_redirects definition can now contains full URL
