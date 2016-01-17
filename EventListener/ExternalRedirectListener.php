@@ -15,7 +15,7 @@ use Nelmio\SecurityBundle\ExternalRedirect\TargetValidator;
 use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 

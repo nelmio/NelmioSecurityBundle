@@ -1,3 +1,7 @@
+### 1.9.1 (2016-01-17)
+
+  * BugFix: Fix LoggerInterface type hints to support PSR-3 loggers and not only Symfony 2.0 loggers
+
 ### 1.9.0 (2016-01-04)
 
   * Add Symfony 3 compatibility
