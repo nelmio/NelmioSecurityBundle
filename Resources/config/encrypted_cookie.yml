@@ -1,6 +1,5 @@
 services:
     nelmio_security.encrypted_cookie_listener:
-        scope: request
         class: Nelmio\SecurityBundle\EventListener\EncryptedCookieListener
         arguments:
             - '@nelmio_security.encrypter'

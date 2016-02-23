@@ -3,7 +3,6 @@ parameters:
 
 services:
     nelmio_security.external_redirect_listener:
-        scope: request
         class: Nelmio\SecurityBundle\EventListener\ExternalRedirectListener
         arguments:
             - '%nelmio_security.external_redirects.abort%'

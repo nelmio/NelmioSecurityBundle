@@ -1,6 +1,5 @@
 services:
     nelmio_security.signed_cookie_listener:
-        scope: request
         class: Nelmio\SecurityBundle\EventListener\SignedCookieListener
         arguments:
             - '@nelmio_security.signer'
