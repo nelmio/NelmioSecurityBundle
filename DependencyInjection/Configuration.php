@@ -131,6 +131,7 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                             ->defaultValue(array())
                         ->end()
+                        ->booleanNode('x_forwarded_proto')->defaultFalse()->end()
                     ->end()
                 ->end()
 

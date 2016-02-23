@@ -408,6 +408,14 @@ framework:
         cookie_secure: true
 ```
 
+If the application is behind a reverse proxy or load balancer you can enable the check for `X-Forwarded-Proto`:
+
+```yaml
+nelmio_security:
+    forced_ssl:
+        x_forwarded_proto: true
+```
+
 To keep a few URLs from being force-redirected to SSL you can define a whitelist of regular
 expressions:
 

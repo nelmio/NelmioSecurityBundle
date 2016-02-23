@@ -1,3 +1,7 @@
+### x.x.x (2016-xx-xx)
+
+  * Added support for `x-forwarded-proto` check on force SSL
+
 ### 1.10.0 (2016-02-23)
 
   * Added ability to restrict forced_ssl capability to some hostnames only

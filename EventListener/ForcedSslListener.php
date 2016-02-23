@@ -11,11 +11,9 @@
 
 namespace Nelmio\SecurityBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ForcedSslListener
@@ -25,14 +23,22 @@ class ForcedSslListener
     private $hstsPreload;
     private $whitelist;
     private $hosts;
+    private $xForwardedProto;
 
-    public function __construct($hstsMaxAge, $hstsSubdomains, $hstsPreload = false, array $whitelist = array(), array $hosts = array())
-    {
+    public function __construct(
+        $hstsMaxAge,
+        $hstsSubdomains,
+        $hstsPreload = false,
+        array $whitelist = array(),
+        array $hosts = array(),
+        $xForwardedProto = false
+    ) {
         $this->hstsMaxAge = $hstsMaxAge;
         $this->hstsSubdomains = $hstsSubdomains;
         $this->hstsPreload = $hstsPreload;
         $this->whitelist = $whitelist ? '('.implode('|', $whitelist).')' : null;
         $this->hosts = $hosts ? '('.implode('|', $hosts).')' : null;
+        $this->xForwardedProto = $xForwardedProto;
     }
 
     public function onKernelRequest(GetResponseEvent $e)
@@ -45,6 +51,11 @@ class ForcedSslListener
 
         // skip SSL & non-GET/HEAD requests
         if ($request->isSecure() || !$request->isMethodSafe()) {
+            return;
+        }
+
+        // skip x-forwarded-proto
+        if ($this->xForwardedProto === true && $request->headers->get('x-forwarded-proto') === 'https') {
             return;
         }
 
