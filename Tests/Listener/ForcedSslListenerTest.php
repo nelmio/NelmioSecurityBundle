@@ -12,12 +12,11 @@
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ForcedSslListener;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -87,11 +86,49 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('https://test.example.org/foo/lala', $response->headers->get('Location'));
     }
 
+    public function testXForwardedProtoRedirectsIfHeaderIsNotPresent()
+    {
+        $listener = new ForcedSslListener(null, false, false, array(), array(), true);
+
+        $response = $this->callListenerReq($listener, '/', true);
+        $this->assertSame('https://localhost/', $response->headers->get('Location'));
+    }
+
+    public function testXForwardedProtoRedirectsIfHeaderIsPresentWithHTTPProtocol()
+    {
+        $listener = new ForcedSslListener(null, false, false, array(), array(), true);
+
+        $request = Request::create('/');
+        $request->headers->set('x-forwarded-proto', 'http');
+        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $listener->onKernelRequest($event);
+        $response = $event->getResponse();
+
+        $this->assertSame('https://localhost/', $response->headers->get('Location'));
+    }
+
+    public function testXForwardedProtoSkipsRedirectIfHeaderIsPresent()
+    {
+        $listener = new ForcedSslListener(null, false, false, array(), array(), true);
+
+        $request = Request::create('/');
+        $request->headers->set('x-forwarded-proto', 'https');
+        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $listener->onKernelRequest($event);
+        $response = $event->getResponse();
+
+        $this->assertNull($response);
+    }
+
     protected function callListenerReq($listener, $path, $masterReq)
     {
         $request = Request::create($path);
 
-        $event = new GetResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST);
+        $event = new GetResponseEvent(
+            $this->kernel,
+            $request,
+            $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST
+        );
         $listener->onKernelRequest($event);
 
         return $event->getResponse();
@@ -102,7 +139,12 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
         $request = Request::create($path);
         $response = new Response();
 
-        $event = new FilterResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new FilterResponseEvent(
+            $this->kernel,
+            $request,
+            $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,
+            $response
+        );
         $listener->onKernelResponse($event);
 
         return $response;
