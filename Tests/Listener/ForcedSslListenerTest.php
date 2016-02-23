@@ -73,6 +73,20 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(null, $response);
     }
 
+    public function testForcedSslOnlyUsesHosts()
+    {
+        $listener = new ForcedSslListener(60, true, false, array(), array('^foo\.com$', '\.example\.org$'));
+
+        $response = $this->callListenerReq($listener, 'http://afoo.com/foo/lala', true);
+        $this->assertSame(null, $response);
+
+        $response = $this->callListenerReq($listener, 'http://foo.com/foo/lala', true);
+        $this->assertSame('https://foo.com/foo/lala', $response->headers->get('Location'));
+
+        $response = $this->callListenerReq($listener, 'http://test.example.org/foo/lala', true);
+        $this->assertSame('https://test.example.org/foo/lala', $response->headers->get('Location'));
+    }
+
     protected function callListenerReq($listener, $path, $masterReq)
     {
         $request = Request::create($path);

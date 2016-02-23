@@ -18,12 +18,15 @@
         "symfony/framework-bundle": "~2.3|~3.0",
         "symfony/security": "~2.3|~3.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^5.2"
+    },
     "autoload": {
         "psr-4": { "Nelmio\\SecurityBundle\\": "" }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.9.x-dev"
+            "dev-master": "1.10.x-dev"
         }
     }
 }

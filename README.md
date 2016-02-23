@@ -151,7 +151,7 @@ Apart from content types, the policy also accepts `report-uri` which should be a
 [JSON payload](https://developer.mozilla.org/en-US/docs/Security/CSP/Using_CSP_violation_reports#Sample_violation_report)
 to whenever a policy directive is violated.
 
-An optional `content_types` key lets you restrict the Content Security Policy headers only on some HTTP 
+An optional `content_types` key lets you restrict the Content Security Policy headers only on some HTTP
 response given their content type.
 
 Finally, an optional `hosts` key lets you configure which hostnames (e.g. `foo.example.org`)
@@ -321,7 +321,7 @@ nelmio_security:
         content_types: []
 ```
 
-An optional `content_types` key lets you restrict the X-Frame-Options header only on some HTTP 
+An optional `content_types` key lets you restrict the X-Frame-Options header only on some HTTP
 response given their content type.
 
 ### **External Redirects Detection**:
@@ -419,6 +419,17 @@ nelmio_security:
             - ^/unsecure/
 ```
 
+To restrict the force-redirects to some hostnames only you can define a list of hostnames
+as regular expressions:
+
+```yaml
+nelmio_security:
+    forced_ssl:
+        enabled: true
+        hosts:
+            - ^\.example\.org$
+```
+
 Then if you want to push it further, you can enable
 [HTTP Strict Transport Security (HSTS)](http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02).
 This is basically sending a header to tell the browser that your site must always be
@@ -459,7 +470,7 @@ That just means you should be careful and renew your certificate in due time.
 
 Note: HSTS presently (Jan. 2015) works in Firefox 4+, Chrome 4+ and Opera 12+.
       Check [caniuse](http://caniuse.com/#feat=stricttransportsecurity) for HSTS support in other browsers.
-      
+
 ### **Flexible HTTPS/SSL Handling**:
 
 The best way to handle SSL securely is to enable it for your entire site.
@@ -564,7 +575,7 @@ nelmio_security:
 
 ### XSS Protection
 
-Enables or disables Microsoft XSS Protection on compatible browsers. 
+Enables or disables Microsoft XSS Protection on compatible browsers.
 This is a non-standard header from Microsoft, more information can be found in
 [their documentation at MSDN](http://blogs.msdn.com/b/ieinternals/archive/2011/01/31/controlling-the-internet-explorer-xss-filter-with-the-x-xss-protection-http-header.aspx).
 

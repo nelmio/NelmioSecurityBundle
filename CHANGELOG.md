@@ -1,3 +1,8 @@
+### 1.10.0 (2016-02-23)
+
+  * Added ability to restrict forced_ssl capability to some hostnames only
+  * Fixed Symfony 3 compatibility
+
 ### 1.9.1 (2016-01-17)
 
   * BugFix: Fix LoggerInterface type hints to support PSR-3 loggers and not only Symfony 2.0 loggers

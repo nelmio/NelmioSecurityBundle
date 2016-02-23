@@ -24,13 +24,15 @@ class ForcedSslListener
     private $hstsSubdomains;
     private $hstsPreload;
     private $whitelist;
+    private $hosts;
 
-    public function __construct($hstsMaxAge, $hstsSubdomains, $hstsPreload = false, array $whitelist = array())
+    public function __construct($hstsMaxAge, $hstsSubdomains, $hstsPreload = false, array $whitelist = array(), array $hosts = array())
     {
         $this->hstsMaxAge = $hstsMaxAge;
         $this->hstsSubdomains = $hstsSubdomains;
         $this->hstsPreload = $hstsPreload;
         $this->whitelist = $whitelist ? '('.implode('|', $whitelist).')' : null;
+        $this->hosts = $hosts ? '('.implode('|', $hosts).')' : null;
     }
 
     public function onKernelRequest(GetResponseEvent $e)
@@ -48,6 +50,11 @@ class ForcedSslListener
 
         // skip whitelisted URLs
         if ($this->whitelist && preg_match('{'.$this->whitelist.'}i', $request->getPathInfo() ?: '/')) {
+            return;
+        }
+
+        // skip non-listed hosts
+        if ($this->hosts && !preg_match('{'.$this->hosts.'}i', $request->getHost() ?: '/')) {
             return;
         }
 
