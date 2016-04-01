@@ -12,7 +12,9 @@
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
@@ -23,19 +25,62 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
     protected $enforce;
     protected $compatHeaders;
     protected $hosts;
-
-    /**
-     * @var NonceGenerator
-     */
+    protected $nonce;
+    protected $sha;
     protected $nonceGenerator;
+    protected $shaComputer;
 
-    public function __construct(DirectiveSet $report, DirectiveSet $enforce, $compatHeaders = true, array $hosts = array(), array $contentTypes = array())
+    public function __construct(DirectiveSet $report, DirectiveSet $enforce, NonceGenerator $nonceGenerator, ShaComputer $shaComputer, $compatHeaders = true, array $hosts = array(), array $contentTypes = array())
     {
         $this->report = $report;
         $this->enforce = $enforce;
         $this->compatHeaders = $compatHeaders;
         $this->hosts = $hosts;
         $this->contentTypes = $contentTypes;
+        $this->nonceGenerator = $nonceGenerator;
+        $this->shaComputer = $shaComputer;
+    }
+
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
+        $this->sha = array();
+    }
+
+    public function addSha($directive, $sha)
+    {
+        if (null === $this->sha) {
+            // We're not in a request context, probably in a worker
+            // let's disable it to avoid memory leak
+            return;
+        }
+
+        $this->sha[$directive][] = $sha;
+    }
+
+    public function addScript($html)
+    {
+        if (null === $this->sha) {
+            // We're not in a request context, probably in a worker
+            // let's disable it to avoid memory leak
+            return;
+        }
+
+        $this->sha['script-src'][] = $this->shaComputer->computeForScript($html);
+    }
+
+    public function addStyle($html)
+    {
+        if (null === $this->sha) {
+            // We're not in a request context, probably in a worker
+            // let's disable it to avoid memory leak
+            return;
+        }
+
+        $this->sha['style-src'][] = $this->shaComputer->computeForStyle($html);
     }
 
     public function getReport()
@@ -48,11 +93,13 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $this->enforce;
     }
 
-    public function onKernelRequest()
+    public function getNonce()
     {
-        if ($this->nonceGenerator !== null) {
-            $this->nonceGenerator->generate();
+        if (null === $this->nonce) {
+            $this->nonce = $this->nonceGenerator->generate();
         }
+
+        return $this->nonce;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -64,24 +111,33 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $response = $e->getResponse();
 
         if ($response->isRedirection()) {
+            $this->nonce = null;
+            $this->sha = null;
+
             return;
         }
 
         if ((empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
-            $nonce = null;
-            if ($this->nonceGenerator !== null) {
-                $nonce = $this->nonceGenerator->getCurrentNonceForHeaders();
+            $signatures = $this->sha;
+            if ($this->nonce) {
+                $signatures['script-src'][] = 'nonce-'.$this->nonce;
+                $signatures['style-src'][] = 'nonce-'.$this->nonce;
             }
 
-            $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders, $nonce));
-            $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders, $nonce));
+            $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders, $signatures));
+            $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders, $signatures));
         }
+
+        $this->nonce = null;
+        $this->sha = null;
     }
 
-    private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders, $nonce)
+    private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders, array $signatures = null)
     {
-        if ($nonce !== null) {
-            $headerValue = $directiveSet->buildHeaderValueWithNonce($nonce);
+        // $signatures might be null if no KernelEvents::REQUEST has been triggered.
+        // for instance if a security.authentication.failure has been dispatched
+        if (!empty($signatures)) {
+            $headerValue = $directiveSet->buildHeaderValueWithInlineSignatures($signatures);
         } else {
             $headerValue = $directiveSet->buildHeaderValue();
         }
@@ -103,17 +159,6 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         }
 
         return $headers;
-    }
-
-    /**
-     * @param NonceGenerator $nonceGenerator
-     *
-     * @return $this
-     */
-    public function setNonceGenerator($nonceGenerator)
-    {
-        $this->nonceGenerator = $nonceGenerator;
-        return $this;
     }
 
     public static function getSubscribedEvents()

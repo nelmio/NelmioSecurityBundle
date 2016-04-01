@@ -64,18 +64,12 @@ class NelmioSecurityExtension extends Extension
 
             $cspConfig = $config['csp'];
 
-            if (array_key_exists('report', $cspConfig) || array_key_exists('enforce', $cspConfig)) {
-                $enforceDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'enforce');
-                $reportDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'report');
-            } else {
-                list($enforceDefinition, $reportDefinition) = $this->buildDirectiveSetDefinitionFromLegacyConfig($cspConfig);
-            }
+            $enforceDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'enforce');
+            $reportDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'report');
 
             $cspListenerDefinition = $container->getDefinition('nelmio_security.csp_listener');
-            $cspListenerDefinition->setArguments(array($reportDefinition, $enforceDefinition, (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']));
-            if ($cspConfig['enable_nonce']) {
-                $cspListenerDefinition->addMethodCall('setNonceGenerator', array(new Reference('nelmio_security.nonce_generator')));
-            }
+            $cspListenerDefinition->setArguments(array($reportDefinition, $enforceDefinition, new Reference('nelmio_security.nonce_generator'), new Reference('nelmio_security.sha_computer'), (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']));
+            $container->setParameter('nelmio_security.csp.hash_algorithm', $cspConfig['hash']['algorithm']);
 
             $container->getDefinition('nelmio_security.csp_reporter_controller')
                 ->setArguments(array(new Reference($cspConfig['report_logger_service'])));
@@ -150,57 +144,19 @@ class NelmioSecurityExtension extends Extension
         }
     }
 
-    /**
-     * @param array $config
-     * @param string $type
-     * @return Definition
-     */
     private function buildDirectiveSetDefinition($config, $type)
     {
         $directiveDefinition = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
-        $directiveDefinition->setFactoryClass('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
-        $directiveDefinition->setFactoryMethod('fromConfig');
-        $directiveDefinition->setArguments(array($config, $type));
-        return $directiveDefinition;
-    }
 
-    /**
-     * @param array $config
-     * @return array
-     */
-    private function buildDirectiveSetDefinitionFromLegacyConfig($config)
-    {
-        $directiveSet = $this->loadLegacyDirectiveValues($config);
-
-        if ((bool)$config['report_only']) {
-            $enforce = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
-            $report = $directiveSet;
-            return array($enforce, $report);
-
+        if (version_compare(Kernel::VERSION, '2.6', '>=')) {
+            $directiveDefinition->setFactory(array('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet', 'fromConfig'));
         } else {
-            $enforce = $directiveSet;
-            $report = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
-            return array($enforce, $report);
-        }
-    }
-
-    private function loadLegacyDirectiveValues(array $config)
-    {
-        $directiveSetDefinition = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
-        $parser = new ContentSecurityPolicyParser();
-
-        foreach (DirectiveSet::getLegacyNamesMap() as $old => $new) {
-            if (!array_key_exists($old, $config)) {
-                continue;
-            }
-
-            if ($old === 'report_uri') {
-                $directiveSetDefinition->addMethodCall('setDirective', array($new, $config[$old]));
-            } else {
-                $directiveSetDefinition->addMethodCall('setDirective', array($new, $parser->parseSourceList($config[$old])));
-            }
+            $directiveDefinition->setFactoryClass('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
+            $directiveDefinition->setFactoryMethod('fromConfig');
         }
 
-        return $directiveSetDefinition;
+        $directiveDefinition->setArguments(array($config, $type));
+
+        return $directiveDefinition;
     }
 }

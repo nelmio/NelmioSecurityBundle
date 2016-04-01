@@ -40,6 +40,12 @@ class DirectiveSet
     );
 
     private $directiveValues = array();
+    private $level1Fallback = true;
+
+    public function setLevel1Fallback($bool)
+    {
+        $this->level1Fallback = (bool) $bool;
+    }
 
     public function getDirective($name)
     {
@@ -81,44 +87,67 @@ class DirectiveSet
         foreach ($this->directiveValues as $name => $value) {
             if (true === $value) {
                 $policy[] = $name;
-            } elseif ($name === 'default-src' || $this->canNotBeFallbackedByDefault($name, $value)) {
-                // prevents using the same value as default for a directive
+            } elseif ($this->canNotBeFallbackedByDefault($name, $value)) {
                 $policy[] = $name.' '.$value;
             }
         }
 
-        return join('; ', $policy);
+        return implode('; ', $policy);
     }
 
-    public function buildHeaderValueWithNonce($nonce)
+    public function buildHeaderValueWithInlineSignatures(array $signatures)
     {
         $policy = array();
+
+        if (isset($signatures['script-src'])) {
+            $signatures['script-src'] = implode(' ', array_map(function ($value) { return sprintf('\'%s\'', $value); }, $signatures['script-src']));
+        }
+        if (isset($signatures['style-src'])) {
+            $signatures['style-src'] = implode(' ', array_map(function ($value) { return sprintf('\'%s\'', $value); }, $signatures['style-src']));
+        }
+
+        $defaultSrc = $this->getDirective('default-src');
+
         foreach ($this->directiveValues as $name => $value) {
-            if (in_array($name, array('script-src', 'style-src'))) {
-                $policy[] = $name . ' ' . $value . ' ' . $nonce;
-            } elseif ($name === 'default-src' || $value !== $this->getDirective('default-src')) {
-                $policy[] = $name . ' ' . $value;
+            if (true === $value) {
+                $policy[] = $name;
+            } elseif (isset($signatures[$name])) {
+                // since a hash / nonce is used (CSP level2)
+                // In case the browsers support CSP level 2, it would discard the 'unsafe-inline' directive
+                // let's ensure that it's backward compatible with CSP level 1 (all browsers are not compatible)
+                // this is the recommended way to deal with this.
+                if (false === strpos($value, '\'unsafe-inline\'') && $this->level1Fallback) {
+                    $policy[] = $name.' '.$value.' '.'\'unsafe-inline\' '.$signatures[$name];
+                } else {
+                    $policy[] = $name.' '.$value.' '.$signatures[$name];
+                }
+            } elseif ($this->canNotBeFallbackedByDefault($name, $value)) {
+                $policy[] = $name.' '.$value;
             }
         }
 
-        $isDefaultSrcSet = $this->getDirective('default-src') !== '';
-        if ($isDefaultSrcSet) {
-            if (empty($this->directiveValues['script-src'])) {
-                $policy[] = 'script-src ' . $this->getDirective('default-src') . ' ' . $nonce;
+        $isDefaultSrcSet = $defaultSrc !== '';
+
+        if ($isDefaultSrcSet && false === strpos($defaultSrc, '\'unsafe-inline\'')) {
+            $unsafeInline = $this->level1Fallback ? ' \'unsafe-inline\'' : '';
+
+            if (empty($this->directiveValues['script-src']) && isset($signatures['script-src'])) {
+                $policy[] = 'script-src '.$defaultSrc.$unsafeInline.' '.$signatures['script-src'];
             }
 
-            if (empty($this->directiveValues['style-src'])) {
-                $policy[] = 'style-src ' . $this->getDirective('default-src') . ' ' . $nonce;
+            if (empty($this->directiveValues['style-src']) && isset($signatures['style-src'])) {
+                $policy[] = 'style-src '.$defaultSrc.$unsafeInline.' '.$signatures['style-src'];
             }
-
         }
 
-        return join('; ', $policy);
+        return implode('; ', $policy);
     }
 
     public static function fromConfig(array $config, $kind)
     {
         $directiveSet = new self();
+        $directiveSet->setLevel1Fallback($config['hash']['level1_fallback']);
+
         if (!array_key_exists($kind, $config)) {
             return $directiveSet;
         }
@@ -149,6 +178,10 @@ class DirectiveSet
 
     private function canNotBeFallbackedByDefault($name, $value)
     {
+        if ($name === 'default-src') {
+            return true;
+        }
+
         // Only source-list can be fallbacked by default
         if (self::$directiveNames[$name] !== self::TYPE_SRC_LIST) {
             return true;

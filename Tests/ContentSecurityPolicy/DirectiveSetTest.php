@@ -11,7 +11,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromConfig($expected, array $directives)
     {
-        $ds = DirectiveSet::fromConfig(array('enforce' => $directives), 'enforce');
+        $ds = DirectiveSet::fromConfig(array('enforce' => $directives, 'hash' => array('level1_fallback' => true)), 'enforce');
 
         $this->assertSame($expected, $ds->buildHeaderValue());
     }
@@ -133,6 +133,79 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                 array(
                     'default-src' => array('none'),
                     'plugin-types' => array('none'),
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider provideConfigAndSignatures
+     */
+    public function testBuildHeaderValueWithInlineSignatures($expected, $config, $signatures)
+    {
+        $directive = DirectiveSet::fromConfig($config, 'enforce');
+        $this->assertSame($expected, $directive->buildHeaderValueWithInlineSignatures($signatures));
+    }
+
+    public function provideConfigAndSignatures()
+    {
+        return array(
+            array(
+                'default-src \'self\'; script-src \'self\' \'unsafe-inline\' \'sha-1\'; style-src \'self\' \'unsafe-inline\' \'sha2\'',
+                array(
+                    'hash' => array('level1_fallback' => true),
+                    'enforce' => array(
+                        'default-src' => array("'self'"),
+                        'script-src' => array("'self'", "'unsafe-inline'"),
+                        'style-src' => array(),
+                    ),
+                ),
+                array(
+                    'script-src' => array('sha-1'),
+                    'style-src' => array('sha2'),
+                ),
+            ),
+            array(
+                'default-src yolo; script-src yolo \'unsafe-inline\' \'sha-1\'; style-src yolo \'unsafe-inline\' \'sha2\'',
+                array(
+                    'hash' => array('level1_fallback' => true),
+                    'enforce' => array(
+                        'default-src' => array('yolo'),
+                    ),
+                ),
+                array(
+                    'script-src' => array('sha-1'),
+                    'style-src' => array('sha2'),
+                ),
+            ),
+            array(
+                'default-src \'self\'; script-src \'self\' \'unsafe-inline\' \'sha-1\'; style-src \'self\' \'unsafe-inline\' \'sha2\'',
+                array(
+                    'hash' => array('level1_fallback' => true),
+                    'enforce' => array(
+                        'default-src' => array("'self'"),
+                        'script-src' => array("'self'"),
+                        'style-src' => array(),
+                    ),
+                ),
+                array(
+                    'script-src' => array('sha-1'),
+                    'style-src' => array('sha2'),
+                ),
+            ),
+            array(
+                'default-src \'self\'; script-src \'self\' \'sha-1\'; style-src \'self\' \'sha2\'',
+                array(
+                    'hash' => array('level1_fallback' => false),
+                    'enforce' => array(
+                        'default-src' => array("'self'"),
+                        'script-src' => array("'self'"),
+                        'style-src' => array(),
+                    ),
+                ),
+                array(
+                    'script-src' => array('sha-1'),
+                    'style-src' => array('sha2'),
                 ),
             ),
         );

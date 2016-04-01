@@ -229,55 +229,97 @@ nelmio_security:
         compat_headers: false
 ```
 
-(Optional) Use *enable_nonce* to add a nonce value to your every request.
+#### Message digest for inline script handling
+
+If you want to disable `'unsafe-inline'` on `script-src` or `style-src` (recommended), Nelmio Security Bundle
+comes out of the box with message digest functionality. Twig is natively supported.
+
+You can configure the algorithm used for message digest in the configuration
 
 ```yaml
 nelmio_security:
     csp:
-        enable_nonce: true
+        hash:
+            algorithm: sha512 # default is sha256, available are sha256, sha384 and sha512
+            # Provides compatibility with CSP level 1 (old / non-yet-compatible browsers) when using CSP level 2
+            # features likes hash and nonce. It adds a 'unsafe-inline' source to a directive whenever a nonce or hash
+            # is used.
+            # From RFC: " If 'unsafe-inline' is not in the list of allowed style sources, or if at least one
+            #             nonce-source or hash-source is present in the list of allowed style sources "
+            # See https://www.w3.org/TR/CSP2/#directive-style-src and https://www.w3.org/TR/CSP2/#directive-script-src
+            level1_fallback: true
         enforce:
             default-src: ['self']
 ```
 
-The nonce value that was used in the current request can be retrieved by using the *nelmio_security.nonce_generator* service:
+In your Twig template use the `cspscript` and `cspstyle` tags to automatically compute the message digest and insert
+it in your headers.
 
-```yaml
-services:
-    my_service:
-        class: MyService
-        arguments: [@nelmio_security.nonce_generator]
+```twig
+{% cspscript %}
+<script>
+    window.api_key = '{{ api_key }}';
+</script>
+{% endcspscript %}
+
+// ...
+
+{% cspstyle %}
+<style>
+    body {
+        background-color: '{{ bgColor }}';
+    }
+</style>
+{% endcspstyle %}
 ```
 
-Once the `nelmio_security.nonce_generator` service is injected, use the *getCurrentNonce()* method to get the nonce value for the current request:
+If you're not using Twig, you can use message digest with the `ContentSecurityPolicyListener`, it will automatically
+compute the message digest and add it to the response CSP header:
 
 ```php
-class MyService
-{
-    private $nonceGenerator;
 
-    public function __construct(NonceGenerator $nonceGenerator)
-    {
-        $this->nonceGenerator = $nonceGenerator;
-    }
+$listener->addScript("<script>
+    window.api_key = '{{ api_key }}';
+</script>");
 
-    public function myMethod()
-    {
-        $nonce = $this->nonceGenerator->getCurrentNonce();
-        // ...
+
+$listener->addStyle("<style>
+    body {
+        background-color: '{{ bgColor }}';
     }
-}
+</style>");
+
 ```
 
-**Note:** The *getCurrentNonce* method returns a value that doesn't contain the 'nonce-' prefix and isn't quoted.
-This is the format needed for the 'nonce' attribute in both *script* and *style* tags:
+#### Nonce for inline script handling
 
-```html
-    <script nonce="value_generated_by_getCurrentNonce">
-    // ...
-    </script>
+Content-Security-Policy specification also proposes a nonce implementation for inlining. Nelmio Security Bundle
+comes out of the box with nonce functionality. Twig is natively supported.
+
+
+In your Twig template use the `csp_nonce` function to access the nonce for the current request and add it to the response
+CSP header. If you do not request a nonce, nonce will not be generated.
+
+```twig
+<script nonce="{{ csp_nonce }}">
+    window.api_key = '{{ api_key }}';
+</script>
+
+// ...
+
+<style nonce="{{ csp_nonce }}">
+    body {
+        background-color: '{{ bgColor }}';
+    }
+</style>
 ```
 
-If you wish to get the quoted and prefixed value, use the *getCurrentNonceForHeaders*
+If you're not using Twig, you can use nonce functionality with the `ContentSecurityPolicyListener`:
+
+```php
+// generates a nonce at first time, returns the same nonce once generated
+$listener->getNonce();
+```
 
 ### **Signed Cookies**:
 
