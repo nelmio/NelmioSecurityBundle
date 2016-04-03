@@ -239,7 +239,7 @@ services:
         arguments: [@nelmio_security.nonce_generator]
 ```
 
-Once the mentioned service is retrieved, use the *getCurrentNonce()* method to get the previously generated value:
+Once the `nelmio_security.nonce_generator` service is injected, use the *getCurrentNonce()* method to get the nonce value for the current request:
 
 ```php
 class MyService
