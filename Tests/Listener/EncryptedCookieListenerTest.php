@@ -28,6 +28,12 @@ class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        parent::setUp();
+
+        if (!function_exists('mcrypt_module_open')) {
+            $this->markTestSkipped('MCrypt is not installed');
+        }
+
         $this->encrypter = new Encrypter('secret', 'rijndael-128');
         $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
     }
