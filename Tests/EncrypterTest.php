@@ -15,6 +15,15 @@ use Nelmio\SecurityBundle\Encrypter;
 
 class EncrypterTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (!function_exists('mcrypt_module_open')) {
+            $this->markTestSkipped('MCrypt is not installed');
+        }
+    }
+
     /**
      * @expectedException InvalidArgumentException
      */
