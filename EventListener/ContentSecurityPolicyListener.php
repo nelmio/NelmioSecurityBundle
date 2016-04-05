@@ -2,6 +2,7 @@
 
 namespace Nelmio\SecurityBundle\EventListener;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -13,6 +14,11 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
     protected $enforce;
     protected $compatHeaders;
     protected $hosts;
+
+    /**
+     * @var NonceGenerator
+     */
+    protected $nonceGenerator;
 
     public function __construct(DirectiveSet $report, DirectiveSet $enforce, $compatHeaders = true, array $hosts = array(), array $contentTypes = array())
     {
@@ -33,6 +39,13 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $this->enforce;
     }
 
+    public function onKernelRequest()
+    {
+        if ($this->nonceGenerator !== null) {
+            $this->nonceGenerator->generate();
+        }
+    }
+
     public function onKernelResponse(FilterResponseEvent $e)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
@@ -46,14 +59,24 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         }
         
         if ((empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
-            $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
-            $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
+            $nonce = null;
+            if ($this->nonceGenerator !== null) {
+                $nonce = $this->nonceGenerator->getCurrentNonceForHeaders();
+            }
+
+            $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders, $nonce));
+            $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders, $nonce));
         }
     }
 
-    private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders)
+    private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders, $nonce)
     {
-        $headerValue = $directiveSet->buildHeaderValue();
+        if ($nonce !== null) {
+            $headerValue = $directiveSet->buildHeaderValueWithNonce($nonce);
+        } else {
+            $headerValue = $directiveSet->buildHeaderValue();
+        }
+
         if (!$headerValue) {
             return array();
         }
@@ -73,29 +96,22 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $headers;
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @param NonceGenerator $nonceGenerator
+     *
+     * @return $this
+     */
+    public function setNonceGenerator($nonceGenerator)
     {
-        return array(KernelEvents::RESPONSE => 'onKernelResponse');
+        $this->nonceGenerator = $nonceGenerator;
+        return $this;
     }
 
-    public static function fromConfig(array $config)
+    public static function getSubscribedEvents()
     {
-        if (array_key_exists('report', $config) || array_key_exists('enforce', $config)) {
-            $enforce = DirectiveSet::fromConfig($config, 'enforce');
-            $report = DirectiveSet::fromConfig($config, 'report');
-        } else {
-            // legacy config
-            $directiveSet = DirectiveSet::fromLegacyConfig($config);
-
-            if ((bool) $config['report_only']) {
-                $enforce = new DirectiveSet();
-                $report = $directiveSet;
-            } else {
-                $enforce = $directiveSet;
-                $report = new DirectiveSet();
-            }
-        }
-
-        return new self($report, $enforce, (bool) $config['compat_headers'], $config['hosts'], $config['content_types']);
+        return array(
+            KernelEvents::REQUEST => 'onKernelRequest',
+            KernelEvents::RESPONSE => 'onKernelResponse',
+        );
     }
 }

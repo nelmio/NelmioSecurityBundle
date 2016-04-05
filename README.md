@@ -220,6 +220,56 @@ nelmio_security:
         compat_headers: false
 ```
 
+(Optional) Use *enable_nonce* to add a nonce value to your every request.
+
+```yaml
+nelmio_security:
+    csp:
+        enable_nonce: true
+        enforce:
+            default-src: ['self']
+```
+
+The nonce value that was used in the current request can be retrieved by using the *nelmio_security.nonce_generator* service:
+
+```yaml
+services:
+    my_service:
+        class: MyService
+        arguments: [@nelmio_security.nonce_generator]
+```
+
+Once the `nelmio_security.nonce_generator` service is injected, use the *getCurrentNonce()* method to get the nonce value for the current request:
+
+```php
+class MyService
+{
+    private $nonceGenerator;
+
+    public function __construct(NonceGenerator $nonceGenerator)
+    {
+        $this->nonceGenerator = $nonceGenerator;
+    }
+
+    public function myMethod()
+    {
+        $nonce = $this->nonceGenerator->getCurrentNonce();
+        // ...
+    }
+}
+```
+
+**Note:** The *getCurrentNonce* method returns a value that doesn't contain the 'nonce-' prefix and isn't quoted.
+This is the format needed for the 'nonce' attribute in both *script* and *style* tags:
+
+```html
+    <script nonce="value_generated_by_getCurrentNonce">
+    // ...
+    </script>
+```
+
+If you wish to get the quoted and prefixed value, use the *getCurrentNonceForHeaders*
+
 ### **Signed Cookies**:
 
 Ideally you should explicitly specify which cookies to sign. The reason for this is simple.
