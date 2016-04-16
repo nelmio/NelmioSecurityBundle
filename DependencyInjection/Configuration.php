@@ -171,10 +171,8 @@ class Configuration implements ConfigurationInterface
         $builder = new TreeBuilder();
         $node = $builder->root('csp');
 
-        $this
-            ->addDirectives($node->children())
-                ->scalarNode('report_uri')->defaultValue('')->end()
-                ->booleanNode('report_only')->end()
+        $node
+            ->children()
                 ->arrayNode('hosts')->prototype('scalar')->end()->defaultValue(array())->end()
                 ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
                 // leaving this enabled can cause issues with older iOS (5.x) versions
@@ -183,27 +181,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('report_logger_service')->defaultValue('logger')->end()
                 ->append($this->addReportOrEnforceNode('report'))
                 ->append($this->addReportOrEnforceNode('enforce'))
-            ->end()
-            ->validate()
-                ->ifTrue(function($v) {
-                    return array_key_exists('report_only', $v)
-                        && (array_key_exists('report', $v) || array_key_exists('enforce', $v));
-                })
-                ->thenInvalid('"report_only" and "(report|enforce)" can not be used together')
-            ->end()
-            ->validate()
-                ->ifTrue(
-                    function($v) {
-                        return
-                            !array_key_exists('report', $v)
-                            && !array_key_exists('enforce', $v)
-                            && !array_key_exists('report_only', $v);
-                    }
-                )
-                ->then(function($c) {
-                    $c['report_only'] = false;
-                    return $c;
-                })
             ->end();
 
         return $node;
@@ -224,29 +201,5 @@ class Configuration implements ConfigurationInterface
                 ->end();
         }
         return $children->end();
-    }
-
-    private function addDirectives(NodeBuilder $node)
-    {
-        $directives = array(
-            'default',
-            'script',
-            'object',
-            'style',
-            'img',
-            'media',
-            'frame',
-            'font',
-            'connect'
-        );
-
-        foreach ($directives as $directive) {
-            $node
-                ->arrayNode($directive)
-                ->prototype('scalar')
-                ->end();
-        }
-
-        return $node;
     }
 }

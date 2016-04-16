@@ -1,3 +1,6 @@
+### 2.0.0 (2016-xx-xx)
+  * Drop backward-compatibility with first deprecated CSP configuration
+
 ### 1.10.0 (2016-02-23)
 
   * Added ability to restrict forced_ssl capability to some hostnames only
