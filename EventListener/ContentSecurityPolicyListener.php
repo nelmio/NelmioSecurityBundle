@@ -53,7 +53,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         if ($response->isRedirection()) {
             return;
         }
-        
+
         if ((empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
             $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders));
             $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders));
@@ -67,12 +67,12 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
             return array();
         }
 
-        $hn = function($name) use ($reportOnly) {
-            return $name . ($reportOnly ? '-Report-Only' : '');
+        $hn = function ($name) use ($reportOnly) {
+            return $name.($reportOnly ? '-Report-Only' : '');
         };
 
         $headers = array(
-            $hn('Content-Security-Policy') => $headerValue
+            $hn('Content-Security-Policy') => $headerValue,
         );
 
         if ($compatHeaders) {

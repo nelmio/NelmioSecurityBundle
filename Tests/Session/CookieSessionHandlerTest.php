@@ -12,13 +12,11 @@
 namespace Nelmio\SecurityBundle\Tests\Session;
 
 use Nelmio\SecurityBundle\Session\CookieSessionHandler;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
 {
@@ -71,7 +69,6 @@ class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->handler->onKernelResponse(new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
 
-
         $cookies = $response->headers->getCookies();
 
         $this->assertEquals(1, count($cookies));
@@ -80,7 +77,7 @@ class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Cookie not opened
+     * Cookie not opened.
      */
     public function testCookieNotOpened()
     {

@@ -76,11 +76,11 @@ class DirectiveSet
                 $policy[] = $name;
             } elseif ($name === 'default-src' || $value !== $this->getDirective('default-src')) {
                 // prevents using the same value as default for a directive
-                $policy[] = $name . ' ' . $value;
+                $policy[] = $name.' '.$value;
             }
         }
 
-        return join('; ', $policy);
+        return implode('; ', $policy);
     }
 
     public static function fromConfig(array $config, $kind)
@@ -110,7 +110,7 @@ class DirectiveSet
     private function checkDirectiveName($name)
     {
         if (!in_array($name, self::$directiveNames, true)) {
-            throw new \InvalidArgumentException('Unknown CSP directive name: ' . $name);
+            throw new \InvalidArgumentException('Unknown CSP directive name: '.$name);
         }
     }
 }

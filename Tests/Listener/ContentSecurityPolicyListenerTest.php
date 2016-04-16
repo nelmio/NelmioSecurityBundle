@@ -170,19 +170,19 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertContains("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
         $this->assertContains("font-src font.example.org 'self'", $header, 'Header should contain font-src');
         $this->assertContains("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
-        $this->assertContains("report-uri http://example.org/CSPReport", $header, 'Header should contain report-uri');
+        $this->assertContains('report-uri http://example.org/CSPReport', $header, 'Header should contain report-uri');
         $this->assertContains("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
         $this->assertContains("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
         $this->assertContains("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
         $this->assertContains("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
-        $this->assertContains("plugin-types application/shockwave-flash", $header, 'Header should contain plugin-types');
-        $this->assertContains("block-all-mixed-content", $header, 'Header should contain block-all-mixed-content');
-        $this->assertContains("upgrade-insecure-requests", $header, 'Header should contain upgrade-insecure-requests');
+        $this->assertContains('plugin-types application/shockwave-flash', $header, 'Header should contain plugin-types');
+        $this->assertContains('block-all-mixed-content', $header, 'Header should contain block-all-mixed-content');
+        $this->assertContains('upgrade-insecure-requests', $header, 'Header should contain upgrade-insecure-requests');
     }
 
     public function testDelimiter()
     {
-        $spec     = "example.org";
+        $spec = 'example.org';
         $listener = $this->buildSimpleListener(array(
             'default-src' => "default.example.org 'self'",
             'script-src' => "script.example.org 'self'",
@@ -211,7 +211,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testAvoidDuplicates()
     {
-        $spec     = "example.org";
+        $spec = 'example.org';
         $listener = $this->buildSimpleListener(array(
             'default-src' => $spec,
             'script-src' => $spec,
@@ -221,7 +221,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             'media-src' => $spec,
             'frame-src' => $spec,
             'font-src' => $spec,
-            'connect-src' => $spec
+            'connect-src' => $spec,
         ));
         $response = $this->callListener($listener, '/', true);
 
@@ -236,7 +236,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testVendorPrefixes()
     {
-        $spec     = "example.org";
+        $spec = 'example.org';
         $listener = $this->buildSimpleListener(array(
             'default-src' => $spec,
             'script-src' => $spec,
@@ -246,7 +246,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             'media-src' => $spec,
             'frame-src' => $spec,
             'font-src' => $spec,
-            'connect-src' => $spec
+            'connect-src' => $spec,
         ));
         $response = $this->callListener($listener, '/', true);
 
@@ -259,7 +259,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testReportOnly()
     {
-        $spec     = "example.org";
+        $spec = 'example.org';
         $listener = $this->buildSimpleListener(array(
             'default-src' => $spec,
             'script-src' => $spec,
@@ -269,7 +269,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             'media-src' => $spec,
             'frame-src' => $spec,
             'font-src' => $spec,
-            'connect-src' => $spec
+            'connect-src' => $spec,
         ), true);
         $response = $this->callListener($listener, '/', true);
 
@@ -279,7 +279,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testNoCompatHeaders()
     {
-        $spec     = "example.org";
+        $spec = 'example.org';
         $listener = $this->buildSimpleListener(array(
             'default-src' => $spec,
             'script-src' => $spec,
@@ -289,7 +289,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             'media-src' => $spec,
             'frame-src' => $spec,
             'font-src' => $spec,
-            'connect-src' => $spec
+            'connect-src' => $spec,
         ), false, false);
         $response = $this->callListener($listener, '/', true);
 
@@ -320,7 +320,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq, $contentType = 'text/html')
     {
-        $request  = Request::create($path);
+        $request = Request::create($path);
         $response = new Response();
         $response->headers->add(array('content-type' => $contentType));
 
