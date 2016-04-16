@@ -23,7 +23,14 @@ class DirectiveSet
         'frame-src',
         'font-src',
         'connect-src',
-        'report-uri'
+        'report-uri',
+        'base-uri',
+        'child-src',
+        'form-action',
+        'frame-ancestors',
+        'plugin-types',
+        'block-all-mixed-content',
+        'upgrade-insecure-requests',
     );
 
     private $directiveValues = array();
@@ -42,7 +49,12 @@ class DirectiveSet
     public function setDirective($name, $value)
     {
         $this->checkDirectiveName($name);
-        if ($value) {
+        if (in_array($name, array('block-all-mixed-content', 'upgrade-insecure-requests'), true)) {
+            if ($value !== '') {
+                throw new \InvalidArgumentException(sprintf('%s does not accept any value', $name));
+            }
+            $this->directiveValues[$name] = true;
+        } elseif ($value) {
             $this->directiveValues[$name] = $value;
         } else {
             unset($this->directiveValues[$name]);
@@ -60,7 +72,10 @@ class DirectiveSet
     {
         $policy = array();
         foreach ($this->directiveValues as $name => $value) {
-            if ($name === 'default-src' || $value !== $this->getDirective('default-src')) {
+            if (true === $value) {
+                $policy[] = $name;
+            } elseif ($name === 'default-src' || $value !== $this->getDirective('default-src')) {
+                // prevents using the same value as default for a directive
                 $policy[] = $name . ' ' . $value;
             }
         }
