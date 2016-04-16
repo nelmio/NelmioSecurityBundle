@@ -89,21 +89,8 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
 
     public static function fromConfig(array $config)
     {
-        if (array_key_exists('report', $config) || array_key_exists('enforce', $config)) {
-            $enforce = DirectiveSet::fromConfig($config, 'enforce');
-            $report = DirectiveSet::fromConfig($config, 'report');
-        } else {
-            // legacy config
-            $directiveSet = DirectiveSet::fromLegacyConfig($config);
-
-            if ((bool) $config['report_only']) {
-                $enforce = new DirectiveSet();
-                $report = $directiveSet;
-            } else {
-                $enforce = $directiveSet;
-                $report = new DirectiveSet();
-            }
-        }
+        $enforce = DirectiveSet::fromConfig($config, 'enforce');
+        $report = DirectiveSet::fromConfig($config, 'report');
 
         return new self($report, $enforce, (bool) $config['compat_headers'], $config['hosts'], $config['content_types']);
     }
