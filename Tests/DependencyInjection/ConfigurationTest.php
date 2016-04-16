@@ -50,6 +50,34 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testCspWithLevel2()
+    {
+        $this->processYamlConfiguration(
+            "csp:\n" .
+            "  report:\n" .
+            "    script-src:\n" .
+            "      - 'self'\n" .
+            "    upgrade-insecure-requests: ~\n" .
+            "    block-all-mixed-content: ~\n"
+        );
+    }
+
+    /**
+     * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Invalid configuration for path "nelmio_security.csp": "upgrade-insecure-requests" and "block-all-mixed-content" only accept an empty value "~"
+     */
+    public function testCspInvalidLevel2()
+    {
+        $this->processYamlConfiguration(
+            "csp:\n" .
+            "  report:\n" .
+            "    script-src:\n" .
+            "      - 'self'\n" .
+            "    upgrade-insecure-requests:\n" .
+            "      - 'self'\n"
+        );
+    }
+
     /**
      * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      * @expectedExceptionMessage report_only" and "(report|enforce)" can not be used together
