@@ -180,20 +180,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('report_logger_service')->defaultValue('logger')->end()
                 ->append($this->addReportOrEnforceNode('report'))
                 ->append($this->addReportOrEnforceNode('enforce'))
-            ->end()
-            ->validate()
-                ->ifTrue(function ($v) {
-                    foreach (array('report', 'enforce') as $type) {
-                        foreach (array('upgrade-insecure-requests', 'block-all-mixed-content') as $directive) {
-                            if (isset($v[$type][$directive]) && !empty($v[$type][$directive])) {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return false;
-                })
-                ->thenInvalid('"upgrade-insecure-requests" and "block-all-mixed-content" only accept an empty value "~"')
             ->end();
 
         return $node;
@@ -208,10 +194,17 @@ class Configuration implements ConfigurationInterface
         $node->normalizeKeys(false);
 
         foreach (DirectiveSet::getNames() as $name) {
-            $children
-                ->arrayNode($name)
-                ->prototype('scalar')
-                ->end();
+            if (in_array($name, array('upgrade-insecure-requests', 'block-all-mixed-content'), true)) {
+                $children
+                    ->booleanNode($name)
+                    ->defaultFalse()
+                    ->end();
+            } else {
+                $children
+                    ->arrayNode($name)
+                    ->prototype('scalar')
+                    ->end();
+            }
         }
 
         return $children->end();

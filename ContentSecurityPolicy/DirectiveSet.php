@@ -50,10 +50,11 @@ class DirectiveSet
     {
         $this->checkDirectiveName($name);
         if (in_array($name, array('block-all-mixed-content', 'upgrade-insecure-requests'), true)) {
-            if ($value !== '') {
-                throw new \InvalidArgumentException(sprintf('%s does not accept any value', $name));
+            if ($value) {
+                $this->directiveValues[$name] = true;
+            } else {
+                unset($this->directiveValues[$name]);
             }
-            $this->directiveValues[$name] = true;
         } elseif ($value) {
             $this->directiveValues[$name] = $value;
         } else {
