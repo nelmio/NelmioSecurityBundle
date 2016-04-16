@@ -29,12 +29,12 @@ class ExternalRedirectListener
     private $generator;
 
     /**
-     * @param Boolean               $abort     If true, the offending redirects are turned into 403 responses, can't be combined with $override
-     * @param string                $override  Absolute path, complete URL or route name that must be used instead of the offending redirect's url
-     * @param string                $forwardAs Name of the route-/query string parameter the blocked url will be passed to destination location
+     * @param bool                  $abort           If true, the offending redirects are turned into 403 responses, can't be combined with $override
+     * @param string                $override        Absolute path, complete URL or route name that must be used instead of the offending redirect's url
+     * @param string                $forwardAs       Name of the route-/query string parameter the blocked url will be passed to destination location
      * @param mixed                 $targetValidator array of hosts to be whitelisted, or regex that matches whitelisted hosts, or implementation of TargetValidator
-     * @param LoggerInterface       $logger    A logger, if it's present, detected offenses are logged at the warning level
-     * @param UrlGeneratorInterface $generator Router or equivalent that can generate a route, only if override is a route name
+     * @param LoggerInterface       $logger          A logger, if it's present, detected offenses are logged at the warning level
+     * @param UrlGeneratorInterface $generator       Router or equivalent that can generate a route, only if override is a route name
      */
     public function __construct($abort = true, $override = null, $forwardAs = null, $targetValidator = null, LoggerInterface $logger = null, UrlGeneratorInterface $generator = null)
     {
@@ -47,7 +47,7 @@ class ExternalRedirectListener
 
         if (is_string($targetValidator) || is_array($targetValidator)) {
             $targetValidator = new WhitelistBasedTargetValidator($targetValidator);
-        } elseif ($targetValidator !== null && ! $targetValidator instanceof TargetValidator) {
+        } elseif ($targetValidator !== null && !$targetValidator instanceof TargetValidator) {
             throw new \LogicException('$targetValidator should be an array of hosts, a regular expression, or an implementation of TargetValidator.');
         }
         $this->targetValidator = $targetValidator;

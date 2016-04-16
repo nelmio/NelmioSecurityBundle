@@ -14,7 +14,7 @@ class ContentSecurityPolicyParserTest extends \PHPUnit_Framework_TestCase
         $parser = new ContentSecurityPolicyParser();
 
         $sourceList = array($source);
-        $result     = $parser->parseSourceList($sourceList);
+        $result = $parser->parseSourceList($sourceList);
         $this->assertEquals($expected, $result, 'CSP parser should quote CSP keywords');
     }
 

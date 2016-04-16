@@ -182,7 +182,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
         if ($content === false) {
             $content = array(
                 'expire' => strtotime('now'),
-                'data'   => ''
+                'data' => '',
             );
         }
 

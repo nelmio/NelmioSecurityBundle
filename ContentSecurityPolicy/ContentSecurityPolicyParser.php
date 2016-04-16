@@ -28,7 +28,7 @@ class ContentSecurityPolicyParser
 
         $sourceList = $this->quoteKeywords($sourceList);
 
-        return join(' ', $sourceList);
+        return implode(' ', $sourceList);
     }
 
     /**

@@ -13,7 +13,6 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\Encrypter;
 use Nelmio\SecurityBundle\EventListener\EncryptedCookieListener;
-
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -97,8 +96,8 @@ class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
     public function testCookieWritingWithEncryption()
     {
         $inputCookies = array(
-            'foo'       => 'bar',
-            'symfony'   => 'rocks'
+            'foo' => 'bar',
+            'symfony' => 'rocks',
         );
 
         $listener = new EncryptedCookieListener($this->encrypter, array('*'));

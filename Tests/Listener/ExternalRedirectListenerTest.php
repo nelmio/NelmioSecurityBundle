@@ -12,7 +12,6 @@
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
-
 use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -109,11 +108,11 @@ class ExternalRedirectListenerTest extends \PHPUnit_Framework_TestCase
     public function provideRedirectWhitelists()
     {
         return array(
-            array(array('bar.com','baz.com'), 'bar.com', true),
-            array(array('bar.com','baz.com'), '.baz.com', true),
-            array(array('bar.com','baz.com'), 'abaz.com', false),
-            array(array('bar.com','baz.com'), 'foo.baz.com', true),
-            array(array('bar.com','baz.com'), 'moo.com', false),
+            array(array('bar.com', 'baz.com'), 'bar.com', true),
+            array(array('bar.com', 'baz.com'), '.baz.com', true),
+            array(array('bar.com', 'baz.com'), 'abaz.com', false),
+            array(array('bar.com', 'baz.com'), 'foo.baz.com', true),
+            array(array('bar.com', 'baz.com'), 'moo.com', false),
             array(array('.co.uk'), 'telco.uk', false),
             array(array('.co.uk'), 'tel.co.uk', true),
             array(array(), 'bar.com', false),
