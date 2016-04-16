@@ -46,7 +46,7 @@ class Signer
         }
 
         $result = 0;
-        for ($i = 0, $j = strlen($signature); $i < $j; $i++) {
+        for ($i = 0, $j = strlen($signature); $i < $j; ++$i) {
             $result |= ord($signature[$i]) ^ ord($signature2[$i]);
         }
 
@@ -76,6 +76,6 @@ class Signer
             return array($signedValue, null);
         }
 
-        return array(substr($signedValue, 0, $pos), substr($signedValue, $pos+1));
+        return array(substr($signedValue, 0, $pos), substr($signedValue, $pos + 1));
     }
 }

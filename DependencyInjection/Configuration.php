@@ -11,9 +11,8 @@
 
 namespace Nelmio\SecurityBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder,
-    Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\NodeBuilder;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
 class Configuration implements ConfigurationInterface
@@ -25,7 +24,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->validate()
-                ->ifTrue(function($v) {
+                ->ifTrue(function ($v) {
                     return $v['forced_ssl']['enabled'] && $v['flexible_ssl']['enabled'];
                 })
                 ->thenInvalid('"forced_ssl" and "flexible_ssl" can not be used together')
@@ -63,7 +62,7 @@ class Configuration implements ConfigurationInterface
                             ->useAttributeAsKey('pattern')
                             ->prototype('array')
                                 ->beforeNormalization()
-                                    ->always(function($v) {
+                                    ->always(function ($v) {
                                         if (!is_array($v)) {
                                             $v = array('header' => $v ?: 'DENY');
                                         }
@@ -75,7 +74,7 @@ class Configuration implements ConfigurationInterface
                                     })
                                 ->end()
                                 ->validate()
-                                    ->ifTrue(function($v) {
+                                    ->ifTrue(function ($v) {
                                         return isset($v['header']) && !in_array($v['header'], array('DENY', 'SAMEORIGIN', 'ALLOW'), true)
                                             && !preg_match('{^ALLOW FROM \S+}', $v['header']);
                                     })
@@ -93,7 +92,7 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('external_redirects')
                     ->validate()
-                        ->ifTrue(function($v) {
+                        ->ifTrue(function ($v) {
                             return isset($v['abort']) && $v['abort'] && isset($v['override']) && $v['override'];
                         })
                         ->thenInvalid('"abort" and "override" can not be combined')
@@ -183,7 +182,7 @@ class Configuration implements ConfigurationInterface
                 ->append($this->addReportOrEnforceNode('enforce'))
             ->end()
             ->validate()
-                ->ifTrue(function($v) {
+                ->ifTrue(function ($v) {
                     foreach (array('report', 'enforce') as $type) {
                         foreach (array('upgrade-insecure-requests', 'block-all-mixed-content') as $directive) {
                             if (isset($v[$type][$directive]) && !empty($v[$type][$directive])) {
@@ -214,6 +213,7 @@ class Configuration implements ConfigurationInterface
                 ->prototype('scalar')
                 ->end();
         }
+
         return $children->end();
     }
 }

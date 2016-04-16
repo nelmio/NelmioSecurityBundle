@@ -39,7 +39,7 @@ class XssProtectionListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function callListener(XssProtectionListener $listener, $path, $masterReq)
     {
-        $request  = Request::create($path);
+        $request = Request::create($path);
         $response = new Response();
 
         $event = new FilterResponseEvent(

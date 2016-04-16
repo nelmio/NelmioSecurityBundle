@@ -22,7 +22,7 @@ class Encrypter
     {
         $this->secret = substr($secret, 0, 32);
         $this->algorithm = $algorithm;
-        
+
         if (!function_exists('mcrypt_module_open')) {
             throw new \RuntimeException('You need to install mcrypt if you want to encrypt your cookies.');
         }
@@ -39,20 +39,20 @@ class Encrypter
     public function encrypt($input)
     {
         if (empty($input)) {
-            return null;
+            return;
         }
 
         $iv = mcrypt_create_iv($this->ivSize, MCRYPT_RAND);
 
         mcrypt_generic_init($this->module, $this->secret, $iv);
 
-        return rtrim(base64_encode($iv . mcrypt_generic($this->module, (string) $input)), '=');
+        return rtrim(base64_encode($iv.mcrypt_generic($this->module, (string) $input)), '=');
     }
 
     public function decrypt($input)
     {
         if (empty($input)) {
-            return null;
+            return;
         }
 
         $encryptedData = base64_decode($input, true);
@@ -60,14 +60,14 @@ class Encrypter
         $iv = substr($encryptedData, 0, $this->ivSize);
 
         if (strlen($iv) < $this->ivSize) {
-            return null;
+            return;
         }
 
         $encryptedData = substr($encryptedData, $this->ivSize);
 
         $init = @mcrypt_generic_init($this->module, $this->secret, $iv);
         if ($init === false || $init < 0) {
-            return null;
+            return;
         }
 
         return rtrim(mdecrypt_generic($this->module, $encryptedData), "\0");
