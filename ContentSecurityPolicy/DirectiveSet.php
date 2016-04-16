@@ -83,26 +83,6 @@ class DirectiveSet
         return join('; ', $policy);
     }
 
-    public static function fromLegacyConfig(array $config)
-    {
-        $directiveSet = new self();
-        $parser = new ContentSecurityPolicyParser();
-
-        foreach (self::getLegacyNamesMap() as $old => $new) {
-            if (!array_key_exists($old, $config)) {
-                continue;
-            }
-
-            if ($old === 'report_uri') {
-                $directiveSet->setDirective($new, $config[$old]);
-            } else {
-                $directiveSet->setDirective($new, $parser->parseSourceList($config[$old]));
-            }
-        }
-
-        return $directiveSet;
-    }
-
     public static function fromConfig(array $config, $kind)
     {
         $directiveSet = new self();
@@ -125,25 +105,6 @@ class DirectiveSet
     public static function getNames()
     {
         return self::$directiveNames;
-    }
-
-    /**
-     * @deprecated
-     */
-    public static function getLegacyNamesMap()
-    {
-        return array(
-            'default'    => 'default-src',
-            'script'     => 'script-src',
-            'object'     => 'object-src',
-            'style'      => 'style-src',
-            'img'        => 'img-src',
-            'media'      => 'media-src',
-            'frame'      => 'frame-src',
-            'font'       => 'font-src',
-            'connect'    => 'connect-src',
-            'report_uri' => 'report-uri'
-        );
     }
 
     private function checkDirectiveName($name)

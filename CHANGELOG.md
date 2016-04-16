@@ -1,5 +1,6 @@
 ### 2.0.0 (2016-xx-xx)
   * Add support for Content-Security-Policy Level 2 directives
+  * Drop backward-compatibility with first deprecated CSP configuration
 
 ### 1.10.0 (2016-02-23)
 
