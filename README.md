@@ -100,6 +100,8 @@ nelmio_security:
                 - 'unsafe-inline'
                 - 'unsafe-eval'
                 - 'self'
+            # block-all-mixed-content: ~ # Blocks http content over https transport
+            upgrade-insecure-requests: ~ # Upgrades http requests to https transport
             hosts: []
             content_types: []
         enforce:
@@ -135,11 +137,16 @@ nelmio_security:
 
 ### Content Security Policy:
 
-Using CSP you can set a policy which modern browsers understand and will honor. The policy contains nine different
+Using CSP you can set a policy which modern browsers understand and will honor. The policy contains sixteen different
 directives; `default-src`, `script-src`, `object-src`, `style-src`, `img-src`, `media-src`, `frame-src`,
-`font-src`, `connect-src`, `report-uri`. You can provide an array of directives per content type. Empty content
+`font-src`, `connect-src`, `base-uri`, `child-src`, `form-action`, `frame-ancestors`, `plugin-types`,
+`block-all-mixed-content`, `upgrade-insecure-requests`, `report-uri`.
+
+You can provide an array of directives per content type, except for `block-all-mixed-content` and
+`upgrade-insecure-requests` that only accept a null value. Empty content
 types will inherit from `default-src`, specified content types will never inherit from `default-src`. Please see
-the [Content Security Policy 1.0](http://www.w3.org/TR/CSP) specification for details.
+the [Content Security Policy 1.0](https://www.w3.org/TR/2012/CR-CSP-20121115/) and
+[Content Security Policy 2.0](https://www.w3.org/TR/2015/CR-CSP2-20150721/) specifications for details.
 
 Each directive should be a domain, URI or keyword. The keyword `'self'` will allow content from the same origin as
 the page. If you need to allow inline scripts or `eval()` you can use `'unsafe-inline'` and `'unsafe-eval'`.
@@ -173,6 +180,8 @@ nelmio_security:
                 - 'self'
                 - facebook.com
                 - flickr.com
+            # block-all-mixed-content: ~ # Blocks http content over https transport
+            upgrade-insecure-requests: ~ # Upgrades http requests to https transport
             hosts: []
             content_types: []
         report:

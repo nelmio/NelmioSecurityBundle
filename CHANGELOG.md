@@ -1,3 +1,6 @@
+### 2.0.0 (2016-xx-xx)
+  * Add support for Content-Security-Policy Level 2 directives
+
 ### 1.10.0 (2016-02-23)
 
   * Added ability to restrict forced_ssl capability to some hostnames only

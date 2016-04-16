@@ -11,8 +11,12 @@ class ContentSecurityPolicyParser
      *
      * @return string
      */
-    public function parseSourceList(array $sourceList)
+    public function parseSourceList(array $sourceList = null)
     {
+        if (null === $sourceList) {
+            return '';
+        }
+
         $sourceList = $this->quoteKeywords($sourceList);
 
         return join(' ', $sourceList);

@@ -192,6 +192,20 @@ class Configuration implements ConfigurationInterface
                 ->thenInvalid('"report_only" and "(report|enforce)" can not be used together')
             ->end()
             ->validate()
+                ->ifTrue(function($v) {
+                    foreach (array('report', 'enforce') as $type) {
+                        foreach (array('upgrade-insecure-requests', 'block-all-mixed-content') as $directive) {
+                            if (isset($v[$type][$directive]) && !empty($v[$type][$directive])) {
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                })
+                ->thenInvalid('"upgrade-insecure-requests" and "block-all-mixed-content" only accept an empty value "~"')
+            ->end()
+            ->validate()
                 ->ifTrue(
                     function($v) {
                         return

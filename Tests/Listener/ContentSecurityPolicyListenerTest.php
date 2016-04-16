@@ -148,7 +148,14 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             'frame-src' => "frame.example.org 'self'",
             'font-src' => "font.example.org 'self'",
             'connect-src' => "connect.example.org 'self'",
-            'report-uri' => $reportUri
+            'report-uri' => $reportUri,
+            'base-uri' => "base-uri.example.org 'self'",
+            'child-src' => "child-src.example.org 'self'",
+            'form-action' => "form-action.example.org 'self'",
+            'frame-ancestors' => "frame-ancestors.example.org 'self'",
+            'plugin-types' => 'application/shockwave-flash',
+            'block-all-mixed-content' => '',
+            'upgrade-insecure-requests' => '',
         ));
         $response = $this->callListener($listener, '/', true);
 
@@ -164,6 +171,13 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertContains("font-src font.example.org 'self'", $header, 'Header should contain font-src');
         $this->assertContains("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
         $this->assertContains("report-uri http://example.org/CSPReport", $header, 'Header should contain report-uri');
+        $this->assertContains("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
+        $this->assertContains("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
+        $this->assertContains("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
+        $this->assertContains("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
+        $this->assertContains("plugin-types application/shockwave-flash", $header, 'Header should contain plugin-types');
+        $this->assertContains("block-all-mixed-content", $header, 'Header should contain block-all-mixed-content');
+        $this->assertContains("upgrade-insecure-requests", $header, 'Header should contain upgrade-insecure-requests');
     }
 
     public function testDelimiter()
