@@ -20,10 +20,10 @@ class ContentSecurityPolicyParser
      *
      * @return string
      */
-    public function parseSourceList(array $sourceList = null)
+    public function parseSourceList($sourceList)
     {
-        if (null === $sourceList) {
-            return '';
+        if (!is_array($sourceList)) {
+            return $sourceList;
         }
 
         $sourceList = $this->quoteKeywords($sourceList);

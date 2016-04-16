@@ -100,8 +100,8 @@ nelmio_security:
                 - 'unsafe-inline'
                 - 'unsafe-eval'
                 - 'self'
-            # block-all-mixed-content: ~ # Blocks http content over https transport
-            upgrade-insecure-requests: ~ # Upgrades http requests to https transport
+            block-all-mixed-content: true # Default to false, blocks http content over https transport
+            # upgrade-insecure-requests: true # Default to false, upgrades http requests to https transport
             hosts: []
             content_types: []
         enforce:
@@ -143,7 +143,7 @@ directives; `default-src`, `script-src`, `object-src`, `style-src`, `img-src`, `
 `block-all-mixed-content`, `upgrade-insecure-requests`, `report-uri`.
 
 You can provide an array of directives per content type, except for `block-all-mixed-content` and
-`upgrade-insecure-requests` that only accept a null value. Empty content
+`upgrade-insecure-requests` that only accept boolean value. Empty content
 types will inherit from `default-src`, specified content types will never inherit from `default-src`. Please see
 the [Content Security Policy 1.0](https://www.w3.org/TR/2012/CR-CSP-20121115/) and
 [Content Security Policy 2.0](https://www.w3.org/TR/2015/CR-CSP2-20150721/) specifications for details.
@@ -180,8 +180,8 @@ nelmio_security:
                 - 'self'
                 - facebook.com
                 - flickr.com
-            # block-all-mixed-content: ~ # Blocks http content over https transport
-            upgrade-insecure-requests: ~ # Upgrades http requests to https transport
+            block-all-mixed-content: true # Default to false, blocks http content over https transport
+            # upgrade-insecure-requests: true # Default to false, upgrades http requests to https transport
             hosts: []
             content_types: []
         report:

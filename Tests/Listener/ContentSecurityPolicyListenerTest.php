@@ -154,8 +154,8 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             'form-action' => "form-action.example.org 'self'",
             'frame-ancestors' => "frame-ancestors.example.org 'self'",
             'plugin-types' => 'application/shockwave-flash',
-            'block-all-mixed-content' => '',
-            'upgrade-insecure-requests' => '',
+            'block-all-mixed-content' => true,
+            'upgrade-insecure-requests' => true,
         ));
         $response = $this->callListener($listener, '/', true);
 
