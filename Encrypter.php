@@ -11,6 +11,9 @@
 
 namespace Nelmio\SecurityBundle;
 
+/**
+ * @deprecated EncryptedCookieListener is now deprecated due to high coupling with the deprecated mcrypt extension
+ */
 class Encrypter
 {
     private $module;
@@ -34,6 +37,8 @@ class Encrypter
         }
 
         $this->ivSize = mcrypt_enc_get_iv_size($this->module);
+
+        @trigger_error('Encrypted Cookie is now deprecated due to high coupling with the deprecated mcrypt extension', E_USER_NOTICE);
     }
 
     public function encrypt($input)
