@@ -34,9 +34,6 @@ load content from another domain than the page's domain.
   them. Note that they will not be encrypted, but signed only. The contents will still be
   visible to the user.
 
-* **[Encrypted Cookies](#encrypted-cookies)**: Specify certain cookies to be encrypted, so that the value cannot be
-  read. When you retrieve the cookie it will be automatically decrypted.
-
 * **[Clickjacking Protection](#clickjacking-protection)**: X-Frame-Options header is added to all responses to prevent your
   site from being put in a frame/iframe. This can have serious security implications as it has
   been demonstrated time and time again with Facebook and others. You can allow framing of your
@@ -69,15 +66,17 @@ load content from another domain than the page's domain.
 
 * **[XSS Protection](#xss-protection)**: Enables/Disables Microsoft XSS Protection on compatible browsers (IE 8 and newer).
 
+**WARNING**: The following features are now deprecated:
+
+* **[Encrypted Cookies](#encrypted-cookies)**: Specify certain cookies to be encrypted, so that the value cannot be
+  read. When you retrieve the cookie it will be automatically decrypted.
+
 ## Maximum Security Configuration (Read on for detailed recommendations!)
 
 ```yaml
 nelmio_security:
     # signs/verifies all cookies
     signed_cookie:
-        names: ['*']
-    # encrypt all cookies
-    encrypted_cookie:
         names: ['*']
     # prevents framing of the entire site
     clickjacking:
@@ -353,6 +352,8 @@ nelmio_security:
 ```
 
 ### **Encrypted Cookies**:
+
+**WARNING**: this service is now deprecated due to high coupling with deprecated mcrypt extension.
 
 Encrypts the cookie values using `nelmio_security.encrypted_cookie.secret`. It works the same as
 Signed Cookies:
@@ -641,11 +642,10 @@ to true.
 
 ### Cookie Session Handler:
 
-You can configure the session handler to use a cookie based storage. There are various reasons to do this, but generally speaking unless you have a very good one [you should avoid it](http://wonko.com/post/why-you-probably-shouldnt-use-cookies-to-store-session-data).
+You can configure the session handler to use a cookie based storage. There are various reasons to do this,
+but generally speaking unless you have a very good one [you should avoid it](http://wonko.com/post/why-you-probably-shouldnt-use-cookies-to-store-session-data).
 
-**WARNING**: by default the session is not encrypted, it is your responsibility to properly
-configure the Encrypted Cookies section to include the session cookie (default name: session).
-The size limit of a cookie is 4KB, so make sure you are not storing objects or long
+**WARNING**: The size limit of a cookie is 4KB, so make sure you are not storing objects or long
 strings in the session.
 
 ```yaml
@@ -657,9 +657,6 @@ nelmio_security:
     cookie_session:
         enabled: true
         name: session
-
-    encrypted_cookie:
-        names: [session]
 ```
 
 ### Content Type Sniffing
