@@ -90,6 +90,8 @@ nelmio_security:
 
     # prevents inline scripts, unsafe eval, external scripts/images/styles/frames, etc
     csp:
+        hosts: []
+        content_types: []
         report:
             report-uri: [/nelmio/csp/report]
             default-src: [ 'self' ]
@@ -102,8 +104,6 @@ nelmio_security:
                 - 'self'
             block-all-mixed-content: true # Default to false, blocks http content over https transport
             # upgrade-insecure-requests: true # Default to false, upgrades http requests to https transport
-            hosts: []
-            content_types: []
         enforce:
             # see https://github.com/nelmio/NelmioSecurityBundle/issues/32
             report-uri: [/nelmio/csp/report]
@@ -169,6 +169,8 @@ hostnames will use the CSP rule.
 nelmio_security:
     csp:
         report_logger_service: logger
+        hosts: []
+        content_types: []
         enforce:
             report-uri: /nelmio/csp/report
             default-src: [ 'self' ]
@@ -182,8 +184,6 @@ nelmio_security:
                 - flickr.com
             block-all-mixed-content: true # Default to false, blocks http content over https transport
             # upgrade-insecure-requests: true # Default to false, upgrades http requests to https transport
-            hosts: []
-            content_types: []
         report:
             report-uri: /nelmio/csp/report
             script-src:
