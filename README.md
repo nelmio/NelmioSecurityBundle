@@ -93,7 +93,7 @@ nelmio_security:
         hosts: []
         content_types: []
         report:
-            report-uri: [/nelmio/csp/report]
+            report-uri: /nelmio/csp/report
             default-src: [ 'self' ]
             # There's no flash on our site
             object-src:
@@ -106,7 +106,7 @@ nelmio_security:
             # upgrade-insecure-requests: true # Default to false, upgrades http requests to https transport
         enforce:
             # see https://github.com/nelmio/NelmioSecurityBundle/issues/32
-            report-uri: [/nelmio/csp/report]
+            report-uri: /nelmio/csp/report
             script-src:
                 - 'self'
 
