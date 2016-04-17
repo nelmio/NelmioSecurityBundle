@@ -1,5 +1,6 @@
 ### 2.0.0 (2016-xx-xx)
   * Add support for Content-Security-Policy Level 2 directives
+  * Add support for Content-Security-Policy Level 2 signatures (nonce and message digest)
   * Deprecate report-uri as an array. Property is now a scalar
   * Drop backward-compatibility with first deprecated CSP configuration
 

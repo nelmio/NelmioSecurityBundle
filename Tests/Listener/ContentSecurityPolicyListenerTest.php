@@ -2,20 +2,38 @@
 
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
 class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 {
     private $kernel;
+    private $nonceGenerator;
+    private $shaComputer;
 
     protected function setUp()
     {
         $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
+        $this->nonceGenerator = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->shaComputer = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->shaComputer->expects($this->any())
+            ->method('computeForScript')
+            ->will($this->returnValue('sha-script'));
+        $this->shaComputer->expects($this->any())
+            ->method('computeForStyle')
+            ->will($this->returnValue('sha-style'));
     }
 
     public function testDefault()
@@ -25,6 +43,54 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             "default-src default.example.org 'self'",
+            $response->headers->get('Content-Security-Policy')
+        );
+    }
+
+    public function testDefaultWithSignatures()
+    {
+        $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'"));
+        $response = $this->callListener($listener, '/', true, 'text/html', array('signatures' => array('script-src' => array('sha-1'))));
+
+        $this->assertEquals(
+            "default-src default.example.org 'self'; script-src default.example.org 'self' 'unsafe-inline' 'sha-1'",
+            $response->headers->get('Content-Security-Policy')
+        );
+    }
+
+    public function testEvenWithUnsafeInlineItAppliesSignature()
+    {
+        $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'", 'script-src' => "'self' 'unsafe-inline'"));
+        $response = $this->callListener($listener, '/', true, 'text/html', array('signatures' => array('script-src' => array('sha-1'))));
+
+        $this->assertEquals(
+            "default-src default.example.org 'self'; script-src 'self' 'unsafe-inline' 'sha-1'",
+            $response->headers->get('Content-Security-Policy')
+        );
+    }
+
+    public function testDefaultWithSignaturesAndNonce()
+    {
+        $this->nonceGenerator->expects($this->any())
+            ->method('generate')
+            ->will($this->returnValue('12345'));
+
+        $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'"));
+        $response = $this->callListener($listener, '/', true, 'text/html', array('signatures' => array('script-src' => array('sha-1'))), 3);
+
+        $this->assertEquals(
+            "default-src default.example.org 'self'; script-src default.example.org 'self' 'unsafe-inline' 'sha-1' 'nonce-12345'; style-src default.example.org 'self' 'unsafe-inline' 'nonce-12345'",
+            $response->headers->get('Content-Security-Policy')
+        );
+    }
+
+    public function testDefaultWithAddScript()
+    {
+        $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'"));
+        $response = $this->callListener($listener, '/', true, 'text/html', array('scripts' => array('<script></script>'), 'styles' => array('<style></style>')), 3);
+
+        $this->assertEquals(
+            "default-src default.example.org 'self'; script-src default.example.org 'self' 'unsafe-inline' 'sha-script'; style-src default.example.org 'self' 'unsafe-inline' 'sha-style'",
             $response->headers->get('Content-Security-Policy')
         );
     }
@@ -312,15 +378,46 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         $directiveSet->setDirectives($directives);
 
         if ($reportOnly) {
-            return new ContentSecurityPolicyListener($directiveSet, new DirectiveSet(), $compatHeaders, $contentTypes);
+            return new ContentSecurityPolicyListener($directiveSet, new DirectiveSet(), $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
         } else {
-            return new ContentSecurityPolicyListener(new DirectiveSet(), $directiveSet, $compatHeaders, $contentTypes);
+            return new ContentSecurityPolicyListener(new DirectiveSet(), $directiveSet, $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
         }
     }
 
-    protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq, $contentType = 'text/html')
+    protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq, $contentType = 'text/html', array $digestData = array(), $getNonce = 0)
     {
         $request = Request::create($path);
+        $event = new GetResponseEvent(
+            $this->kernel,
+            $request,
+            $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST
+        );
+
+        $listener->onKernelRequest($event);
+
+        if (isset($digestData['scripts'])) {
+            foreach ($digestData['scripts'] as $script) {
+                $listener->addScript($script);
+            }
+        }
+        if (isset($digestData['styles'])) {
+            foreach ($digestData['styles'] as $style) {
+                $listener->addStyle($style);
+            }
+        }
+
+        if (isset($digestData['signatures'])) {
+            foreach ($digestData['signatures'] as $type => $values) {
+                foreach ($values as $value) {
+                    $listener->addSha($type, $value);
+                }
+            }
+        }
+
+        for ($i = 0; $i < $getNonce; ++$i) {
+            $listener->getNonce();
+        }
+
         $response = new Response();
         $response->headers->add(array('content-type' => $contentType));
 
