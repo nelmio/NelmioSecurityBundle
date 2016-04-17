@@ -13,24 +13,30 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
 class DirectiveSet
 {
+    const TYPE_SRC_LIST = 'source-list';
+    const TYPE_MEDIA_TYPE_LIST = 'media-type-list';
+    const TYPE_ANCESTOR_SRC_LIST = 'ancestor-source-list';
+    const TYPE_URI_REFERENCE = 'uri-reference';
+    const TYPE_NO_VALUE = 'no-value';
+
     private static $directiveNames = array(
-        'default-src',
-        'script-src',
-        'object-src',
-        'style-src',
-        'img-src',
-        'media-src',
-        'frame-src',
-        'font-src',
-        'connect-src',
-        'report-uri',
-        'base-uri',
-        'child-src',
-        'form-action',
-        'frame-ancestors',
-        'plugin-types',
-        'block-all-mixed-content',
-        'upgrade-insecure-requests',
+        'default-src' => self::TYPE_SRC_LIST,
+        'script-src' => self::TYPE_SRC_LIST,
+        'object-src' => self::TYPE_SRC_LIST,
+        'style-src' => self::TYPE_SRC_LIST,
+        'img-src' => self::TYPE_SRC_LIST,
+        'media-src' => self::TYPE_SRC_LIST,
+        'frame-src' => self::TYPE_SRC_LIST,
+        'font-src' => self::TYPE_SRC_LIST,
+        'connect-src' => self::TYPE_SRC_LIST,
+        'report-uri' => self::TYPE_URI_REFERENCE,
+        'base-uri' => self::TYPE_SRC_LIST,
+        'child-src' => self::TYPE_SRC_LIST,
+        'form-action' => self::TYPE_SRC_LIST,
+        'frame-ancestors' => self::TYPE_ANCESTOR_SRC_LIST,
+        'plugin-types' => self::TYPE_MEDIA_TYPE_LIST,
+        'block-all-mixed-content' => self::TYPE_NO_VALUE,
+        'upgrade-insecure-requests' => self::TYPE_NO_VALUE,
     );
 
     private $directiveValues = array();
@@ -49,7 +55,7 @@ class DirectiveSet
     public function setDirective($name, $value)
     {
         $this->checkDirectiveName($name);
-        if (in_array($name, array('block-all-mixed-content', 'upgrade-insecure-requests'), true)) {
+        if (self::$directiveNames[$name] === self::TYPE_NO_VALUE) {
             if ($value) {
                 $this->directiveValues[$name] = true;
             } else {
@@ -75,7 +81,7 @@ class DirectiveSet
         foreach ($this->directiveValues as $name => $value) {
             if (true === $value) {
                 $policy[] = $name;
-            } elseif ($name === 'default-src' || $value !== $this->getDirective('default-src')) {
+            } elseif ($name === 'default-src' || $this->canNotBeFallbackedByDefault($name, $value)) {
                 // prevents using the same value as default for a directive
                 $policy[] = $name.' '.$value;
             }
@@ -92,7 +98,7 @@ class DirectiveSet
         }
 
         $parser = new ContentSecurityPolicyParser();
-        foreach (self::getNames() as $name) {
+        foreach (self::getNames() as $name => $type) {
             if (!array_key_exists($name, $config[$kind])) {
                 continue;
             }
@@ -110,8 +116,19 @@ class DirectiveSet
 
     private function checkDirectiveName($name)
     {
-        if (!in_array($name, self::$directiveNames, true)) {
+        if (!array_key_exists($name, self::$directiveNames)) {
             throw new \InvalidArgumentException('Unknown CSP directive name: '.$name);
         }
+    }
+
+    private function canNotBeFallbackedByDefault($name, $value)
+    {
+        // Only source-list can be fallbacked by default
+        if (self::$directiveNames[$name] !== self::TYPE_SRC_LIST) {
+            return true;
+        }
+
+        // let's fallback if directives are strictly equals
+        return $value !== $this->getDirective('default-src');
     }
 }

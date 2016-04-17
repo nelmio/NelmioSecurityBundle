@@ -193,15 +193,39 @@ class Configuration implements ConfigurationInterface
         // Symfony should not normalize dashes to underlines, e.g. img-src to img_src
         $node->normalizeKeys(false);
 
-        foreach (DirectiveSet::getNames() as $name) {
-            if (in_array($name, array('upgrade-insecure-requests', 'block-all-mixed-content'), true)) {
+        foreach (DirectiveSet::getNames() as $name => $type) {
+            if (DirectiveSet::TYPE_NO_VALUE === $type) {
                 $children
                     ->booleanNode($name)
                     ->defaultFalse()
                     ->end();
-            } else {
+            } elseif ($name === 'report-uri') {
                 $children
                     ->arrayNode($name)
+                        ->prototype('scalar')->end()
+                        ->beforeNormalization()
+                            ->ifArray()
+                            ->then(function ($value) {
+                                @trigger_error("Using an array for configuring 'report-uri' directive is deprecated", E_USER_NOTICE);
+
+                                return $value;
+                            })
+                        ->end()
+                        ->beforeNormalization()
+                            ->ifString()
+                            ->then(function ($value) { return array($value); })
+                        ->end()
+                        ->validate()
+                        ->ifTrue(function ($v) {
+                            return count($v) > 1;
+                        })
+                        ->thenInvalid('Only one report-uri should be provided')
+                    ->end();
+            } elseif (DirectiveSet::TYPE_URI_REFERENCE === $type) {
+                $children->scalarNode($name)
+                    ->end();
+            } else {
+                $children->arrayNode($name)
                     ->prototype('scalar')
                     ->end();
             }
