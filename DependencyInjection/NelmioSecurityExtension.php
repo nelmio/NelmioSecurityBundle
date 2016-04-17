@@ -14,6 +14,7 @@ namespace Nelmio\SecurityBundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -61,11 +62,17 @@ class NelmioSecurityExtension extends Extension
                 $loader->load('csp_legacy.yml');
             }
 
-            $container->getDefinition('nelmio_security.csp_listener')
-                ->setArguments(array($config['csp']));
+            $cspConfig = $config['csp'];
+
+            $enforceDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'enforce');
+            $reportDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'report');
+
+            $cspListenerDefinition = $container->getDefinition('nelmio_security.csp_listener');
+            $cspListenerDefinition->setArguments(array($reportDefinition, $enforceDefinition, new Reference('nelmio_security.nonce_generator'), new Reference('nelmio_security.sha_computer'), (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']));
+            $container->setParameter('nelmio_security.csp.hash_algorithm', $cspConfig['hash']['algorithm']);
 
             $container->getDefinition('nelmio_security.csp_reporter_controller')
-                ->setArguments(array(new Reference($config['csp']['report_logger_service'])));
+                ->setArguments(array(new Reference($cspConfig['report_logger_service'])));
         }
 
         if (!empty($config['xss_protection'])) {
@@ -135,5 +142,21 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.forced_ssl.whitelist', $config['forced_ssl']['whitelist']);
             $container->setParameter('nelmio_security.forced_ssl.hosts', $config['forced_ssl']['hosts']);
         }
+    }
+
+    private function buildDirectiveSetDefinition($config, $type)
+    {
+        $directiveDefinition = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
+
+        if (version_compare(Kernel::VERSION, '2.6', '>=')) {
+            $directiveDefinition->setFactory(array('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet', 'fromConfig'));
+        } else {
+            $directiveDefinition->setFactoryClass('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
+            $directiveDefinition->setFactoryMethod('fromConfig');
+        }
+
+        $directiveDefinition->setArguments(array($config, $type));
+
+        return $directiveDefinition;
     }
 }
