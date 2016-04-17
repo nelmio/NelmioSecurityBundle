@@ -91,7 +91,7 @@ nelmio_security:
     # prevents inline scripts, unsafe eval, external scripts/images/styles/frames, etc
     csp:
         report:
-            report-uri: [/nelmio/csp/report]
+            report-uri: /nelmio/csp/report
             default-src: [ 'self' ]
             # There's no flash on our site
             object-src:
@@ -106,7 +106,7 @@ nelmio_security:
             content_types: []
         enforce:
             # see https://github.com/nelmio/NelmioSecurityBundle/issues/32
-            report-uri: [/nelmio/csp/report]
+            report-uri: /nelmio/csp/report
             script-src:
                 - 'self'
 

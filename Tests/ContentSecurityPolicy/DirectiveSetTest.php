@@ -55,7 +55,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                     'plugin-types' => array('application/shockwave-flash'),
                     'block-all-mixed-content' => true,
                     'upgrade-insecure-requests' => true,
-                )
+                ),
             ),
             array(
                 'default-src example.org \'self\'; '.
@@ -91,7 +91,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                     'plugin-types' => array('application/shockwave-flash'),
                     'block-all-mixed-content' => false,
                     'upgrade-insecure-requests' => false,
-                )
+                ),
             ),
             array(
                 'default-src example.org \'self\'; '.
@@ -125,7 +125,15 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                     'form-action' => array('form-action.example.org', "'self'"),
                     'frame-ancestors' => array('frame-ancestors.example.org', "'self'"),
                     'plugin-types' => array('application/shockwave-flash'),
-                )
+                ),
+            ),
+            array(
+                'default-src \'none\'; '.
+                'plugin-types \'none\'',
+                array(
+                    'default-src' => array('none'),
+                    'plugin-types' => array('none'),
+                ),
             ),
         );
     }

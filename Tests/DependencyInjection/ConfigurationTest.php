@@ -21,6 +21,40 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testReportUriScalar()
+    {
+        $this->processYamlConfiguration(
+            "csp:\n".
+            "  enforce:\n".
+            "    report-uri: /csp/report\n"
+        );
+    }
+
+    public function testReportUriArray()
+    {
+        $this->processYamlConfiguration(
+            "csp:\n".
+            "  enforce:\n".
+            "    report-uri:\n".
+            "      - /csp/report\n"
+        );
+    }
+
+    /**
+     * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Only one report-uri should be provided
+     */
+    public function testReportUriInvalidArray()
+    {
+        $this->processYamlConfiguration(
+            "csp:\n".
+            "  enforce:\n".
+            "    report-uri:\n".
+            "      - /csp/report1\n".
+            "      - /csp/report2\n"
+        );
+    }
+
     public function testCspWithLevel2()
     {
         $this->processYamlConfiguration(
