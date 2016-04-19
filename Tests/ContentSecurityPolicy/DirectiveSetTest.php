@@ -144,7 +144,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
     public function testBuildHeaderValueWithInlineSignatures($expected, $config, $signatures)
     {
         $directive = DirectiveSet::fromConfig($config, 'enforce');
-        $this->assertSame($expected, $directive->buildHeaderValueWithInlineSignatures($signatures));
+        $this->assertSame($expected, $directive->buildHeaderValue($signatures));
     }
 
     public function provideConfigAndSignatures()
