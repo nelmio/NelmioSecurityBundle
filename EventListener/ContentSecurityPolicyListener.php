@@ -136,11 +136,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
     {
         // $signatures might be null if no KernelEvents::REQUEST has been triggered.
         // for instance if a security.authentication.failure has been dispatched
-        if (!empty($signatures)) {
-            $headerValue = $directiveSet->buildHeaderValueWithInlineSignatures($signatures);
-        } else {
-            $headerValue = $directiveSet->buildHeaderValue();
-        }
+        $headerValue = $directiveSet->buildHeaderValue($signatures);
 
         if (!$headerValue) {
             return array();
