@@ -82,21 +82,7 @@ class DirectiveSet
         }
     }
 
-    public function buildHeaderValue()
-    {
-        $policy = array();
-        foreach ($this->directiveValues as $name => $value) {
-            if (true === $value) {
-                $policy[] = $name;
-            } elseif ($this->canNotBeFallbackedByDefault($name, $value)) {
-                $policy[] = $name.' '.$value;
-            }
-        }
-
-        return implode('; ', $policy);
-    }
-
-    public function buildHeaderValueWithInlineSignatures(array $signatures)
+    public function buildHeaderValue(array $signatures = null)
     {
         $policy = array();
 
@@ -107,7 +93,6 @@ class DirectiveSet
             $signatures['style-src'] = implode(' ', array_map(function ($value) { return sprintf('\'%s\'', $value); }, $signatures['style-src']));
         }
 
-        $defaultSrc = $this->getDirective('default-src');
 
         foreach ($this->directiveValues as $name => $value) {
             if (true === $value) {
@@ -127,17 +112,20 @@ class DirectiveSet
             }
         }
 
-        $isDefaultSrcSet = $defaultSrc !== '';
+        if (!empty($signatures)) {
+            $defaultSrc = $this->getDirective('default-src');
+            $isDefaultSrcSet = $defaultSrc !== '';
 
-        if ($isDefaultSrcSet && false === strpos($defaultSrc, '\'unsafe-inline\'')) {
-            $unsafeInline = $this->level1Fallback ? ' \'unsafe-inline\'' : '';
+            if ($isDefaultSrcSet && false === strpos($defaultSrc, '\'unsafe-inline\'')) {
+                $unsafeInline = $this->level1Fallback ? ' \'unsafe-inline\'' : '';
 
-            if (empty($this->directiveValues['script-src']) && isset($signatures['script-src'])) {
-                $policy[] = 'script-src '.$defaultSrc.$unsafeInline.' '.$signatures['script-src'];
-            }
+                if (empty($this->directiveValues['script-src']) && isset($signatures['script-src'])) {
+                    $policy[] = 'script-src ' . $defaultSrc . $unsafeInline . ' ' . $signatures['script-src'];
+                }
 
-            if (empty($this->directiveValues['style-src']) && isset($signatures['style-src'])) {
-                $policy[] = 'style-src '.$defaultSrc.$unsafeInline.' '.$signatures['style-src'];
+                if (empty($this->directiveValues['style-src']) && isset($signatures['style-src'])) {
+                    $policy[] = 'style-src ' . $defaultSrc . $unsafeInline . ' ' . $signatures['style-src'];
+                }
             }
         }
 
