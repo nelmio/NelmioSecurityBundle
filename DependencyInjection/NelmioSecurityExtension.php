@@ -64,8 +64,8 @@ class NelmioSecurityExtension extends Extension
 
             $cspConfig = $config['csp'];
 
-            $enforceDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'enforce');
-            $reportDefinition = $this->buildDirectiveSetDefinition($cspConfig, 'report');
+            $enforceDefinition = $this->buildDirectiveSetDefinition($container, $cspConfig, 'enforce');
+            $reportDefinition = $this->buildDirectiveSetDefinition($container, $cspConfig, 'report');
 
             $cspListenerDefinition = $container->getDefinition('nelmio_security.csp_listener');
             $cspListenerDefinition->setArguments(array($reportDefinition, $enforceDefinition, new Reference('nelmio_security.nonce_generator'), new Reference('nelmio_security.sha_computer'), (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']));
@@ -144,7 +144,7 @@ class NelmioSecurityExtension extends Extension
         }
     }
 
-    private function buildDirectiveSetDefinition($config, $type)
+    private function buildDirectiveSetDefinition(ContainerBuilder $container, $config, $type)
     {
         $directiveDefinition = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
 
@@ -155,7 +155,19 @@ class NelmioSecurityExtension extends Extension
             $directiveDefinition->setFactoryMethod('fromConfig');
         }
 
-        $directiveDefinition->setArguments(array($config, $type));
+        $pmDefinition = $container->getDefinition('nelmio_security.policy_manager');
+
+        if (isset($config[$type]) && $config[$type]['browser_adaptive']) {
+            $service = $container->getParameter('nelmio_security.ua_parser.service');
+
+            if ($service === 'nelmio_security.ua_parser.ua_php' && !class_exists('UAParser\Parser')) {
+                throw new \RuntimeException('You must require "ua-parser/uap-php" as a dependency to use the browser_adaptive feature or configure your own "nelmio_security.ua_parser.service"');
+            }
+
+            $pmDefinition->setArguments(array($container->getDefinition($service)));
+        }
+
+        $directiveDefinition->setArguments(array($pmDefinition, $config, $type));
 
         return $directiveDefinition;
     }

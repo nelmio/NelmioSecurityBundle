@@ -21,7 +21,11 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^4.5",
-        "twig/twig": "^1.24"
+        "twig/twig": "^1.24",
+        "ua-parser/uap-php": "^3.4"
+    },
+    "suggest": {
+        "ua-parser/uap-php": "To allow adapt CSP directives given the user-agent"
     },
     "autoload": {
         "psr-4": { "Nelmio\\SecurityBundle\\": "" }

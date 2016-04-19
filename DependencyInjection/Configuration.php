@@ -209,6 +209,12 @@ class Configuration implements ConfigurationInterface
                 ->defaultValue(true)
             ->end();
 
+        $children
+            ->booleanNode('browser_adaptive')
+                ->info('Do not send directives that browser do not support')
+                ->defaultValue(false)
+            ->end();
+
         foreach (DirectiveSet::getNames() as $name => $type) {
             if (DirectiveSet::TYPE_NO_VALUE === $type) {
                 $children

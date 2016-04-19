@@ -13,6 +13,7 @@ namespace Nelmio\SecurityBundle\EventListener;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -108,6 +109,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
             return;
         }
 
+        $request = $e->getRequest();
         $response = $e->getResponse();
 
         if ($response->isRedirection()) {
@@ -124,19 +126,19 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
                 $signatures['style-src'][] = 'nonce-'.$this->nonce;
             }
 
-            $response->headers->add($this->buildHeaders($this->report, true, $this->compatHeaders, $signatures));
-            $response->headers->add($this->buildHeaders($this->enforce, false, $this->compatHeaders, $signatures));
+            $response->headers->add($this->buildHeaders($request, $this->report, true, $this->compatHeaders, $signatures));
+            $response->headers->add($this->buildHeaders($request, $this->enforce, false, $this->compatHeaders, $signatures));
         }
 
         $this->nonce = null;
         $this->sha = null;
     }
 
-    private function buildHeaders(DirectiveSet $directiveSet, $reportOnly, $compatHeaders, array $signatures = null)
+    private function buildHeaders(Request $request, DirectiveSet $directiveSet, $reportOnly, $compatHeaders, array $signatures = null)
     {
         // $signatures might be null if no KernelEvents::REQUEST has been triggered.
         // for instance if a security.authentication.failure has been dispatched
-        $headerValue = $directiveSet->buildHeaderValue($signatures);
+        $headerValue = $directiveSet->buildHeaderValue($request, $signatures);
 
         if (!$headerValue) {
             return array();
