@@ -40,11 +40,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Only one report-uri should be provided
-     */
-    public function testReportUriInvalidArray()
+    public function testReportUriValidWithMultiple()
     {
         $this->processYamlConfiguration(
             "csp:\n".

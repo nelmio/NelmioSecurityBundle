@@ -139,6 +139,14 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                     'form-action' => array('none'),
                 ),
             ),
+            array(
+                'default-src \'none\'; '.
+                'report-uri /csp/report1 /csp/report2',
+                array(
+                    'default-src' => array('none'),
+                    'report-uri' => array('/csp/report1', '/csp/report2'),
+                ),
+            ),
         );
     }
 

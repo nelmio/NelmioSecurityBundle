@@ -218,22 +218,9 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode($name)
                         ->prototype('scalar')->end()
                         ->beforeNormalization()
-                            ->ifArray()
-                            ->then(function ($value) {
-                                @trigger_error("Using an array for configuring 'report-uri' directive is deprecated", E_USER_NOTICE);
-
-                                return $value;
-                            })
-                        ->end()
-                        ->beforeNormalization()
                             ->ifString()
                             ->then(function ($value) { return array($value); })
                         ->end()
-                        ->validate()
-                        ->ifTrue(function ($v) {
-                            return count($v) > 1;
-                        })
-                        ->thenInvalid('Only one report-uri should be provided')
                     ->end();
             } elseif (DirectiveSet::TYPE_URI_REFERENCE === $type) {
                 $children->scalarNode($name)
