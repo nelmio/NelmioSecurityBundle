@@ -14,6 +14,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 class DirectiveSet
 {
     const TYPE_SRC_LIST = 'source-list';
+    const TYPE_SRC_LIST_NOFB = 'source-list-no-fallback';
     const TYPE_MEDIA_TYPE_LIST = 'media-type-list';
     const TYPE_ANCESTOR_SRC_LIST = 'ancestor-source-list';
     const TYPE_URI_REFERENCE = 'uri-reference';
@@ -21,22 +22,22 @@ class DirectiveSet
 
     private static $directiveNames = array(
         'default-src' => self::TYPE_SRC_LIST,
-        'script-src' => self::TYPE_SRC_LIST,
-        'object-src' => self::TYPE_SRC_LIST,
-        'style-src' => self::TYPE_SRC_LIST,
+        'base-uri' => self::TYPE_SRC_LIST_NOFB,
+        'block-all-mixed-content' => self::TYPE_NO_VALUE,
+        'child-src' => self::TYPE_SRC_LIST,
+        'connect-src' => self::TYPE_SRC_LIST,
+        'font-src' => self::TYPE_SRC_LIST,
+        'form-action' => self::TYPE_SRC_LIST_NOFB,
+        'frame-ancestors' => self::TYPE_ANCESTOR_SRC_LIST,
+        'frame-src' => self::TYPE_SRC_LIST,
         'img-src' => self::TYPE_SRC_LIST,
         'media-src' => self::TYPE_SRC_LIST,
-        'frame-src' => self::TYPE_SRC_LIST,
-        'font-src' => self::TYPE_SRC_LIST,
-        'connect-src' => self::TYPE_SRC_LIST,
-        'report-uri' => self::TYPE_URI_REFERENCE,
-        'base-uri' => self::TYPE_SRC_LIST,
-        'child-src' => self::TYPE_SRC_LIST,
-        'form-action' => self::TYPE_SRC_LIST,
-        'frame-ancestors' => self::TYPE_ANCESTOR_SRC_LIST,
+        'object-src' => self::TYPE_SRC_LIST,
         'plugin-types' => self::TYPE_MEDIA_TYPE_LIST,
-        'block-all-mixed-content' => self::TYPE_NO_VALUE,
+        'script-src' => self::TYPE_SRC_LIST,
+        'style-src' => self::TYPE_SRC_LIST,
         'upgrade-insecure-requests' => self::TYPE_NO_VALUE,
+        'report-uri' => self::TYPE_URI_REFERENCE,
     );
 
     private $directiveValues = array();

@@ -21,22 +21,22 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
         return array(
             array(
                 'default-src example.org \'self\'; '.
-                'script-src script.example.org \'self\'; '.
-                'object-src object.example.org \'self\'; '.
-                'style-src style.example.org \'self\'; '.
-                'img-src img.example.org \'self\'; '.
-                'media-src media.example.org \'self\'; '.
-                'frame-src frame.example.org \'self\'; '.
-                'font-src font.example.org \'self\'; '.
-                'connect-src connect.example.org \'self\'; '.
-                'report-uri http://report-uri; '.
                 'base-uri base-uri.example.org \'self\'; '.
+                'block-all-mixed-content; '.
                 'child-src child-src.example.org \'self\'; '.
+                'connect-src connect.example.org \'self\'; '.
+                'font-src font.example.org \'self\'; '.
                 'form-action form-action.example.org \'self\'; '.
                 'frame-ancestors frame-ancestors.example.org \'self\'; '.
+                'frame-src frame.example.org \'self\'; '.
+                'img-src img.example.org \'self\'; '.
+                'media-src media.example.org \'self\'; '.
+                'object-src object.example.org \'self\'; '.
                 'plugin-types application/shockwave-flash; '.
-                'block-all-mixed-content; '.
-                'upgrade-insecure-requests',
+                'script-src script.example.org \'self\'; '.
+                'style-src style.example.org \'self\'; '.
+                'upgrade-insecure-requests; '.
+                'report-uri http://report-uri',
                 array(
                     'default-src' => array('example.org', "'self'"),
                     'script-src' => array('script.example.org', "'self'"),
@@ -59,20 +59,20 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
             ),
             array(
                 'default-src example.org \'self\'; '.
-                'script-src script.example.org \'self\'; '.
-                'object-src object.example.org \'self\'; '.
-                'style-src style.example.org \'self\'; '.
-                'img-src img.example.org \'self\'; '.
-                'media-src media.example.org \'self\'; '.
-                'frame-src frame.example.org \'self\'; '.
-                'font-src font.example.org \'self\'; '.
-                'connect-src connect.example.org \'self\'; '.
-                'report-uri http://report-uri; '.
                 'base-uri base-uri.example.org \'self\'; '.
                 'child-src child-src.example.org \'self\'; '.
+                'connect-src connect.example.org \'self\'; '.
+                'font-src font.example.org \'self\'; '.
                 'form-action form-action.example.org \'self\'; '.
                 'frame-ancestors frame-ancestors.example.org \'self\'; '.
-                'plugin-types application/shockwave-flash',
+                'frame-src frame.example.org \'self\'; '.
+                'img-src img.example.org \'self\'; '.
+                'media-src media.example.org \'self\'; '.
+                'object-src object.example.org \'self\'; '.
+                'plugin-types application/shockwave-flash; '.
+                'script-src script.example.org \'self\'; '.
+                'style-src style.example.org \'self\'; '.
+                'report-uri http://report-uri',
                 array(
                     'default-src' => array('example.org', "'self'"),
                     'script-src' => array('script.example.org', "'self'"),
@@ -95,20 +95,20 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
             ),
             array(
                 'default-src example.org \'self\'; '.
-                'script-src script.example.org \'self\'; '.
-                'object-src object.example.org \'self\'; '.
-                'style-src style.example.org \'self\'; '.
-                'img-src img.example.org \'self\'; '.
-                'media-src media.example.org \'self\'; '.
-                'frame-src frame.example.org \'self\'; '.
-                'font-src font.example.org \'self\'; '.
-                'connect-src connect.example.org \'self\'; '.
-                'report-uri http://report-uri; '.
                 'base-uri base-uri.example.org \'self\'; '.
                 'child-src child-src.example.org \'self\'; '.
+                'connect-src connect.example.org \'self\'; '.
+                'font-src font.example.org \'self\'; '.
                 'form-action form-action.example.org \'self\'; '.
                 'frame-ancestors frame-ancestors.example.org \'self\'; '.
-                'plugin-types application/shockwave-flash',
+                'frame-src frame.example.org \'self\'; '.
+                'img-src img.example.org \'self\'; '.
+                'media-src media.example.org \'self\'; '.
+                'object-src object.example.org \'self\'; '.
+                'plugin-types application/shockwave-flash; '.
+                'script-src script.example.org \'self\'; '.
+                'style-src style.example.org \'self\'; '.
+                'report-uri http://report-uri',
                 array(
                     'default-src' => array('example.org', "'self'"),
                     'script-src' => array('script.example.org', "'self'"),
@@ -129,10 +129,14 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
             ),
             array(
                 'default-src \'none\'; '.
+                'base-uri \'none\'; '.
+                'form-action \'none\'; '.
                 'plugin-types \'none\'',
                 array(
                     'default-src' => array('none'),
                     'plugin-types' => array('none'),
+                    'base-uri' => array('none'),
+                    'form-action' => array('none'),
                 ),
             ),
         );
