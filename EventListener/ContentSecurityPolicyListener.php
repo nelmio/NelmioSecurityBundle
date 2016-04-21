@@ -43,11 +43,9 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
-            return;
+        if (null === $this->sha) {
+            $this->sha = array();
         }
-
-        $this->sha = array();
     }
 
     public function addSha($directive, $sha)
