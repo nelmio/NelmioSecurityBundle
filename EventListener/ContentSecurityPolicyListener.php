@@ -43,9 +43,11 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (null === $this->sha) {
-            $this->sha = array();
+        if (!$event->isMasterRequest()) {
+            return;
         }
+
+        $this->sha = array();
     }
 
     public function addSha($directive, $sha)
@@ -158,7 +160,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => 'onKernelRequest',
+            KernelEvents::REQUEST => array('onKernelRequest', 512),
             KernelEvents::RESPONSE => 'onKernelResponse',
         );
     }
