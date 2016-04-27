@@ -171,6 +171,11 @@ nelmio_security:
         hosts: []
         content_types: []
         enforce:
+            # see full description below
+            level1_fallback: true
+            # Only send directives supported by the browser, defaults to false
+            # This is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
+            browser_adaptive: false
             report-uri: /nelmio/csp/report
             default-src: [ 'self' ]
             frame-src: [ 'https://www.youtube.com' ]
@@ -184,6 +189,11 @@ nelmio_security:
             block-all-mixed-content: true # Default to false, blocks http content over https transport
             # upgrade-insecure-requests: true # Default to false, upgrades http requests to https transport
         report:
+            # see full description below
+            level1_fallback: true
+            # Only send directives supported by the browser, defaults to false
+            # This is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
+            browser_adaptive: true
             report-uri: /nelmio/csp/report
             script-src:
                 - 'self'

@@ -1,6 +1,7 @@
 ### 2.0.0 (2016-xx-xx)
   * Add support for Content-Security-Policy Level 2 directives
   * Add support for Content-Security-Policy Level 2 signatures (nonce and message digest)
+  * Add browser adaptive directives - do not send directives not supported by browser - via browser_adaptive parameter
   * Allow report-uri to be defined as a scalar
   * Deprecate encrypted cookie support du to high coupling to mcrypt deprecated extension
   * Drop backward-compatibility with first deprecated CSP configuration
