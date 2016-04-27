@@ -11,7 +11,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromConfig($expected, array $directives)
     {
-        $ds = DirectiveSet::fromConfig(array('enforce' => $directives, 'hash' => array('level1_fallback' => true)), 'enforce');
+        $ds = DirectiveSet::fromConfig(array('enforce' => array_merge(array('level1_fallback' => true), $directives)), 'enforce');
 
         $this->assertSame($expected, $ds->buildHeaderValue());
     }
@@ -165,8 +165,8 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
             array(
                 'default-src \'self\'; script-src \'self\' \'unsafe-inline\' \'sha-1\'; style-src \'self\' \'unsafe-inline\' \'sha2\'',
                 array(
-                    'hash' => array('level1_fallback' => true),
                     'enforce' => array(
+                        'level1_fallback' => true,
                         'default-src' => array("'self'"),
                         'script-src' => array("'self'", "'unsafe-inline'"),
                         'style-src' => array(),
@@ -180,8 +180,8 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
             array(
                 'default-src yolo; script-src yolo \'unsafe-inline\' \'sha-1\'; style-src yolo \'unsafe-inline\' \'sha2\'',
                 array(
-                    'hash' => array('level1_fallback' => true),
                     'enforce' => array(
+                        'level1_fallback' => true,
                         'default-src' => array('yolo'),
                     ),
                 ),
@@ -193,8 +193,8 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
             array(
                 'default-src \'self\'; script-src \'self\' \'unsafe-inline\' \'sha-1\'; style-src \'self\' \'unsafe-inline\' \'sha2\'',
                 array(
-                    'hash' => array('level1_fallback' => true),
                     'enforce' => array(
+                        'level1_fallback' => true,
                         'default-src' => array("'self'"),
                         'script-src' => array("'self'"),
                         'style-src' => array(),
@@ -208,8 +208,8 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
             array(
                 'default-src \'self\'; script-src \'self\' \'sha-1\'; style-src \'self\' \'sha2\'',
                 array(
-                    'hash' => array('level1_fallback' => false),
                     'enforce' => array(
+                        'level1_fallback' => false,
                         'default-src' => array("'self'"),
                         'script-src' => array("'self'"),
                         'style-src' => array(),
