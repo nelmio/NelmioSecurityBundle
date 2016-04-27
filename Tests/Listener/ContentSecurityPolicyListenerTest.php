@@ -3,6 +3,7 @@
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Symfony\Component\HttpFoundation\Request;
@@ -365,22 +366,22 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testDirectiveSetUnset()
     {
-        $directiveSet = new DirectiveSet();
+        $directiveSet = new DirectiveSet(new PolicyManager());
         $directiveSet->setDirectives(array('default-src' => 'foo'));
-        $this->assertEquals('default-src foo', $directiveSet->buildHeaderValue());
+        $this->assertEquals('default-src foo', $directiveSet->buildHeaderValue(new Request()));
         $directiveSet->setDirective('default-src', '');
-        $this->assertEquals('', $directiveSet->buildHeaderValue());
+        $this->assertEquals('', $directiveSet->buildHeaderValue(new Request()));
     }
 
     protected function buildSimpleListener(array $directives, $reportOnly = false, $compatHeaders = true, $contentTypes = array())
     {
-        $directiveSet = new DirectiveSet();
+        $directiveSet = new DirectiveSet(new PolicyManager());
         $directiveSet->setDirectives($directives);
 
         if ($reportOnly) {
-            return new ContentSecurityPolicyListener($directiveSet, new DirectiveSet(), $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
+            return new ContentSecurityPolicyListener($directiveSet, new DirectiveSet(new PolicyManager()), $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
         } else {
-            return new ContentSecurityPolicyListener(new DirectiveSet(), $directiveSet, $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
+            return new ContentSecurityPolicyListener(new DirectiveSet(new PolicyManager()), $directiveSet, $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
         }
     }
 

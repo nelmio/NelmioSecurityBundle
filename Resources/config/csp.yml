@@ -1,7 +1,22 @@
 parameters:
     nelmio_security.nonce_generator.number_of_bytes: 16
+    nelmio_security.ua_parser.service: nelmio_security.ua_parser.ua_php
 
 services:
+    nelmio_security.ua_parser.ua_php:
+        class: Nelmio\SecurityBundle\UserAgent\UAParserUserAgentParser
+        public: false
+        arguments: ['@nelmio_security.ua_parser.ua_php.provider']
+
+    nelmio_security.ua_parser.ua_php.provider:
+        class: UAParser\Parser
+        public: false
+        factory: [UAParser\Parser, create]
+
+    nelmio_security.policy_manager:
+        public: false
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager
+
     nelmio_security.csp_listener:
         class: Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener
         tags:

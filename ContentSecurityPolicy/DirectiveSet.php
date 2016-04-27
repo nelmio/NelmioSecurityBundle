@@ -11,6 +11,8 @@
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class DirectiveSet
 {
     const TYPE_SRC_LIST = 'source-list';
@@ -42,6 +44,12 @@ class DirectiveSet
 
     private $directiveValues = array();
     private $level1Fallback = true;
+    private $policyManager = null;
+
+    public function __construct(PolicyManager $policyManager)
+    {
+        $this->policyManager = $policyManager;
+    }
 
     public function setLevel1Fallback($bool)
     {
@@ -82,7 +90,7 @@ class DirectiveSet
         }
     }
 
-    public function buildHeaderValue(array $signatures = null)
+    public function buildHeaderValue(Request $request, array $signatures = null)
     {
         $policy = array();
 
@@ -93,7 +101,12 @@ class DirectiveSet
             $signatures['style-src'] = implode(' ', array_map(function ($value) { return sprintf('\'%s\'', $value); }, $signatures['style-src']));
         }
 
+        $availableDirectives = $this->policyManager->getAvailableDirective($request);
+
         foreach ($this->directiveValues as $name => $value) {
+            if (!in_array($name, $availableDirectives, true)) {
+                continue;
+            }
             if (true === $value) {
                 $policy[] = $name;
             } elseif (isset($signatures[$name])) {
@@ -131,9 +144,9 @@ class DirectiveSet
         return implode('; ', $policy);
     }
 
-    public static function fromConfig(array $config, $kind)
+    public static function fromConfig(PolicyManager $policyManager, array $config, $kind)
     {
-        $directiveSet = new self();
+        $directiveSet = new self($policyManager);
         $directiveSet->setLevel1Fallback(isset($config[$kind]) ? $config[$kind]['level1_fallback'] : false);
 
         if (!array_key_exists($kind, $config)) {
