@@ -186,10 +186,6 @@ class Configuration implements ConfigurationInterface
                             ->values(array('sha256', 'sha384', 'sha512'))
                             ->defaultValue('sha256')
                         ->end()
-                        ->booleanNode('level1_fallback')
-                            ->info('Provides CSP Level 1 fallback when using hash or nonce (CSP level 2) by adding \'unsafe-inline\' source. See https://www.w3.org/TR/CSP2/#directive-script-src and https://www.w3.org/TR/CSP2/#directive-style-src')
-                            ->defaultValue(true)
-                        ->end()
                     ->end()
                 ->end()
                 ->append($this->addReportOrEnforceNode('report'))
@@ -206,6 +202,12 @@ class Configuration implements ConfigurationInterface
         $children = $node->children();
         // Symfony should not normalize dashes to underlines, e.g. img-src to img_src
         $node->normalizeKeys(false);
+
+        $children
+            ->booleanNode('level1_fallback')
+                ->info('Provides CSP Level 1 fallback when using hash or nonce (CSP level 2) by adding \'unsafe-inline\' source. See https://www.w3.org/TR/CSP2/#directive-script-src and https://www.w3.org/TR/CSP2/#directive-style-src')
+                ->defaultValue(true)
+            ->end();
 
         foreach (DirectiveSet::getNames() as $name => $type) {
             if (DirectiveSet::TYPE_NO_VALUE === $type) {

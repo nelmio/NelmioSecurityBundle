@@ -134,7 +134,7 @@ class DirectiveSet
     public static function fromConfig(array $config, $kind)
     {
         $directiveSet = new self();
-        $directiveSet->setLevel1Fallback($config['hash']['level1_fallback']);
+        $directiveSet->setLevel1Fallback(isset($config[$kind]) ? $config[$kind]['level1_fallback'] : false);
 
         if (!array_key_exists($kind, $config)) {
             return $directiveSet;
