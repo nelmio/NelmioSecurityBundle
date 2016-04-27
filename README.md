@@ -240,6 +240,7 @@ nelmio_security:
     csp:
         hash:
             algorithm: sha512 # default is sha256, available are sha256, sha384 and sha512
+        enforce:
             # Provides compatibility with CSP level 1 (old / non-yet-compatible browsers) when using CSP level 2
             # features likes hash and nonce. It adds a 'unsafe-inline' source to a directive whenever a nonce or hash
             # is used.
@@ -247,7 +248,6 @@ nelmio_security:
             #             nonce-source or hash-source is present in the list of allowed style sources "
             # See https://www.w3.org/TR/CSP2/#directive-style-src and https://www.w3.org/TR/CSP2/#directive-script-src
             level1_fallback: true
-        enforce:
             default-src: ['self']
 ```
 
