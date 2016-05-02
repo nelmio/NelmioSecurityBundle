@@ -91,23 +91,16 @@ nelmio_security:
     csp:
         hosts: []
         content_types: []
-        report:
+        enforce:
+            level1_fallback: false
+            browser_adaptive: false
             report-uri: /nelmio/csp/report
-            default-src: [ 'self' ]
-            # There's no flash on our site
-            object-src:
+            default-src:
                 - 'none'
             script-src:
-                - 'unsafe-inline'
-                - 'unsafe-eval'
                 - 'self'
             block-all-mixed-content: true # Default to false, blocks http content over https transport
             # upgrade-insecure-requests: true # Default to false, upgrades http requests to https transport
-        enforce:
-            # see https://github.com/nelmio/NelmioSecurityBundle/issues/32
-            report-uri: /nelmio/csp/report
-            script-src:
-                - 'self'
 
     # disables content type sniffing for script resources
     content_type:
