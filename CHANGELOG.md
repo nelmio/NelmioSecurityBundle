@@ -1,4 +1,4 @@
-### 2.0.0 (2016-xx-xx)
+### 2.0.0 (2016-05-17)
   * Add support for Content-Security-Policy Level 2 directives
   * Add support for Content-Security-Policy Level 2 signatures (nonce and message digest)
   * Add browser adaptive directives - do not send directives not supported by browser - via browser_adaptive parameter
