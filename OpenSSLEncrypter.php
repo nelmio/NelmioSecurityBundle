@@ -40,7 +40,7 @@ class OpenSSLEncrypter implements EncrypterInterface
             return;
         }
 
-        $iv = openssl_random_pseudo_bytes($this->ivSize);
+        $iv = random_bytes($this->ivSize);
         return rtrim(base64_encode($iv . openssl_encrypt((string)$input, $this->algorithm, $this->secret, false, $iv)), '=');
 
     }
