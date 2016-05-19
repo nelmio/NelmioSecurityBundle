@@ -19,8 +19,8 @@ class EncrypterTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        if (!function_exists('mcrypt_module_open')) {
-            $this->markTestSkipped('MCrypt is not installed');
+        if (!extension_loaded('openssl')) {
+            $this->markTestSkipped('OpenSSL is not installed');
         }
     }
 
@@ -34,7 +34,7 @@ class EncrypterTest extends \PHPUnit_Framework_TestCase
 
     public function testEncryption()
     {
-        $encrypter = new Encrypter('secret', 'rijndael-128');
+        $encrypter = new Encrypter('secret', 'AES-256-CBC');
 
         $value = 'bar';
         $encryptedValue = $encrypter->encrypt($value);

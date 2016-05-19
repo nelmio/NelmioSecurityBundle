@@ -50,7 +50,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(array('*'))
                         ->end()
                         ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
-                        ->scalarNode('algorithm')->defaultValue('rijndael-128')->end()
+                        ->scalarNode('algorithm')->defaultValue('AES-256-CBC')->end()
                     ->end()
                 ->end()
 
