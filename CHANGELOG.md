@@ -1,3 +1,6 @@
+### 2.0.1 (2016-xx-xx)
+  * Fix CookieSessionHandler::open that should return true unless there's an error
+
 ### 2.0.0 (2016-05-17)
   * Add support for Content-Security-Policy Level 2 directives
   * Add support for Content-Security-Policy Level 2 signatures (nonce and message digest)
