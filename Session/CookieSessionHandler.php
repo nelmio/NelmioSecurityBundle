@@ -153,7 +153,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
             $this->logger->debug('CookieSessionHandler::open');
         }
 
-        return $this->request->cookies->has($this->cookieName);
+        return true;
     }
 
     /**
