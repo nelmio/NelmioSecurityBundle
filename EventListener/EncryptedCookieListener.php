@@ -12,6 +12,7 @@
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Nelmio\SecurityBundle\Encrypter;
+use Nelmio\SecurityBundle\EncrypterInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -19,10 +20,13 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class EncryptedCookieListener
 {
+    /**
+     * @var EncrypterInterface
+     */
     private $encrypter;
     private $encryptedCookieNames;
 
-    public function __construct(Encrypter $encrypter, $encryptedCookieNames)
+    public function __construct(EncrypterInterface $encrypter, $encryptedCookieNames)
     {
         $this->encrypter = $encrypter;
         if (in_array('*', $encryptedCookieNames, true)) {

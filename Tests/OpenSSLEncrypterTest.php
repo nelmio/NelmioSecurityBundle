@@ -11,16 +11,16 @@
 
 namespace Nelmio\SecurityBundle\Tests;
 
-use Nelmio\SecurityBundle\Encrypter;
+use Nelmio\SecurityBundle\OpenSSLEncrypter;
 
-class EncrypterTest extends \PHPUnit_Framework_TestCase
+class OpenSSLEncrypterTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
         parent::setUp();
 
-        if (!function_exists('mcrypt_module_open')) {
-            $this->markTestSkipped('MCrypt is not installed');
+        if (!extension_loaded('openssl')) {
+            $this->markTestSkipped('OpenSSL is not installed');
         }
     }
 
@@ -29,12 +29,12 @@ class EncrypterTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructorShouldVerifyAlgoritm()
     {
-        new Encrypter('secret', 'invalid_algoritm');
+        new OpenSSLEncrypter('secret', 'invalid_algoritm');
     }
 
     public function testEncryption()
     {
-        $encrypter = new Encrypter('secret', 'rijndael-128');
+        $encrypter = new OpenSSLEncrypter('secret', 'AES-256-CBC');
 
         $value = 'bar';
         $encryptedValue = $encrypter->encrypt($value);

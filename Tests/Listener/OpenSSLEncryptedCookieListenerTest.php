@@ -11,8 +11,8 @@
 
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
-use Nelmio\SecurityBundle\Encrypter;
 use Nelmio\SecurityBundle\EventListener\EncryptedCookieListener;
+use Nelmio\SecurityBundle\OpenSSLEncrypter;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
+class OpenSSLEncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
 {
     private $encrypter;
     private $kernel;
@@ -29,11 +29,11 @@ class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        if (!function_exists('mcrypt_module_open')) {
-            $this->markTestSkipped('MCrypt is not installed');
+        if (!extension_loaded('openssl')) {
+            $this->markTestSkipped('OpenSSL is not installed');
         }
 
-        $this->encrypter = new Encrypter('secret', 'rijndael-128');
+        $this->encrypter = new OpenSSLEncrypter('secret', 'AES-256-CBC');
         $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
     }
 
@@ -56,8 +56,8 @@ class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
         return array(
             array(array(), array(), array()),
             array(array(), array('foo' => 'bar'), array('foo' => 'bar')),
-            array(array('foo'), array('foo' => 'BX9knwx1sPhIGxTxukVfsA0o0m/KRm4kMwwEYn/etMw'), array('foo' => 'bar')),
-            array(array('*'), array('foo' => 'yNrfCriKHLxUtuZUInRlNsOjbLcL5a/4M8oDDXzt2aI'), array('foo' => 'bar')),
+            array(array('foo'), array('foo' => 'SiObckAkg9AoczwxI6Zt9HYvaGJoQnJnRmE2UVA4UXQrM1NlREE9PQ'), array('foo' => 'bar')),
+            array(array('*'), array('foo' => '78rzcMEqEH+yEwzkcKv3R1pXaUlXTzROU3ZJa1YvNHVOYlhEcEE9PQ'), array('foo' => 'bar')),
         );
     }
 
