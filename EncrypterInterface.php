@@ -15,5 +15,5 @@ namespace Nelmio\SecurityBundle;
 interface EncrypterInterface
 {
     public function encrypt($input);
-    public function decrypt($input);
+    public function decrypt($cipherText);
 }

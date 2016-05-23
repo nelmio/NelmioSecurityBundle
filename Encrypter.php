@@ -54,13 +54,13 @@ class Encrypter implements EncrypterInterface
         return rtrim(base64_encode($iv.mcrypt_generic($this->module, (string) $input)), '=');
     }
 
-    public function decrypt($input)
+    public function decrypt($cipherText)
     {
-        if (empty($input)) {
+        if (empty($cipherText)) {
             return;
         }
 
-        $encryptedData = base64_decode($input, true);
+        $encryptedData = base64_decode($cipherText, true);
 
         $iv = substr($encryptedData, 0, $this->ivSize);
 

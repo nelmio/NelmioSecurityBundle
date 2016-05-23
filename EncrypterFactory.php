@@ -23,7 +23,7 @@ class EncrypterFactory
     {
         switch ($adapter) {
             case 'openssl':
-                return new OpenSSLEncrypter($secret, $algorithm);
+                return new OpenSSLEncrypter($secret);
             default:
                 return new Encrypter($secret, $algorithm);
         }

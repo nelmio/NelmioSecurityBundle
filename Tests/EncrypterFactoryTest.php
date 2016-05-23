@@ -10,6 +10,7 @@
 
 namespace Nelmio\SecurityBundle\Tests;
 
+use Defuse\Crypto\Key;
 use Nelmio\SecurityBundle\EncrypterFactory;
 
 class EncrypterFactoryTest extends \PHPUnit_Framework_TestCase
@@ -31,13 +32,17 @@ class EncrypterFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getOpenSSLParams
      */
-    public function testOpenSSLCreation($adapter, $algorithm, $expectedClass)
+    public function testOpenSSLCreation($adapter, $expectedClass)
     {
         if (!extension_loaded('openssl')) {
             $this->markTestSkipped('OpenSSL is not installed');
         }
         $factory = new EncrypterFactory();
-        $encrypter = $factory->getEncrypter($adapter, 'secret', $algorithm);
+        /**
+         * @var Key $key;
+         */
+        $key = Key::createNewRandomKey();
+        $encrypter = $factory->getEncrypter($adapter, $key->saveToAsciiSafeString(), '');
         $this->assertInstanceOf($expectedClass, $encrypter);
         $this->assertInstanceOf('\Nelmio\SecurityBundle\EncrypterInterface', $encrypter);
     }
@@ -68,7 +73,6 @@ class EncrypterFactoryTest extends \PHPUnit_Framework_TestCase
         return array(
             array(
                 'adapter' => 'openssl',
-                'algorithm' => 'AES-256-CBC',
                 'class' => '\Nelmio\SecurityBundle\OpenSSLEncrypter'
             ),
         );

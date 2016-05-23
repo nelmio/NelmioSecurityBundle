@@ -11,27 +11,16 @@
 
 namespace Nelmio\SecurityBundle;
 
+use Defuse\Crypto\Crypto;
+use Defuse\Crypto\Key;
+
 class OpenSSLEncrypter implements EncrypterInterface
 {
-    private $secret;
-    private $algorithm;
-    private $ivSize;
+    private $key;
 
-    public function __construct($secret, $algorithm)
+    public function __construct($key)
     {
-        $this->secret = substr($secret, 0, 32);
-        $this->algorithm = $algorithm;
-
-        if (!extension_loaded('openssl')) {
-            throw new \RuntimeException('You need to install openssl if you want to encrypt your cookies.');
-        }
-        $methods = openssl_get_cipher_methods(true);
-        if (in_array($this->algorithm, $methods) === false) {
-            throw new \InvalidArgumentException(sprintf("The supplied encryption algorithm '%s' is not supported by this system.",
-                $this->algorithm));
-        }
-
-        $this->ivSize = openssl_cipher_iv_length($this->algorithm);
+        $this->key = Key::loadFromAsciiSafeString($key);
     }
 
     public function encrypt($input)
@@ -40,27 +29,15 @@ class OpenSSLEncrypter implements EncrypterInterface
             return;
         }
 
-        $iv = random_bytes($this->ivSize);
-        return rtrim(base64_encode($iv . openssl_encrypt((string)$input, $this->algorithm, $this->secret, false, $iv)), '=');
-
+        return Crypto::encrypt($input, $this->key);
     }
 
-    public function decrypt($input)
+    public function decrypt($cipherText)
     {
-        if (empty($input)) {
+        if (empty($cipherText)) {
             return;
         }
 
-        $encryptedData = base64_decode($input, true);
-
-        $iv = substr($encryptedData, 0, $this->ivSize);
-
-        if (strlen($iv) < $this->ivSize) {
-            return;
-        }
-
-        $encryptedData = substr($encryptedData, $this->ivSize);
-
-        return rtrim(openssl_decrypt($encryptedData, $this->algorithm, $this->secret, false, $iv), '\0');
+        return Crypto::decrypt($cipherText, $this->key);
     }
 }

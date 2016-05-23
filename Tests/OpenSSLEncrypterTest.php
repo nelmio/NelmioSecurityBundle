@@ -11,6 +11,7 @@
 
 namespace Nelmio\SecurityBundle\Tests;
 
+use Defuse\Crypto\Key;
 use Nelmio\SecurityBundle\OpenSSLEncrypter;
 
 class OpenSSLEncrypterTest extends \PHPUnit_Framework_TestCase
@@ -25,16 +26,20 @@ class OpenSSLEncrypterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \Defuse\Crypto\Exception\BadFormatException
      */
-    public function testConstructorShouldVerifyAlgoritm()
+    public function testConstructorShouldVerifyKey()
     {
-        new OpenSSLEncrypter('secret', 'invalid_algoritm');
+        new OpenSSLEncrypter('secret');
     }
 
     public function testEncryption()
     {
-        $encrypter = new OpenSSLEncrypter('secret', 'AES-256-CBC');
+        /**
+         * @var Key $key
+         */
+        $key = Key::createNewRandomKey();
+        $encrypter = new OpenSSLEncrypter($key->saveToAsciiSafeString());
 
         $value = 'bar';
         $encryptedValue = $encrypter->encrypt($value);
