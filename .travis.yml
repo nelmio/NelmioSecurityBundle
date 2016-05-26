@@ -13,7 +13,7 @@ before_install:
   - composer self-update
 
 install:
-  - if [[ $TRAVIS_PHP_VERSION != '5.4' ]] composer install
-  - if [[ $TRAVIS_PHP_VERSION == '5.4' ]] composer update --prefer-lowest
+  - if [[ $TRAVIS_PHP_VERSION != '5.4' ]]; then composer install ; fi
+  - if [[ $TRAVIS_PHP_VERSION == '5.4' ]]; then composer update --prefer-lowest ; fi
 
 script: phpunit
