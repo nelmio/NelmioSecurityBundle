@@ -46,6 +46,28 @@ class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
         $this->handler->read('foo');
     }
 
+    public function testOpenWithoutSessionCookie()
+    {
+        $request = new Request();
+        $response = new Response();
+        $session = $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
+        $session->expects($this->exactly(1))->method('save');
+        $request->setSession($session);
+
+        $this->handler->onKernelRequest(new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
+
+        $this->assertTrue($this->handler->open('foo', 'bar'));
+
+        $this->handler->write('sessionId', 'mydata');
+        $this->handler->onKernelResponse(new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
+
+        $cookies = $response->headers->getCookies();
+
+        $this->assertEquals(1, count($cookies));
+        $this->assertEquals('a:2:{s:6:"expire";i:0;s:4:"data";s:6:"mydata";}', $cookies[0]->getValue());
+        $this->assertEquals('s', $cookies[0]->getName());
+    }
+
     public function testWriteDestroy()
     {
         $this->handler->write('sessionId', 'mydata');
