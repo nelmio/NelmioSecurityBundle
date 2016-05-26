@@ -49,7 +49,7 @@ class EncryptedCookieListener
 
         $names = array_diff(
             $this->encryptedCookieNames === true ? $request->cookies->keys() : $this->encryptedCookieNames,
-            [$this->sessionName]
+            array($this->sessionName)
         );
 
         foreach ($names as $name) {
