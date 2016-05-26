@@ -14,6 +14,7 @@ namespace Nelmio\SecurityBundle\EventListener;
 use Nelmio\SecurityBundle\Encrypter;
 use Nelmio\SecurityBundle\EncrypterInterface;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -25,10 +26,12 @@ class EncryptedCookieListener
      */
     private $encrypter;
     private $encryptedCookieNames;
+    private $sessionName;
 
-    public function __construct(EncrypterInterface $encrypter, $encryptedCookieNames)
+    public function __construct(EncrypterInterface $encrypter, $encryptedCookieNames, Session $session = null)
     {
         $this->encrypter = $encrypter;
+        $this->sessionName = $session ? $session->getName() : '';
         if (in_array('*', $encryptedCookieNames, true)) {
             $this->encryptedCookieNames = true;
         } else {
@@ -44,7 +47,11 @@ class EncryptedCookieListener
 
         $request = $e->getRequest();
 
-        $names = $this->encryptedCookieNames === true ? $request->cookies->keys() : $this->encryptedCookieNames;
+        $names = array_diff(
+            $this->encryptedCookieNames === true ? $request->cookies->keys() : $this->encryptedCookieNames,
+            [$this->sessionName]
+        );
+
         foreach ($names as $name) {
             if ($request->cookies->has($name)) {
                 $cookie = $request->cookies->get($name);

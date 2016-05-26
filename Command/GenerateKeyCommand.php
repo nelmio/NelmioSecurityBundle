@@ -21,8 +21,8 @@ class GenerateKeyCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('generateKey')
-            ->setDescription('Generates a secure encryption key')
+            ->setName('nelmio:generate-cookie-secret')
+            ->setDescription('Generates a secure cookie encryption secret')
         ;
     }
 

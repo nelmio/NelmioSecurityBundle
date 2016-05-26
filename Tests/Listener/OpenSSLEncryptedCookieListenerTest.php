@@ -17,12 +17,16 @@ use Nelmio\SecurityBundle\OpenSSLEncrypter;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class OpenSSLEncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var OpenSSLEncrypter
+     */
     private $encrypter;
     private $kernel;
 
@@ -125,5 +129,24 @@ class OpenSSLEncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelRequest($event);
 
         $this->assertSame($inputCookies, $request->cookies->all());
+    }
+
+    public function testCookieListenerIgnoresSessionIdCookie()
+    {
+        $session = new Session();
+
+        $inputCookies = array(
+            $session->getName() => 'bar',
+            'symfony' => $this->encrypter->encrypt('rocks'),
+        );
+
+        $listener = new EncryptedCookieListener($this->encrypter, array('*'), $session);
+        $request = Request::create('/', 'GET', array(), $inputCookies);
+        
+        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $listener->onKernelRequest($event);
+
+        $this->assertSame('rocks', $request->cookies->get('symfony'));
+        $this->assertSame('bar', $request->cookies->get($session->getName()));
     }
 }
