@@ -94,7 +94,7 @@ nelmio_security:
         enforce:
             level1_fallback: false
             browser_adaptive: false
-            report-uri: /nelmio/csp/report
+            report-uri: %router.request_context.base_url%/nelmio/csp/report
             default-src:
                 - 'none'
             script-src:
@@ -169,7 +169,7 @@ nelmio_security:
             # Only send directives supported by the browser, defaults to false
             # This is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
             browser_adaptive: false
-            report-uri: /nelmio/csp/report
+            report-uri: %router.request_context.base_url%/nelmio/csp/report
             default-src: [ 'self' ]
             frame-src: [ 'https://www.youtube.com' ]
             script-src:
@@ -187,7 +187,7 @@ nelmio_security:
             # Only send directives supported by the browser, defaults to false
             # This is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
             browser_adaptive: true
-            report-uri: /nelmio/csp/report
+            report-uri: %router.request_context.base_url%/nelmio/csp/report
             script-src:
                 - 'self'
 ```
