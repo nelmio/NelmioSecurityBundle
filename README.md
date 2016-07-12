@@ -93,7 +93,8 @@ nelmio_security:
         content_types: []
         enforce:
             level1_fallback: false
-            browser_adaptive: false
+            browser_adaptive:
+                enabled: false
             report-uri: %router.request_context.base_url%/nelmio/csp/report
             default-src:
                 - 'none'
@@ -168,7 +169,8 @@ nelmio_security:
             level1_fallback: true
             # Only send directives supported by the browser, defaults to false
             # This is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
-            browser_adaptive: false
+            browser_adaptive:
+                enabled: false
             report-uri: %router.request_context.base_url%/nelmio/csp/report
             default-src: [ 'self' ]
             frame-src: [ 'https://www.youtube.com' ]
@@ -186,7 +188,8 @@ nelmio_security:
             level1_fallback: true
             # Only send directives supported by the browser, defaults to false
             # This is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
-            browser_adaptive: true
+            browser_adaptive:
+                enabled: true
             report-uri: %router.request_context.base_url%/nelmio/csp/report
             script-src:
                 - 'self'
@@ -230,6 +233,46 @@ nelmio_security:
     csp:
         compat_headers: false
 ```
+
+#### Using browser adaptive directives
+
+Nelmio can only send directives that can be understood by the browser. This reduces noise provided via the report URI.
+This is a direct port of what has been done in [Twitter SecureHeaders library](https://github.com/twitter/secureheaders).
+
+Use the `enabled` key to enable it.
+
+```yaml
+nelmio_security:
+    csp:
+        enforce:
+            browser_adaptive:
+                enabled: true
+```
+
+**WARNING** This will parse the user agent and can consume some CPU usage. You can specify a cached parser to
+avoid consumong to much CPU usage:
+
+```yaml
+nelmio_security:
+    csp:
+        enforce:
+            browser_adaptive:
+                enabled: true
+                parser: my_own_parser
+```
+
+And declare service `my_ow_parser` based on one of the cached parser NelmioSecurityBundle provides or your own one.
+For instance, using the `DoctrineCacheUAFamilyParser`:
+
+```xml
+    <service id="my_own_parser" class="Nelmio\SecurityBundle\UserAgent\UAFamilyParser\DoctrineCacheUAFamilyParser">
+      <argument type="service" id="doctrine_cache.providers.redis_cache"/>
+      <argument type="service" id="nelmio_security.ua_parser.ua_php"/>
+      <argument>604800</argument>
+    </service>
+```xml
+
+Have a look in the `Nelmio\SecurityBundle\UserAgent\UAFamilyParser` for these parsers.
 
 #### Message digest for inline script handling
 

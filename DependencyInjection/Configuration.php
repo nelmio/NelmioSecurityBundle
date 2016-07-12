@@ -210,9 +210,29 @@ class Configuration implements ConfigurationInterface
             ->end();
 
         $children
-            ->booleanNode('browser_adaptive')
+            ->arrayNode('browser_adaptive')
+                ->canBeEnabled()
                 ->info('Do not send directives that browser do not support')
-                ->defaultValue(false)
+                ->addDefaultsIfNotSet()
+                ->children()
+                    ->scalarNode('parser')
+                        ->defaultValue('nelmio_security.ua_parser.ua_php')
+                    ->end()
+                ->end()
+                ->beforeNormalization()
+                    ->always(function ($v) {
+                        if (!is_array($v)) {
+                            @trigger_error("browser_adaptive configuration is now an array. Using boolean is deprecated and will not be supported anymore in version 3", E_USER_DEPRECATED);
+
+                            return array(
+                                'enabled' => $v,
+                                'parser' => 'nelmio_security.ua_parser.ua_php',
+                            );
+                        }
+
+                        return $v;
+                    })
+                ->end()
             ->end();
 
         foreach (DirectiveSet::getNames() as $name => $type) {

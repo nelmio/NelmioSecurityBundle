@@ -11,13 +11,13 @@
 
 namespace Nelmio\SecurityBundle\UserAgent;
 
-use UAParser\Parser;
+use Nelmio\SecurityBundle\UserAgent\UAFamilyParser\UAFamilyParserInterface;
 
-class UAParserUserAgentParser implements UserAgentParserInterface
+class UserAgentParser implements UserAgentParserInterface
 {
     private $parser;
 
-    public function __construct(Parser $parser)
+    public function __construct(UAFamilyParserInterface $parser)
     {
         $this->parser = $parser;
     }
@@ -27,7 +27,7 @@ class UAParserUserAgentParser implements UserAgentParserInterface
      */
     public function getBrowser($userAgent)
     {
-        $name = strtolower($this->parser->parse($userAgent)->ua->family);
+        $name = $this->parser->getUaFamily($userAgent);
 
         switch (true) {
             case 'chrome' === $name:

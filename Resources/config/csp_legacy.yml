@@ -1,11 +1,14 @@
 parameters:
     nelmio_security.nonce_generator.number_of_bytes: 16
-    nelmio_security.ua_parser.service: nelmio_security.ua_parser.ua_php
 
 services:
-    nelmio_security.ua_parser.ua_php:
-        class: Nelmio\SecurityBundle\UserAgent\UAParserUserAgentParser
+    nelmio_security.ua_parser:
+        class: Nelmio\SecurityBundle\UserAgent\UserAgentParser
         public: false
+
+    nelmio_security.ua_parser.ua_php:
+        class: Nelmio\SecurityBundle\UserAgent\UAFamilyParser\UAFamilyParser
+        public: true
         arguments: ['@nelmio_security.ua_parser.ua_php.provider']
 
     nelmio_security.ua_parser.ua_php.provider:

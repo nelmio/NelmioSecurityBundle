@@ -1,5 +1,7 @@
 ### 2.0.2 (2016-xx-xx)
   * Fix typo in the ALLOW-FROM implementation
+  * Update browser_adaptive configuration. Allow custom adapters
+  * Add Doctrine Cache and Psr Cache adapters for caching UA family parser
 
 ### 2.0.1 (2016-06-04)
   * Fix CookieSessionHandler::open that should return true unless there's an error

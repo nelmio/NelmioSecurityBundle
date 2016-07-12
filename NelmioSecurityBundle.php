@@ -11,6 +11,7 @@
 
 namespace Nelmio\SecurityBundle;
 
+use Nelmio\SecurityBundle\DependencyInjection\Compiler\UAParserCompilerPass;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Nelmio\SecurityBundle\DependencyInjection\Compiler\CSPTwigCompilerPass;
@@ -22,5 +23,6 @@ class NelmioSecurityBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new CSPTwigCompilerPass());
+        $container->addCompilerPass(new UAParserCompilerPass());
     }
 }

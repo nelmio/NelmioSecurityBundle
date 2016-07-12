@@ -63,6 +63,30 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testBrowserAdaptiveBoolean()
+    {
+        $this->processYamlConfiguration(
+            "csp:\n".
+            "  report:\n".
+            "    script-src:\n".
+            "      - 'self'\n".
+            "    browser_adaptive: true\n"
+        );
+    }
+
+    public function testBrowserAdaptiveArray()
+    {
+        $this->processYamlConfiguration(
+            "csp:\n".
+            "  report:\n".
+            "    script-src:\n".
+            "      - 'self'\n".
+            "    browser_adaptive:\n".
+            "      enabled: true\n".
+            "      parser: service_name"
+        );
+    }
+
     private function processYamlConfiguration($config)
     {
         $parser = new Parser();

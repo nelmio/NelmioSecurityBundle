@@ -157,14 +157,19 @@ class NelmioSecurityExtension extends Extension
 
         $pmDefinition = $container->getDefinition('nelmio_security.policy_manager');
 
-        if (isset($config[$type]) && $config[$type]['browser_adaptive']) {
-            $service = $container->getParameter('nelmio_security.ua_parser.service');
+        if (isset($config[$type]) && $config[$type]['browser_adaptive']['enabled']) {
+            $service = $config[$type]['browser_adaptive']['parser'];
 
             if ($service === 'nelmio_security.ua_parser.ua_php' && !class_exists('UAParser\Parser')) {
                 throw new \RuntimeException('You must require "ua-parser/uap-php" as a dependency to use the browser_adaptive feature or configure your own "nelmio_security.ua_parser.service"');
             }
 
-            $pmDefinition->setArguments(array($container->getDefinition($service)));
+            $container->setParameter('nelmio_browser_adaptive_parser', $service);
+
+            $uaParser = $container->getDefinition('nelmio_security.ua_parser');
+            $uaParser->setArguments(array($container->getDefinition('nelmio_security.ua_parser.ua_php')));
+
+            $pmDefinition->setArguments(array($uaParser));
         }
 
         $directiveDefinition->setArguments(array($pmDefinition, $config, $type));

@@ -4,7 +4,8 @@ namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
-use Nelmio\SecurityBundle\UserAgent\UAParserUserAgentParser;
+use Nelmio\SecurityBundle\UserAgent\UAFamilyParser\UAFamilyParser;
+use Nelmio\SecurityBundle\UserAgent\UserAgentParser;
 use Symfony\Component\HttpFoundation\Request;
 use UAParser\Parser;
 
@@ -30,7 +31,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
 
     private function createPolicyManager()
     {
-        return new PolicyManager(new UAParserUserAgentParser(Parser::create()));
+        return new PolicyManager(new UserAgentParser(new UAFamilyParser(Parser::create())));
     }
 
     public function provideVariousConfig()
