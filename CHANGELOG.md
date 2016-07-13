@@ -1,4 +1,4 @@
-### 2.0.1 (2016-xx-xx)
+### 2.0.1 (2016-07-13)
   * Fix CookieSessionHandler::open that should return true unless there's an error
 
 ### 2.0.0 (2016-05-17)
