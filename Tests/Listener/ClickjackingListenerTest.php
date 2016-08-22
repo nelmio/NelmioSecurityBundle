@@ -28,6 +28,7 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
         $this->listener = new ClickjackingListener(array(
             '^/frames/' => array('header' => 'ALLOW'),
             '/frames/' => array('header' => 'SAMEORIGIN'),
+            '/this/allow' => array('header' => 'ALLOW-FROM http://biz.domain.com'),
             '^/.*' => array('header' => 'DENY'),
             '.*' => array('header' => 'ALLOW'),
         ));
@@ -49,6 +50,7 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
             array('/', 'DENY'),
             array('/test', 'DENY'),
             array('/frames/foo', null),
+            array('/this/allow', 'ALLOW-FROM http://biz.domain.com'),
             array('/sub/frames/foo', 'SAMEORIGIN'),
         );
     }

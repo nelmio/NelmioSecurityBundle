@@ -67,7 +67,7 @@ class Configuration implements ConfigurationInterface
                                             $v = array('header' => $v ?: 'DENY');
                                         }
                                         if (isset($v['header'])) {
-                                            $v['header'] = preg_replace_callback('{^(?:ALLOW|DENY|SAMEORIGIN)(?: FROM)?}i', function ($m) { return strtoupper($m[0]); }, $v['header']);
+                                            $v['header'] = preg_replace_callback('{^(?:ALLOW|DENY|SAMEORIGIN|ALLOW-FROM)?}i', function ($m) { return strtoupper($m[0]); }, $v['header']);
                                         }
 
                                         return $v;
@@ -76,9 +76,9 @@ class Configuration implements ConfigurationInterface
                                 ->validate()
                                     ->ifTrue(function ($v) {
                                         return isset($v['header']) && !in_array($v['header'], array('DENY', 'SAMEORIGIN', 'ALLOW'), true)
-                                            && !preg_match('{^ALLOW FROM \S+}', $v['header']);
+                                            && !preg_match('{^ALLOW-FROM \S+}', $v['header']);
                                     })
-                                    ->thenInvalid('Possible header values are DENY, SAMEORIGIN, ALLOW and ALLOW FROM [url], got: %s')
+                                    ->thenInvalid('Possible header values are DENY, SAMEORIGIN, ALLOW and ALLOW-FROM [url], got: %s')
                                 ->end()
                                 ->children()
                                     ->scalarNode('header')->defaultValue('DENY')->end()
