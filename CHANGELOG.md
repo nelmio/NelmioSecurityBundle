@@ -1,3 +1,6 @@
+### 2.0.2 (2016-xx-xx)
+  * Fix typo in the ALLOW-FROM implementation
+
 ### 2.0.1 (2016-06-04)
   * Fix CookieSessionHandler::open that should return true unless there's an error
 
@@ -46,7 +49,7 @@
 ### 1.5.0 (2015-01-01)
 
   * Added ability to have different configs for both reported and enforced CSP rules
-  * Added support for ALLOW and ALLOW FROM syntaxes in the Clickjacking Protection
+  * Added support for ALLOW and ALLOW-FROM syntaxes in the Clickjacking Protection
   * Added support for HHVM and PHP 5.6
   * Fixed enabling of cookie signing when the cookie list is empty
 
