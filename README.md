@@ -217,6 +217,44 @@ nelmio_security:
     methods:  [POST]
 ```
 
+(Optional) Specify the `type` parameter in the routing:
+
+Default value: `enforce`.
+The `type` parameter accepts value `enforce` or `report` for declaring different report uris
+for `enforce` and `report-only` CSP directive. Based on the selected type the log message created by the controller differs.
+
+```yaml
+nelmio_security_enforce:
+    path:     /nelmio/csp/report/enforce
+    defaults:
+       _controller: nelmio_security.csp_reporter_controller:indexAction
+       type:        "enforce"
+    methods:  [POST]
+
+nelmio_security_report_only:
+    path:     /nelmio/csp/report/report-only
+    defaults:
+       _controller: nelmio_security.csp_reporter_controller:indexAction
+       type:        "report"
+    methods:  [POST]
+```
+
+(Optional) Specify the `logLevel` parameter in the routing:
+
+Default value: `notice`.
+
+```yaml
+nelmio_security:
+    path:     /nelmio/csp/report
+    defaults:
+       _controller: nelmio_security.csp_reporter_controller:indexAction
+       logLevel:    "warning"
+    methods:  [POST]
+```
+
+The `logLevel` parameter accepts any of the [`Psr\Log\LogLevel`](http://www.php-fig.org/psr/psr-3/#5-psr-log-loglevel)
+values, e.g. `notice`, `warning`, `error`.
+
 (Optional) Use *report_logger_service* to log to the 'security' channel:
 
 ```yaml
