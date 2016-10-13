@@ -1,3 +1,7 @@
+### 2.0.3 (2016-10-13)
+
+  * Fix deprecation warning with latest Twig 1.x
+
 ### 2.0.2 (2016-08-24)
   * Fix typo in the ALLOW-FROM implementation
   * Update browser_adaptive configuration. Allow custom adapters
