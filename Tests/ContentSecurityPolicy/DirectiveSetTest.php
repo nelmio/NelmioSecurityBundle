@@ -48,6 +48,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                 'frame-ancestors frame-ancestors.example.org \'self\'; '.
                 'frame-src frame.example.org \'self\'; '.
                 'img-src img.example.org \'self\'; '.
+                'manifest-src manifest.example.org \'self\'; '.
                 'media-src media.example.org \'self\'; '.
                 'object-src object.example.org \'self\'; '.
                 'plugin-types application/shockwave-flash; '.
@@ -62,6 +63,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                     'object-src' => array('object.example.org', "'self'"),
                     'style-src' => array('style.example.org', "'self'"),
                     'img-src' => array('img.example.org', "'self'"),
+                    'manifest-src' => array('manifest.example.org', "'self'"),
                     'media-src' => array('media.example.org', "'self'"),
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
@@ -86,6 +88,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                 'frame-ancestors frame-ancestors.example.org \'self\'; '.
                 'frame-src frame.example.org \'self\'; '.
                 'img-src img.example.org \'self\'; '.
+                'manifest-src manifest.example.org \'self\'; '.
                 'media-src media.example.org \'self\'; '.
                 'object-src object.example.org \'self\'; '.
                 'script-src script.example.org \'self\'; '.
@@ -100,6 +103,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                     'style-src' => array('style.example.org', "'self'"),
                     'img-src' => array('img.example.org', "'self'"),
                     'media-src' => array('media.example.org', "'self'"),
+                    'manifest-src' => array('manifest.example.org', "'self'"),
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
                     'connect-src' => array('connect.example.org', "'self'"),
@@ -165,6 +169,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                 'frame-ancestors frame-ancestors.example.org \'self\'; '.
                 'frame-src frame.example.org \'self\'; '.
                 'img-src img.example.org \'self\'; '.
+                'manifest-src media.example.org \'self\'; '.
                 'media-src media.example.org \'self\'; '.
                 'object-src object.example.org \'self\'; '.
                 'plugin-types application/shockwave-flash; '.
@@ -179,6 +184,7 @@ class DirectiveSetTest extends \PHPUnit_Framework_TestCase
                     'object-src' => array('object.example.org', "'self'"),
                     'style-src' => array('style.example.org', "'self'"),
                     'img-src' => array('img.example.org', "'self'"),
+                    'manifest-src' => array('media.example.org', "'self'"),
                     'media-src' => array('media.example.org', "'self'"),
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
