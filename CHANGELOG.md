@@ -1,4 +1,4 @@
-### 2.0.4 (2016-xx-xx)
+### 2.0.4 (2016-10-19)
 
   * Enable manifest-src directive for Chrome, Opera and Firefox
 
