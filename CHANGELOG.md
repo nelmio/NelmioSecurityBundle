@@ -1,3 +1,7 @@
+### 2.0.4 (2016-xx-xx)
+
+  * Enable manifest-src directive for Chrome, Opera and Firefox
+
 ### 2.0.3 (2016-10-13)
 
   * Fix deprecation warning with latest Twig 1.x

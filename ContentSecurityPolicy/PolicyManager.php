@@ -50,12 +50,12 @@ class PolicyManager
 
     private function getChromeDirectives()
     {
-        return array_merge($this->getLevel2(), $this->getDraftDirectives());
+        return array_merge($this->getLevel3(), $this->getDraftDirectives());
     }
 
     private function getFirefoxDirectives()
     {
-        return array_diff(array_merge($this->getLevel2(), $this->getDraftDirectives()), array(
+        return array_diff(array_merge($this->getLevel3(), $this->getDraftDirectives()), array(
             'block-all-mixed-content',
             'child-src',
             'plugin-types',

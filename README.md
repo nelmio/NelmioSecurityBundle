@@ -130,10 +130,10 @@ nelmio_security:
 
 ### Content Security Policy:
 
-Using CSP you can set a policy which modern browsers understand and will honor. The policy contains sixteen different
+Using CSP you can set a policy which modern browsers understand and will honor. The policy contains many different
 directives; `default-src`, `script-src`, `object-src`, `style-src`, `img-src`, `media-src`, `frame-src`,
 `font-src`, `connect-src`, `base-uri`, `child-src`, `form-action`, `frame-ancestors`, `plugin-types`,
-`block-all-mixed-content`, `upgrade-insecure-requests`, `report-uri`.
+`block-all-mixed-content`, `upgrade-insecure-requests`, `report-uri`, `manifest-src`.
 
 You can provide an array of directives per content type, except for `block-all-mixed-content` and
 `upgrade-insecure-requests` that only accept boolean value. Empty content

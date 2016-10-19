@@ -33,6 +33,7 @@ class DirectiveSet
         'frame-ancestors' => self::TYPE_ANCESTOR_SRC_LIST,
         'frame-src' => self::TYPE_SRC_LIST,
         'img-src' => self::TYPE_SRC_LIST,
+        'manifest-src' => self::TYPE_SRC_LIST,
         'media-src' => self::TYPE_SRC_LIST,
         'object-src' => self::TYPE_SRC_LIST,
         'plugin-types' => self::TYPE_MEDIA_TYPE_LIST,
