@@ -236,7 +236,7 @@ nelmio_security:
 
 #### Using browser adaptive directives
 
-Nelmio can be configured to only send directives that can be understood by the browser. This reduces noise provided via the report URI.
+The NelmioSecurityBundle can be configured to only send directives that can be understood by the browser. This reduces noise provided via the report URI.
 This is a direct port of what has been done in [Twitter SecureHeaders library](https://github.com/twitter/secureheaders).
 
 Use the `enabled` key to enable it.
