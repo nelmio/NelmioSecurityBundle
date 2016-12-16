@@ -44,7 +44,7 @@ load content from another domain than the page's domain.
   sites while they in fact lead to malicious content. It also may be possible to gain PageRank
   that way.
 
-* **[Forced HTTPS/SSL Handling](#forced-httpsssl-handling)**: This forces by all requests to go through SSL. It will also
+* **[Forced HTTPS/SSL Handling](#forced-httpsssl-handling)**: This forces all requests to go through SSL. It will also
   send [HSTS](http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02) headers so that
   modern browsers supporting it can make users use HTTPS even if they enter URLs without https,
   avoiding attacks on public Wi-Fi.
@@ -58,7 +58,7 @@ load content from another domain than the page's domain.
 * **[Cookie Session Handler](#cookie-session-handler)**: You can configure the session handler to use a cookie based storage.
   **WARNING**: by default the session is not encrypted, it is your responsibility to properly configure the Encrypted Cookies
   section to include the session cookie (default name: session). The size limit of a cookie is 4KB, so make sure you are not
-  storing object or long text into session.
+  storing objects or long text into session.
 
 * **[Disable Content Type Sniffing](#content-type-sniffing)**: Require that scripts are loaded using the correct mime type.
   This disables the feature that some browsers have which uses content sniffing to determine if the response is a valid
@@ -100,20 +100,20 @@ nelmio_security:
                 - 'none'
             script-src:
                 - 'self'
-            block-all-mixed-content: true # Default to false, blocks http content over https transport
-            # upgrade-insecure-requests: true # Default to false, upgrades http requests to https transport
+            block-all-mixed-content: true # defaults to false, blocks HTTP content over HTTPS transport
+            # upgrade-insecure-requests: true # defaults to false, upgrades HTTP requests to HTTPS transport
 
     # disables content type sniffing for script resources
     content_type:
         nosniff: true
 
-    # Forces Microsoft's XSS-Protection with
+    # forces Microsoft's XSS-Protection with
     # its block mode
     xss_protection:
         enabled: true
         mode_block: true
 
-    # forced HTTPS handling, don't combine with flexible mode
+    # forces HTTPS handling, don't combine with flexible mode
     # and make sure you have SSL working on your site before enabling this
 #    forced_ssl:
 #        hsts_max_age: 2592000 # 30 days
@@ -136,7 +136,7 @@ directives; `default-src`, `script-src`, `object-src`, `style-src`, `img-src`, `
 `block-all-mixed-content`, `upgrade-insecure-requests`, `report-uri`, `manifest-src`.
 
 You can provide an array of directives per content type, except for `block-all-mixed-content` and
-`upgrade-insecure-requests` that only accept boolean value. Empty content
+`upgrade-insecure-requests` that only accept boolean values. Empty content
 types will inherit from `default-src`, specified content types will never inherit from `default-src`. Please see
 the [Content Security Policy 1.0](https://www.w3.org/TR/2012/CR-CSP-20121115/) and
 [Content Security Policy 2.0](https://www.w3.org/TR/2015/CR-CSP2-20150721/) specifications for details.
@@ -167,8 +167,8 @@ nelmio_security:
         enforce:
             # see full description below
             level1_fallback: true
-            # Only send directives supported by the browser, defaults to false
-            # This is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
+            # only send directives supported by the browser, defaults to false
+            # this is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
             browser_adaptive:
                 enabled: false
             report-uri: %router.request_context.base_url%/nelmio/csp/report
@@ -181,13 +181,13 @@ nelmio_security:
                 - 'self'
                 - facebook.com
                 - flickr.com
-            block-all-mixed-content: true # Default to false, blocks http content over https transport
-            # upgrade-insecure-requests: true # Default to false, upgrades http requests to https transport
+            block-all-mixed-content: true # defaults to false, blocks HTTP content over HTTPS transport
+            # upgrade-insecure-requests: true # defaults to false, upgrades HTTP requests to HTTPS transport
         report:
             # see full description below
             level1_fallback: true
-            # Only send directives supported by the browser, defaults to false
-            # This is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
+            # only send directives supported by the browser, defaults to false
+            # this is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
             browser_adaptive:
                 enabled: true
             report-uri: %router.request_context.base_url%/nelmio/csp/report
@@ -236,7 +236,7 @@ nelmio_security:
 
 #### Using browser adaptive directives
 
-Nelmio can only send directives that can be understood by the browser. This reduces noise provided via the report URI.
+Nelmio can be configured to only send directives that can be understood by the browser. This reduces noise provided via the report URI.
 This is a direct port of what has been done in [Twitter SecureHeaders library](https://github.com/twitter/secureheaders).
 
 Use the `enabled` key to enable it.
@@ -250,7 +250,7 @@ nelmio_security:
 ```
 
 **WARNING** This will parse the user agent and can consume some CPU usage. You can specify a cached parser to
-avoid consumong to much CPU usage:
+avoid consuming to much CPU usage:
 
 ```yaml
 nelmio_security:
@@ -261,7 +261,7 @@ nelmio_security:
                 parser: my_own_parser
 ```
 
-And declare service `my_ow_parser` based on one of the cached parser NelmioSecurityBundle provides or your own one.
+And declare service `my_own_parser` based on one of the cached parser NelmioSecurityBundle provides or your own one.
 For instance, using the `DoctrineCacheUAFamilyParser`:
 
 ```xml
@@ -270,7 +270,7 @@ For instance, using the `DoctrineCacheUAFamilyParser`:
       <argument type="service" id="nelmio_security.ua_parser.ua_php"/>
       <argument>604800</argument>
     </service>
-```xml
+```
 
 Have a look in the `Nelmio\SecurityBundle\UserAgent\UAFamilyParser` for these parsers.
 
@@ -279,7 +279,7 @@ Have a look in the `Nelmio\SecurityBundle\UserAgent\UAFamilyParser` for these pa
 If you want to disable `'unsafe-inline'` on `script-src` or `style-src` (recommended), Nelmio Security Bundle
 comes out of the box with message digest functionality. Twig is natively supported.
 
-You can configure the algorithm used for message digest in the configuration
+You can configure the algorithm used for message digest in the configuration.
 
 ```yaml
 nelmio_security:
@@ -548,7 +548,7 @@ nelmio_security:
 ```
 
 If you turn this option on, it's recommended to also set your session cookie to be secure,
-and all other cookies your send for that matter. You can do the former using:
+and all other cookies you send for that matter. You can do the former using:
 
 ```yaml
 framework:
@@ -597,7 +597,7 @@ nelmio_security:
 
 You can also tell the browser to add your site to the list of known HSTS sites, by enabling
 `hsts_preload`. Once your site has appeared in the Chrome and Firefox preload lists, then new
-users who come to your site will already be redirected to https urls.
+users who come to your site will already be redirected to HTTPS URLs.
 
 ```yaml
 nelmio_security:
@@ -650,7 +650,7 @@ security:
 
 Now if you do this, you have two problems. First, insecure pages will not be able to use
 the session anymore, which can be inconvenient. Second, if a logged in user gets to a
-non-https page of your site, it is seen as anonymous since his browser will not send the
+non-HTTPS page of your site, it is seen as anonymous since his browser will not send the
 session cookie. To fix this, this bundle sets a new insecure cookie
 (`flexible_ssl.cookie_name`, defaults to `auth`) once a user logs in. That way, if any page
 is accessed insecurely by a logged in user, he is redirected to the secure version of the
@@ -669,7 +669,7 @@ nelmio_security:
         unsecured_logout: false
 ```
 
-You have to configure one more thing in your security configuration though, every firewall
+You have to configure one more thing in your security configuration though: every firewall
 should have our logout listener added, so that the special `auth` cookie can be cleared when
 users log out. You can do it as such:
 
