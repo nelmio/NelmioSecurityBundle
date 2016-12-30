@@ -11,9 +11,9 @@
 
 namespace Nelmio\SecurityBundle\DependencyInjection;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
 class Configuration implements ConfigurationInterface
 {
@@ -171,6 +171,8 @@ class Configuration implements ConfigurationInterface
         $node = $builder->root('csp');
 
         $node
+            ->canBeDisabled()
+            // CSP is enabled by default to ensure BC
             ->children()
                 ->arrayNode('hosts')->prototype('scalar')->end()->defaultValue(array())->end()
                 ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
@@ -222,7 +224,7 @@ class Configuration implements ConfigurationInterface
                 ->beforeNormalization()
                     ->always(function ($v) {
                         if (!is_array($v)) {
-                            @trigger_error("browser_adaptive configuration is now an array. Using boolean is deprecated and will not be supported anymore in version 3", E_USER_DEPRECATED);
+                            @trigger_error('browser_adaptive configuration is now an array. Using boolean is deprecated and will not be supported anymore in version 3', E_USER_DEPRECATED);
 
                             return array(
                                 'enabled' => $v,
