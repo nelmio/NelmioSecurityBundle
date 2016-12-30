@@ -161,6 +161,7 @@ hostnames will use the CSP rule.
 ```yaml
 nelmio_security:
     csp:
+        enabled: true
         report_logger_service: logger
         hosts: []
         content_types: []

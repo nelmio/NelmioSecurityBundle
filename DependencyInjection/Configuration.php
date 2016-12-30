@@ -171,7 +171,8 @@ class Configuration implements ConfigurationInterface
         $node = $builder->root('csp');
 
         $node
-            ->canBeEnabled()
+            ->canBeDisabled()
+            // CSP is enabled by default to ensure BC
             ->children()
                 ->arrayNode('hosts')->prototype('scalar')->end()->defaultValue(array())->end()
                 ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
