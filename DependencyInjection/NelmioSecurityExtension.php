@@ -55,7 +55,7 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.clickjacking.content_types', $config['clickjacking']['content_types']);
         }
 
-        if (!empty($config['csp'])) {
+        if (!empty($config['csp']) && $config['csp']['enabled']) {
             if (version_compare(Kernel::VERSION, '2.6', '>=')) {
                 $loader->load('csp.yml');
             } else {
