@@ -66,6 +66,9 @@ load content from another domain than the page's domain.
 
 * **[XSS Protection](#xss-protection)**: Enables/Disables Microsoft XSS Protection on compatible browsers (IE 8 and newer).
 
+* **[Referrer Policy](#referrer-policy)**: `Referrer-Policy` header is added to all responses to control the `Referer` header
+  that is added to requests made from your site, and for navigations away from your site by browsers.
+
 **WARNING**: The following features are now deprecated:
 
 * **[Encrypted Cookies](#encrypted-cookies)**: Specify certain cookies to be encrypted, so that the value cannot be
@@ -112,6 +115,17 @@ nelmio_security:
     xss_protection:
         enabled: true
         mode_block: true
+
+    # Send a full URL in the `Referer` header when performing a same-origin request,
+    # only send the origin of the document to secure destination (HTTPS->HTTPS),
+    # and send no header to a less secure destination (HTTPS->HTTP).
+    # If `strict-origin-when-cross-origin` is not supported, use `no-referrer` policy,
+    # no referrer information is sent along with requests.
+    referrer_policy:
+        enabled: true
+        policies:
+            - 'no-referrer'
+            - 'strict-origin-when-cross-origin'
 
     # forces HTTPS handling, don't combine with flexible mode
     # and make sure you have SSL working on your site before enabling this
@@ -729,6 +743,40 @@ nelmio_security:
     xss_protection:
         enabled: true
         mode_block: true
+```
+
+### Referrer Policy
+
+Adds `Referrer-Policy` header to control the `Referer` header that is added
+to requests made from your site, and for navigations away from your site by browsers.
+
+You can specify multiple [referrer policies](https://www.w3.org/TR/referrer-policy/#referrer-policies).
+The order of the policies is important. Browser will choose only the last policy they understand.
+For example older browsers don’t understand the `strict-origin-when-cross-origin` policy.
+A site can specify a `no-referrer` policy followed by a `strict-origin-when-cross-origin` policy:
+older browsers will ignore the unknown `strict-origin-when-cross-origin` value and use `no-referrer`,
+while newer browsers will use `strict-origin-when-cross-origin` because it is the last to be processed.
+
+A referrer policy is:
+  * [`no-referrer`](https://www.w3.org/TR/referrer-policy/#referrer-policy-no-referrer),
+  * [`no-referrer-when-downgrade`](https://www.w3.org/TR/referrer-policy/#referrer-policy-no-referrer-when-downgrade),
+  * [`same-origin`](https://www.w3.org/TR/referrer-policy/#referrer-policy-same-origin),
+  * [`origin`](https://www.w3.org/TR/referrer-policy/#referrer-policy-origin),
+  * [`strict-origin`](https://www.w3.org/TR/referrer-policy/#referrer-policy-strict-origin),
+  * [`origin-when-cross-origin`](https://www.w3.org/TR/referrer-policy/#referrer-policy-origin-when-cross-origin),
+  * [`strict-origin-when-cross-origin`](https://www.w3.org/TR/referrer-policy/#referrer-policy-strict-origin-when-cross-origin),
+  * [`unsafe-url`](https://www.w3.org/TR/referrer-policy/#referrer-policy-unsafe-url),
+  * [the empty string](https://www.w3.org/TR/referrer-policy/#referrer-policy-empty-string).
+
+For better security of your site please use `no-referrer`, `same-origin`, `strict-origin` or `strict-origin-when-cross-origin`.
+
+```yaml
+nelmio_security:
+    referrer_policy:
+        enabled: true
+        policies:
+            - 'no-referrer'
+            - 'strict-origin-when-cross-origin'
 ```
 
 ## License

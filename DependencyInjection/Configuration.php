@@ -17,6 +17,18 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
+    private $referrerPolicies = array(
+        'no-referrer',
+        'no-referrer-when-downgrade',
+        'same-origin',
+        'origin',
+        'strict-origin',
+        'origin-when-cross-origin',
+        'strict-origin-when-cross-origin',
+        'unsafe-url',
+        '',
+    );
+
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
@@ -159,6 +171,8 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->append($this->addCspNode())
+
+                ->append($this->addReferrerPolicyNode())
             ->end()
         ->end();
 
@@ -263,5 +277,45 @@ class Configuration implements ConfigurationInterface
         }
 
         return $children->end();
+    }
+
+    private function addReferrerPolicyNode()
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('referrer_policy');
+
+        // for backward compatibility with PHP 5.3
+        $that = $this;
+
+        $node
+            ->canBeEnabled()
+            ->children()
+                ->arrayNode('policies')
+                    ->prototype('scalar')->end()
+                    ->defaultValue(array('no-referrer', 'no-referrer-when-downgrade'))
+                    ->beforeNormalization()
+                        ->ifString()
+                        ->then(function ($value) { return array($value); })
+                    ->end()
+                    ->validate()
+                        ->always(function ($values) use ($that) {
+                            foreach ($values as $policy) {
+                                if (!in_array($policy, $that->getReferrerPolicies())) {
+                                    throw new \InvalidArgumentException(sprintf('Unknown referrer policy "%s". Possible referrer policies are "%s".', $policy, implode('", "', $that->getReferrerPolicies())));
+                                }
+                            }
+
+                            return $values;
+                        })
+                    ->end()
+                ->end()
+           ->end();
+
+        return $node;
+    }
+
+    public function getReferrerPolicies()
+    {
+        return $this->referrerPolicies;
     }
 }
