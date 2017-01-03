@@ -417,7 +417,7 @@ Additional, optional configuration settings:
 nelmio_security:
     encrypted_cookie:
         secret: this_is_very_secret # defaults to global %secret% parameter
-        algorithm: rijndael-256 # defaults to rijndael-128, see `mcrypt_list_algorithms()` for available algorithms
+        algorithm: AES-256-CBC # defaults to AES-256-CBC, see `openssl_get_cipher_methods()` for available algorithms
 ```
 
 ### **Clickjacking Protection**:
