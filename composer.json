@@ -15,8 +15,9 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "~2.3|~3.0",
-        "symfony/security": "~2.3|~3.0",
+        "php": ">=5.5.9",
+        "symfony/framework-bundle": "~3.0",
+        "symfony/security": "~3.0",
         "paragonie/random_compat": "~1.0|~2.0"
     },
     "require-dev": {
@@ -33,7 +34,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1.x-dev"
+            "dev-master": "3.0.0-dev"
         }
     }
 }

@@ -21,12 +21,12 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
-        $this->nonceGenerator = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator')
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->nonceGenerator = $this->getMockBuilder(NonceGenerator::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->shaComputer = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer')
+        $this->shaComputer = $this->getMockBuilder(ShaComputer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->shaComputer->expects($this->any())

@@ -12,6 +12,7 @@
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\FlexibleSslListener;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,8 +30,8 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
         $this->listener = new FlexibleSslListener('auth', false, $this->dispatcher);
     }
 
@@ -122,8 +124,8 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
     public function testSecureLogout()
     {
         $response = new RedirectResponse('https://foo');
-        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
-        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+        $request = $this->getMockBuilder(Request::class)->getMock();
+        $token = $this->getMockBuilder(TokenInterface::class)->getMock();
 
         $this->listener->logout($request, $response, $token);
 
@@ -135,8 +137,8 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
         $unsecuredLogoutListener = new FlexibleSslListener('auth', true, $this->dispatcher);
 
         $response = new RedirectResponse('https://foo');
-        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
-        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+        $request = $this->getMockBuilder(Request::class)->getMock();
+        $token = $this->getMockBuilder(TokenInterface::class)->getMock();
 
         $unsecuredLogoutListener->logout($request, $response, $token);
 

@@ -56,11 +56,7 @@ class NelmioSecurityExtension extends Extension
         }
 
         if (!empty($config['csp']) && $config['csp']['enabled']) {
-            if (version_compare(Kernel::VERSION, '2.6', '>=')) {
-                $loader->load('csp.yml');
-            } else {
-                $loader->load('csp_legacy.yml');
-            }
+            $loader->load('csp.yml');
 
             $cspConfig = $config['csp'];
 
@@ -76,11 +72,7 @@ class NelmioSecurityExtension extends Extension
         }
 
         if (!empty($config['xss_protection'])) {
-            if (version_compare(Kernel::VERSION, '2.6', '>=')) {
-                $loader->load('xss_protection.yml');
-            } else {
-                $loader->load('xss_protection_legacy.yml');
-            }
+            $loader->load('xss_protection.yml');
 
             $container->getDefinition('nelmio_security.xss_protection_listener')
                 ->setArguments(array($config['xss_protection']));
@@ -148,12 +140,7 @@ class NelmioSecurityExtension extends Extension
     {
         $directiveDefinition = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
 
-        if (version_compare(Kernel::VERSION, '2.6', '>=')) {
-            $directiveDefinition->setFactory(array('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet', 'fromConfig'));
-        } else {
-            $directiveDefinition->setFactoryClass('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
-            $directiveDefinition->setFactoryMethod('fromConfig');
-        }
+        $directiveDefinition->setFactory(array('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet', 'fromConfig'));
 
         $pmDefinition = $container->getDefinition('nelmio_security.policy_manager');
 

@@ -24,7 +24,7 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
         $this->listener = new ClickjackingListener(array(
             '^/frames/' => array('header' => 'ALLOW'),
             '/frames/' => array('header' => 'SAMEORIGIN'),
