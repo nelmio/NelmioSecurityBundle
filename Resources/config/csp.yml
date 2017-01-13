@@ -25,9 +25,46 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    nelmio_security.csp_report.filter:
+        public: false
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter
+
+    nelmio_security.csp_report.filter.noise_detector_schemes:
+        public: false
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\SchemesNoiseDetector
+
+    nelmio_security.csp_report.filter.noise_detector_domains_regex:
+        public: false
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\DomainsRegexNoiseDetector
+
+    nelmio_security.csp_report.filter.noise_detector_domains:
+        public: false
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\DomainsNoiseDetector
+
+    nelmio_security.csp_report.filter.noise_detector_custom_rules:
+        public: false
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\CustomRulesNoiseDetector
+        arguments: [[]]
+
+    nelmio_security.csp_report.filter.noise_detector_injected_scripts:
+        public: false
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\InjectedScriptsNoiseDetector
+
+    nelmio_security.csp_report.filter.noise_detector_browser_bugs:
+        public: false
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\BrowserBugsNoiseDetector
+        arguments: ['@nelmio_security.ua_parser.ua_php.provider']
+
+    nelmio_security.csp_report.log_formatter:
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Log\LogFormatter
+
+    nelmio_security.csp_report.logger:
+        class: Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Log\Logger
+        arguments: ['@logger', '@nelmio_security.csp_report.log_formatter', '%nelmio_security.csp.report_log_level%']
+
     nelmio_security.csp_reporter_controller:
         class: Nelmio\SecurityBundle\Controller\ContentSecurityPolicyController
-        arguments: ['@logger']
+        arguments: ['@nelmio_security.csp_report.logger', '@event_dispatcher', '@nelmio_security.csp_report.filter']
 
     nelmio_security.nonce_generator:
         class: Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator
