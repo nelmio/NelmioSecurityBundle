@@ -22,6 +22,9 @@ class EncrypterTest extends \PHPUnit_Framework_TestCase
         if (!function_exists('mcrypt_module_open')) {
             $this->markTestSkipped('MCrypt is not installed');
         }
+        if (PHP_VERSION_ID >= 70100 ) {
+            $this->markTestSkipped('MCrypt is deprecated since PHP 7.1');
+        }
     }
 
     /**
