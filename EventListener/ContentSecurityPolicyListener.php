@@ -44,7 +44,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
             return;
         }
 

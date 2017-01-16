@@ -39,7 +39,7 @@ class NelmioCSPTwigExtension extends \Twig_Extension
 
     public function getName()
     {
-        return 'nelmio-csp';
+        return 'Nelmio\\SecurityBundle\\Twig\\NelmioCSPTwigExtension';
     }
 
     public function getFunctions()

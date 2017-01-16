@@ -23,7 +23,7 @@
         "doctrine/cache": "^1.0",
         "psr/cache": "^1.0",
         "twig/twig": "^1.24",
-        "ua-parser/uap-php": "^3.4"
+        "ua-parser/uap-php": "^3.4.1"
     },
     "suggest": {
         "ua-parser/uap-php": "To allow adapt CSP directives given the user-agent"
