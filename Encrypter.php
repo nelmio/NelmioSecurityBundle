@@ -32,13 +32,12 @@ class Encrypter
 
         $this->module = @mcrypt_module_open($this->algorithm, '', MCRYPT_MODE_CBC, '');
         if ($this->module === false) {
-            throw new \InvalidArgumentException(sprintf("The supplied encryption algorithm '%s' is not supported by this system.",
-                $this->algorithm));
+            throw new \InvalidArgumentException(sprintf("The supplied encryption algorithm '%s' is not supported by this system.", $this->algorithm));
         }
 
         $this->ivSize = mcrypt_enc_get_iv_size($this->module);
 
-        @trigger_error('Encrypted Cookie is now deprecated due to high coupling with the deprecated mcrypt extension', E_USER_NOTICE);
+        @trigger_error('Encrypted Cookie is now deprecated due to high coupling with the deprecated mcrypt extension, support will be removed in NelmioSecurityBundle version 3', E_USER_DEPRECATED);
     }
 
     public function encrypt($input)
