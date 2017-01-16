@@ -33,6 +33,10 @@ class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('MCrypt is not installed');
         }
 
+        if (PHP_VERSION_ID >= 70100 ) {
+            $this->markTestSkipped('MCrypt is deprecated since PHP 7.1');
+        }
+
         $this->encrypter = new Encrypter('secret', 'rijndael-128');
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
     }
