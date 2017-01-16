@@ -14,7 +14,7 @@ namespace Nelmio\SecurityBundle;
 /**
  * @deprecated EncryptedCookieListener is now deprecated due to high coupling with the deprecated mcrypt extension
  */
-class Encrypter
+class Encrypter implements EncrypterInterface
 {
     private $module;
     private $secret;
@@ -54,13 +54,13 @@ class Encrypter
         return rtrim(base64_encode($iv.mcrypt_generic($this->module, (string) $input)), '=');
     }
 
-    public function decrypt($input)
+    public function decrypt($cipherText)
     {
-        if (empty($input)) {
+        if (empty($cipherText)) {
             return;
         }
 
-        $encryptedData = base64_decode($input, true);
+        $encryptedData = base64_decode($cipherText, true);
 
         $iv = substr($encryptedData, 0, $this->ivSize);
 

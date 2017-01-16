@@ -45,6 +45,7 @@ class NelmioSecurityExtension extends Extension
         if (!empty($config['encrypted_cookie']['names'])) {
             $loader->load('encrypted_cookie.yml');
             $container->setParameter('nelmio_security.encrypted_cookie.names', $config['encrypted_cookie']['names']);
+            $container->setParameter('nelmio_security.encrypter.adapter', $config['encrypted_cookie']['adapter']);
             $container->setParameter('nelmio_security.encrypter.secret', $config['encrypted_cookie']['secret']);
             $container->setParameter('nelmio_security.encrypter.algorithm', $config['encrypted_cookie']['algorithm']);
         }

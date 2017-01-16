@@ -49,6 +49,7 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                             ->defaultValue(array('*'))
                         ->end()
+                        ->scalarNode('adapter')->defaultValue('mcrypt')->end()
                         ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
                         ->scalarNode('algorithm')->defaultValue('rijndael-128')->end()
                     ->end()
