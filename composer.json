@@ -21,7 +21,6 @@
     },
     "require-dev": {
         "doctrine/cache": "^1.0",
-        "phpunit/phpunit": "^4.5",
         "psr/cache": "^1.0",
         "twig/twig": "^1.24",
         "ua-parser/uap-php": "^3.4"

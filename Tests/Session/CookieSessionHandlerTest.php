@@ -27,7 +27,7 @@ class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->handler = new CookieSessionHandler('s');
 
-        $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
+        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
     }
 
     /**
@@ -50,7 +50,7 @@ class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request();
         $response = new Response();
-        $session = $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
+        $session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')->getMock();
         $session->expects($this->exactly(1))->method('save');
         $request->setSession($session);
 
@@ -74,7 +74,7 @@ class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
 
         $request = new Request();
         $response = new Response();
-        $session = $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
+        $session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')->getMock();
         $session->expects($this->exactly(2))->method('save');
         $request->setSession($session);
 
@@ -103,8 +103,8 @@ class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCookieNotOpened()
     {
-        $session = $this->getMock('Symfony\Component\HttpFoundation\Session\SessionInterface');
-        $headers = $this->getMock('Symfony\Component\HttpFoundation\ResponseHeaderBag');
+        $session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')->getMock();
+        $headers = $this->getMockBuilder('Symfony\Component\HttpFoundation\ResponseHeaderBag')->getMock();
         $headers
             ->expects($this->any())
             ->method('clearCookie');

@@ -24,11 +24,12 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
 {
     private $kernel;
     private $dispatcher;
+    private $listener;
 
     protected function setUp()
     {
-        $this->kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
-        $this->dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
         $this->listener = new FlexibleSslListener('auth', false, $this->dispatcher);
     }
 
@@ -121,8 +122,8 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
     public function testSecureLogout()
     {
         $response = new RedirectResponse('https://foo');
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
-        $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
+        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
+        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
 
         $this->listener->logout($request, $response, $token);
 
@@ -134,8 +135,8 @@ class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
         $unsecuredLogoutListener = new FlexibleSslListener('auth', true, $this->dispatcher);
 
         $response = new RedirectResponse('https://foo');
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
-        $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
+        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
+        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
 
         $unsecuredLogoutListener->logout($request, $response, $token);
 
