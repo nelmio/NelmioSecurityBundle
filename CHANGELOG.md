@@ -1,5 +1,6 @@
 ### 2.1.0 (2017-xx-xx)
 
+  * Add support for Referrer Policy
   * Content-Security-Policy header can now be disabled
   * Fix encrypter deprecation
   * Run the test suite on PHP 7.1
