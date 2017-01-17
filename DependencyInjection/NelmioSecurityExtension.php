@@ -142,6 +142,11 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.forced_ssl.whitelist', $config['forced_ssl']['whitelist']);
             $container->setParameter('nelmio_security.forced_ssl.hosts', $config['forced_ssl']['hosts']);
         }
+
+        if (!empty($config['referrer_policy']) && $config['referrer_policy']['enabled']) {
+            $loader->load('referrer_policy.yml');
+            $container->setParameter('nelmio_security.referrer_policy.policies', $config['referrer_policy']['policies']);
+        }
     }
 
     private function buildDirectiveSetDefinition(ContainerBuilder $container, $config, $type)

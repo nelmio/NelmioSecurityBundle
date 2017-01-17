@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\Tests\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Processor;
 use Nelmio\SecurityBundle\DependencyInjection\Configuration;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Parser;
 
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
@@ -83,7 +92,39 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             "      - 'self'\n".
             "    browser_adaptive:\n".
             "      enabled: true\n".
-            "      parser: service_name"
+            "      parser: service_name\n"
+        );
+    }
+
+    public function testReferrerPolicy()
+    {
+        $this->processYamlConfiguration(
+            "referrer_policy:\n".
+            "  enabled: true\n".
+            "  policies:\n".
+            "    - 'no-referrer'\n".
+            "    - 'no-referrer-when-downgrade'\n".
+            "    - 'same-origin'\n".
+            "    - 'origin'\n".
+            "    - 'strict-origin'\n".
+            "    - 'origin-when-cross-origin'\n".
+            "    - 'strict-origin-when-cross-origin'\n".
+            "    - 'unsafe-url'\n".
+            "    - ''\n"
+        );
+    }
+
+    /**
+     * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     */
+    public function testReferrerPolicyInvalid()
+    {
+        $this->processYamlConfiguration(
+            "referrer_policy:\n".
+            "  enabled: true\n".
+            "  policies:\n".
+            "    - 'no-referrer'\n".
+            "    - 'foo'\n"
         );
     }
 
