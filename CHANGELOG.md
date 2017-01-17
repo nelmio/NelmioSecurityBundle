@@ -1,3 +1,10 @@
+### 2.1.0 (2017-xx-xx)
+
+  * Content-Security-Policy header can now be disabled
+  * Fix encrypter deprecation
+  * Run the test suite on PHP 7.1
+  * Run the test suite with lowest dependencies
+
 ### 2.0.4 (2016-10-19)
 
   * Enable manifest-src directive for Chrome, Opera and Firefox
