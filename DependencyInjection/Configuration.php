@@ -12,6 +12,7 @@
 namespace Nelmio\SecurityBundle\DependencyInjection;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
+use Psr\Log\LogLevel;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -190,6 +191,56 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('hosts')->prototype('scalar')->end()->defaultValue(array())->end()
                 ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
+                ->arrayNode('report_endpoint')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('log_channel')
+                            ->defaultValue(null)
+                        ->end()
+                        ->scalarNode('log_formatter')
+                            ->defaultValue('nelmio_security.csp_report.log_formatter')
+                        ->end()
+                        ->enumNode('log_level')
+                            ->values(array(
+                                LogLevel::ALERT,
+                                LogLevel::CRITICAL,
+                                LogLevel::DEBUG,
+                                LogLevel::EMERGENCY,
+                                LogLevel::ERROR,
+                                LogLevel::INFO,
+                                LogLevel::NOTICE,
+                                LogLevel::WARNING,
+                            ))
+                            ->defaultValue('notice')
+                        ->end()
+                        ->arrayNode('filters')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->booleanNode('domains')->defaultTrue()->end()
+                                ->booleanNode('schemes')->defaultTrue()->end()
+                                ->booleanNode('browser_bugs')->defaultTrue()->end()
+                                ->booleanNode('injected_scripts')->defaultTrue()->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('dismiss')
+                            ->normalizeKeys(false)
+                            ->prototype('array')
+                                ->beforeNormalization()
+                                ->always(function ($v) {
+                                    if (!is_array($v)) {
+                                        return array($v);
+                                    }
+
+                                    return $v;
+                                })
+                                ->end()
+                                ->prototype('enum')
+                                    ->values(array_merge(array_keys(DirectiveSet::getNames()), array('*')))
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
                 // leaving this enabled can cause issues with older iOS (5.x) versions
                 // and possibly other early CSP implementations
                 ->booleanNode('compat_headers')->defaultValue(true)->end()

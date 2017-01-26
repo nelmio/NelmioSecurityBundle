@@ -265,7 +265,7 @@ nelmio_security:
 ```
 
 **WARNING** This will parse the user agent and can consume some CPU usage. You can specify a cached parser to
-avoid consuming to much CPU usage:
+avoid consuming too much CPU:
 
 ```yaml
 nelmio_security:
@@ -379,6 +379,48 @@ If you're not using Twig, you can use nonce functionality with the `ContentSecur
 ```php
 // generates a nonce at first time, returns the same nonce once generated
 $listener->getNonce();
+```
+
+#### Reporting:
+
+Using the `report-uri` you can easily collect violation using the `ContentSecurityPolicyController`.
+Here's an configuration example using `routing.yml`:
+
+```yaml
+csp_report:
+    path: /csp/report
+    methods: [POST]
+    defaults: { _controller: nelmio_security.csp_reporter_controller:indexAction }
+```
+
+This part of the configuration helps to filter noise collected by this endpoint:
+
+```yaml
+nelmio_security:
+    csp:
+        report_endpoint:
+            log_level: "notice" # Use the appropriate log_level
+            log_formatter: ~    # Declare a service name that must implement Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Log\LogFormatterInterface
+            log_channel: ~      # Declare the channel to use with the logger
+            filters:
+                # Filter false positive reports given a domain list
+                domains: true
+                # Filter false positive reports given a scheme list
+                schemes: true
+                # Filter false positive reports given known browser bugs
+                browser_bugs: true
+                # Filter false positive reports given known injected scripts
+                injected_scripts: true
+                # You can add you custom filter rules by implementing Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\NoiseDetectorInterface
+                # and tag the service with "nelmio_security.csp_report_filter"
+            dismiss:
+                # A list of key-values that should be dismissed
+                # A key is either a domain or a regular expression
+                # A value is a source or an array of source. The '*' wilcard is accepted
+                '/^data:/': 'script-src'
+                '/^https?:\/\/\d+\.\d+\.\d+\.\d+(:\d+)*/': '*'
+                'maxcdn.bootstrapcdn.com': '*'
+                'www.gstatic.com': ['media-src', 'img-src']
 ```
 
 ### **Signed Cookies**:

@@ -71,8 +71,45 @@ class NelmioSecurityExtension extends Extension
             $cspListenerDefinition->setArguments(array($reportDefinition, $enforceDefinition, new Reference('nelmio_security.nonce_generator'), new Reference('nelmio_security.sha_computer'), (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']));
             $container->setParameter('nelmio_security.csp.hash_algorithm', $cspConfig['hash']['algorithm']);
 
-            $container->getDefinition('nelmio_security.csp_reporter_controller')
-                ->setArguments(array(new Reference($cspConfig['report_logger_service'])));
+            $cspViolationLogFilterDefinition = $container->getDefinition('nelmio_security.csp_report.filter');
+
+            $container->setParameter('nelmio_security.csp.report_log_level', $cspConfig['report_endpoint']['log_level']);
+
+            if (count($cspConfig['report_endpoint']['dismiss']) > 0) {
+                $container->getDefinition('nelmio_security.csp_report.filter.noise_detector_custom_rules')
+                    ->replaceArgument(0, $cspConfig['report_endpoint']['dismiss']);
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_custom_rules')));
+            }
+
+            if ($cspConfig['report_endpoint']['filters']['domains']) {
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_domains')));
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_domains_regex')));
+            }
+
+            if ($cspConfig['report_endpoint']['filters']['schemes']) {
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_schemes')));
+            }
+
+            if ($cspConfig['report_endpoint']['filters']['injected_scripts']) {
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_schemes')));
+            }
+
+            // FIX ME something better here
+            if ($cspConfig['report_endpoint']['filters']['browser_bugs']) {
+                if (!class_exists('UAParser\Parser')) {
+                    throw new \RuntimeException('You must require "ua-parser/uap-php" as a dependency to use the browser_bugs noise detector');
+                }
+
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_browser_bugs')));
+            }
+
+            $loggerDefinition = $container->getDefinition('nelmio_security.csp_report.logger');
+            $loggerDefinition->replaceArgument(0, new Reference($cspConfig['report_logger_service']));
+            $loggerDefinition->replaceArgument(1, new Reference($cspConfig['report_endpoint']['log_formatter']));
+
+            if ($cspConfig['report_endpoint']['log_channel']) {
+                $loggerDefinition->addTag('monolog.logger', array('channel' => $cspConfig['report_endpoint']['log_channel']));
+            }
         }
 
         if (!empty($config['xss_protection'])) {
