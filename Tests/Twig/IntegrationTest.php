@@ -2,6 +2,8 @@
 
 namespace Nelmio\SecurityBundle\Tests\Twig;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
+use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension;
 
 class IntegrationTest extends \PHPUnit_Framework_TestCase
@@ -10,7 +12,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $collectedShas = array();
 
-        $shaComputer = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer')
+        $shaComputer = $this->getMockBuilder(ShaComputer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $shaComputer->expects($this->exactly(1))
@@ -20,7 +22,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             ->method('computeForStyle')
             ->will($this->returnValue('sha-style'));
 
-        $listener = $this->getMockBuilder('Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener')
+        $listener = $this->getMockBuilder(ContentSecurityPolicyListener::class)
             ->disableOriginalConstructor()
             ->getMock();
         $listener->expects($this->never())
@@ -51,7 +53,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     {
         $collectedShas = array();
 
-        $shaComputer = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer')
+        $shaComputer = $this->getMockBuilder(ShaComputer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $shaComputer->expects($this->exactly(1))
@@ -61,7 +63,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             ->method('computeForStyle')
             ->will($this->returnValue('sha-style'));
 
-        $listener = $this->getMockBuilder('Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener')
+        $listener = $this->getMockBuilder(ContentSecurityPolicyListener::class)
             ->disableOriginalConstructor()
             ->getMock();
         $listener->expects($this->exactly(2))

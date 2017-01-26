@@ -38,7 +38,7 @@ class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->encrypter = new Encrypter('secret', 'rijndael-128');
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
     }
 
     /**
