@@ -1,4 +1,4 @@
-### 2.1.0 (2017-xx-xx)
+### 2.1.0 (2017-01-26)
 
   * Add support for Referrer Policy
   * Content-Security-Policy header can now be disabled
