@@ -19,7 +19,7 @@ class InjectedScriptsNoiseDetector implements NoiseDetectorInterface
     public function match(Report $report, Request $request)
     {
         $patterns = array(
-            '/^;\(function installGlobalHook\(window\) \{/',
+            '/^\s*;\(function installGlobalHook\(window\) \{/',
             '/^try\s+\{\s+for\(var lastpass_iter=0; lastpass/',
             '/^try\{\(function\(\) \{ for\(var lastpass_it/',
             '/^\(function \(\)\{try\{Object\.defineProperty/',
