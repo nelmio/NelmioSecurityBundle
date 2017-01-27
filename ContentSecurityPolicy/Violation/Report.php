@@ -31,7 +31,15 @@ class Report
 
     public function getDirective()
     {
-        return isset($this->data['effective-directive']) ? $this->data['effective-directive'] : null;
+        if (isset($this->data['effective-directive'])) {
+            return $this->data['effective-directive'];
+        }
+
+        if (isset($this->data['violated-directive'])) {
+            $parts = explode(' ', $this->data['violated-directive'], 2);
+
+            return $parts[0];
+        }
     }
 
     public function getUri()

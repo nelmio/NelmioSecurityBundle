@@ -101,6 +101,10 @@ class FilterTest extends \PHPUnit_Framework_TestCase
             )),
             array(true, new Request(), array(
                 'blocked-uri' => 'https://query.jollywallet.com',
+                'violated-directive' => 'script-src https://domain.com',
+            )),
+            array(true, new Request(), array(
+                'blocked-uri' => 'https://query.jollywallet.com',
                 'effective-directive' => 'script-src',
             )),
             array(true, new Request(), array(
@@ -134,6 +138,11 @@ window.AG_onLoad = function(func)',
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
                 'script-sample' => 'var FuckAdBlock = function ()',
+            )),
+            array(true, new Request(), array(
+                'blocked-uri' => 'self',
+                'effective-directive' => 'script-src',
+                'script-sample' => "\n ;(function installGlobalHook(window) {",
             )),
             array(true, $firefox42, array(
                 'blocked-uri' => 'self',
