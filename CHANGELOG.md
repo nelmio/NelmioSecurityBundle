@@ -1,3 +1,8 @@
+### 2.2.0 (2017-02-06)
+
+  * Add CSP report filter
+  * Fix Twig 2 support
+
 ### 2.1.0 (2017-01-26)
 
   * Add support for Referrer Policy
