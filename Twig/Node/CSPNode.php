@@ -16,7 +16,7 @@ class CSPNode extends \Twig_Node
     private $sha;
     private $directive;
 
-    public function __construct(\Twig_NodeInterface $body, $lineno, $tag, $directive, $sha = null)
+    public function __construct(\Twig_Node $body, $lineno, $tag, $directive, $sha = null)
     {
         parent::__construct(array('body' => $body), array(), $lineno, $tag);
         $this->sha = $sha;
