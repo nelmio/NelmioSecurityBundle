@@ -1,3 +1,7 @@
+### 2.2.1 (2017-02-07)
+
+  * Fix dependency on UAParser
+
 ### 2.2.0 (2017-02-06)
 
   * Add CSP report filter
