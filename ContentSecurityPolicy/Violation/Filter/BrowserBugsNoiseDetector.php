@@ -48,6 +48,12 @@ class BrowserBugsNoiseDetector implements NoiseDetectorInterface
             }
         }
 
+        // files loaded by safari extension
+        // should be allowed as in Chrome
+        if (0 === strpos($report->getSourceFile(), 'safari-extension://')) {
+            return true;
+        }
+
         return false;
     }
 }

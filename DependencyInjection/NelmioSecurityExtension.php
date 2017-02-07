@@ -91,15 +91,10 @@ class NelmioSecurityExtension extends Extension
             }
 
             if ($cspConfig['report_endpoint']['filters']['injected_scripts']) {
-                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_schemes')));
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_injected_scripts')));
             }
 
-            // FIX ME something better here
             if ($cspConfig['report_endpoint']['filters']['browser_bugs']) {
-                if (!class_exists('UAParser\Parser')) {
-                    throw new \RuntimeException('You must require "ua-parser/uap-php" as a dependency to use the browser_bugs noise detector');
-                }
-
                 $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_browser_bugs')));
             }
 
@@ -201,10 +196,6 @@ class NelmioSecurityExtension extends Extension
 
         if (isset($config[$type]) && $config[$type]['browser_adaptive']['enabled']) {
             $service = $config[$type]['browser_adaptive']['parser'];
-
-            if ($service === 'nelmio_security.ua_parser.ua_php' && !class_exists('UAParser\Parser')) {
-                throw new \RuntimeException('You must require "ua-parser/uap-php" as a dependency to use the browser_adaptive feature or configure your own "nelmio_security.ua_parser.service"');
-            }
 
             $container->setParameter('nelmio_browser_adaptive_parser', $service);
 

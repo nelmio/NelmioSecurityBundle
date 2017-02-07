@@ -19,15 +19,25 @@ class InjectedScriptsNoiseDetector implements NoiseDetectorInterface
     public function match(Report $report, Request $request)
     {
         $patterns = array(
-            '/^\s*;\(function installGlobalHook\(window\) \{/',
-            '/^try\s+\{\s+for\(var lastpass_iter=0; lastpass/',
-            '/^try\{\(function\(\) \{ for\(var lastpass_it/',
-            '/^\(function \(\)\{try\{Object\.defineProperty/',
-            '/^\(function \(\) \{\s+var event_id = docum/',
-            '/^\s*window\.oldSetTimeout=window\.setTimeout/',
-            '/^try \{\s*window.AG_onLoad = function\(/',
-            '/var FuckAdBlock/',
-            '/var BlockAdBlock/',
+            '/installGlobalHook\(window\)/',
+            '/var lastpass_it/',
+            '/Object\.defineProperty/',
+            '/var event_id/',
+            '/window\.oldSetTimeout=window\.setTimeout/',
+            '/_PostRPC\(\)/',
+            '/window\.devToolsOptions/',
+            '/AG_onLoad\s*=/',
+            '/var FuckAdBlo/',
+            '/var BlockAdBlo/',
+            '/attribute on DIV element/',
+            '/safeWindow:\{\}/',
+            '/ abNoOp/',
+            '/var fake/',
+            '/\.Wondersh/',
+            '/videodownload2/',
+            '/jq_relocation/',
+            '/jQuery JavaScript/',
+            '/jquery\.base64\.js/',
         );
 
         if ('self' !== $report->getUri()) {

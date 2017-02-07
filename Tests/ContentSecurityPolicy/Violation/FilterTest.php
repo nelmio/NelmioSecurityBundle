@@ -112,6 +112,10 @@ class FilterTest extends \PHPUnit_Framework_TestCase
                 'effective-directive' => 'script-src',
             )),
             array(true, new Request(), array(
+                'source-file' => 'safari-extension://org.adblockplus.adblockplussafari-gryyzr985a',
+                'effective-directive' => 'script-src',
+            )),
+            array(true, new Request(), array(
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
                 'script-sample' => 'try {  for(var lastpass_iter=0; lastpass',
