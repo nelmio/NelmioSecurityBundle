@@ -1,3 +1,8 @@
+### 2.2.2 (2017-02-07)
+
+  * Improve CSP filtering
+  * Fix injected script noise detector loading
+
 ### 2.2.1 (2017-02-07)
 
   * Fix dependency on UAParser
