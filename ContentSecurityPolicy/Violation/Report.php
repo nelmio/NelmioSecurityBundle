@@ -87,6 +87,11 @@ class Report
         return $uri === 'data';
     }
 
+    public function getSourceFile()
+    {
+        return isset($this->data['source-file']) ? $this->data['source-file'] : null;
+    }
+
     public function getData()
     {
         return $this->data;
