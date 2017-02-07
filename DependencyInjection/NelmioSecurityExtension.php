@@ -91,7 +91,7 @@ class NelmioSecurityExtension extends Extension
             }
 
             if ($cspConfig['report_endpoint']['filters']['injected_scripts']) {
-                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_schemes')));
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_injected_scripts')));
             }
 
             // FIX ME something better here
