@@ -361,13 +361,13 @@ In your Twig template use the `csp_nonce` function to access the nonce for the c
 CSP header. If you do not request a nonce, nonce will not be generated.
 
 ```twig
-<script nonce="{{ csp_nonce }}">
+<script nonce="{{ csp_nonce() }}">
     window.api_key = '{{ api_key }}';
 </script>
 
 // ...
 
-<style nonce="{{ csp_nonce }}">
+<style nonce="{{ csp_nonce() }}">
     body {
         background-color: '{{ bgColor }}';
     }
