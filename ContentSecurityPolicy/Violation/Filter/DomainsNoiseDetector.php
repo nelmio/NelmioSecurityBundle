@@ -126,6 +126,7 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'd3ijcis4e2ziok.cloudfront.net' => true,
             'dasertyupor.com' => true,
             'dash' => true,
+            'data1.itineraire.info' => true,
             'dataloading.net' => true,
             'delicious.com' => true,
             'dersens04.mgsops.net' => true,
@@ -141,6 +142,7 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'extads.net' => true,
             'extlabs.io' => true,
             'extstat.com' => true,
+            'fabsgame.com' => true,
             'fanyi.baidu.com' => true,
             'fast-searcher-sng-v4.com' => true,
             'fast-searcher-ww-v3.com' => true,
@@ -150,6 +152,7 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'freewebview.com' => true,
             'front.meimotuan.com' => true,
             'gamerzcrack.com' => true,
+            'gamesofgrandeur.com' => true,
             'gamespotato.com' => true,
             'gamingdude.com' => true,
             'gateway.zscaler.net' => true,
@@ -157,6 +160,7 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'ge0ip.com' => true,
             'getpocket.com' => true,
             'github.com' => true,
+            'gln.doneticket.net' => true,
             'gocoupons.ru' => true,
             'godoc.org' => true,
             'goj.drivemac.net' => true,
@@ -193,12 +197,14 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'likecoupon.ru' => true,
             'localhost' => true,
             'lonbfbvmiis2.timeinc.com' => true,
+            'm44.prod2016.com' => true,
             'm53.prod2016.com' => true,
             'magicplayer-s.acestream.net' => true,
             'mc.yandex.ru' => true,
             'me.captnemo.in' => true,
             'mediaddons.com' => true,
             'metrext.com' => true,
+            'ms-browser-extension' => true,
             'mstat.acestream.net' => true,
             'music.baidu.com' => true,
             'mybrowserpages.com' => true,
@@ -213,6 +219,7 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'ofenop.ru' => true,
             'onlinegametech.com' => true,
             'onlinemegax.com' => true,
+            'onlineshopping.flysas.com' => true,
             'p.cpx.to' => true,
             'p1.answerdash.com' => true,
             'p9rilxagra8kv.ru' => true,
@@ -297,6 +304,7 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'walkme.timeinc.com' => true,
             'webfeperf.appspot.com' => true,
             'weixin' => true,
+            'weixinping' => true,
             'www.127.0.0.1' => true,
             'www.adstomat.ru' => true,
             'www.baidu.com' => true,
@@ -306,6 +314,8 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'www.facebook.com' => true,
             'www.findizer.fr' => true,
             'www.googletagmanager.com' => true,
+            'www.instapaper.com' => true,
+            'www.macleans.ca' => true,
             'www.mediaplusweb.com' => true,
             'www.moedict.tw' => true,
             'www.multitran.ru' => true,
@@ -327,7 +337,7 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'zillow.okta.com' => true,
         );
 
-        if (null === $domain = $report->getDomain()) {
+        if (!$domain = $report->getDomain()) {
             return false;
         }
 
