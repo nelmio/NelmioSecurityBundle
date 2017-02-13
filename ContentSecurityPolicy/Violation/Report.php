@@ -12,6 +12,9 @@
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
 use Symfony\Component\HttpFoundation\Request;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\InvalidPayloadException;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspReportException;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException;
 
 class Report
 {

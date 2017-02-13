@@ -1,3 +1,7 @@
+### 2.2.4 (2017-02-13)
+
+  * Fix exceptions thrown by Report::fromRequest
+
 ### 2.2.3 (2017-02-13)
 
   * Improve CSP filtering
