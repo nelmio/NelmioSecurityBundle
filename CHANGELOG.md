@@ -1,3 +1,7 @@
+### 2.2.3 (2017-02-13)
+
+  * Improve CSP filtering
+
 ### 2.2.2 (2017-02-07)
 
   * Improve CSP filtering
