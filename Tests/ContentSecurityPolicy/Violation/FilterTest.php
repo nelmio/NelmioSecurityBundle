@@ -176,6 +176,22 @@ window.AG_onLoad = function(func)',
                 'blocked-uri' => 'about:blank',
                 'effective-directive' => 'base-uri',
             )),
+            array(true, new Request(), array(
+                'blocked-uri' => 'ms-appx-web://',
+                'effective-directive' => 'script-src',
+            )),
+            array(true, new Request(), array(
+                'blocked-uri' => 'weixinping',
+                'effective-directive' => 'script-src',
+            )),
+            array(true, new Request(), array(
+                'blocked-uri' => 'ms-browser-extension',
+                'effective-directive' => 'script-src',
+            )),
+            array(true, new Request(), array(
+                'blocked-uri' => 'sraf://img',
+                'effective-directive' => 'img-src',
+            )),
         );
     }
 }

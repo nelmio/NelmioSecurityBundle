@@ -19,22 +19,24 @@ class SchemesNoiseDetector implements NoiseDetectorInterface
     public function match(Report $report, Request $request)
     {
         static $schemes = array(
-            'safari-extension', // safari extensions
-            'jar', // firefox extensions
-            'mxaddon-pkg', // maxthon addon packages
-            'tmtbff', // ticketmaster toolbar
-            'symres', // norton
-            'mbinit', // map builder
-            'webviewprogressproxy', // added by browsers in webviews
-            'mx',
-            'gsa', // on mobile safari
             'chromeinvoke',
             'chromeinvokeimmediate',
-            'webviewprogress',
-            'mxjscall',
+            'gsa', // on mobile safari
+            'jar', // firefox extensions
+            'mbinit', // map builder
+            'mx',
             'ms-appx-web', // MS Edge
-            'sinaweibo',
+            'ms-browser-extension',
+            'mxaddon-pkg', // maxthon addon packages
+            'mxjscall',
             'none',
+            'safari-extension', // safari extensions
+            'sinaweibo',
+            'sraf',
+            'symres', // norton
+            'tmtbff', // ticketmaster toolbar
+            'webviewprogress',
+            'webviewprogressproxy', // added by browsers in webviews
         );
 
         if (null === $scheme = $report->getScheme()) {

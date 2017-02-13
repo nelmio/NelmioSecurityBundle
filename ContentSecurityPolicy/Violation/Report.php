@@ -71,7 +71,11 @@ class Report
             return;
         }
 
-        return strtolower(parse_url($uri, PHP_URL_SCHEME));
+        if (false === $pos = strpos($uri, '://')) {
+            return;
+        }
+
+        return strtolower(substr($uri, 0, $pos));
     }
 
     public function isData()
