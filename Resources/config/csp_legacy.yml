@@ -76,3 +76,9 @@ services:
     nelmio_security.sha_computer:
         class: Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer
         arguments: ["%nelmio_security.csp.hash_algorithm%"]
+
+    nelmio_security.twig_extension:
+        public: false
+        class: Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension
+        tags:
+            - { name: "twig.extension" }
