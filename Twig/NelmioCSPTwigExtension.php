@@ -49,9 +49,9 @@ class NelmioCSPTwigExtension extends \Twig_Extension
         );
     }
 
-    public function getCSPNonce()
+    public function getCSPNonce($usage = null)
     {
-        if (null === $nonce = $this->listener->getNonce()) {
+        if (null === $nonce = $this->listener->getNonce($usage)) {
             throw new \RuntimeException('You must enable nonce to use this feature');
         }
 

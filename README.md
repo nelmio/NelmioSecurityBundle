@@ -378,7 +378,9 @@ If you're not using Twig, you can use nonce functionality with the `ContentSecur
 
 ```php
 // generates a nonce at first time, returns the same nonce once generated
-$listener->getNonce();
+$listener->getNonce('script');
+// or
+$listener->getNonce('style');
 ```
 
 #### Reporting:

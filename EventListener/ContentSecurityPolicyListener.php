@@ -26,7 +26,9 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
     protected $enforce;
     protected $compatHeaders;
     protected $hosts;
-    protected $nonce;
+    protected $_nonce;
+    protected $scriptNonce;
+    protected $styleNonce;
     protected $sha;
     protected $nonceGenerator;
     protected $shaComputer;
@@ -94,13 +96,32 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $this->enforce;
     }
 
-    public function getNonce()
+    public function getNonce($usage = null)
     {
-        if (null === $this->nonce) {
-            $this->nonce = $this->nonceGenerator->generate();
+        $nonce = $this->doGetNonce();
+
+        if ($usage === null) {
+            @trigger_error('Retrieving a nonce without a usage is deprecated since version 2.4, and will be removed in version 3', E_USER_DEPRECATED);
+
+            $this->scriptNonce = $nonce;
+            $this->styleNonce = $nonce;
+        } elseif ($usage === 'script') {
+            $this->scriptNonce = $nonce;
+        } elseif ($usage === 'style') {
+            $this->styleNonce = $nonce;
+        } else {
+            throw new \InvalidArgumentException('Invalid usage provided');
         }
 
-        return $this->nonce;
+        return $nonce;
+    }
+
+    private function doGetNonce() {
+        if (null === $this->_nonce) {
+            $this->_nonce = $this->nonceGenerator->generate();
+        }
+
+        return $this->_nonce;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -113,7 +134,9 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $response = $e->getResponse();
 
         if ($response->isRedirection()) {
-            $this->nonce = null;
+            $this->_nonce = null;
+            $this->styleNonce = null;
+            $this->scriptNonce = null;
             $this->sha = null;
 
             return;
@@ -121,16 +144,20 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
 
         if ((empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
             $signatures = $this->sha;
-            if ($this->nonce) {
-                $signatures['script-src'][] = 'nonce-'.$this->nonce;
-                $signatures['style-src'][] = 'nonce-'.$this->nonce;
+            if ($this->scriptNonce) {
+                $signatures['script-src'][] = 'nonce-'.$this->scriptNonce;
+            }
+            if ($this->styleNonce) {
+                $signatures['style-src'][] = 'nonce-'.$this->styleNonce;
             }
 
             $response->headers->add($this->buildHeaders($request, $this->report, true, $this->compatHeaders, $signatures));
             $response->headers->add($this->buildHeaders($request, $this->enforce, false, $this->compatHeaders, $signatures));
         }
 
-        $this->nonce = null;
+        $this->_nonce = null;
+        $this->styleNonce = null;
+        $this->scriptNonce = null;
         $this->sha = null;
     }
 
