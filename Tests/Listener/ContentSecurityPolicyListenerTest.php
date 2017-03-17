@@ -106,12 +106,12 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testScript()
     {
-        $script = "script.example.org 'self' 'unsafe-eval' 'unsafe-inline'";
+        $script = "script.example.org 'self' 'unsafe-eval' 'strict-dynamic' 'unsafe-inline'";
 
         $listener = $this->buildSimpleListener(array('script-src' => $script));
         $response = $this->callListener($listener, '/', true);
         $this->assertEquals(
-            "script-src script.example.org 'self' 'unsafe-eval' 'unsafe-inline'",
+            "script-src script.example.org 'self' 'unsafe-eval' 'strict-dynamic' 'unsafe-inline'",
             $response->headers->get('Content-Security-Policy')
         );
     }

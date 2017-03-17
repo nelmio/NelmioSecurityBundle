@@ -23,6 +23,7 @@ class ContentSecurityPolicyParserTest extends \PHPUnit_Framework_TestCase
         return array(
             array('self', "'self'"),
             array('none', "'none'"),
+            array('strict-dynamic', "'strict-dynamic'"),
             array('unsafe-eval', "'unsafe-eval'"),
             array('unsafe-inline', "'unsafe-inline'"),
             array('hostname', 'hostname'),
