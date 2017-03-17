@@ -1,3 +1,7 @@
+### 2.2.5 (2017-xx-xx)
+
+  * Add support for script-src 'strict-dynamic' (see https://w3c.github.io/webappsec-csp/#strict-dynamic-usage)
+
 ### 2.2.4 (2017-02-13)
 
   * Fix exceptions thrown by Report::fromRequest
