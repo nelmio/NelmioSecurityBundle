@@ -23,7 +23,9 @@
     "require-dev": {
         "doctrine/cache": "^1.0",
         "psr/cache": "^1.0",
-        "twig/twig": "^1.24"
+        "twig/twig": "^1.24",
+        "symfony/yaml": "~2.3|~3.0",
+        "symfony/phpunit-bridge": "^3.2"
     },
     "suggest": {
         "ua-parser/uap-php": "To allow adapt CSP directives given the user-agent"

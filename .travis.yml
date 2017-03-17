@@ -1,5 +1,9 @@
 language: php
 
+cache:
+  directories:
+    - .phpunit
+
 php:
   - 5.3
   - 5.4
@@ -17,4 +21,6 @@ install:
   - if [[ $TRAVIS_PHP_VERSION != '5.5' ]]; then composer install ; fi
   - if [[ $TRAVIS_PHP_VERSION == '5.5' ]]; then composer update --prefer-lowest ; fi
 
-script: phpunit
+script:
+  - export SYMFONY_PHPUNIT_DIR=`pwd`/.phpunit
+  - ./vendor/bin/simple-phpunit

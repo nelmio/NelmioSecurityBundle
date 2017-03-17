@@ -72,6 +72,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation browser_adaptive configuration is now an array. Using boolean is deprecated and will not be supported anymore in version 3
+     */
     public function testBrowserAdaptiveBoolean()
     {
         $this->processYamlConfiguration(
