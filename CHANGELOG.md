@@ -1,4 +1,4 @@
-### 2.2.5 (2017-03-17)
+### 2.3.0 (2017-03-17)
 
   * Add support for script-src 'strict-dynamic' (see https://w3c.github.io/webappsec-csp/#strict-dynamic-usage)
   * Improve CSP filtering
