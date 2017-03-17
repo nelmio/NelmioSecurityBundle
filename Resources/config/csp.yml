@@ -77,5 +77,6 @@ services:
     nelmio_security.twig_extension:
         public: false
         class: Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension
+        arguments: ['@nelmio_security.csp_listener', '@nelmio_security.sha_computer']
         tags:
             - { name: "twig.extension" }
