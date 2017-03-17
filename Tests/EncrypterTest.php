@@ -35,6 +35,10 @@ class EncrypterTest extends \PHPUnit_Framework_TestCase
         new Encrypter('secret', 'invalid_algoritm');
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Encrypted Cookie is now deprecated due to high coupling with the deprecated mcrypt extension, support will be removed in NelmioSecurityBundle version 3
+     */
     public function testEncryption()
     {
         $encrypter = new Encrypter('secret', 'rijndael-128');

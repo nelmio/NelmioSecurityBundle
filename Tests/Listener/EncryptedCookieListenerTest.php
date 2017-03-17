@@ -43,6 +43,8 @@ class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideCookieReading
+     * @group legacy
+     * @expectedDeprecation Encrypted Cookie is now deprecated due to high coupling with the deprecated mcrypt extension, support will be removed in NelmioSecurityBundle version 3
      */
     public function testCookieReading($encryptedCookieNames, $inputCookies, $expectedCookies)
     {
@@ -67,6 +69,8 @@ class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideCookieWritingWithoutEncryption
+     * @group legacy
+     * @expectedDeprecation Encrypted Cookie is now deprecated due to high coupling with the deprecated mcrypt extension, support will be removed in NelmioSecurityBundle version 3
      */
     public function testCookieWritingWithoutEncryption($encryptedCookieNames, $inputCookies, $expectedCookies)
     {
@@ -97,6 +101,10 @@ class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Encrypted Cookie is now deprecated due to high coupling with the deprecated mcrypt extension, support will be removed in NelmioSecurityBundle version 3
+     */
     public function testCookieWritingWithEncryption()
     {
         $inputCookies = array(
