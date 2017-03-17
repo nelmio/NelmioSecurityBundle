@@ -1,3 +1,7 @@
+### 2.3.1 (2017-03-17)
+
+  * Fix arguments for Twig extension
+
 ### 2.3.0 (2017-03-17)
 
   * Add support for script-src 'strict-dynamic' (see https://w3c.github.io/webappsec-csp/#strict-dynamic-usage)
