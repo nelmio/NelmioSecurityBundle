@@ -66,6 +66,12 @@ class ForcedSslListener
             return;
         }
 
+        // skip none-SSL requests
+        $request = $e->getRequest();
+        if (!$request->isSecure()) {
+            return;
+        }
+
         $response = $e->getResponse();
 
         if (!$response->headers->has('Strict-Transport-Security')) {
