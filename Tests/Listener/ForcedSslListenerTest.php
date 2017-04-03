@@ -38,6 +38,17 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($result, $response->headers->get('Strict-Transport-Security'));
     }
 
+    /**
+     * @dataProvider provideHstsHeaders
+     */
+    public function testHstsHeadersNotSetForNonSecureRequest($hstsMaxAge, $hstsSubdomains, $hstsPreload)
+    {
+        $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains, $hstsPreload);
+
+        $response = $this->callListenerResp($listener, 'http://localhost/', true);
+        $this->assertSame(null, $response->headers->get('Strict-Transport-Security'));
+    }
+
     public function provideHstsHeaders()
     {
         return array(
