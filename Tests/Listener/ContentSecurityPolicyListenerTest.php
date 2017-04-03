@@ -37,6 +37,25 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('sha-style'));
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Retrieving a nonce without a usage is deprecated since version 2.4, and will be removed in version 3
+     */
+    public function testDeprecationNotice()
+    {
+        $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'"));
+        $listener->getNonce();
+    }
+
+    /**
+     * @expectedException Invalid usage provided
+     */
+    public function tesInvalidArgumentException()
+    {
+        $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'"));
+        $listener->getNonce('prout');
+    }
+
     public function testDefault()
     {
         $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'"));
@@ -416,7 +435,8 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
         }
 
         for ($i = 0; $i < $getNonce; ++$i) {
-            $listener->getNonce();
+            $listener->getNonce('script');
+            $listener->getNonce('style');
         }
 
         $response = new Response();
