@@ -109,6 +109,9 @@ class ExternalRedirectListener
 
     public function isExternalRedirect($source, $target)
     {
+        // cleanup "\rhttp://foo.com/" and other null prefixeds to be scanned as valid internal redirect
+        $target = trim($target); 
+
         // handle protocol-relative URLs that parse_url() doesn't like
         if (substr($target, 0, 2) === '//') {
             $target = 'proto:'.$target;
