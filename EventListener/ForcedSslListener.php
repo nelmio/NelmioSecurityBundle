@@ -23,14 +23,16 @@ class ForcedSslListener
     private $hstsPreload;
     private $whitelist;
     private $hosts;
+    private $redirectStatusCode;
 
-    public function __construct($hstsMaxAge, $hstsSubdomains, $hstsPreload = false, array $whitelist = array(), array $hosts = array())
+    public function __construct($hstsMaxAge, $hstsSubdomains, $hstsPreload = false, array $whitelist = array(), array $hosts = array(), $redirectStatusCode = 302)
     {
         $this->hstsMaxAge = $hstsMaxAge;
         $this->hstsSubdomains = $hstsSubdomains;
         $this->hstsPreload = $hstsPreload;
         $this->whitelist = $whitelist ? '('.implode('|', $whitelist).')' : null;
         $this->hosts = $hosts ? '('.implode('|', $hosts).')' : null;
+        $this->redirectStatusCode = $redirectStatusCode;
     }
 
     public function onKernelRequest(GetResponseEvent $e)
@@ -57,7 +59,7 @@ class ForcedSslListener
         }
 
         // redirect the rest to SSL
-        $e->setResponse(new RedirectResponse('https://'.substr($request->getUri(), 7)));
+        $e->setResponse(new RedirectResponse('https://'.substr($request->getUri(), 7), $this->redirectStatusCode));
     }
 
     public function onKernelResponse(FilterResponseEvent $e)

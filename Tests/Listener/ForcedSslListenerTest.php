@@ -86,6 +86,19 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('https://test.example.org/foo/lala', $response->headers->get('Location'));
     }
 
+    public function testForcedSslRedirectStatusCodes()
+    {
+        $listener = new ForcedSslListener(null, false);
+
+        $response = $this->callListenerReq($listener, '/foo/lala', true);
+        $this->assertSame(302, $response->getStatusCode());
+
+        $listener = new ForcedSslListener(null, false, false, array(), array(), 301);
+
+        $response = $this->callListenerReq($listener, '/foo/lala', true);
+        $this->assertSame(301, $response->getStatusCode());
+    }
+
     protected function callListenerReq($listener, $path, $masterReq)
     {
         $request = Request::create($path);
