@@ -52,6 +52,9 @@ class ExternalRedirectListenerTest extends \PHPUnit_Framework_TestCase
             array('http://test.org/', 'http://test.org.com/', true),
             array('http://test.org/', 'http://foo.com/http://test.org/', true),
             array('http://test.org/', '//foo.com/', true),
+            array('http://test.org/', "\r".'http://foo.com/', true),
+            array('http://test.org/', "\0\0".'http://foo.com/', true),
+            array('http://test.org/', "  ".'http://foo.com/', true),
         );
     }
 

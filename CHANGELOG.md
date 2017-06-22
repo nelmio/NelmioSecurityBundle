@@ -1,3 +1,7 @@
+### 2.4.0 (2017-xx-xx)
+
+  * Deprecate calling ContentSecurityPolicyListener::getNonce without usage ('script' or 'style')
+
 ### 2.3.1 (2017-03-17)
 
   * Fix arguments for Twig extension

@@ -143,6 +143,7 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                             ->defaultValue(array())
                         ->end()
+                        ->scalarNode('redirect_status_code')->defaultValue(302)->end()
                     ->end()
                 ->end()
 
