@@ -132,6 +132,7 @@ nelmio_security:
 #    forced_ssl:
 #        hsts_max_age: 2592000 # 30 days
 #        hsts_subdomains: true
+#        redirect_status_code: 302 # default, switch to 301 for permanent redirects
 
     # flexible HTTPS handling, read the detailed config info
     # and make sure you have SSL working on your site before enabling this
@@ -597,7 +598,7 @@ nelmio_security:
 ### **Forced HTTPS/SSL Handling**:
 
 By default, this option forces your entire site to use SSL, always. It redirect all users
-reaching the site with a http:// URL to a https:// URL.
+reaching the site with a http:// URL to a https:// URL with a 302 response.
 
 The base configuration for this is the following:
 
@@ -635,6 +636,15 @@ nelmio_security:
         enabled: true
         hosts:
             - ^\.example\.org$
+```
+
+To change the way the redirect is done to a permanent redirect for example, you can set:
+
+```yaml
+nelmio_security:
+    forced_ssl:
+        enabled: true
+        redirect_status_code: 301
 ```
 
 Then if you want to push it further, you can enable
