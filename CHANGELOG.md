@@ -1,6 +1,9 @@
-### 2.4.0 (2017-xx-xx)
+### 2.4.0 (2017-06-22)
 
   * Deprecate calling ContentSecurityPolicyListener::getNonce without usage ('script' or 'style')
+  * Added `forced_ssl > redirect_status_code` option to allow switching to permanent redirect (301) responses
+  * Fixed HSTS header being sent even in non-secure responses unnecessarily
+  * Fixed URLs with whitespace prefix not being seen as external redirects
 
 ### 2.3.1 (2017-03-17)
 
