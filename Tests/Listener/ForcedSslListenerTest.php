@@ -34,8 +34,19 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
     {
         $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains, $hstsPreload);
 
-        $response = $this->callListenerResp($listener, '/', true);
+        $response = $this->callListenerResp($listener, 'https://localhost/', true);
         $this->assertSame($result, $response->headers->get('Strict-Transport-Security'));
+    }
+
+    /**
+     * @dataProvider provideHstsHeaders
+     */
+    public function testHstsHeadersNotSetForNonSecureRequest($hstsMaxAge, $hstsSubdomains, $hstsPreload)
+    {
+        $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains, $hstsPreload);
+
+        $response = $this->callListenerResp($listener, 'http://localhost/', true);
+        $this->assertSame(null, $response->headers->get('Strict-Transport-Security'));
     }
 
     public function provideHstsHeaders()
@@ -54,7 +65,7 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
     {
         $listener = new ForcedSslListener(60, true);
 
-        $response = $this->callListenerResp($listener, '/', false);
+        $response = $this->callListenerResp($listener, 'https://localhost/', false);
         $this->assertSame(null, $response->headers->get('Strict-Transport-Security'));
     }
 
@@ -62,13 +73,13 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
     {
         $listener = new ForcedSslListener(60, true, false, array('^/foo/', 'bar'));
 
-        $response = $this->callListenerReq($listener, '/foo/lala', true);
+        $response = $this->callListenerReq($listener, 'http://localhost/foo/lala', true);
         $this->assertSame(null, $response);
 
-        $response = $this->callListenerReq($listener, '/lala/foo/lala', true);
+        $response = $this->callListenerReq($listener, 'http://localhost/lala/foo/lala', true);
         $this->assertSame('https://localhost/lala/foo/lala', $response->headers->get('Location'));
 
-        $response = $this->callListenerReq($listener, '/lala/abarb', true);
+        $response = $this->callListenerReq($listener, 'https://localhost/lala/abarb', true);
         $this->assertSame(null, $response);
     }
 
@@ -99,9 +110,9 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(301, $response->getStatusCode());
     }
 
-    protected function callListenerReq($listener, $path, $masterReq)
+    protected function callListenerReq($listener, $uri, $masterReq)
     {
-        $request = Request::create($path);
+        $request = Request::create($uri);
 
         $event = new GetResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST);
         $listener->onKernelRequest($event);
@@ -109,9 +120,9 @@ class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
         return $event->getResponse();
     }
 
-    protected function callListenerResp($listener, $path, $masterReq)
+    protected function callListenerResp(ForcedSslListener $listener, $uri, $masterReq)
     {
-        $request = Request::create($path);
+        $request = Request::create($uri);
         $response = new Response();
 
         $event = new FilterResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);

@@ -68,6 +68,13 @@ class ForcedSslListener
             return;
         }
 
+        // skip non-SSL requests as per the RFC
+        // "An HSTS Host MUST NOT include the STS header field in HTTP responses conveyed over non-secure transport."
+        $request = $e->getRequest();
+        if (!$request->isSecure()) {
+            return;
+        }
+
         $response = $e->getResponse();
 
         if (!$response->headers->has('Strict-Transport-Security')) {
