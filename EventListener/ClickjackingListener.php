@@ -19,10 +19,10 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
     private $paths;
 
-    public function __construct($paths, $contentTypes = array())
+    public function __construct(array $paths, $contentTypes = array())
     {
+        parent::__construct($contentTypes);
         $this->paths = $paths;
-        $this->contentTypes = $contentTypes;
     }
 
     public static function getSubscribedEvents()

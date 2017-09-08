@@ -35,11 +35,11 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
 
     public function __construct(DirectiveSet $report, DirectiveSet $enforce, NonceGenerator $nonceGenerator, ShaComputer $shaComputer, $compatHeaders = true, array $hosts = array(), array $contentTypes = array())
     {
+        parent::__construct($contentTypes);
         $this->report = $report;
         $this->enforce = $enforce;
         $this->compatHeaders = $compatHeaders;
         $this->hosts = $hosts;
-        $this->contentTypes = $contentTypes;
         $this->nonceGenerator = $nonceGenerator;
         $this->shaComputer = $shaComputer;
     }
