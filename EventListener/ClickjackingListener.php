@@ -46,7 +46,7 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
             return;
         }
 
-        $currentPath = $e->getRequest()->getPathInfo() ?: '/';
+        $currentPath = $e->getRequest()->getRequestUri() ?: '/';
 
         foreach ($this->paths as $path => $options) {
             if (preg_match('{'.$path.'}i', $currentPath)) {
