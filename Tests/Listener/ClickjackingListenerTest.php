@@ -28,6 +28,7 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
         $this->listener = new ClickjackingListener(array(
             '^/frames/' => array('header' => 'ALLOW'),
             '/frames/' => array('header' => 'SAMEORIGIN'),
+            '^.*\?[^\?]*foo=bar' => array('header' => 'ALLOW'),
             '/this/allow' => array('header' => 'ALLOW-FROM http://biz.domain.com'),
             '^/.*' => array('header' => 'DENY'),
             '.*' => array('header' => 'ALLOW'),
@@ -49,6 +50,8 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
             array('', 'DENY'),
             array('/', 'DENY'),
             array('/test', 'DENY'),
+            array('/path?test&foo=bar&another', null),
+            array('/path?foo=bar', null),
             array('/frames/foo', null),
             array('/this/allow', 'ALLOW-FROM http://biz.domain.com'),
             array('/sub/frames/foo', 'SAMEORIGIN'),
@@ -74,7 +77,7 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider provideContentTypeForrestrictions
+     * @dataProvider provideContentTypeForRestrictions
      */
     public function testClickjackingWithContentTypes($contentType, $result)
     {
@@ -89,7 +92,7 @@ class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
     }
 
-    public function provideContentTypeForrestrictions()
+    public function provideContentTypeForRestrictions()
     {
         return array(
             array('application/json', null),
