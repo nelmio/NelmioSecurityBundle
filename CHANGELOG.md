@@ -1,3 +1,7 @@
+### 2.5.0 (2017-xx-xx)
+
+  * Allows matching the query parameter for clickjacking protection
+
 ### 2.4.0 (2017-06-22)
 
   * Deprecate calling ContentSecurityPolicyListener::getNonce without usage ('script' or 'style')
