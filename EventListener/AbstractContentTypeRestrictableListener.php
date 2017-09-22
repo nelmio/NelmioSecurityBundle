@@ -18,6 +18,11 @@ abstract class AbstractContentTypeRestrictableListener implements EventSubscribe
 {
     protected $contentTypes;
 
+    public function __construct(array $contentTypes)
+    {
+        $this->contentTypes = $contentTypes;
+    }
+
     protected function isContentTypeValid(Response $response)
     {
         if (empty($this->contentTypes)) {
