@@ -42,7 +42,7 @@ class ContentSecurityPolicyController
             trigger_error(sprintf('%s\'s takes an %s instance as second argument since version 2.1; it will be required in version 3', self::class, EventDispatcherInterface::class), E_USER_DEPRECATED);
         }
         if (null === $filter) {
-            trigger_error(sprintf('%s\'s takes an %s instance as third argument since version 2.1; it will be required in version 3', self::class, EventDispatcherInterface::class), E_USER_DEPRECATED);
+            trigger_error(sprintf('%s\'s takes an %s instance as third argument since version 2.1; it will be required in version 3', self::class, Filter::class), E_USER_DEPRECATED);
         }
     }
 
