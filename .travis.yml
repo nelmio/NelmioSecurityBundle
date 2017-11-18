@@ -28,3 +28,4 @@ matrix:
   include:
     - php: 7.1
       env: DEPENDENCIES=beta
+
