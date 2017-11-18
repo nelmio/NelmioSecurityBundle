@@ -23,3 +23,8 @@ install:
 script:
   - export SYMFONY_PHPUNIT_DIR=`pwd`/.phpunit
   - ./vendor/bin/simple-phpunit
+
+matrix:
+    include:
+        - php: '7.1'
+        env: DEPENDENCIES=beta
