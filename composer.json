@@ -18,7 +18,7 @@
         "paragonie/random_compat": "~1.0|~2.0",
         "symfony/framework-bundle": "~2.3|~3.0|~4.0",
         "symfony/security": "~2.3|~3.0|~4.0",
-        "ua-parser/uap-php": "^3.4.4"
+        "ua-parser/uap-php": "dev-master@dev"
     },
     "require-dev": {
         "doctrine/cache": "^1.0",
