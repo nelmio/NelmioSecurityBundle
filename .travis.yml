@@ -14,7 +14,6 @@ php:
 before_install:
   - phpenv config-rm xdebug.ini || true
   - composer self-update
-  - if [ "$DEPENDENCIES" = "beta" ]; then composer config minimum-stability beta; fi;
 
 install:
   - if [[ $TRAVIS_PHP_VERSION != '5.5' ]]; then composer install ; fi
@@ -23,8 +22,3 @@ install:
 script:
   - export SYMFONY_PHPUNIT_DIR=`pwd`/.phpunit
   - ./vendor/bin/simple-phpunit
-
-matrix:
-  include:
-    - php: 7.1
-
