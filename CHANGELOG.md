@@ -2,6 +2,8 @@
 
   * Allows matching the query parameter for clickjacking protection
   * Cleanup content type restrictable listener
+  * Added Symfony 4 support
+  * Removed PHP 5.3 support guarantees
 
 ### 2.4.0 (2017-06-22)
 
