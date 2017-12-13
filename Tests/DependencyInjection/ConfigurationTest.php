@@ -144,6 +144,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $processor = new Processor();
         $configDefinition = new Configuration();
 
-        return $processor->processConfiguration($configDefinition, array($parsedYaml));
+        $processed = $processor->processConfiguration($configDefinition, array($parsedYaml));
+
+        // if we passed without exception, the test is good
+        $this->assertTrue(true);
     }
 }

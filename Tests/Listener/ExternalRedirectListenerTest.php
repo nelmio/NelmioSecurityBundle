@@ -93,33 +93,47 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @depends testRedirectMatcher
-     * @dataProvider provideRedirectWhitelists
+     * @dataProvider provideRedirectWhitelistsFailing
+     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
-    public function testRedirectSkipsWhitelistedDomains($whitelist, $domain, $pass)
+    public function testRedirectDoesNotSkipNonWhitelistedDomains($whitelist, $domain)
     {
         $listener = new ExternalRedirectListener(true, null, null, $whitelist);
 
-        if (!$pass) {
-            $this->setExpectedException('Symfony\Component\HttpKernel\Exception\HttpException');
-        }
+        $this->filterResponse($listener, 'http://foo.com/', 'http://'.$domain.'/');
+    }
+
+    public function provideRedirectWhitelistsFailing()
+    {
+        return array(
+            array(array('bar.com', 'baz.com'), 'abaz.com'),
+            array(array('bar.com', 'baz.com'), 'moo.com'),
+            array(array('.co.uk'), 'telco.uk'),
+            array(array(), 'bar.com'),
+        );
+    }
+
+    /**
+     * @depends testRedirectMatcher
+     * @dataProvider provideRedirectWhitelistsPassing
+     */
+    public function testRedirectSkipsWhitelistedDomains($whitelist, $domain)
+    {
+        $listener = new ExternalRedirectListener(true, null, null, $whitelist);
 
         $response = $this->filterResponse($listener, 'http://foo.com/', 'http://'.$domain.'/');
 
-        $this->assertSame($pass, $response->isRedirect());
+        $this->assertTrue($response->isRedirect());
     }
 
-    public function provideRedirectWhitelists()
+    public function provideRedirectWhitelistsPassing()
     {
         return array(
-            array(array('bar.com', 'baz.com'), 'bar.com', true),
-            array(array('bar.com', 'baz.com'), '.baz.com', true),
-            array(array('bar.com', 'baz.com'), 'abaz.com', false),
-            array(array('bar.com', 'baz.com'), 'foo.baz.com', true),
-            array(array('bar.com', 'baz.com'), 'moo.com', false),
-            array(array('.co.uk'), 'telco.uk', false),
-            array(array('.co.uk'), 'tel.co.uk', true),
-            array(array(), 'bar.com', false),
-            array(array(), '', true),
+            array(array('bar.com', 'baz.com'), 'bar.com'),
+            array(array('bar.com', 'baz.com'), '.baz.com'),
+            array(array('bar.com', 'baz.com'), 'foo.baz.com'),
+            array(array('.co.uk'), 'tel.co.uk'),
+            array(array(), ''),
         );
     }
 
