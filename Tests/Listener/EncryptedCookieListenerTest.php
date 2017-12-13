@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-class EncryptedCookieListenerTest extends \PHPUnit_Framework_TestCase
+class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $encrypter;
     private $kernel;

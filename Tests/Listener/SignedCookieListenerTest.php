@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-class SignedCookieListenerTest extends \PHPUnit_Framework_TestCase
+class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $signer;
     private $kernel;

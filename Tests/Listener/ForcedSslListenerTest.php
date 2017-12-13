@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
-class ForcedSslListenerTest extends \PHPUnit_Framework_TestCase
+class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $kernel;
 

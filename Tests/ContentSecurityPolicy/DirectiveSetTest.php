@@ -9,7 +9,7 @@ use Nelmio\SecurityBundle\UserAgent\UserAgentParser;
 use Symfony\Component\HttpFoundation\Request;
 use UAParser\Parser;
 
-class DirectiveSetTest extends \PHPUnit_Framework_TestCase
+class DirectiveSetTest extends \PHPUnit\Framework\TestCase
 {
     const UA_CHROME = 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36';
     const UA_SAFARI = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12) AppleWebKit/602.1.18 (KHTML, like Gecko) Version/9.2 Safari/602.1.18';

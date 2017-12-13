@@ -13,7 +13,7 @@ namespace Nelmio\SecurityBundle\Tests;
 
 use Nelmio\SecurityBundle\Signer;
 
-class SignerTest extends \PHPUnit_Framework_TestCase
+class SignerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @expectedException InvalidArgumentException

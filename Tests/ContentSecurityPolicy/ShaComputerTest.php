@@ -4,7 +4,7 @@ namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 
-class ShaComputerTest extends \PHPUnit_Framework_TestCase
+class ShaComputerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider provideValidScriptCode

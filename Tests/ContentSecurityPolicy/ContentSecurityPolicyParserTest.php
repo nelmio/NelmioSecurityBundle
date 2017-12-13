@@ -4,7 +4,7 @@ namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ContentSecurityPolicyParser;
 
-class ContentSecurityPolicyParserTest extends \PHPUnit_Framework_TestCase
+class ContentSecurityPolicyParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider keywordsProvider

@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
-class ContentSecurityPolicyListenerTest extends \PHPUnit_Framework_TestCase
+class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $kernel;
     private $nonceGenerator;

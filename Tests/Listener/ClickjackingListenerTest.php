@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
-class ClickjackingListenerTest extends \PHPUnit_Framework_TestCase
+class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $kernel;
     private $listener;

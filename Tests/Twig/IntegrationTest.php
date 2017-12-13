@@ -4,7 +4,7 @@ namespace Nelmio\SecurityBundle\Tests\Twig;
 
 use Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension;
 
-class IntegrationTest extends \PHPUnit_Framework_TestCase
+class IntegrationTest extends \PHPUnit\Framework\TestCase
 {
     public function testItWorksDynamically()
     {

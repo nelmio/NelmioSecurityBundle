@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
-class ExternalRedirectListenerTest extends \PHPUnit_Framework_TestCase
+class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $kernel;
 

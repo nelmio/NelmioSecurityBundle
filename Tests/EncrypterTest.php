@@ -13,7 +13,7 @@ namespace Nelmio\SecurityBundle\Tests;
 
 use Nelmio\SecurityBundle\Encrypter;
 
-class EncrypterTest extends \PHPUnit_Framework_TestCase
+class EncrypterTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {

@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class CookieSessionHandlerTest extends \PHPUnit_Framework_TestCase
+class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 {
     private $handler;
     private $kernel;

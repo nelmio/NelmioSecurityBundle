@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ContentTypeListenerTest extends \PHPUnit_Framework_TestCase
+class ContentTypeListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $kernel;
 

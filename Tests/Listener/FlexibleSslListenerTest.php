@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class FlexibleSslListenerTest extends \PHPUnit_Framework_TestCase
+class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $kernel;
     private $dispatcher;

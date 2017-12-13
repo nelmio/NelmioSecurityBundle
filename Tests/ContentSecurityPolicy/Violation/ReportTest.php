@@ -4,7 +4,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class ReportTest extends \PHPUnit_Framework_TestCase
+class ReportTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @expectedException Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException

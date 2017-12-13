@@ -12,7 +12,7 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
 use Symfony\Component\HttpFoundation\Request;
 use UAParser\Parser;
 
-class FilterTest extends \PHPUnit_Framework_TestCase
+class FilterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider provideVariousCases
