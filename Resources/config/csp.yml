@@ -63,6 +63,7 @@ services:
         arguments: ['@logger', '@nelmio_security.csp_report.log_formatter', '%nelmio_security.csp.report_log_level%']
 
     nelmio_security.csp_reporter_controller:
+        public: true
         class: Nelmio\SecurityBundle\Controller\ContentSecurityPolicyController
         arguments: ['@nelmio_security.csp_report.logger', '@event_dispatcher', '@nelmio_security.csp_report.filter']
 
