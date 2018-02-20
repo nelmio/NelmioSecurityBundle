@@ -671,21 +671,21 @@ users who come to your site will already be redirected to HTTPS URLs.
 ```yaml
 nelmio_security:
     forced_ssl:
-        hsts_max_age: 10886400 # 18 weeks
+        hsts_max_age: 31536000 # 1 year
         hsts_preload: true
 ```
 
-> **Note:** A value of at least 18 weeks is currently required by [Chrome](https://hstspreload.appspot.com)
-> and [Firefox](https://blog.mozilla.org/security/2012/11/01/preloading-hsts/). It seems
+> **Note:** A value of at least 1 year is currently required by [Chrome](https://hstspreload.org/)
+> and [Firefox](https://blog.mozilla.org/security/2012/11/01/preloading-hsts/).
 > `hsts_subdomains` must also be enabled for preloading to work.
 
-You can speed up the inclusion process by submitting your site to the [HSTS Preload List](https://hstspreload.appspot.com).
+You can speed up the inclusion process by submitting your site to the [HSTS Preload List](https://hstspreload.org/).
 
 A small word of caution: While HSTS is great for security, it means that if the browser
 can not establish your SSL certificate is valid, it will not allow the user to query your site.
 That just means you should be careful and renew your certificate in due time.
 
-Note: HSTS presently (Jan. 2015) works in Firefox 4+, Chrome 4+ and Opera 12+.
+Note: HSTS presently (Feb. 2018) works in Firefox 4+, Chrome 4+, Opera 12+, IE 11+, Edge 12+ and Safari 7+.
       Check [caniuse](http://caniuse.com/#feat=stricttransportsecurity) for HSTS support in other browsers.
 
 ### **Flexible HTTPS/SSL Handling**:
