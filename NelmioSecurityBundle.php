@@ -11,6 +11,7 @@
 
 namespace Nelmio\SecurityBundle;
 
+use Nelmio\SecurityBundle\DependencyInjection\Compiler\CspReportFilterCompilerPass;
 use Nelmio\SecurityBundle\DependencyInjection\Compiler\UAParserCompilerPass;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,5 +23,6 @@ class NelmioSecurityBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new UAParserCompilerPass());
+        $container->addCompilerPass(new CspReportFilterCompilerPass());
     }
 }
