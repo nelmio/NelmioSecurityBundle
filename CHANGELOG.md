@@ -3,7 +3,9 @@
   * Allows matching the query parameter for clickjacking protection
   * Cleanup content type restrictable listener
   * Added Symfony 4 support
+  * Added support for 'worker-src' CSP directive
   * Removed PHP 5.3 support guarantees
+  * Fix CSP noise filter compiler pass registration
 
 ### 2.4.0 (2017-06-22)
 
