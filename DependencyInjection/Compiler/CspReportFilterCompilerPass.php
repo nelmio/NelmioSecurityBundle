@@ -15,7 +15,7 @@ class CspReportFilterCompilerPass implements CompilerPassInterface
         $cspViolationLogFilterDefinition = $container->getDefinition('nelmio_security.csp_report.filter');
 
         foreach ($services as $id => $attributes) {
-            $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', new Reference($id));
+            $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference($id)));
         }
     }
 }
