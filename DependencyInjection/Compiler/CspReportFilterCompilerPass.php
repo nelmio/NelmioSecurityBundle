@@ -10,6 +10,10 @@ class CspReportFilterCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
+        if (!$container->hasDefinition('nelmio_security.csp_report.filter')) {
+            return;
+        }
+        
         $services = $container->findTaggedServiceIds('nelmio_security.csp_report_filter');
 
         $cspViolationLogFilterDefinition = $container->getDefinition('nelmio_security.csp_report.filter');
