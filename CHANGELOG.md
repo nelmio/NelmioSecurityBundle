@@ -1,4 +1,4 @@
-### 2.5.0 (2017-xx-xx)
+### 2.5.0 (2018-02-26)
 
   * Allows matching the query parameter for clickjacking protection
   * Cleanup content type restrictable listener
