@@ -1,3 +1,7 @@
+### 2.5.1 (2018-03-21)
+
+- Abort CSP compiler pass when CSP is not enabled
+
 ### 2.5.0 (2018-02-26)
 
   * Allows matching the query parameter for clickjacking protection
