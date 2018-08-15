@@ -442,7 +442,7 @@ nelmio_security:
 However, for simplicity reasons, and to start with a high security and optimize later, you can
 specify '*' as a cookie name to have all cookies signed automatically.
 
-```
+```yaml
 nelmio_security:
     signed_cookie:
         names: ['*']
