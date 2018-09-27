@@ -393,7 +393,7 @@ Here's an configuration example using `routing.yml`:
 csp_report:
     path: /csp/report
     methods: [POST]
-    defaults: { _controller: nelmio_security.csp_reporter_controller:indexAction }
+    defaults: { _controller: nelmio_security.csp_reporter_controller::indexAction }
 ```
 
 This part of the configuration helps to filter noise collected by this endpoint:
