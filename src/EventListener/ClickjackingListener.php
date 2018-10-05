@@ -60,6 +60,11 @@ final class ClickjackingListener extends AbstractContentTypeRestrictableListener
             return;
         }
 
+        if ($response->headers->has('X-Frame-Options')) {
+            // Do not overwrite an existing header
+            return;
+        }
+
         $request = $e->getRequest();
 
         $host = '' === $request->getHost() ? '/' : $request->getHost();

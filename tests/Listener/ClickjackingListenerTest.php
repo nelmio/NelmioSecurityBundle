@@ -56,18 +56,33 @@ class ClickjackingListenerTest extends ListenerTestCase
         $this->listener = new ClickjackingListener($this->clickjackingPaths, [], ['^foo\.com$', '\.example\.org$']);
 
         // Supported host should add header depending on path
-        $hostAndPath = 'http://foo.com' . $path;
+        $hostAndPath = 'http://foo.com'.$path;
         $response = $this->callListener($this->listener, $hostAndPath, true);
-        $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
+        $this->assertSame($result, $response->headers->get('X-Frame-Options'));
 
-        $hostAndPath = 'http://test.example.org' . $path;
+        $hostAndPath = 'http://test.example.org'.$path;
         $response = $this->callListener($this->listener, $hostAndPath, true);
-        $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
+        $this->assertSame($result, $response->headers->get('X-Frame-Options'));
 
         // Not supported host should not add header
-        $hostAndPath = 'http://localhost' . $path;
+        $hostAndPath = 'http://localhost'.$path;
         $response = $this->callListener($this->listener, $hostAndPath, true);
-        $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
+        $this->assertNull($response->headers->get('X-Frame-Options'));
+    }
+
+    /**
+     * @dataProvider provideClickjackingMatches
+     */
+    public function testClickjackingWithAlreadyDefinedHeader(string $path): void
+    {
+        $request = Request::create($path);
+        $response = new Response();
+        $response->headers->set('X-Frame-Options', 'ALLOW');
+
+        $event = $this->createResponseEvent($request, true, $response);
+        $this->listener->onKernelResponse($event);
+
+        $this->assertSame('ALLOW', $response->headers->get('X-Frame-Options'));
     }
 
     public function provideClickjackingMatches(): array
