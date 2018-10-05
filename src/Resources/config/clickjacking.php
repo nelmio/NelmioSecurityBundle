@@ -21,6 +21,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             ->args([
                 '%nelmio_security.clickjacking.paths%',
                 '%nelmio_security.clickjacking.content_types%',
+                '%nelmio_security.clickjacking.hosts%',
             ])
             ->tag('kernel.event_subscriber');
 };

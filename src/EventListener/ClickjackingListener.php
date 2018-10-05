@@ -25,14 +25,18 @@ final class ClickjackingListener extends AbstractContentTypeRestrictableListener
      */
     private array $paths;
 
+    private ?string $hosts;
+
     /**
      * @param array<string, array<string, string>> $paths
      * @param list<string>                         $contentTypes
+     * @param list<string>                         $hosts
      */
-    public function __construct(array $paths, array $contentTypes = [])
+    public function __construct(array $paths, array $contentTypes = [], array $hosts = [])
     {
         parent::__construct($contentTypes);
         $this->paths = $paths;
+        $this->hosts = [] !== $hosts ? '('.implode('|', $hosts).')' : null;
     }
 
     public static function getSubscribedEvents(): array
@@ -56,7 +60,16 @@ final class ClickjackingListener extends AbstractContentTypeRestrictableListener
             return;
         }
 
-        $currentPath = '' === $e->getRequest()->getRequestUri() ? '/' : $e->getRequest()->getRequestUri();
+        $request = $e->getRequest();
+
+        $host = '' === $request->getHost() ? '/' : $request->getHost();
+
+        // skip non-listed hosts
+        if (null !== $this->hosts && 1 !== preg_match('{'.$this->hosts.'}i', $host)) {
+            return;
+        }
+
+        $currentPath = '' === $request->getRequestUri() ? '/' : $request->getRequestUri();
 
         foreach ($this->paths as $path => $options) {
             if (1 === preg_match('{'.$path.'}i', $currentPath)) {

@@ -22,16 +22,21 @@ class ClickjackingListenerTest extends ListenerTestCase
 {
     private ClickjackingListener $listener;
 
+    /**
+     * @var array<string, array<string, string>>
+     */
+    private array $clickjackingPaths = [
+        '^/frames/' => ['header' => 'ALLOW'],
+        '/frames/' => ['header' => 'SAMEORIGIN'],
+        '^.*\?[^\?]*foo=bar' => ['header' => 'ALLOW'],
+        '/this/allow' => ['header' => 'ALLOW-FROM http://biz.domain.com'],
+        '^/.*' => ['header' => 'DENY'],
+        '.*' => ['header' => 'ALLOW'],
+    ];
+
     protected function setUp(): void
     {
-        $this->listener = new ClickjackingListener([
-            '^/frames/' => ['header' => 'ALLOW'],
-            '/frames/' => ['header' => 'SAMEORIGIN'],
-            '^.*\?[^\?]*foo=bar' => ['header' => 'ALLOW'],
-            '/this/allow' => ['header' => 'ALLOW-FROM http://biz.domain.com'],
-            '^/.*' => ['header' => 'DENY'],
-            '.*' => ['header' => 'ALLOW'],
-        ]);
+        $this->listener = new ClickjackingListener($this->clickjackingPaths);
     }
 
     /**
@@ -41,6 +46,28 @@ class ClickjackingListenerTest extends ListenerTestCase
     {
         $response = $this->callListener($this->listener, $path, true);
         $this->assertSame($result, $response->headers->get('X-Frame-Options'));
+    }
+
+    /**
+     * @dataProvider provideClickjackingMatches
+     */
+    public function testClickjackingMatchesWithHost(string $path, ?string $result): void
+    {
+        $this->listener = new ClickjackingListener($this->clickjackingPaths, [], ['^foo\.com$', '\.example\.org$']);
+
+        // Supported host should add header depending on path
+        $hostAndPath = 'http://foo.com' . $path;
+        $response = $this->callListener($this->listener, $hostAndPath, true);
+        $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
+
+        $hostAndPath = 'http://test.example.org' . $path;
+        $response = $this->callListener($this->listener, $hostAndPath, true);
+        $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
+
+        // Not supported host should not add header
+        $hostAndPath = 'http://localhost' . $path;
+        $response = $this->callListener($this->listener, $hostAndPath, true);
+        $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
     }
 
     public function provideClickjackingMatches(): array
