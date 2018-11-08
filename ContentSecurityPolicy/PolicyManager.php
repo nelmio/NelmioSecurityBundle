@@ -106,6 +106,7 @@ class PolicyManager
             $directives = array_merge($this->getLevel2(), array(
                 'manifest-src',
                 'reflected-xss',
+                'worker-src',
             ));
         }
 

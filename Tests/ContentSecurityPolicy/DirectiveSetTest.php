@@ -55,7 +55,8 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                 'script-src script.example.org \'self\'; '.
                 'style-src style.example.org \'self\'; '.
                 'upgrade-insecure-requests; '.
-                'report-uri http://report-uri',
+                'report-uri http://report-uri; '.
+                'worker-src worker.example.com \'self\'',
                 self::UA_CHROME,
                 array(
                     'default-src' => array('example.org', "'self'"),
@@ -68,6 +69,7 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
                     'connect-src' => array('connect.example.org', "'self'"),
+                    'worker-src' => array('worker.example.com', "'self'"),
                     'report-uri' => array('http://report-uri'),
                     'base-uri' => array('base-uri.example.org', "'self'"),
                     'child-src' => array('child-src.example.org', "'self'"),
@@ -94,7 +96,8 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                 'script-src script.example.org \'self\'; '.
                 'style-src style.example.org \'self\'; '.
                 'upgrade-insecure-requests; '.
-                'report-uri http://report-uri',
+                'report-uri http://report-uri; '.
+                'worker-src worker.example.com \'self\'',
                 self::UA_FIREFOX,
                 array(
                     'default-src' => array('example.org', "'self'"),
@@ -107,6 +110,7 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
                     'connect-src' => array('connect.example.org', "'self'"),
+                    'worker-src' => array('worker.example.com', "'self'"),
                     'report-uri' => array('http://report-uri'),
                     'base-uri' => array('base-uri.example.org', "'self'"),
                     'child-src' => array('child-src.example.org', "'self'"),
@@ -135,7 +139,8 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                 'script-src script.example.org \'self\'; '.
                 'style-src style.example.org \'self\'; '.
                 'upgrade-insecure-requests; '.
-                'report-uri http://report-uri',
+                'report-uri http://report-uri; '.
+                'worker-src worker.example.com \'self\'',
                 self::UA_IE,
                 array(
                     'default-src' => array('example.org', "'self'"),
@@ -147,6 +152,7 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
                     'connect-src' => array('connect.example.org', "'self'"),
+                    'worker-src' => array('worker.example.com', "'self'"),
                     'report-uri' => array('http://report-uri'),
                     'base-uri' => array('base-uri.example.org', "'self'"),
                     'child-src' => array('child-src.example.org', "'self'"),
@@ -176,7 +182,8 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                 'script-src script.example.org \'self\'; '.
                 'style-src style.example.org \'self\'; '.
                 'upgrade-insecure-requests; '.
-                'report-uri http://report-uri',
+                'report-uri http://report-uri; '.
+                'worker-src worker.example.com \'self\'',
                 self::UA_OPERA,
                 array(
                     'default-src' => array('example.org', "'self'"),
@@ -189,6 +196,7 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
                     'connect-src' => array('connect.example.org', "'self'"),
+                    'worker-src' => array('worker.example.com', "'self'"),
                     'report-uri' => array('http://report-uri'),
                     'base-uri' => array('base-uri.example.org', "'self'"),
                     'child-src' => array('child-src.example.org', "'self'"),
@@ -222,6 +230,7 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
                     'connect-src' => array('connect.example.org', "'self'"),
+                    'worker-src' => array('worker.example.com', "'self'"),
                     'report-uri' => array('http://report-uri'),
                     'base-uri' => array('base-uri.example.org', "'self'"),
                     'child-src' => array('child-src.example.org', "'self'"),
@@ -248,7 +257,8 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                 'plugin-types application/shockwave-flash; '.
                 'script-src script.example.org \'self\'; '.
                 'style-src style.example.org \'self\'; '.
-                'report-uri http://report-uri',
+                'report-uri http://report-uri; '.
+                'worker-src worker.example.com \'self\'',
                 self::UA_CHROME,
                 array(
                     'default-src' => array('example.org', "'self'"),
@@ -260,6 +270,7 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
                     'connect-src' => array('connect.example.org', "'self'"),
+                    'worker-src' => array('worker.example.com', "'self'"),
                     'report-uri' => array('http://report-uri'),
                     'base-uri' => array('base-uri.example.org', "'self'"),
                     'child-src' => array('child-src.example.org', "'self'"),
@@ -286,7 +297,8 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                 'plugin-types application/shockwave-flash; '.
                 'script-src script.example.org \'self\'; '.
                 'style-src style.example.org \'self\'; '.
-                'report-uri http://report-uri',
+                'report-uri http://report-uri; '.
+                'worker-src worker.example.com \'self\'',
                 self::UA_CHROME,
                 array(
                     'default-src' => array('example.org', "'self'"),
@@ -298,6 +310,7 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                     'frame-src' => array('frame.example.org', "'self'"),
                     'font-src' => array('font.example.org', "'self'"),
                     'connect-src' => array('connect.example.org', "'self'"),
+                    'worker-src' => array('worker.example.com', "'self'"),
                     'report-uri' => array('http://report-uri'),
                     'base-uri' => array('base-uri.example.org', "'self'"),
                     'child-src' => array('child-src.example.org', "'self'"),
