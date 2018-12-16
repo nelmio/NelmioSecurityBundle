@@ -32,8 +32,13 @@ class Configuration implements ConfigurationInterface
 
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('nelmio_security', 'array');
+        $treeBuilder = new TreeBuilder('nelmio_security', 'array');
+        if (\method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root('nelmio_security', 'array');
+        }
 
         $rootNode
             ->validate()
@@ -183,8 +188,13 @@ class Configuration implements ConfigurationInterface
 
     private function addCspNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('csp');
+        $builder = new TreeBuilder('csp');
+        if (\method_exists($builder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('csp');
+        }
 
         $node
             ->canBeDisabled()
@@ -265,8 +275,14 @@ class Configuration implements ConfigurationInterface
 
     private function addReportOrEnforceNode($reportOrEnforce)
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root($reportOrEnforce);
+        $builder = new TreeBuilder($reportOrEnforce);
+        if (\method_exists($builder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root($reportOrEnforce);
+        }
+
         $children = $node->children();
         // Symfony should not normalize dashes to underlines, e.g. img-src to img_src
         $node->normalizeKeys(false);
@@ -333,8 +349,13 @@ class Configuration implements ConfigurationInterface
 
     private function addReferrerPolicyNode()
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('referrer_policy');
+        $builder = new TreeBuilder('referrer_policy');
+        if (\method_exists($builder, 'getRootNode')) {
+            $node = $builder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $node = $builder->root('referrer_policy');
+        }
 
         // for backward compatibility with PHP 5.3
         $that = $this;
