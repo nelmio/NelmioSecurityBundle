@@ -13,7 +13,17 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
 class ContentSecurityPolicyParser
 {
-    protected $keywords = array('self', 'none', 'unsafe-inline', 'unsafe-eval', 'strict-dynamic');
+    protected $keywords = array(
+        'self',
+        'unsafe-inline',
+        'unsafe-eval',
+        'strict-dynamic',
+        'unsafe-hashes',
+        'strict-dynamic',
+        'report-sample',
+        'unsafe-allow-redirects',
+        'none',
+    );
 
     /**
      * @param array $sourceList
