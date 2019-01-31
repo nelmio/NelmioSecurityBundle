@@ -30,6 +30,6 @@ class NonceGenerator
      */
     public function generate()
     {
-        return bin2hex(random_bytes($this->numberOfBytes));
+        return base64_encode(random_bytes($this->numberOfBytes));
     }
 }
