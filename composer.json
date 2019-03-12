@@ -27,6 +27,9 @@
         "symfony/yaml": "~2.3|~3.0|~4.0",
         "symfony/phpunit-bridge": "^3.2|~4.0"
     },
+    "conflict": {
+      "twig/twig": "2.7.0 || 1.38.0"
+    },
     "suggest": {
         "ua-parser/uap-php": "To allow adapt CSP directives given the user-agent"
     },
