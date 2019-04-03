@@ -19,7 +19,6 @@ class ContentSecurityPolicyParser
         'unsafe-eval',
         'strict-dynamic',
         'unsafe-hashes',
-        'strict-dynamic',
         'report-sample',
         'unsafe-allow-redirects',
         'none',
