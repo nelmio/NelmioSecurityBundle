@@ -1,6 +1,14 @@
+### 2.6.0 (2019-04-03)
+
+  * Support random_compat v9.99.99
+  * Don't ship unneeded files for composer installs
+  * Change controller action reference
+  * Add worker-src directive
+  * Fix deprecation for symfony/config 4.2+
+
 ### 2.5.1 (2018-03-21)
 
-- Abort CSP compiler pass when CSP is not enabled
+  * Abort CSP compiler pass when CSP is not enabled
 
 ### 2.5.0 (2018-02-26)
 
