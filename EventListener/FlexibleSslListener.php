@@ -76,7 +76,9 @@ class FlexibleSslListener implements LogoutHandlerInterface
                     $cookie->getPath(),
                     $cookie->getDomain(),
                     true,
-                    $cookie->isHttpOnly()
+                    $cookie->isHttpOnly(),
+                    method_exists($cookie, 'isRaw') ? $cookie->isRaw() : null,
+                    method_exists($cookie, 'getSameSite') ? $cookie->getSameSite() : null
                 ));
             }
         }
@@ -90,7 +92,9 @@ class FlexibleSslListener implements LogoutHandlerInterface
                 '/',
                 null,
                 false,
-                false
+                false,
+                false,
+                defined('Cookie::SAMESITE_LAX') ? Cookie::SAMESITE_LAX : null
             ));
         }
 
@@ -103,7 +107,9 @@ class FlexibleSslListener implements LogoutHandlerInterface
             $params['path'],
             $params['domain'],
             true,
-            $params['httponly']
+            $params['httponly'],
+            false,
+            defined('Cookie::SAMESITE_LAX') ? Cookie::SAMESITE_LAX : null
         ));
     }
 
