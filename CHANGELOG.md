@@ -1,3 +1,9 @@
+### 2.7.0 (2019-04-03)
+
+  * Use base64 for encoding nonces
+  * Support more CSP level 3 keywords
+  * Allow configuring a report URI for XSS
+
 ### 2.6.0 (2019-04-03)
 
   * Support random_compat v9.99.99
