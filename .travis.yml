@@ -11,10 +11,17 @@ php:
   - 7.0
   - 7.1
   - 7.2
-  - nightly
+  - 7.3
 
 before_install:
   - phpenv config-rm xdebug.ini || true
+  - |
+    for PHP in $TRAVIS_PHP_VERSION $php_extra; do
+      INI=~/.phpenv/versions/$PHP/etc/conf.d/travis.ini
+      echo date.timezone = Europe/Paris >> $INI
+      echo memory_limit = -1 >> $INI
+      echo session.gc_probability = 0 >> $INI
+    done
   - composer self-update
 
 install:
@@ -22,5 +29,6 @@ install:
   - if [[ $TRAVIS_PHP_VERSION == '5.5' ]]; then composer update --prefer-lowest ; fi
 
 script:
+  - export SYMFONY_DEPRECATIONS_HELPER=weak_vendors
   - export SYMFONY_PHPUNIT_DIR=`pwd`/.phpunit
   - ./vendor/bin/simple-phpunit

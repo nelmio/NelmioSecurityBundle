@@ -211,7 +211,9 @@ class CookieSessionHandler implements \SessionHandlerInterface
             $this->path,
             $this->domain,
             $this->secure,
-            $this->httpOnly
+            $this->httpOnly,
+            false,
+            defined('Cookie::SAMESITE_LAX') ? Cookie::SAMESITE_LAX : null
         );
 
         return true;

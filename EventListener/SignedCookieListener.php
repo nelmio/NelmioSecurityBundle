@@ -71,7 +71,9 @@ class SignedCookieListener
                     $cookie->getPath(),
                     $cookie->getDomain(),
                     $cookie->isSecure(),
-                    $cookie->isHttpOnly()
+                    $cookie->isHttpOnly(),
+                    method_exists($cookie, 'isRaw') ? $cookie->isRaw() : null,
+                    method_exists($cookie, 'getSameSite') ? $cookie->getSameSite() : null
                 );
                 $response->headers->setCookie($signedCookie, $cookie->getPath(), $cookie->getDomain());
             }

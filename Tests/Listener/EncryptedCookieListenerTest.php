@@ -79,7 +79,7 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new Response();
         foreach ($inputCookies as $name => $cookie) {
-            $response->headers->setCookie(new Cookie($name, $cookie));
+            $response->headers->setCookie(method_exists('Symfony\\Component\\HttpFoundation\\Cookie', 'create') ? Cookie::create($name, $cookie) : new Cookie($name, $cookie));
         }
 
         $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
@@ -117,7 +117,7 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new Response();
         foreach ($inputCookies as $name => $cookie) {
-            $response->headers->setCookie(new Cookie($name, $cookie));
+            $response->headers->setCookie(method_exists('Symfony\\Component\\HttpFoundation\\Cookie', 'create') ? Cookie::create($name, $cookie) : new Cookie($name, $cookie));
         }
 
         $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
