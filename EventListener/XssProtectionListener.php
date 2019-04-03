@@ -48,10 +48,10 @@ class XssProtectionListener implements EventSubscriberInterface
             if ($this->modeBlock) {
                 $value .= '; mode=block';
             }
-        }
 
-        if ($this->reportUri) {
-            $value .= '; report=' . $this->reportUri;
+            if ($this->reportUri) {
+                $value .= '; report=' . $this->reportUri;
+            }
         }
 
         $response->headers->set('X-XSS-Protection', $value);
