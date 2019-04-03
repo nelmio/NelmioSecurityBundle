@@ -34,6 +34,7 @@ class XssProtectionListenerTest extends \PHPUnit\Framework\TestCase
             array('1', new XssProtectionListener(true, false)),
             array('0', new XssProtectionListener(false, true)),
             array('1; mode=block', new XssProtectionListener(true, true)),
+            array('1; mode=block; report=https://report.com/endpoint', new XssProtectionListener(true, true, 'https://report.com/endpoint')),
         );
     }
 

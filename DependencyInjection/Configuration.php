@@ -174,6 +174,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->booleanNode('enabled')->defaultFalse()->end()
                         ->booleanNode('mode_block')->defaultFalse()->end()
+                        ->scalarNode('report_uri')->defaultNull()->end()
                     ->end()
                 ->end()
 

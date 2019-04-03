@@ -132,6 +132,16 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testXssProtection()
+    {
+        $this->processYamlConfiguration(
+            "xss_protection:\n".
+            "  enabled: true\n".
+            "  mode_block: true\n".
+            "  report_uri: https://report.com/endpoint\n"
+        );
+    }
+
     private function processYamlConfiguration($config)
     {
         $parser = new Parser();

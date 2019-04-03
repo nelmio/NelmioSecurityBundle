@@ -20,11 +20,13 @@ class XssProtectionListener implements EventSubscriberInterface
 {
     private $enabled;
     private $modeBlock;
+    private $reportUri;
 
-    public function __construct($enabled, $modeBlock)
+    public function __construct($enabled, $modeBlock, $reportUri = null)
     {
         $this->enabled = $enabled;
         $this->modeBlock = $modeBlock;
+        $this->reportUri = $reportUri;
     }
 
     public function onKernelResponse(FilterResponseEvent $e)
@@ -39,14 +41,17 @@ class XssProtectionListener implements EventSubscriberInterface
             return;
         }
 
+        $value = '0';
         if ($this->enabled) {
+            $value = '1';
+
             if ($this->modeBlock) {
-                $value = '1; mode=block';
-            } else {
-                $value = '1';
+                $value .= '; mode=block';
             }
-        } else {
-            $value = '0';
+        }
+
+        if ($this->reportUri) {
+            $value .= '; report=' . $this->reportUri;
         }
 
         $response->headers->set('X-XSS-Protection', $value);
@@ -61,7 +66,8 @@ class XssProtectionListener implements EventSubscriberInterface
     {
         $enabled = $config['enabled'];
         $modeBlock = $config['mode_block'];
+        $reportUri = $config['report_uri'];
 
-        return new self($enabled, $modeBlock);
+        return new self($enabled, $modeBlock, $reportUri);
     }
 }
