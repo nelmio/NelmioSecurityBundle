@@ -33,16 +33,16 @@ class ReferrerPolicyListenerTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->callListener($listener, '/', true);
 
-        $this->assertEquals($expectedValue, $response->headers->get('Referrer-Policy'));
+        $this->assertEquals($expectedValue, $response->headers->get('Referrer-Policy', null, false));
     }
 
     public function provideVariousConfigs()
     {
         return array(
-            array('', new ReferrerPolicyListener(array())),
-            array('no-referrer', new ReferrerPolicyListener(array('no-referrer'))),
-            array('no-referrer, strict-origin-when-cross-origin', new ReferrerPolicyListener(array('no-referrer', 'strict-origin-when-cross-origin'))),
-            array('no-referrer, no-referrer-when-downgrade, strict-origin-when-cross-origin', new ReferrerPolicyListener(array('no-referrer', 'no-referrer-when-downgrade', 'strict-origin-when-cross-origin'))),
+            array(array(), new ReferrerPolicyListener(array())),
+            array(array('no-referrer'), new ReferrerPolicyListener(array('no-referrer'))),
+            array(array('no-referrer', 'strict-origin-when-cross-origin'), new ReferrerPolicyListener(array('no-referrer', 'strict-origin-when-cross-origin'))),
+            array(array('no-referrer', 'no-referrer-when-downgrade', 'strict-origin-when-cross-origin'), new ReferrerPolicyListener(array('no-referrer', 'no-referrer-when-downgrade', 'strict-origin-when-cross-origin'))),
         );
     }
 

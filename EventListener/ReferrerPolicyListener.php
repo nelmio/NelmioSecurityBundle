@@ -36,6 +36,6 @@ class ReferrerPolicyListener
 
         $response = $e->getResponse();
 
-        $response->headers->set('Referrer-Policy', implode(', ', $this->policies));
+        $response->headers->set('Referrer-Policy', $this->policies);
     }
 }
