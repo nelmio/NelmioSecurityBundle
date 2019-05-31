@@ -143,7 +143,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
     {
         if (!$this->request) {
             if ($this->logger) {
-                $this->logger->crit('CookieSessionHandler::open - The Request object is missing');
+                $this->logger->critical('CookieSessionHandler::open - The Request object is missing');
             }
 
             throw new \RuntimeException('You cannot access the session without a Request object set');
@@ -163,7 +163,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
     {
         if (!$this->request) {
             if ($this->logger) {
-                $this->logger->crit('CookieSessionHandler::read - The Request object is missing');
+                $this->logger->critical('CookieSessionHandler::read - The Request object is missing');
             }
 
             throw new \RuntimeException('You cannot access the session without a Request object set');

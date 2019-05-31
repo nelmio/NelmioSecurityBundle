@@ -78,7 +78,7 @@ class ExternalRedirectListener
         }
 
         if ($this->logger) {
-            $this->logger->warn('External redirect detected from '.$e->getRequest()->getUri().' to '.$response->headers->get('Location'));
+            $this->logger->warning('External redirect detected from '.$e->getRequest()->getUri().' to '.$response->headers->get('Location'));
         }
 
         if ($this->abort) {
