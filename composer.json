@@ -31,10 +31,10 @@
         "ua-parser/uap-php": "To allow adapt CSP directives given the user-agent"
     },
     "autoload": {
-        "psr-4": { "Nelmio\\SecurityBundle\\": "" },
-        "exclude-from-classmap": [
-            "/Tests/"
-        ]
+        "psr-4": { "Nelmio\\SecurityBundle\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Nelmio\\SecurityBundle\\Tests\\": "tests/"}
     },
     "extra": {
         "branch-alias": {
