@@ -4,6 +4,7 @@ namespace Nelmio\SecurityBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Reference;
 
 class UAParserCompilerPass implements CompilerPassInterface
 {
@@ -15,6 +16,6 @@ class UAParserCompilerPass implements CompilerPassInterface
 
         $container
             ->getDefinition('nelmio_security.ua_parser')
-            ->setArguments(array($container->getDefinition($container->getParameter('nelmio_browser_adaptive_parser'))));
+            ->setArguments(array(new Reference($container->getParameter('nelmio_browser_adaptive_parser'))));
     }
 }
