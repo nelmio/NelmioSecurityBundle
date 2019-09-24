@@ -201,9 +201,9 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_browser_adaptive_parser', $service);
 
             $uaParser = $container->getDefinition('nelmio_security.ua_parser');
-            $uaParser->setArguments(array($container->getDefinition('nelmio_security.ua_parser.ua_php')));
+            $uaParser->setArguments(array(new Reference('nelmio_security.ua_parser.ua_php')));
 
-            $pmDefinition->setArguments(array($uaParser));
+            $pmDefinition->setArguments(array(new Reference('nelmio_security.ua_parser')));
         }
 
         $directiveDefinition->setArguments(array($pmDefinition, $config, $type));
