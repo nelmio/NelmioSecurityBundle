@@ -11,8 +11,8 @@
 
 namespace Nelmio\SecurityBundle\Session;
 
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Psr\Log\LoggerInterface;
@@ -58,9 +58,9 @@ class CookieSessionHandler implements \SessionHandlerInterface
     }
 
     /**
-     * @param FilterResponseEvent $e
+     * @param ResponseEvent $e
      */
-    public function onKernelResponse(FilterResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -91,9 +91,9 @@ class CookieSessionHandler implements \SessionHandlerInterface
     }
 
     /**
-     * @param GetResponseEvent $e
+     * @param RequestEvent $e
      */
-    public function onKernelRequest(GetResponseEvent $e)
+    public function onKernelRequest(RequestEvent $e)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;

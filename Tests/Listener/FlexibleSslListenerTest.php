@@ -16,8 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
@@ -26,7 +26,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
     private $dispatcher;
     private $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
         $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
@@ -37,7 +37,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create('http://localhost/');
 
-        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -48,7 +48,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('http://localhost/');
         $request->cookies->set('auth', '1');
 
-        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertTrue($event->hasResponse());
@@ -59,7 +59,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create('https://localhost/');
 
-        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -70,7 +70,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('https://localhost/');
         $request->cookies->set('auth', '1');
 
-        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -82,7 +82,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new Response();
 
-        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $this->listener->onPostLoginKernelResponse($event);
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
@@ -100,7 +100,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('http://localhost/');
         $request->cookies->set('auth', '1');
 
-        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -112,7 +112,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new Response();
 
-        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
         $this->listener->onPostLoginKernelResponse($event);
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);

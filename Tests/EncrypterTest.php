@@ -15,7 +15,7 @@ use Nelmio\SecurityBundle\Encrypter;
 
 class EncrypterTest extends \PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -27,11 +27,10 @@ class EncrypterTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testConstructorShouldVerifyAlgoritm()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Encrypter('secret', 'invalid_algoritm');
     }
 

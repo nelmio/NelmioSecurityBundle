@@ -15,11 +15,10 @@ use Nelmio\SecurityBundle\Signer;
 
 class SignerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testConstructorShouldVerifyHashAlgo()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Signer('secret', 'invalid_hash_algo');
     }
 

@@ -1,3 +1,9 @@
+### To release
+
+  * Added Symfony 5 support
+    * Removed PHP 5 support completely
+    * PHPUnit 8 support
+
 ### 2.7.0 (2019-04-03)
 
   * Use base64 for encoding nonces

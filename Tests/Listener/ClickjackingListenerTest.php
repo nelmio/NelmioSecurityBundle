@@ -15,14 +15,14 @@ use Nelmio\SecurityBundle\EventListener\ClickjackingListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $kernel;
     private $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
         $this->listener = new ClickjackingListener(array(
@@ -70,7 +70,7 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
         $response = new Response();
         $response->headers->add(array('content-type' => $contentType));
 
-        $event = new FilterResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         return $response;

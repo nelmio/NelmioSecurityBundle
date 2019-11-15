@@ -13,7 +13,7 @@ namespace Nelmio\SecurityBundle\EventListener;
 
 use Nelmio\SecurityBundle\ExternalRedirect\TargetValidator;
 use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -56,7 +56,7 @@ class ExternalRedirectListener
         $this->generator = $generator;
     }
 
-    public function onKernelResponse(FilterResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;

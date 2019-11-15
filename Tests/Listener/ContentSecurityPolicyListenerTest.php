@@ -8,8 +8,8 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
@@ -19,7 +19,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
     private $nonceGenerator;
     private $shaComputer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
         $this->nonceGenerator = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator')
@@ -47,11 +47,11 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
         $listener->getNonce();
     }
 
-    /**
-     * @expectedException Invalid usage provided
-     */
     public function tesInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid usage provided');
+
         $listener = $this->buildSimpleListener(array('default-src' => "default.example.org 'self'"));
         $listener->getNonce('prout');
     }
@@ -247,23 +247,23 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
 
         $header = $response->headers->get('Content-Security-Policy');
 
-        $this->assertContains("default-src example.org 'self'", $header, 'Header should contain default-src');
-        $this->assertContains("script-src script.example.org 'self'", $header, 'Header should contain script-src');
-        $this->assertContains("object-src object.example.org 'self'", $header, 'Header should contain object-src');
-        $this->assertContains("style-src style.example.org 'self'", $header, 'Header should contain style-src');
-        $this->assertContains("img-src img.example.org 'self'", $header, 'Header should contain img-src');
-        $this->assertContains("media-src media.example.org 'self'", $header, 'Header should contain media-src');
-        $this->assertContains("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
-        $this->assertContains("font-src font.example.org 'self'", $header, 'Header should contain font-src');
-        $this->assertContains("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
-        $this->assertContains('report-uri http://example.org/CSPReport', $header, 'Header should contain report-uri');
-        $this->assertContains("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
-        $this->assertContains("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
-        $this->assertContains("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
-        $this->assertContains("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
-        $this->assertContains('plugin-types application/shockwave-flash', $header, 'Header should contain plugin-types');
-        $this->assertContains('block-all-mixed-content', $header, 'Header should contain block-all-mixed-content');
-        $this->assertContains('upgrade-insecure-requests', $header, 'Header should contain upgrade-insecure-requests');
+        $this->assertStringContainsString("default-src example.org 'self'", $header, 'Header should contain default-src');
+        $this->assertStringContainsString("script-src script.example.org 'self'", $header, 'Header should contain script-src');
+        $this->assertStringContainsString("object-src object.example.org 'self'", $header, 'Header should contain object-src');
+        $this->assertStringContainsString("style-src style.example.org 'self'", $header, 'Header should contain style-src');
+        $this->assertStringContainsString("img-src img.example.org 'self'", $header, 'Header should contain img-src');
+        $this->assertStringContainsString("media-src media.example.org 'self'", $header, 'Header should contain media-src');
+        $this->assertStringContainsString("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
+        $this->assertStringContainsString("font-src font.example.org 'self'", $header, 'Header should contain font-src');
+        $this->assertStringContainsString("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
+        $this->assertStringContainsString('report-uri http://example.org/CSPReport', $header, 'Header should contain report-uri');
+        $this->assertStringContainsString("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
+        $this->assertStringContainsString("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
+        $this->assertStringContainsString("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
+        $this->assertStringContainsString("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
+        $this->assertStringContainsString('plugin-types application/shockwave-flash', $header, 'Header should contain plugin-types');
+        $this->assertStringContainsString('block-all-mixed-content', $header, 'Header should contain block-all-mixed-content');
+        $this->assertStringContainsString('upgrade-insecure-requests', $header, 'Header should contain upgrade-insecure-requests');
     }
 
     public function testDelimiter()
@@ -407,7 +407,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
     protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq, $contentType = 'text/html', array $digestData = array(), $getNonce = 0)
     {
         $request = Request::create($path);
-        $event = new GetResponseEvent(
+        $event = new RequestEvent(
             $this->kernel,
             $request,
             $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST
@@ -442,7 +442,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
         $response = new Response();
         $response->headers->add(array('content-type' => $contentType));
 
-        $event = new FilterResponseEvent(
+        $event = new ResponseEvent(
             $this->kernel,
             $request,
             $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,

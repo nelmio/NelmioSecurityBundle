@@ -17,15 +17,15 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $encrypter;
     private $kernel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -51,7 +51,7 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
         $listener = new EncryptedCookieListener($this->encrypter, $encryptedCookieNames);
         $request = Request::create('/', 'GET', array(), $inputCookies);
 
-        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $listener->onKernelRequest($event);
 
         $this->assertSame($expectedCookies, $request->cookies->all());
@@ -82,7 +82,7 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
             $response->headers->setCookie(method_exists('Symfony\\Component\\HttpFoundation\\Cookie', 'create') ? Cookie::create($name, $cookie) : new Cookie($name, $cookie));
         }
 
-        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         $responseCookieValues = array();
@@ -120,7 +120,7 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
             $response->headers->setCookie(method_exists('Symfony\\Component\\HttpFoundation\\Cookie', 'create') ? Cookie::create($name, $cookie) : new Cookie($name, $cookie));
         }
 
-        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         $responseCookieValues = array();
@@ -132,7 +132,7 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
 
         $request = Request::create('/', 'GET', array(), $responseCookieValues);
 
-        $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $listener->onKernelRequest($event);
 
         $this->assertSame($inputCookies, $request->cookies->all());

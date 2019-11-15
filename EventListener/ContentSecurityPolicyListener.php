@@ -14,8 +14,8 @@ namespace Nelmio\SecurityBundle\EventListener;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
@@ -44,7 +44,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->shaComputer = $shaComputer;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
             return;
@@ -124,7 +124,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $this->_nonce;
     }
 
-    public function onKernelResponse(FilterResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;

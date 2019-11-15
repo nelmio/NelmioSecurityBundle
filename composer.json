@@ -16,16 +16,33 @@
     ],
     "require": {
         "paragonie/random_compat": "~1.0|~2.0|9.99.99",
-        "symfony/framework-bundle": "~2.3|~3.0|~4.0",
-        "symfony/security": "~2.3|~3.0|~4.0",
+        "symfony/framework-bundle": "~5.0@beta",
+        "symfony/security-core": "~5.0@beta",
+        "symfony/security-http": "~5.0@beta",
+        "symfony/security-csrf": "~5.0@beta",
+        "symfony/cache": "~5.0@beta",
+        "symfony/config": "~5.0@beta",
+        "symfony/dependency-injection": "~5.0@beta",
+        "symfony/http-foundation": "~5.0@beta",
+        "symfony/http-kernel": "~5.0@beta",
+        "symfony/filesystem": "~5.0@beta",
+        "symfony/finder": "~5.0@beta",
+        "symfony/routing": "~5.0@beta",
+        "symfony/var-exporter": "~5.0@beta",
+        "symfony/mime": "~5.0@beta",
+        "symfony/error-handler": "~5.0@beta",
+        "symfony/event-dispatcher": "~5.0@beta",
+        "symfony/var-dumper": "~5.0@beta",
+        "symfony/property-access": "~5.0@beta",
+        "symfony/inflector": "~5.0@beta",
         "ua-parser/uap-php": "^3.4.4"
     },
     "require-dev": {
         "doctrine/cache": "^1.0",
         "psr/cache": "^1.0",
-        "twig/twig": "^1.24",
-        "symfony/yaml": "~2.3|~3.0|~4.0",
-        "symfony/phpunit-bridge": "^3.4.24|~4.0"
+        "twig/twig": "^2.4",
+        "symfony/yaml": "~5.0@beta",
+        "symfony/phpunit-bridge": "~5.0@beta"
     },
     "suggest": {
         "ua-parser/uap-php": "To allow adapt CSP directives given the user-agent"
