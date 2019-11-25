@@ -22,7 +22,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $kernel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
     }

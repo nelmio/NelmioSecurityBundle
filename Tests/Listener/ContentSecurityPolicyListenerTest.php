@@ -19,7 +19,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
     private $nonceGenerator;
     private $shaComputer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
         $this->nonceGenerator = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator')

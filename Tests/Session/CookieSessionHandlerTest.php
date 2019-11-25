@@ -23,7 +23,7 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
     private $handler;
     private $kernel;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->handler = new CookieSessionHandler('s');
 

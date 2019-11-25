@@ -34,6 +34,7 @@ install:
   - if [[ $TRAVIS_PHP_VERSION == '5.5' ]]; then composer update --prefer-lowest ; fi
 
 script:
-  - export SYMFONY_DEPRECATIONS_HELPER=weak_vendors
+  - export SYMFONY_DEPRECATIONS_HELPER=max[self]=0
+  - if [[ $TRAVIS_PHP_VERSION == '5.5' ]]; then export SYMFONY_DEPRECATIONS_HELPER=weak_vendors ; fi
   - export SYMFONY_PHPUNIT_DIR=`pwd`/.phpunit
   - ./vendor/bin/simple-phpunit
