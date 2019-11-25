@@ -16,6 +16,7 @@ use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
@@ -61,10 +62,11 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @depends testRedirectMatcher
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testRedirectAbort()
     {
+        $this->expectException(HttpException::class);
+
         $listener = new ExternalRedirectListener(true);
         $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
     }
@@ -95,10 +97,11 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testRedirectMatcher
      * @dataProvider provideRedirectWhitelistsFailing
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testRedirectDoesNotSkipNonWhitelistedDomains($whitelist, $domain)
     {
+        $this->expectException(HttpException::class);
+
         $listener = new ExternalRedirectListener(true, null, null, $whitelist);
 
         $this->filterResponse($listener, 'http://foo.com/', 'http://'.$domain.'/');

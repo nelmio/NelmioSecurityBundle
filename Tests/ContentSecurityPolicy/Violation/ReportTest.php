@@ -2,34 +2,34 @@
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\InvalidPayloadException;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspReportException;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException;
 use Symfony\Component\HttpFoundation\Request;
 
 class ReportTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @expectedException Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException
-     * @expectedExceptionMessage Content-Security-Policy Endpoint called without data
-     */
     public function testFromRequestWithoutData()
     {
+        $this->expectException(NoDataException::class);
+        $this->expectExceptionMessage('Content-Security-Policy Endpoint called without data');
+
         Report::fromRequest(new Request());
     }
 
-    /**
-     * @expectedException Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspReportException
-     * @expectedExceptionMessage Content-Security-Policy Endpoint called without "csp-report" data
-     */
     public function testFromRequestWithoutReportKey()
     {
+        $this->expectException(MissingCspReportException::class);
+        $this->expectExceptionMessage('Content-Security-Policy Endpoint called without "csp-report" data');
+
         Report::fromRequest(new Request(array(), array(), array(), array(), array(), array(), '{}'));
     }
 
-    /**
-     * @expectedException Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\InvalidPayloadException
-     * @expectedExceptionMessage Content-Security-Policy Endpoint called with invalid JSON data
-     */
     public function testFromRequestWithInvalidJSON()
     {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('Content-Security-Policy Endpoint called with invalid JSON data');
+
         Report::fromRequest(new Request(array(), array(), array(), array(), array(), array(), 'yolo'));
     }
 

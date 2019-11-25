@@ -32,19 +32,17 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testOpenWithNoRequest()
     {
+        $this->expectException(\RuntimeException::class);
+
         $this->handler->open('foo', 'bar');
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testReadWithNoRequest()
     {
+        $this->expectException(\RuntimeException::class);
+
         $this->handler->read('foo');
     }
 

@@ -249,23 +249,23 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
 
         $header = $response->headers->get('Content-Security-Policy');
 
-        $this->assertContains("default-src example.org 'self'", $header, 'Header should contain default-src');
-        $this->assertContains("script-src script.example.org 'self'", $header, 'Header should contain script-src');
-        $this->assertContains("object-src object.example.org 'self'", $header, 'Header should contain object-src');
-        $this->assertContains("style-src style.example.org 'self'", $header, 'Header should contain style-src');
-        $this->assertContains("img-src img.example.org 'self'", $header, 'Header should contain img-src');
-        $this->assertContains("media-src media.example.org 'self'", $header, 'Header should contain media-src');
-        $this->assertContains("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
-        $this->assertContains("font-src font.example.org 'self'", $header, 'Header should contain font-src');
-        $this->assertContains("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
-        $this->assertContains('report-uri http://example.org/CSPReport', $header, 'Header should contain report-uri');
-        $this->assertContains("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
-        $this->assertContains("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
-        $this->assertContains("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
-        $this->assertContains("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
-        $this->assertContains('plugin-types application/shockwave-flash', $header, 'Header should contain plugin-types');
-        $this->assertContains('block-all-mixed-content', $header, 'Header should contain block-all-mixed-content');
-        $this->assertContains('upgrade-insecure-requests', $header, 'Header should contain upgrade-insecure-requests');
+        $this->assertStringContainsString("default-src example.org 'self'", $header, 'Header should contain default-src');
+        $this->assertStringContainsString("script-src script.example.org 'self'", $header, 'Header should contain script-src');
+        $this->assertStringContainsString("object-src object.example.org 'self'", $header, 'Header should contain object-src');
+        $this->assertStringContainsString("style-src style.example.org 'self'", $header, 'Header should contain style-src');
+        $this->assertStringContainsString("img-src img.example.org 'self'", $header, 'Header should contain img-src');
+        $this->assertStringContainsString("media-src media.example.org 'self'", $header, 'Header should contain media-src');
+        $this->assertStringContainsString("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
+        $this->assertStringContainsString("font-src font.example.org 'self'", $header, 'Header should contain font-src');
+        $this->assertStringContainsString("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
+        $this->assertStringContainsString('report-uri http://example.org/CSPReport', $header, 'Header should contain report-uri');
+        $this->assertStringContainsString("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
+        $this->assertStringContainsString("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
+        $this->assertStringContainsString("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
+        $this->assertStringContainsString("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
+        $this->assertStringContainsString('plugin-types application/shockwave-flash', $header, 'Header should contain plugin-types');
+        $this->assertStringContainsString('block-all-mixed-content', $header, 'Header should contain block-all-mixed-content');
+        $this->assertStringContainsString('upgrade-insecure-requests', $header, 'Header should contain upgrade-insecure-requests');
     }
 
     public function testDelimiter()
