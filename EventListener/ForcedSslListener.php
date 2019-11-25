@@ -54,7 +54,7 @@ class ForcedSslListener
         $request = $e->getRequest();
 
         // skip SSL & non-GET/HEAD requests
-        if ($request->isSecure() || !$request->isMethodSafe(false)) {
+        if ($request->isSecure() || !$request->isMethodSafe()) {
             return;
         }
 
