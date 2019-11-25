@@ -25,7 +25,7 @@
         "psr/cache": "^1.0",
         "twig/twig": "^1.24",
         "symfony/yaml": "~2.3|~3.0|~4.0",
-        "symfony/phpunit-bridge": "^3.4.24|~4.0"
+        "symfony/phpunit-bridge": "~5.0"
     },
     "suggest": {
         "ua-parser/uap-php": "To allow adapt CSP directives given the user-agent"
