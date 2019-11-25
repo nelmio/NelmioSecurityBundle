@@ -12,6 +12,7 @@
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -28,8 +29,16 @@ class ReferrerPolicyListener
         $this->policies = $policies;
     }
 
-    public function onKernelResponse(FilterResponseEvent $e)
+    /**
+     * @param FilterResponseEvent|ResponseEvent $e
+     */
+    public function onKernelResponse($e)
     {
+        // Compatibility with Symfony < 5 and Symfony >=5
+        if (!$e instanceof FilterResponseEvent && !$e instanceof ResponseEvent) {
+            return;
+        }
+
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
         }
