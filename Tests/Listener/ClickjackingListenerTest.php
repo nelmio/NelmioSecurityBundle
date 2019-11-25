@@ -14,6 +14,7 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 use Nelmio\SecurityBundle\EventListener\ClickjackingListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
@@ -70,7 +71,13 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
         $response = new Response();
         $response->headers->add(array('content-type' => $contentType));
 
-        $event = new FilterResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
+        } else {
+            $class = FilterResponseEvent::class;
+        }
+
+        $event = new $class($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         return $response;

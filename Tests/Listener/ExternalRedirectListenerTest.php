@@ -15,6 +15,7 @@ use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
@@ -144,7 +145,13 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new RedirectResponse('http://foo.com/');
 
-        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
+        } else {
+            $class = FilterResponseEvent::class;
+        }
+
+        $event = new $class($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         $this->assertSame(true, $response->isRedirect());
@@ -157,7 +164,13 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new RedirectResponse($target);
 
-        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
+        } else {
+            $class = FilterResponseEvent::class;
+        }
+
+        $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         return $response;

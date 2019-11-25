@@ -6,6 +6,7 @@ use Nelmio\SecurityBundle\EventListener\XssProtectionListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class XssProtectionListenerTest extends \PHPUnit\Framework\TestCase
@@ -43,7 +44,13 @@ class XssProtectionListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create($path);
         $response = new Response();
 
-        $event = new FilterResponseEvent(
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
+        } else {
+            $class = FilterResponseEvent::class;
+        }
+
+        $event = new $class(
             $this->kernel,
             $request,
             $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,
