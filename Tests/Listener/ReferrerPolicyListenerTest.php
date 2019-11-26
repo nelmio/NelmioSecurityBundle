@@ -14,8 +14,6 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 use Nelmio\SecurityBundle\EventListener\ReferrerPolicyListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ReferrerPolicyListenerTest extends \PHPUnit\Framework\TestCase
@@ -52,10 +50,10 @@ class ReferrerPolicyListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create($path);
         $response = new Response();
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
         } else {
-            $class = FilterResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
 
         $event = new $class(

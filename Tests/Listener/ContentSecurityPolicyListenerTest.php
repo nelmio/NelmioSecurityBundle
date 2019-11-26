@@ -2,16 +2,10 @@
 
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
@@ -416,10 +410,10 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create($path);
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
         } else {
-            $class = GetResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
 
         $event = new $class(
@@ -457,10 +451,10 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
         $response = new Response();
         $response->headers->add(array('content-type' => $contentType));
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
         } else {
-            $class = FilterResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
 
         $event = new $class(

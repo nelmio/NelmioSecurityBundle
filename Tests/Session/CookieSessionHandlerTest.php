@@ -14,10 +14,6 @@ namespace Nelmio\SecurityBundle\Tests\Session;
 use Nelmio\SecurityBundle\Session\CookieSessionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
@@ -34,14 +30,14 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 
     public function testOpenWithNoRequest()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException('RuntimeException');
 
         $this->handler->open('foo', 'bar');
     }
 
     public function testReadWithNoRequest()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException('RuntimeException');
 
         $this->handler->read('foo');
     }
@@ -54,10 +50,10 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
         $session->expects($this->exactly(1))->method('save');
         $request->setSession($session);
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
         } else {
-            $class = GetResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
 
         $this->handler->onKernelRequest(new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
@@ -66,10 +62,10 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 
         $this->handler->write('sessionId', 'mydata');
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
         } else {
-            $class = FilterResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
 
         $this->handler->onKernelResponse(new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
@@ -91,18 +87,18 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
         $session->expects($this->exactly(2))->method('save');
         $request->setSession($session);
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
         } else {
-            $class = GetResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
 
         $this->handler->onKernelRequest(new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
         } else {
-            $class = FilterResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
 
         $this->handler->onKernelResponse(new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
@@ -115,10 +111,10 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 
         $this->handler->destroy('sessionId');
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
         } else {
-            $class = FilterResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
 
         $this->handler->onKernelResponse(new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
@@ -149,18 +145,18 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
         $request->setSession($session);
         $response->headers = $headers;
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
         } else {
-            $class = GetResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
 
         $this->handler->onKernelRequest(new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
         } else {
-            $class = FilterResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
 
         $this->handler->onKernelResponse(new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));

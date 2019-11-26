@@ -120,7 +120,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
 
     public function testReferrerPolicyInvalid()
     {
-        $this->expectException(\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException::class);
+        $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
 
         $this->processYamlConfiguration(
             "referrer_policy:\n".

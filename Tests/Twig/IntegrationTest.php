@@ -38,7 +38,7 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
                 $collectedShas['style-src'][] = $shaComputer->computeForStyle($style);
             }));
 
-        if (class_exists(Environment::class)) {
+        if (class_exists('Twig\Environment')) {
             $twig = new Environment(new FilesystemLoader(__DIR__.'/templates'));
         } else {
             $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(__DIR__.'/templates'));

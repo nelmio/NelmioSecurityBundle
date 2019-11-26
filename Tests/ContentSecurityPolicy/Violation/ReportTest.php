@@ -2,16 +2,13 @@
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\InvalidPayloadException;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspReportException;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException;
 use Symfony\Component\HttpFoundation\Request;
 
 class ReportTest extends \PHPUnit\Framework\TestCase
 {
     public function testFromRequestWithoutData()
     {
-        $this->expectException(NoDataException::class);
+        $this->expectException('Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException');
         $this->expectExceptionMessage('Content-Security-Policy Endpoint called without data');
 
         Report::fromRequest(new Request());
@@ -19,7 +16,7 @@ class ReportTest extends \PHPUnit\Framework\TestCase
 
     public function testFromRequestWithoutReportKey()
     {
-        $this->expectException(MissingCspReportException::class);
+        $this->expectException('Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspReportException');
         $this->expectExceptionMessage('Content-Security-Policy Endpoint called without "csp-report" data');
 
         Report::fromRequest(new Request(array(), array(), array(), array(), array(), array(), '{}'));
@@ -27,7 +24,7 @@ class ReportTest extends \PHPUnit\Framework\TestCase
 
     public function testFromRequestWithInvalidJSON()
     {
-        $this->expectException(InvalidPayloadException::class);
+        $this->expectException('Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\InvalidPayloadException');
         $this->expectExceptionMessage('Content-Security-Policy Endpoint called with invalid JSON data');
 
         Report::fromRequest(new Request(array(), array(), array(), array(), array(), array(), 'yolo'));

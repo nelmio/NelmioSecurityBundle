@@ -16,11 +16,7 @@ use Nelmio\SecurityBundle\EventListener\EncryptedCookieListener;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
 {
@@ -53,10 +49,10 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
         $listener = new EncryptedCookieListener($this->encrypter, $encryptedCookieNames);
         $request = Request::create('/', 'GET', array(), $inputCookies);
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
         } else {
-            $class = GetResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
 
         $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
@@ -90,10 +86,10 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
             $response->headers->setCookie(method_exists('Symfony\\Component\\HttpFoundation\\Cookie', 'create') ? Cookie::create($name, $cookie) : new Cookie($name, $cookie));
         }
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
         } else {
-            $class = FilterResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
 
         $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
@@ -134,10 +130,10 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
             $response->headers->setCookie(method_exists('Symfony\\Component\\HttpFoundation\\Cookie', 'create') ? Cookie::create($name, $cookie) : new Cookie($name, $cookie));
         }
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
         } else {
-            $class = FilterResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
 
         $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
@@ -152,10 +148,10 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
 
         $request = Request::create('/', 'GET', array(), $responseCookieValues);
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
+        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
         } else {
-            $class = GetResponseEvent::class;
+            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
 
         $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);

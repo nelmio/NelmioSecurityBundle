@@ -17,7 +17,7 @@ class SignerTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstructorShouldVerifyHashAlgo()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException('InvalidArgumentException');
 
         new Signer('secret', 'invalid_hash_algo');
     }

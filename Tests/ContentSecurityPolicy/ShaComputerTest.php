@@ -71,7 +71,7 @@ class ShaComputerTest extends \PHPUnit\Framework\TestCase
      */
     public function testComputeScriptShouldFail($code)
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException('InvalidArgumentException');
 
         $shaComputer = new ShaComputer('sha256');
         $shaComputer->computeForScript($code);
