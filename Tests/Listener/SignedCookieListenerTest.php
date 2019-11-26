@@ -26,7 +26,7 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
     private $signer;
     private $kernel;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->signer = new Signer('secret', 'sha1');
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();

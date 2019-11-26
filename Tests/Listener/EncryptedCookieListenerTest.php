@@ -25,7 +25,7 @@ class EncryptedCookieListenerTest extends \PHPUnit\Framework\TestCase
     private $encrypter;
     private $kernel;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

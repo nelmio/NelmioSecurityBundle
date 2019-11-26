@@ -26,7 +26,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
     private $dispatcher;
     private $listener;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
         $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
