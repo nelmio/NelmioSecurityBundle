@@ -255,23 +255,23 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
             $assertMethod = 'assertContains';
         }
 
-        $this->$assertMethod("default-src example.org 'self'", $header, 'Header should contain default-src');
-        $this->$assertMethod("script-src script.example.org 'self'", $header, 'Header should contain script-src');
-        $this->$assertMethod("object-src object.example.org 'self'", $header, 'Header should contain object-src');
-        $this->$assertMethod("style-src style.example.org 'self'", $header, 'Header should contain style-src');
-        $this->$assertMethod("img-src img.example.org 'self'", $header, 'Header should contain img-src');
-        $this->$assertMethod("media-src media.example.org 'self'", $header, 'Header should contain media-src');
-        $this->$assertMethod("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
-        $this->$assertMethod("font-src font.example.org 'self'", $header, 'Header should contain font-src');
-        $this->$assertMethod("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
-        $this->$assertMethod('report-uri http://example.org/CSPReport', $header, 'Header should contain report-uri');
-        $this->$assertMethod("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
-        $this->$assertMethod("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
-        $this->$assertMethod("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
-        $this->$assertMethod("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
-        $this->$assertMethod('plugin-types application/shockwave-flash', $header, 'Header should contain plugin-types');
-        $this->$assertMethod('block-all-mixed-content', $header, 'Header should contain block-all-mixed-content');
-        $this->$assertMethod('upgrade-insecure-requests', $header, 'Header should contain upgrade-insecure-requests');
+        $this->{$assertMethod}("default-src example.org 'self'", $header, 'Header should contain default-src');
+        $this->{$assertMethod}("script-src script.example.org 'self'", $header, 'Header should contain script-src');
+        $this->{$assertMethod}("object-src object.example.org 'self'", $header, 'Header should contain object-src');
+        $this->{$assertMethod}("style-src style.example.org 'self'", $header, 'Header should contain style-src');
+        $this->{$assertMethod}("img-src img.example.org 'self'", $header, 'Header should contain img-src');
+        $this->{$assertMethod}("media-src media.example.org 'self'", $header, 'Header should contain media-src');
+        $this->{$assertMethod}("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
+        $this->{$assertMethod}("font-src font.example.org 'self'", $header, 'Header should contain font-src');
+        $this->{$assertMethod}("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
+        $this->{$assertMethod}('report-uri http://example.org/CSPReport', $header, 'Header should contain report-uri');
+        $this->{$assertMethod}("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
+        $this->{$assertMethod}("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
+        $this->{$assertMethod}("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
+        $this->{$assertMethod}("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
+        $this->{$assertMethod}('plugin-types application/shockwave-flash', $header, 'Header should contain plugin-types');
+        $this->{$assertMethod}('block-all-mixed-content', $header, 'Header should contain block-all-mixed-content');
+        $this->{$assertMethod}('upgrade-insecure-requests', $header, 'Header should contain upgrade-insecure-requests');
     }
 
     public function testDelimiter()
