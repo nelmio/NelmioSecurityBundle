@@ -1,3 +1,7 @@
+### To release
+
+  * Symfony 5 compatibility added
+
 ### 2.8.0 (2020-03-02)
 
   * Fixed deprecated/invalid method usage on logger interface
