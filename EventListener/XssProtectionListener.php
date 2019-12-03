@@ -17,6 +17,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * @final
+ */
 class XssProtectionListener implements EventSubscriberInterface
 {
     private $enabled;

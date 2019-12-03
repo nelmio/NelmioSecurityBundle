@@ -19,6 +19,9 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * @final
+ */
 class SignedCookieListener
 {
     private $signer;

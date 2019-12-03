@@ -19,6 +19,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @final
+ */
 class CookieSessionHandler implements \SessionHandlerInterface
 {
     protected $request;

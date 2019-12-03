@@ -22,6 +22,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
+/**
+ * @final
+ */
 class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListener
 {
     protected $report;

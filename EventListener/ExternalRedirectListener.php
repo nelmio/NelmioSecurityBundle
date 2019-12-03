@@ -20,6 +20,9 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * @final
+ */
 class ExternalRedirectListener
 {
     private $abort;

@@ -16,6 +16,9 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * @final
+ */
 class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
     private $paths;

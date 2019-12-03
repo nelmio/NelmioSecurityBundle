@@ -25,6 +25,9 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @final
+ */
 class FlexibleSslListener implements LogoutHandlerInterface
 {
     private $cookieName;

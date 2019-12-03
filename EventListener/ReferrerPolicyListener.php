@@ -19,6 +19,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Referrer Policy Listener.
  *
  * @author Andrej Hudec <pulzarraider@gmail.com>
+ * @final
  */
 class ReferrerPolicyListener
 {
