@@ -64,7 +64,7 @@ class ExternalRedirectListener
     {
         // Compatibility with Symfony < 5 and Symfony >=5
         if (!$e instanceof FilterResponseEvent && !$e instanceof ResponseEvent) {
-            return;
+            throw new \InvalidArgumentException(\sprintf('Expected instance of type %s, %s given', \class_exists(ResponseEvent::class) ? ResponseEvent::class : FilterResponseEvent::class, \is_object($e) ? \get_class($e) : \gettype($e)));
         }
 
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {

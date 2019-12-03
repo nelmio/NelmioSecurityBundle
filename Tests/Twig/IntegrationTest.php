@@ -81,7 +81,12 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $listener->expects($this->never())
             ->method('addStyle');
 
-        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(__DIR__.'/templates'));
+        if (class_exists('Twig\Environment')) {
+            $twig = new Environment(new FilesystemLoader(__DIR__.'/templates'));
+        } else {
+            $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(__DIR__.'/templates'));
+        }
+
         $twig->addExtension(new NelmioCSPTwigExtension($listener, $shaComputer));
 
         $this->assertSame('<script type="text/javascript">console.log(\'Hello\');</script>
