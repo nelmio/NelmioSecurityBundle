@@ -15,8 +15,10 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Nelmio\SecurityBundle\Twig\TokenParser\CSPScriptParser;
 use Nelmio\SecurityBundle\Twig\TokenParser\CSPStyleParser;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class NelmioCSPTwigExtension extends \Twig_Extension
+class NelmioCSPTwigExtension extends AbstractExtension
 {
     private $listener;
     private $shaComputer;
@@ -45,7 +47,7 @@ class NelmioCSPTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('csp_nonce', array($this, 'getCSPNonce')),
+            new TwigFunction('csp_nonce', array($this, 'getCSPNonce')),
         );
     }
 

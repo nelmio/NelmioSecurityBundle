@@ -11,19 +11,22 @@ namespace Nelmio\SecurityBundle\Twig\Node;
  * file that was distributed with this source code.
  */
 
-class CSPNode extends \Twig_Node
+use Twig\Compiler;
+use Twig\Node\Node;
+
+class CSPNode extends Node
 {
     private $sha;
     private $directive;
 
-    public function __construct(\Twig_Node $body, $lineno, $tag, $directive, $sha = null)
+    public function __construct(Node $body, $lineno, $tag, $directive, $sha = null)
     {
         parent::__construct(array('body' => $body), array(), $lineno, $tag);
         $this->sha = $sha;
         $this->directive = $directive;
     }
 
-    public function compile(\Twig_Compiler $compiler)
+    public function compile(Compiler $compiler)
     {
         $body = $this->getNode('body');
 
