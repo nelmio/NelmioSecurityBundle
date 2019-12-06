@@ -3,6 +3,8 @@
 namespace Nelmio\SecurityBundle\Tests\Twig;
 
 use Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 class IntegrationTest extends \PHPUnit\Framework\TestCase
 {
@@ -36,7 +38,7 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
                 $collectedShas['style-src'][] = $shaComputer->computeForStyle($style);
             }));
 
-        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(__DIR__.'/templates'));
+        $twig = new Environment(new FilesystemLoader(__DIR__.'/templates'));
         $twig->addExtension(new NelmioCSPTwigExtension($listener, $shaComputer));
 
         $this->assertSame('<script type="text/javascript">console.log(\'123456\');</script>
@@ -74,7 +76,7 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $listener->expects($this->never())
             ->method('addStyle');
 
-        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem(__DIR__.'/templates'));
+        $twig = new Environment(new FilesystemLoader(__DIR__.'/templates'));
         $twig->addExtension(new NelmioCSPTwigExtension($listener, $shaComputer));
 
         $this->assertSame('<script type="text/javascript">console.log(\'Hello\');</script>
