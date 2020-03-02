@@ -1,4 +1,4 @@
-### To release
+### 2.9.0 (2020-03-02)
 
   * Symfony 5 compatibility added
   * Bump minimal Twig version to 1.38.0
