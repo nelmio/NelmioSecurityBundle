@@ -8,7 +8,6 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
          bootstrap="Tests/bootstrap.php"
 >
     <testsuites>
@@ -16,6 +15,10 @@
             <directory suffix="Test.php">./Tests/</directory>
         </testsuite>
     </testsuites>
+
+    <php>
+        <env name="SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT" value="1"/>
+    </php>
 
     <filter>
         <whitelist>

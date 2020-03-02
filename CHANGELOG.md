@@ -1,3 +1,8 @@
+### 2.8.0 (2020-03-02)
+
+  * Fixed deprecated/invalid method usage on logger interface
+  * Drop tests for PHP 5.4
+  
 ### 2.7.0 (2019-04-03)
 
   * Use base64 for encoding nonces
