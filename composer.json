@@ -17,15 +17,17 @@
     "require": {
         "php": ">5.4",
         "paragonie/random_compat": "~1.0|~2.0|9.99.99",
-        "symfony/framework-bundle": "~2.3|~3.0|~4.0",
-        "symfony/security": "~2.3|~3.0|~4.0",
+        "symfony/framework-bundle": "~2.3|~v3.0|~4.0|~5.0",
+        "symfony/security-core": "~2.3|~3.0|~4.0|~5.0",
+        "symfony/security-http": "~2.3|~3.0|~4.0|~5.0",
+        "symfony/security-csrf": "~2.3|~3.0|~4.0|~5.0",
         "ua-parser/uap-php": "^3.4.4"
     },
     "require-dev": {
         "doctrine/cache": "^1.0",
         "psr/cache": "^1.0",
-        "twig/twig": "^1.24",
-        "symfony/yaml": "~2.3|~3.0|~4.0",
+        "twig/twig": "^1.38|^2.10|^3.0",
+        "symfony/yaml": "~2.3|~3.0|~4.0|~5.0",
         "symfony/phpunit-bridge": "~5.0"
     },
     "suggest": {

@@ -16,7 +16,6 @@ use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 {
@@ -60,10 +59,11 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @depends testRedirectMatcher
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testRedirectAbort()
     {
+        $this->expectException('Symfony\Component\HttpKernel\Exception\HttpException');
+
         $listener = new ExternalRedirectListener(true);
         $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
     }
@@ -94,10 +94,11 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testRedirectMatcher
      * @dataProvider provideRedirectWhitelistsFailing
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function testRedirectDoesNotSkipNonWhitelistedDomains($whitelist, $domain)
     {
+        $this->expectException('Symfony\Component\HttpKernel\Exception\HttpException');
+
         $listener = new ExternalRedirectListener(true, null, null, $whitelist);
 
         $this->filterResponse($listener, 'http://foo.com/', 'http://'.$domain.'/');
@@ -144,7 +145,13 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new RedirectResponse('http://foo.com/');
 
-        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        } else {
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
+        }
+
+        $event = new $class($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         $this->assertSame(true, $response->isRedirect());
@@ -157,7 +164,13 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new RedirectResponse($target);
 
-        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        } else {
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
+        }
+
+        $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         return $response;

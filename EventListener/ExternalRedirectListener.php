@@ -14,11 +14,15 @@ namespace Nelmio\SecurityBundle\EventListener;
 use Nelmio\SecurityBundle\ExternalRedirect\TargetValidator;
 use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * @final
+ */
 class ExternalRedirectListener
 {
     private $abort;
@@ -56,8 +60,16 @@ class ExternalRedirectListener
         $this->generator = $generator;
     }
 
-    public function onKernelResponse(FilterResponseEvent $e)
+    /**
+     * @param FilterResponseEvent|ResponseEvent $e
+     */
+    public function onKernelResponse($e)
     {
+        // Compatibility with Symfony < 5 and Symfony >=5
+        if (!$e instanceof FilterResponseEvent && !$e instanceof ResponseEvent) {
+            throw new \InvalidArgumentException(\sprintf('Expected instance of type %s, %s given', \class_exists(ResponseEvent::class) ? ResponseEvent::class : FilterResponseEvent::class, \is_object($e) ? \get_class($e) : \gettype($e)));
+        }
+
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
         }

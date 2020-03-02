@@ -13,8 +13,11 @@ namespace Nelmio\SecurityBundle\Twig\TokenParser;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\Twig\Node\CSPNode;
+use Twig\Node\TextNode;
+use Twig\Token;
+use Twig\TokenParser\AbstractTokenParser;
 
-abstract class AbstractCSPParser extends \Twig_TokenParser
+abstract class AbstractCSPParser extends AbstractTokenParser
 {
     protected $shaComputer;
     private $directive;
@@ -27,23 +30,23 @@ abstract class AbstractCSPParser extends \Twig_TokenParser
         $this->directive = $directive;
     }
 
-    public function parse(\Twig_Token $token)
+    public function parse(Token $token)
     {
         $lineno = $token->getLine();
 
-        $this->parser->getStream()->expect(\Twig_Token::BLOCK_END_TYPE);
+        $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
         $body = $this->parser->subparse(array($this, 'decideCSPScriptEnd'), true);
-        $this->parser->getStream()->expect(\Twig_Token::BLOCK_END_TYPE);
+        $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
 
         $sha = null;
-        if ($body instanceof \Twig_Node_Text) {
+        if ($body instanceof TextNode) {
             $sha = $this->computeSha($body->getAttribute('data'));
         }
 
         return new CSPNode($body, $lineno, $this->tag, $this->directive, $sha);
     }
 
-    public function decideCSPScriptEnd(\Twig_Token $token)
+    public function decideCSPScriptEnd(Token $token)
     {
         return $token->test('end'.$this->tag);
     }

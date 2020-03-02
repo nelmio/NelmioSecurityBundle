@@ -16,13 +16,18 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @final
+ */
 class FlexibleSslListener implements LogoutHandlerInterface
 {
     private $cookieName;
@@ -36,8 +41,16 @@ class FlexibleSslListener implements LogoutHandlerInterface
         $this->dispatcher = $dispatcher;
     }
 
-    public function onKernelRequest(GetResponseEvent $e)
+    /**
+     * @param GetResponseEvent|RequestEvent $e
+     */
+    public function onKernelRequest($e)
     {
+        // Compatibility with Symfony < 5 and Symfony >=5
+        if (!$e instanceof GetResponseEvent && !$e instanceof RequestEvent) {
+            throw new \InvalidArgumentException(\sprintf('Expected instance of type %s, %s given', \class_exists(RequestEvent::class) ? RequestEvent::class : GetResponseEvent::class, \is_object($e) ? \get_class($e) : \gettype($e)));
+        }
+
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
         }
@@ -55,8 +68,16 @@ class FlexibleSslListener implements LogoutHandlerInterface
         $this->dispatcher->addListener('kernel.response', array($this, 'onPostLoginKernelResponse'), -1000);
     }
 
-    public function onPostLoginKernelResponse(FilterResponseEvent $e)
+    /**
+     * @param FilterResponseEvent|ResponseEvent $e
+     */
+    public function onPostLoginKernelResponse($e)
     {
+        // Compatibility with Symfony < 5 and Symfony >=5
+        if (!$e instanceof FilterResponseEvent && !$e instanceof ResponseEvent) {
+            throw new \InvalidArgumentException(\sprintf('Expected instance of type %s, %s given', \class_exists(ResponseEvent::class) ? ResponseEvent::class : FilterResponseEvent::class, \is_object($e) ? \get_class($e) : \gettype($e)));
+        }
+
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
         }

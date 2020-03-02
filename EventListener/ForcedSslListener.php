@@ -13,9 +13,14 @@ namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * @final
+ */
 class ForcedSslListener
 {
     private $hstsMaxAge;
@@ -35,8 +40,16 @@ class ForcedSslListener
         $this->redirectStatusCode = $redirectStatusCode;
     }
 
-    public function onKernelRequest(GetResponseEvent $e)
+    /**
+     * @param GetResponseEvent|RequestEvent $e
+     */
+    public function onKernelRequest($e)
     {
+        // Compatibility with Symfony < 5 and Symfony >=5
+        if (!$e instanceof GetResponseEvent && !$e instanceof RequestEvent) {
+            throw new \InvalidArgumentException(\sprintf('Expected instance of type %s, %s given', \class_exists(RequestEvent::class) ? RequestEvent::class : GetResponseEvent::class, \is_object($e) ? \get_class($e) : \gettype($e)));
+        }
+
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
         }
@@ -44,7 +57,7 @@ class ForcedSslListener
         $request = $e->getRequest();
 
         // skip SSL & non-GET/HEAD requests
-        if ($request->isSecure() || !$request->isMethodSafe(false)) {
+        if ($request->isSecure() || !$request->isMethodSafe()) {
             return;
         }
 
@@ -62,8 +75,16 @@ class ForcedSslListener
         $e->setResponse(new RedirectResponse('https://'.substr($request->getUri(), 7), $this->redirectStatusCode));
     }
 
-    public function onKernelResponse(FilterResponseEvent $e)
+    /**
+     * @param FilterResponseEvent|ResponseEvent $e
+     */
+    public function onKernelResponse($e)
     {
+        // Compatibility with Symfony < 5 and Symfony >=5
+        if (!$e instanceof FilterResponseEvent && !$e instanceof ResponseEvent) {
+            throw new \InvalidArgumentException(\sprintf('Expected instance of type %s, %s given', \class_exists(ResponseEvent::class) ? ResponseEvent::class : FilterResponseEvent::class, \is_object($e) ? \get_class($e) : \gettype($e)));
+        }
+
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
         }

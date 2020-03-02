@@ -2,14 +2,10 @@
 
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
@@ -247,23 +243,29 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
 
         $header = $response->headers->get('Content-Security-Policy');
 
-        $this->assertContains("default-src example.org 'self'", $header, 'Header should contain default-src');
-        $this->assertContains("script-src script.example.org 'self'", $header, 'Header should contain script-src');
-        $this->assertContains("object-src object.example.org 'self'", $header, 'Header should contain object-src');
-        $this->assertContains("style-src style.example.org 'self'", $header, 'Header should contain style-src');
-        $this->assertContains("img-src img.example.org 'self'", $header, 'Header should contain img-src');
-        $this->assertContains("media-src media.example.org 'self'", $header, 'Header should contain media-src');
-        $this->assertContains("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
-        $this->assertContains("font-src font.example.org 'self'", $header, 'Header should contain font-src');
-        $this->assertContains("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
-        $this->assertContains('report-uri http://example.org/CSPReport', $header, 'Header should contain report-uri');
-        $this->assertContains("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
-        $this->assertContains("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
-        $this->assertContains("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
-        $this->assertContains("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
-        $this->assertContains('plugin-types application/shockwave-flash', $header, 'Header should contain plugin-types');
-        $this->assertContains('block-all-mixed-content', $header, 'Header should contain block-all-mixed-content');
-        $this->assertContains('upgrade-insecure-requests', $header, 'Header should contain upgrade-insecure-requests');
+        if (method_exists($this, 'assertStringContainsString')) {
+            $assertMethod = 'assertStringContainsString';
+        } else {
+            $assertMethod = 'assertContains';
+        }
+
+        $this->{$assertMethod}("default-src example.org 'self'", $header, 'Header should contain default-src');
+        $this->{$assertMethod}("script-src script.example.org 'self'", $header, 'Header should contain script-src');
+        $this->{$assertMethod}("object-src object.example.org 'self'", $header, 'Header should contain object-src');
+        $this->{$assertMethod}("style-src style.example.org 'self'", $header, 'Header should contain style-src');
+        $this->{$assertMethod}("img-src img.example.org 'self'", $header, 'Header should contain img-src');
+        $this->{$assertMethod}("media-src media.example.org 'self'", $header, 'Header should contain media-src');
+        $this->{$assertMethod}("frame-src frame.example.org 'self'", $header, 'Header should contain frame-src');
+        $this->{$assertMethod}("font-src font.example.org 'self'", $header, 'Header should contain font-src');
+        $this->{$assertMethod}("connect-src connect.example.org 'self'", $header, 'Header should contain connect-src');
+        $this->{$assertMethod}('report-uri http://example.org/CSPReport', $header, 'Header should contain report-uri');
+        $this->{$assertMethod}("base-uri base-uri.example.org 'self'", $header, 'Header should contain base-uri');
+        $this->{$assertMethod}("child-src child-src.example.org 'self'", $header, 'Header should contain child-src');
+        $this->{$assertMethod}("form-action form-action.example.org 'self'", $header, 'Header should contain form-action');
+        $this->{$assertMethod}("frame-ancestors frame-ancestors.example.org 'self'", $header, 'Header should contain frame-ancestors');
+        $this->{$assertMethod}('plugin-types application/shockwave-flash', $header, 'Header should contain plugin-types');
+        $this->{$assertMethod}('block-all-mixed-content', $header, 'Header should contain block-all-mixed-content');
+        $this->{$assertMethod}('upgrade-insecure-requests', $header, 'Header should contain upgrade-insecure-requests');
     }
 
     public function testDelimiter()
@@ -407,7 +409,14 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
     protected function callListener(ContentSecurityPolicyListener $listener, $path, $masterReq, $contentType = 'text/html', array $digestData = array(), $getNonce = 0)
     {
         $request = Request::create($path);
-        $event = new GetResponseEvent(
+
+        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        } else {
+            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
+        }
+
+        $event = new $class(
             $this->kernel,
             $request,
             $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST
@@ -442,7 +451,13 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
         $response = new Response();
         $response->headers->add(array('content-type' => $contentType));
 
-        $event = new FilterResponseEvent(
+        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        } else {
+            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
+        }
+
+        $event = new $class(
             $this->kernel,
             $request,
             $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,
