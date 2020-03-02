@@ -1,3 +1,7 @@
+### 2.8.0 (2020-03-02)
+
+  * Fixed deprecated/invalid method usage on logger interface
+
 ### 2.7.0 (2019-04-03)
 
   * Use base64 for encoding nonces
