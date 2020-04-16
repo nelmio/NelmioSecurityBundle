@@ -115,6 +115,7 @@ nelmio_security:
     xss_protection:
         enabled: true
         mode_block: true
+        report_uri: %router.request_context.base_url%/nelmio/xss/report
 
     # Send a full URL in the `Referer` header when performing a same-origin request,
     # only send the origin of the document to secure destination (HTTPS->HTTPS),
@@ -797,6 +798,7 @@ nelmio_security:
     xss_protection:
         enabled: true
         mode_block: true
+        report_uri: %router.request_context.base_url%/nelmio/xss/report
 ```
 
 ### Referrer Policy
