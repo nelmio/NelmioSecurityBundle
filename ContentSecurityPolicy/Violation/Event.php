@@ -11,7 +11,21 @@
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
-use Symfony\Component\EventDispatcher\Event as BaseEvent;
+if (\class_exists(\Symfony\Component\EventDispatcher\Event::class)) {
+    /**
+     * @internal
+     */
+    class BaseEvent extends \Symfony\Component\EventDispatcher\Event
+    {
+    }
+} else {
+    /**
+     * @internal
+     */
+    class BaseEvent extends \Symfony\Contracts\EventDispatcher\Event
+    {
+    }
+}
 
 class Event extends BaseEvent
 {
