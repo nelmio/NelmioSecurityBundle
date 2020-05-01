@@ -24,6 +24,7 @@ class UAFamilyParser implements UAFamilyParserInterface
 
     public function getUaFamily($userAgent)
     {
+        if ($userAgent === null) $userAgent = '';
         return strtolower($this->parser->parse($userAgent)->ua->family);
     }
 }
