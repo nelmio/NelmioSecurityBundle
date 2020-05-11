@@ -1,3 +1,6 @@
+### 2.9.1
+  * Ensure passing the correct type to UAParser::parse
+
 ### 2.9.0 (2020-03-02)
 
   * Symfony 5 compatibility added
