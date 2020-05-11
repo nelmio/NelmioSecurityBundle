@@ -1,5 +1,8 @@
-### 2.9.1
+### 2.9.1 (2020-05-11)
   * Ensure passing the correct type to UAParser::parse
+  * Use Symfony DI Reference instead of Definition
+  * Optimize regular expressions in the sha computer
+  * Show non-deprecated usage of the csp_nonce Twig function
 
 ### 2.9.0 (2020-03-02)
 
