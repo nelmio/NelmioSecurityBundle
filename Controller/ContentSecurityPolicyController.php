@@ -18,9 +18,10 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Log\Logger;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ContentSecurityPolicyController
 {
@@ -28,7 +29,7 @@ class ContentSecurityPolicyController
     private $filter;
     private $dispatcher;
 
-    public function __construct($logger, EventDispatcherInterface $dispatcher = null, Filter $filter = null)
+    public function __construct($logger, $dispatcher = null, Filter $filter = null)
     {
         $this->logger = $logger;
         $this->filter = $filter;
@@ -43,6 +44,10 @@ class ContentSecurityPolicyController
         }
         if (null === $filter) {
             trigger_error(sprintf('%s\'s takes an %s instance as third argument since version 2.1; it will be required in version 3', self::class, Filter::class), E_USER_DEPRECATED);
+        }
+
+        if (null !== $dispatcher && !$dispatcher instanceof LegacyEventDispatcherInterface && !$dispatcher instanceof EventDispatcherInterface) {
+            throw new \TypeError(sprintf('The second argument of %s() must be an instance of "%s" or "%s" ("%s" given).', __METHOD__, EventDispatcherInterface::class, LegacyEventDispatcherInterface::class, is_object($dispatcher) ? get_class($object))): 
         }
     }
 
@@ -66,7 +71,11 @@ class ContentSecurityPolicyController
         }
 
         if ($this->dispatcher) {
-            $this->dispatcher->dispatch(Events::VIOLATION_REPORT, new Event($report));
+            if ($this->dispatcher instanceof EventDispatcherInterface) {
+                $this->dispatcher->dispatch(new Event($report), Events::VIOLATION_REPORT);
+            } else {
+                $this->dispatcher->dispatch(Events::VIOLATION_REPORT, new Event($report));
+            }
         }
 
         if ($this->logger instanceof LoggerInterface) {
