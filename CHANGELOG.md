@@ -1,3 +1,6 @@
+### 2.10.0 (2020-06-18)
+  * Ensure compatibility with Symfony EventDispatcher 5.x
+
 ### 2.9.1 (2020-05-11)
   * Ensure passing the correct type to UAParser::parse
   * Use Symfony DI Reference instead of Definition
