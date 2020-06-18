@@ -1,3 +1,6 @@
+### 2.10.1 (2020-06-18)
+  * Fix ContentSecurityPolicyController
+
 ### 2.10.0 (2020-06-18)
   * Ensure compatibility with Symfony EventDispatcher 5.x
 
