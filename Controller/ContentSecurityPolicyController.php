@@ -47,7 +47,7 @@ class ContentSecurityPolicyController
         }
 
         if (null !== $dispatcher && !$dispatcher instanceof LegacyEventDispatcherInterface && !$dispatcher instanceof EventDispatcherInterface) {
-            throw new \TypeError(sprintf('The second argument of %s() must be an instance of "%s" or "%s" ("%s" given).', __METHOD__, EventDispatcherInterface::class, LegacyEventDispatcherInterface::class, is_object($dispatcher) ? get_class($object))): 
+            throw new \InvalidArgumentException(sprintf('The second argument of %s() must be an instance of "%s" or "%s" ("%s" given).', __METHOD__, EventDispatcherInterface::class, LegacyEventDispatcherInterface::class, is_object($dispatcher) ? get_class($dispatcher) : ''));
         }
     }
 
