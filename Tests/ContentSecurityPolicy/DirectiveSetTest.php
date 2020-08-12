@@ -56,7 +56,9 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                 'style-src style.example.org \'self\'; '.
                 'upgrade-insecure-requests; '.
                 'report-uri http://report-uri; '.
-                'worker-src worker.example.com \'self\'',
+                'worker-src worker.example.com \'self\'; '.
+                'trusted-types foo; '.
+                'require-trusted-types-for \'script\'',
                 self::UA_CHROME,
                 array(
                     'default-src' => array('example.org', "'self'"),
@@ -76,6 +78,8 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
                     'form-action' => array('form-action.example.org', "'self'"),
                     'frame-ancestors' => array('frame-ancestors.example.org', "'self'"),
                     'plugin-types' => array('application/shockwave-flash'),
+                    'trusted-types' => array('foo'),
+                    'require-trusted-types-for' => array('script'),
                     'block-all-mixed-content' => true,
                     'upgrade-insecure-requests' => true,
                 ),

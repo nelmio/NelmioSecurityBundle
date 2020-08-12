@@ -50,7 +50,10 @@ class PolicyManager
 
     private function getChromeDirectives()
     {
-        return array_merge($this->getLevel3(), $this->getDraftDirectives());
+        return array_merge($this->getLevel3(), $this->getDraftDirectives(), array(
+            'trusted-types',
+            'require-trusted-types-for'
+        ));
     }
 
     private function getFirefoxDirectives()
@@ -107,8 +110,6 @@ class PolicyManager
                 'manifest-src',
                 'reflected-xss',
                 'worker-src',
-                'trusted-types',
-                'require-trusted-types-for'
             ));
         }
 

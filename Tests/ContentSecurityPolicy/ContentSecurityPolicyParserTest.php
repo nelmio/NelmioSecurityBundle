@@ -34,6 +34,8 @@ class ContentSecurityPolicyParserTest extends \PHPUnit\Framework\TestCase
             array('http://example.com', 'http://example.com'),
             array('http://example.com:81', 'http://example.com:81'),
             array('https://example.com', 'https://example.com'),
+            array("script", "'script'"),
+            array("style", "'style'")
         );
     }
 }
