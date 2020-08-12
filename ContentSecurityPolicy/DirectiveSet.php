@@ -21,6 +21,7 @@ class DirectiveSet
     const TYPE_ANCESTOR_SRC_LIST = 'ancestor-source-list';
     const TYPE_URI_REFERENCE = 'uri-reference';
     const TYPE_NO_VALUE = 'no-value';
+    const TYPE_POLICIES_LIST = "policies-list";
 
     private static $directiveNames = array(
         'default-src' => self::TYPE_SRC_LIST,
@@ -42,6 +43,8 @@ class DirectiveSet
         'upgrade-insecure-requests' => self::TYPE_NO_VALUE,
         'report-uri' => self::TYPE_URI_REFERENCE,
         'worker-src' => self::TYPE_SRC_LIST,
+        'trusted-types' => self::TYPE_POLICIES_LIST,
+        'require-trusted-types-for' => self::TYPE_POLICIES_LIST
     );
 
     private $directiveValues = array();

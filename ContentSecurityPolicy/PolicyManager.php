@@ -107,6 +107,8 @@ class PolicyManager
                 'manifest-src',
                 'reflected-xss',
                 'worker-src',
+                'trusted-types',
+                'require-trusted-types-for'
             ));
         }
 

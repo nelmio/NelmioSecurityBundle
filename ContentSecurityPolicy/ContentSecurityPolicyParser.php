@@ -22,6 +22,8 @@ class ContentSecurityPolicyParser
         'report-sample',
         'unsafe-allow-redirects',
         'none',
+        'script',
+        'style'
     );
 
     /**
