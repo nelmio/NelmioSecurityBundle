@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">5.4",
-        "paragonie/random_compat": "~1.0|~2.0|9.99.99",
+        "paragonie/random_compat": "~1.0|~2.0|9.99.*",
         "symfony/framework-bundle": "~2.3|~v3.0|~4.0|~5.0",
         "symfony/security-core": "~2.3|~3.0|~4.0|~5.0",
         "symfony/security-http": "~2.3|~3.0|~4.0|~5.0",
