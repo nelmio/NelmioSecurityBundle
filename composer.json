@@ -30,9 +30,6 @@
         "twig/twig": "^1.38|^2.10|^3.0",
         "symfony/phpunit-bridge": "^5.0.5"
     },
-    "suggest": {
-        "ua-parser/uap-php": "To allow adapt CSP directives given the user-agent"
-    },
     "autoload": {
         "psr-4": { "Nelmio\\SecurityBundle\\": "" },
         "exclude-from-classmap": [
