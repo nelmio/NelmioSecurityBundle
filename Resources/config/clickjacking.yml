@@ -4,5 +4,6 @@ services:
         arguments:
             - '%nelmio_security.clickjacking.paths%'
             - '%nelmio_security.clickjacking.content_types%'
+            - '%nelmio_security.clickjacking.hosts%'
         tags:
             - { name: kernel.event_subscriber }

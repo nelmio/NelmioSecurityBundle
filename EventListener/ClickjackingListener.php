@@ -22,11 +22,13 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
     private $paths;
+    private $hosts;
 
-    public function __construct(array $paths, array $contentTypes = array())
+    public function __construct(array $paths, array $contentTypes = array(), array $hosts = array())
     {
         parent::__construct($contentTypes);
         $this->paths = $paths;
+        $this->hosts = $hosts ? '('.implode('|', $hosts).')' : null;
     }
 
     public static function getSubscribedEvents()
@@ -52,13 +54,24 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
             return;
         }
 
+        $request = $e->getRequest();
         $response = $e->getResponse();
 
         if ($response->isRedirection()) {
             return;
         }
 
-        $currentPath = $e->getRequest()->getRequestUri() ?: '/';
+        if ($response->headers->has('X-Frame-Options')) {
+            // Do not overwrite an existing header
+            return;
+        }
+
+        // skip non-listed hosts
+        if (!empty($this->hosts) && !preg_match('{'.$this->hosts.'}i', $request->getHost() ?: '/')) {
+            return;
+        }
+
+        $currentPath = $request->getRequestUri() ?: '/';
 
         foreach ($this->paths as $path => $options) {
             if (preg_match('{'.$path.'}i', $currentPath)) {

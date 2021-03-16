@@ -52,6 +52,7 @@ class NelmioSecurityExtension extends Extension
         if (!empty($config['clickjacking'])) {
             $loader->load('clickjacking.yml');
             $container->setParameter('nelmio_security.clickjacking.paths', $config['clickjacking']['paths']);
+            $container->setParameter('nelmio_security.clickjacking.hosts', $config['clickjacking']['hosts']);
             $container->setParameter('nelmio_security.clickjacking.content_types', $config['clickjacking']['content_types']);
         }
 

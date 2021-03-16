@@ -20,18 +20,19 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
 {
     private $kernel;
     private $listener;
+    private $clickjackingPaths = [
+        '^/frames/' => ['header' => 'ALLOW'],
+        '/frames/' => ['header' => 'SAMEORIGIN'],
+        '^.*\?[^\?]*foo=bar' => ['header' => 'ALLOW'],
+        '/this/allow' => ['header' => 'ALLOW-FROM http://biz.domain.com'],
+        '^/.*' => ['header' => 'DENY'],
+        '.*' => ['header' => 'ALLOW'],
+    ];
 
     protected function setUp()
     {
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
-        $this->listener = new ClickjackingListener(array(
-            '^/frames/' => array('header' => 'ALLOW'),
-            '/frames/' => array('header' => 'SAMEORIGIN'),
-            '^.*\?[^\?]*foo=bar' => array('header' => 'ALLOW'),
-            '/this/allow' => array('header' => 'ALLOW-FROM http://biz.domain.com'),
-            '^/.*' => array('header' => 'DENY'),
-            '.*' => array('header' => 'ALLOW'),
-        ));
+        $this->listener = new ClickjackingListener($this->clickjackingPaths);
     }
 
     /**
@@ -119,5 +120,42 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
             array('application/json', null),
             array('text/html', 'DENY'),
         );
+    }
+
+    /**
+     * @dataProvider provideClickjackingMatches
+     */
+    public function testClickjackingMatchesWithHost($path, $result)
+    {
+        $this->listener = new ClickjackingListener($this->clickjackingPaths, array(), array('^foo\.com$', '\.example\.org$'));
+
+        // Supported host should add header depending on path
+        $hostAndPath = 'http://foo.com' . $path;
+        $response = $this->callListener($this->listener, $hostAndPath, true);
+        $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
+
+        $hostAndPath = 'http://test.example.org' . $path;
+        $response = $this->callListener($this->listener, $hostAndPath, true);
+        $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
+
+        // Not supported host should not add header
+        $hostAndPath = 'http://localhost' . $path;
+        $response = $this->callListener($this->listener, $hostAndPath, true);
+        $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
+    }
+
+    /**
+     * @dataProvider provideClickjackingMatches
+     */
+    public function testClickjackingWithAlreadyDefinedHeader($path, $result)
+    {
+        $request = Request::create($path);
+        $response = new Response();
+        $response->headers->set('X-Frame-Options', 'ALLOW');
+
+        $event = new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $this->listener->onKernelResponse($event);
+
+        $this->assertEquals('ALLOW', $response->headers->get('X-Frame-Options'));
     }
 }
