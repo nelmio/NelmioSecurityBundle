@@ -1,3 +1,6 @@
+### 2.11.x (2021-xx-xx)
+  * Added `csp > request_matcher` option to allow the use of a custom request matcher (`Symfony\Component\HttpFoundation\RequestMatcherInterface`)
+
 ### 2.10.1 (2020-06-18)
   * Fix ContentSecurityPolicyController
 
