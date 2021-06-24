@@ -81,6 +81,7 @@ final class Configuration implements ConfigurationInterface
             ->canBeDisabled()
             // CSP is enabled by default to ensure BC
             ->children()
+                ->scalarNode('request_matcher')->defaultNull()->end()
                 ->arrayNode('hosts')->scalarPrototype()->end()->defaultValue([])->end()
                 ->arrayNode('content_types')->scalarPrototype()->end()->defaultValue([])->end()
                 ->arrayNode('report_endpoint')

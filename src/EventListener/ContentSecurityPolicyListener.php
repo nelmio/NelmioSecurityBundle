@@ -17,6 +17,7 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGeneratorInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -43,6 +44,7 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
     private ?array $sha = null;
     private NonceGeneratorInterface $nonceGenerator;
     private ShaComputerInterface $shaComputer;
+    private ?RequestMatcherInterface $requestMatcher;
 
     /**
      * @param list<string> $hosts
@@ -55,7 +57,8 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         ShaComputerInterface $shaComputer,
         bool $compatHeaders = true,
         array $hosts = [],
-        array $contentTypes = []
+        array $contentTypes = [],
+        ?RequestMatcherInterface $requestMatcher = null
     ) {
         parent::__construct($contentTypes);
         $this->report = $report;
@@ -64,6 +67,7 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         $this->hosts = $hosts;
         $this->nonceGenerator = $nonceGenerator;
         $this->shaComputer = $shaComputer;
+        $this->requestMatcher = $requestMatcher;
     }
 
     public function onKernelRequest(RequestEvent $e): void
@@ -151,7 +155,13 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
             return;
         }
 
-        if (([] === $this->hosts || \in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
+        if ($this->requestMatcher) {
+            $match = $this->requestMatcher->matches($request);
+        } else {
+            $match = ([] === $this->hosts || \in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response);
+        }
+
+        if ($match) {
             $signatures = $this->sha;
             if (null !== $this->scriptNonce) {
                 $signatures['script-src'][] = 'nonce-'.$this->scriptNonce;

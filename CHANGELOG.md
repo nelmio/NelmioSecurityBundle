@@ -1,5 +1,6 @@
 ### 3.x.x (xxxx-xx-xx)
 * Fixed overriding CSP header
+* Added `csp > request_matcher` option to allow the use of a custom request matcher (`Symfony\Component\HttpFoundation\RequestMatcherInterface`)
 
 ### 3.0.0 (2022-03-17)
 * Bump minimal PHP version to 7.4
