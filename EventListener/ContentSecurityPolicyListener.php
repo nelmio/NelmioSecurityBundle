@@ -14,6 +14,7 @@ namespace Nelmio\SecurityBundle\EventListener;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -37,8 +38,9 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
     protected $sha;
     protected $nonceGenerator;
     protected $shaComputer;
+    protected $requestMatcher;
 
-    public function __construct(DirectiveSet $report, DirectiveSet $enforce, NonceGenerator $nonceGenerator, ShaComputer $shaComputer, $compatHeaders = true, array $hosts = array(), array $contentTypes = array())
+    public function __construct(DirectiveSet $report, DirectiveSet $enforce, NonceGenerator $nonceGenerator, ShaComputer $shaComputer, $compatHeaders = true, array $hosts = array(), array $contentTypes = array(), RequestMatcherInterface $requestMatcher = null)
     {
         parent::__construct($contentTypes);
         $this->report = $report;
@@ -47,6 +49,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->hosts = $hosts;
         $this->nonceGenerator = $nonceGenerator;
         $this->shaComputer = $shaComputer;
+        $this->requestMatcher = $requestMatcher;
     }
 
     /**
@@ -163,7 +166,13 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
             return;
         }
 
-        if ((empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
+        if ($this->requestMatcher) {
+            $match = $this->requestMatcher->matches($request);
+        } else {
+            $match = empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true);
+        }
+
+        if ($match && $this->isContentTypeValid($response)) {
             $signatures = $this->sha;
             if ($this->scriptNonce) {
                 $signatures['script-src'][] = 'nonce-'.$this->scriptNonce;
