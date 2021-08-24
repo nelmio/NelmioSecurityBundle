@@ -107,6 +107,7 @@ class PolicyManager
                 'manifest-src',
                 'reflected-xss',
                 'worker-src',
+                'prefetch-src',
             ));
         }
 

@@ -42,6 +42,7 @@ class DirectiveSet
         'upgrade-insecure-requests' => self::TYPE_NO_VALUE,
         'report-uri' => self::TYPE_URI_REFERENCE,
         'worker-src' => self::TYPE_SRC_LIST,
+        'prefetch-src' => self::TYPE_SRC_LIST,
     );
 
     private $directiveValues = array();
