@@ -17,6 +17,7 @@ class ContentSecurityPolicyParser
         'self',
         'unsafe-inline',
         'unsafe-eval',
+        'wasm-unsafe-eval',
         'strict-dynamic',
         'unsafe-hashes',
         'report-sample',
