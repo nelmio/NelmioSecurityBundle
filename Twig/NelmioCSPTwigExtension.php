@@ -29,6 +29,9 @@ class NelmioCSPTwigExtension extends AbstractExtension
         $this->shaComputer = $shaComputer;
     }
 
+    /**
+     * @return array
+     */
     public function getTokenParsers()
     {
         return array(new CSPScriptParser($this->shaComputer), new CSPStyleParser($this->shaComputer));
@@ -44,6 +47,9 @@ class NelmioCSPTwigExtension extends AbstractExtension
         return 'Nelmio\\SecurityBundle\\Twig\\NelmioCSPTwigExtension';
     }
 
+    /**
+     * @return array
+     */
     public function getFunctions()
     {
         return array(
