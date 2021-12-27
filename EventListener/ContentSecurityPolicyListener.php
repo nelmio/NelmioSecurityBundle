@@ -207,6 +207,9 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $headers;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(

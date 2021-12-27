@@ -123,6 +123,8 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function close()
     {
@@ -131,6 +133,8 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function destroy($sessionId)
     {
@@ -145,6 +149,8 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function gc($maxlifetime)
     {
@@ -153,6 +159,8 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function open($savePath, $sessionId)
     {
@@ -173,6 +181,8 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return string
      */
     public function read($sessionId)
     {
@@ -210,6 +220,8 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function write($sessionId, $sessionData)
     {

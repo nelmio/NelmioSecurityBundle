@@ -29,6 +29,9 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
         $this->paths = $paths;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(KernelEvents::RESPONSE => 'onKernelResponse');
