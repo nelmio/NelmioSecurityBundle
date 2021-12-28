@@ -126,6 +126,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function close()
     {
         return true;
@@ -136,6 +137,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function destroy($sessionId)
     {
         $this->cookie = null;
@@ -152,6 +154,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function gc($maxlifetime)
     {
         return true;
@@ -162,6 +165,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function open($savePath, $sessionId)
     {
         if (!$this->request) {
@@ -184,6 +188,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
      *
      * @return string
      */
+    #[\ReturnTypeWillChange]
     public function read($sessionId)
     {
         if (!$this->request) {
@@ -223,6 +228,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function write($sessionId, $sessionData)
     {
         if ($this->logger) {

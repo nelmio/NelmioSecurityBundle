@@ -41,7 +41,7 @@ class Signer
         list($value, $signature) = $this->splitSignatureFromSignedValue($signedValue);
         $signature2 = $this->generateSignature($value);
 
-        if (strlen($signature) !== strlen($signature2)) {
+        if ($signature === null || strlen($signature) !== strlen($signature2)) {
             return false;
         }
 
