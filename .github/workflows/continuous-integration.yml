@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SYMFONY_DEPRECATIONS_HELPER: max[self]=99999
+      SYMFONY_DEPRECATIONS_HELPER: max[self]=0
       SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
 
     strategy:
@@ -26,6 +26,7 @@ jobs:
           - 3.4
           - 4.4.x
           - 5.4.x
+          - 6.0.x
         dependencies:
           - highest
         include:
