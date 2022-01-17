@@ -69,6 +69,9 @@ class XssProtectionListener implements EventSubscriberInterface
         $response->headers->set('X-XSS-Protection', $value);
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(KernelEvents::RESPONSE => 'onKernelResponse');

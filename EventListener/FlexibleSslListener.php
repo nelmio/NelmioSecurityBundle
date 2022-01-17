@@ -20,15 +20,26 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Event\LogoutEvent;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
+if (interface_exists('Symfony\Component\Security\Http\Logout\LogoutHandlerInterface')) {
+    interface BaseFlexibleSslListener extends LogoutHandlerInterface
+    {
+    }
+} else {
+    interface BaseFlexibleSslListener
+    {
+    }
+}
 
 /**
  * @final
  */
-class FlexibleSslListener implements LogoutHandlerInterface
+class FlexibleSslListener implements BaseFlexibleSslListener
 {
     private $cookieName;
     private $unsecuredLogout;
@@ -134,6 +145,14 @@ class FlexibleSslListener implements LogoutHandlerInterface
         ));
     }
 
+    public function onLogout(LogoutEvent $e)
+    {
+        $this->logout($e->getRequest(), $e->getResponse(), $e->getToken());
+    }
+
+    /**
+     * Legacy method called from deprecated/removed Symfony\Component\Security\Http\Logout\LogoutHandlerInterface
+     */
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
         if ($this->unsecuredLogout) {

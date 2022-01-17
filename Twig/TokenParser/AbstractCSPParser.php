@@ -30,6 +30,9 @@ abstract class AbstractCSPParser extends AbstractTokenParser
         $this->directive = $directive;
     }
 
+    /**
+     * @return CSPNode
+     */
     public function parse(Token $token)
     {
         $lineno = $token->getLine();
@@ -51,6 +54,9 @@ abstract class AbstractCSPParser extends AbstractTokenParser
         return $token->test('end'.$this->tag);
     }
 
+    /**
+     * @return string
+     */
     public function getTag()
     {
         return $this->tag;

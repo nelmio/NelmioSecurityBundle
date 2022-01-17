@@ -26,6 +26,9 @@ class CSPNode extends Node
         $this->directive = $directive;
     }
 
+    /**
+     * @return void
+     */
     public function compile(Compiler $compiler)
     {
         $body = $this->getNode('body');
