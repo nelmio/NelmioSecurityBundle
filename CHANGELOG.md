@@ -1,3 +1,15 @@
+### x.x.x (xxxx-xx-xx)
+  * Added support for CSP "prefetch-src" directive
+  * Added support for CSP "wasm-unsafe-eval" keyword
+  * Added support for Symfony 6
+  * Fixed deprecations warnings using PHP 8.1
+
+### 2.10.3 (2021-03-16)
+  * Fix Symfony 5 compatibility issues
+
+### 2.10.2 (2021-02-17)
+  * Fix dependencies (allow installing on PHP 8 and explicitly require symfony/yaml)
+
 ### 2.10.1 (2020-06-18)
   * Fix ContentSecurityPolicyController
 
