@@ -8,11 +8,11 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         bootstrap="Tests/bootstrap.php"
+         bootstrap="tests/bootstrap.php"
 >
     <testsuites>
         <testsuite name="NelmioSecurityBundle Test Suite">
-            <directory suffix="Test.php">./Tests/</directory>
+            <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>
 
@@ -22,10 +22,9 @@
 
     <filter>
         <whitelist>
-            <directory>./</directory>
+            <directory>./src</directory>
             <exclude>
-                <directory>./Resources</directory>
-                <directory>./Tests/bootstrap.php</directory>
+                <directory>./src/Resources</directory>
             </exclude>
         </whitelist>
     </filter>
