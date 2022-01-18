@@ -1,3 +1,8 @@
+### 3.0.0 (xxxx-xx-xx)
+* Bump minimal PHP version to 7.4
+* Dropped support for Symfony < 4.4
+* Dropped support for Twig 1
+
 ### 2.11.0 (2022-01-18)
   * Added support for CSP "prefetch-src" directive
   * Added support for CSP "wasm-unsafe-eval" keyword
