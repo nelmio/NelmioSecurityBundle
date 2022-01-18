@@ -1,4 +1,4 @@
-### x.x.x (xxxx-xx-xx)
+### 2.11.0 (2022-01-18)
   * Added support for CSP "prefetch-src" directive
   * Added support for CSP "wasm-unsafe-eval" keyword
   * Added support for Symfony 6
