@@ -11,8 +11,8 @@
 
 namespace Nelmio\SecurityBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractContentTypeRestrictableListener implements EventSubscriberInterface
 {

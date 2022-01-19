@@ -16,9 +16,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Filter
 {
-    private $noiseDetectors = array();
+    private $noiseDetectors = [];
 
-    public function __construct(array $noiseDetectors = array())
+    public function __construct(array $noiseDetectors = [])
     {
         foreach ($noiseDetectors as $noiseDetector) {
             $this->addNoiseDetector($noiseDetector);

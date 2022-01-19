@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace  Nelmio\SecurityBundle\UserAgent;
+namespace Nelmio\SecurityBundle\UserAgent;
 
 interface UserAgentParserInterface
 {

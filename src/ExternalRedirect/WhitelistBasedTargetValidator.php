@@ -32,7 +32,7 @@ class WhitelistBasedTargetValidator implements TargetValidator
 
     public function isTargetAllowed($target)
     {
-        if ($this->whitelist === null || empty($this->whitelist)) {
+        if (null === $this->whitelist || empty($this->whitelist)) {
             return false;
         }
 

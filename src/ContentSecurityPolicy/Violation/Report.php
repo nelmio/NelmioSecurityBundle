@@ -11,16 +11,16 @@
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
-use Symfony\Component\HttpFoundation\Request;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\InvalidPayloadException;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspReportException;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException;
+use Symfony\Component\HttpFoundation\Request;
 
 class Report
 {
     private $data;
 
-    public function __construct(array $data = array())
+    public function __construct(array $data = [])
     {
         $this->data = $data;
     }
@@ -91,7 +91,7 @@ class Report
             return true;
         }
 
-        return $uri === 'data';
+        return 'data' === $uri;
     }
 
     public function getSourceFile()
@@ -114,7 +114,7 @@ class Report
 
         $json = @json_decode($content, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (JSON_ERROR_NONE !== json_last_error()) {
             throw new InvalidPayloadException('Content-Security-Policy Endpoint called with invalid JSON data', 400);
         }
 
@@ -137,10 +137,10 @@ class Report
 
         $blocked = isset($report['csp-report']['blocked-uri']) ? $report['csp-report']['blocked-uri'] : null;
 
-        $ret = array(
+        $ret = [
             'effective-directive' => $effective,
             'blocked-uri' => $blocked,
-        );
+        ];
 
         if (isset($report['csp-report']['script-sample'])) {
             $ret['script-sample'] = $report['csp-report']['script-sample'];

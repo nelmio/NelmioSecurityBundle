@@ -51,6 +51,6 @@ class ContentTypeListener
             return;
         }
 
-        $response->headers->add(array('X-Content-Type-Options' => 'nosniff'));
+        $response->headers->add(['X-Content-Type-Options' => 'nosniff']);
     }
 }

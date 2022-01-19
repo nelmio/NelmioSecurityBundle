@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy\Violation;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\BrowserBugsNoiseDetector;
@@ -46,152 +55,152 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         $firefox49 = new Request();
         $firefox49->headers->set('user-agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/49.0');
 
-        return array(
-            array(true, new Request(), array(
+        return [
+            [true, new Request(), [
                 'blocked-uri' => 'https://static.cmptch.com',
                 'effective-directive' => 'script-src',
-            )),
-            array(false, new Request(), array(
+            ]],
+            [false, new Request(), [
                 'blocked-uri' => 'https://google.com',
                 'effective-directive' => 'connect-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://partners.cmptch.com',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://partners.cmptch.com',
                 'effective-directive' => 'object-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://d144fqpiyasmrr.cloudfront.net/uploads/picture/59582.png',
                 'effective-directive' => 'img-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://cdncache-a.akamaihd.net',
                 'effective-directive' => 'font-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://i_vrtumcjs_info.tlscdn.com',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://i_vrtumcjs_info.tlscdn.com/path/to/script.js',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://d2x1jgnvxlnz25.cloudfront.net',
                 'effective-directive' => 'media-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'http://d2x1jgnvxlnz25.cloudfront.net',
                 'effective-directive' => 'media-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'd2x1jgnvxlnz25.cloudfront.net',
                 'effective-directive' => 'media-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://nikkomsgchannel',
                 'effective-directive' => 'connect-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'nikkomsgchannel',
                 'effective-directive' => 'connect-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://query.jollywallet.com',
                 'violated-directive' => 'script-src https://domain.com',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://query.jollywallet.com',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'https://api.jollywallet.com',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'source-file' => 'safari-extension://org.adblockplus.adblockplussafari-gryyzr985a',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
                 'script-sample' => 'try {  for(var lastpass_iter=0; lastpass',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
                 'script-sample' => '(function () {
 
         var event_id = docum',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
                 'script-sample' => 'try {
 window.AG_onLoad = function(func)',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
                 'script-sample' => 'var BlockAdBlock = function ()',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
                 'script-sample' => 'var FuckAdBlock = function ()',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
                 'script-sample' => "\n ;(function installGlobalHook(window) {",
-            )),
-            array(true, $firefox42, array(
+            ]],
+            [true, $firefox42, [
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, $firefox42, array(
+            ]],
+            [true, $firefox42, [
                 'blocked-uri' => 'about',
                 'effective-directive' => 'base-uri',
-            )),
-            array(true, $firefox42, array(
+            ]],
+            [true, $firefox42, [
                 'blocked-uri' => 'about:blank',
                 'effective-directive' => 'base-uri',
-            )),
-            array(true, $iceweasel38, array(
+            ]],
+            [true, $iceweasel38, [
                 'blocked-uri' => 'about:blank',
                 'effective-directive' => 'base-uri',
-            )),
-            array(true, $ff43mobile, array(
+            ]],
+            [true, $ff43mobile, [
                 'blocked-uri' => 'about:blank',
                 'effective-directive' => 'base-uri',
-            )),
-            array(false, $firefox43, array(
+            ]],
+            [false, $firefox43, [
                 'blocked-uri' => 'self',
                 'effective-directive' => 'script-src',
-            )),
-            array(false, $firefox49, array(
+            ]],
+            [false, $firefox49, [
                 'blocked-uri' => 'about:blank',
                 'effective-directive' => 'base-uri',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'ms-appx-web://',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'weixinping',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'ms-browser-extension',
                 'effective-directive' => 'script-src',
-            )),
-            array(true, new Request(), array(
+            ]],
+            [true, new Request(), [
                 'blocked-uri' => 'sraf://img',
                 'effective-directive' => 'img-src',
-            )),
-        );
+            ]],
+        ];
     }
 }

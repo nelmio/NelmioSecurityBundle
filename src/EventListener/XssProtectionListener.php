@@ -11,10 +11,10 @@
 
 namespace Nelmio\SecurityBundle\EventListener;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -62,7 +62,7 @@ class XssProtectionListener implements EventSubscriberInterface
             }
 
             if ($this->reportUri) {
-                $value .= '; report=' . $this->reportUri;
+                $value .= '; report='.$this->reportUri;
             }
         }
 
@@ -74,7 +74,7 @@ class XssProtectionListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::RESPONSE => 'onKernelResponse');
+        return [KernelEvents::RESPONSE => 'onKernelResponse'];
     }
 
     public static function fromConfig(array $config)

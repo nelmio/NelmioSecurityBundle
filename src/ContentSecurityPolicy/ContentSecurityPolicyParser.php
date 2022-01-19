@@ -13,7 +13,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
 class ContentSecurityPolicyParser
 {
-    protected $keywords = array(
+    protected $keywords = [
         'self',
         'unsafe-inline',
         'unsafe-eval',
@@ -23,7 +23,7 @@ class ContentSecurityPolicyParser
         'report-sample',
         'unsafe-allow-redirects',
         'none',
-    );
+    ];
 
     /**
      * @param array $sourceList
@@ -42,8 +42,6 @@ class ContentSecurityPolicyParser
     }
 
     /**
-     * @param array $sourceList
-     *
      * @return array
      */
     protected function quoteKeywords(array $sourceList)

@@ -49,14 +49,14 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
 
     public function provideHstsHeaders()
     {
-        return array(
-            array(60, true, false, 'max-age=60; includeSubDomains'),
-            array(60, false, false, 'max-age=60'),
-            array(3600, true, false, 'max-age=3600; includeSubDomains'),
-            array(3600, false, false, 'max-age=3600'),
-            array(3600, true, true, 'max-age=3600; includeSubDomains; preload'),
-            array(3600, false, true, 'max-age=3600; preload'),
-        );
+        return [
+            [60, true, false, 'max-age=60; includeSubDomains'],
+            [60, false, false, 'max-age=60'],
+            [3600, true, false, 'max-age=3600; includeSubDomains'],
+            [3600, false, false, 'max-age=3600'],
+            [3600, true, true, 'max-age=3600; includeSubDomains; preload'],
+            [3600, false, true, 'max-age=3600; preload'],
+        ];
     }
 
     public function testForcedSslSkipsSubReqs()
@@ -69,7 +69,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
 
     public function testForcedSslSkipsWhitelisted()
     {
-        $listener = new ForcedSslListener(60, true, false, array('^/foo/', 'bar'));
+        $listener = new ForcedSslListener(60, true, false, ['^/foo/', 'bar']);
 
         $response = $this->callListenerReq($listener, 'http://localhost/foo/lala', true);
         $this->assertSame(null, $response);
@@ -83,7 +83,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
 
     public function testForcedSslOnlyUsesHosts()
     {
-        $listener = new ForcedSslListener(60, true, false, array(), array('^foo\.com$', '\.example\.org$'));
+        $listener = new ForcedSslListener(60, true, false, [], ['^foo\.com$', '\.example\.org$']);
 
         $response = $this->callListenerReq($listener, 'http://afoo.com/foo/lala', true);
         $this->assertSame(null, $response);
@@ -102,7 +102,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $response = $this->callListenerReq($listener, '/foo/lala', true);
         $this->assertSame(302, $response->getStatusCode());
 
-        $listener = new ForcedSslListener(null, false, false, array(), array(), 301);
+        $listener = new ForcedSslListener(null, false, false, [], [], 301);
 
         $response = $this->callListenerReq($listener, '/foo/lala', true);
         $this->assertSame(301, $response->getStatusCode());

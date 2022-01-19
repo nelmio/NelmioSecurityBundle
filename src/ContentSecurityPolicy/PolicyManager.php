@@ -24,9 +24,7 @@ class PolicyManager
     }
 
     /**
-     * Returns the list of supported directives for the current Request
-     *
-     * @param Request $request
+     * Returns the list of supported directives for the current Request.
      *
      * @return array
      */
@@ -55,16 +53,16 @@ class PolicyManager
 
     private function getFirefoxDirectives()
     {
-        return array_diff(array_merge($this->getLevel3(), $this->getDraftDirectives()), array(
+        return array_diff(array_merge($this->getLevel3(), $this->getDraftDirectives()), [
             'block-all-mixed-content',
             'child-src',
             'plugin-types',
-        ));
+        ]);
     }
 
     private function getLevel1()
     {
-        static $directives = array(
+        static $directives = [
             'default-src',
             'connect-src',
             'font-src',
@@ -76,7 +74,7 @@ class PolicyManager
             'script-src',
             'style-src',
             'report-uri',
-        );
+        ];
 
         return $directives;
     }
@@ -86,13 +84,13 @@ class PolicyManager
         static $directives = null;
 
         if (null === $directives) {
-            $directives = array_merge($this->getLevel1(), array(
+            $directives = array_merge($this->getLevel1(), [
                 'base-uri',
                 'child-src',
                 'form-action',
                 'frame-ancestors',
                 'plugin-types',
-            ));
+            ]);
         }
 
         return $directives;
@@ -103,12 +101,12 @@ class PolicyManager
         static $directives = null;
 
         if (null === $directives) {
-            $directives = array_merge($this->getLevel2(), array(
+            $directives = array_merge($this->getLevel2(), [
                 'manifest-src',
                 'reflected-xss',
                 'worker-src',
                 'prefetch-src',
-            ));
+            ]);
         }
 
         return $directives;
@@ -116,10 +114,10 @@ class PolicyManager
 
     private function getDraftDirectives()
     {
-        static $directives = array(
+        static $directives = [
             'block-all-mixed-content',
             'upgrade-insecure-requests',
-        );
+        ];
 
         return $directives;
     }

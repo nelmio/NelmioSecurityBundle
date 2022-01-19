@@ -14,9 +14,9 @@ namespace Nelmio\SecurityBundle\EventListener;
 use Nelmio\SecurityBundle\Signer;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -53,7 +53,7 @@ class SignedCookieListener
 
         $request = $e->getRequest();
 
-        $names = $this->signedCookieNames === true ? $request->cookies->keys() : $this->signedCookieNames;
+        $names = true === $this->signedCookieNames ? $request->cookies->keys() : $this->signedCookieNames;
         foreach ($names as $name) {
             if ($request->cookies->has($name)) {
                 $cookie = $request->cookies->get($name);

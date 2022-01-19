@@ -27,22 +27,22 @@ class BrowserBugsNoiseDetector implements NoiseDetectorInterface
     public function match(Report $report, Request $request)
     {
         // https://bugzilla.mozilla.org/show_bug.cgi?id=1026520
-        if ($report->getDirective() === 'script-src' && $report->getUri() === 'self') {
+        if ('script-src' === $report->getDirective() && 'self' === $report->getUri()) {
             if (null !== $ua = $request->headers->get('user-agent')) {
                 $result = $this->uaParser->parse($ua);
 
-                if ($result->ua->family === 'Firefox' && $result->ua->major < 43) {
+                if ('Firefox' === $result->ua->family && $result->ua->major < 43) {
                     return true;
                 }
             }
         }
 
         // https://bugzilla.mozilla.org/show_bug.cgi?id=1263286
-        if ($report->getDirective() === 'base-uri' && in_array($report->getUri(), array('about:blank', 'about'), true)) {
+        if ('base-uri' === $report->getDirective() && in_array($report->getUri(), ['about:blank', 'about'], true)) {
             if (null !== $ua = $request->headers->get('user-agent')) {
                 $result = $this->uaParser->parse($ua);
 
-                if (in_array($result->ua->family, array('Firefox', 'Iceweasel', 'Firefox Mobile'), true) && $result->ua->major < 49) {
+                if (in_array($result->ua->family, ['Firefox', 'Iceweasel', 'Firefox Mobile'], true) && $result->ua->major < 49) {
                     return true;
                 }
             }

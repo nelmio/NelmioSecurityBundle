@@ -13,11 +13,11 @@ namespace Nelmio\SecurityBundle\EventListener;
 
 use Nelmio\SecurityBundle\ExternalRedirect\TargetValidator;
 use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -51,7 +51,7 @@ class ExternalRedirectListener
 
         if (is_string($targetValidator) || is_array($targetValidator)) {
             $targetValidator = new WhitelistBasedTargetValidator($targetValidator);
-        } elseif ($targetValidator !== null && !$targetValidator instanceof TargetValidator) {
+        } elseif (null !== $targetValidator && !$targetValidator instanceof TargetValidator) {
             throw new \LogicException('$targetValidator should be an array of hosts, a regular expression, or an implementation of TargetValidator.');
         }
         $this->targetValidator = $targetValidator;
@@ -98,7 +98,7 @@ class ExternalRedirectListener
         }
 
         if ($this->override) {
-            $parameters = array();
+            $parameters = [];
             if ($this->forwardAs) {
                 $parameters[$this->forwardAs] = $response->headers->get('Location');
             }
@@ -111,7 +111,7 @@ class ExternalRedirectListener
             } else {
                 $query = '';
                 if (count($parameters) > 0) {
-                    $query = (strpos($this->override, '?') === false) ? '?' : '&';
+                    $query = (false === strpos($this->override, '?')) ? '?' : '&';
                     $query .= http_build_query($parameters, null, '&');
                 }
                 $response->headers->set('Location', $this->override.$query);
@@ -122,10 +122,10 @@ class ExternalRedirectListener
     public function isExternalRedirect($source, $target)
     {
         // cleanup "\rhttp://foo.com/" and other null prefixeds to be scanned as valid internal redirect
-        $target = trim($target); 
+        $target = trim($target);
 
         // handle protocol-relative URLs that parse_url() doesn't like
-        if (substr($target, 0, 2) === '//') {
+        if ('//' === substr($target, 0, 2)) {
             $target = 'proto:'.$target;
         }
 

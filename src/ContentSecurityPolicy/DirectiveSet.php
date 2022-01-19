@@ -22,7 +22,7 @@ class DirectiveSet
     const TYPE_URI_REFERENCE = 'uri-reference';
     const TYPE_NO_VALUE = 'no-value';
 
-    private static $directiveNames = array(
+    private static $directiveNames = [
         'default-src' => self::TYPE_SRC_LIST,
         'base-uri' => self::TYPE_SRC_LIST_NOFB,
         'block-all-mixed-content' => self::TYPE_NO_VALUE,
@@ -43,9 +43,9 @@ class DirectiveSet
         'report-uri' => self::TYPE_URI_REFERENCE,
         'worker-src' => self::TYPE_SRC_LIST,
         'prefetch-src' => self::TYPE_SRC_LIST,
-    );
+    ];
 
-    private $directiveValues = array();
+    private $directiveValues = [];
     private $level1Fallback = true;
     private $policyManager = null;
 
@@ -73,7 +73,7 @@ class DirectiveSet
     public function setDirective($name, $value)
     {
         $this->checkDirectiveName($name);
-        if (self::$directiveNames[$name] === self::TYPE_NO_VALUE) {
+        if (self::TYPE_NO_VALUE === self::$directiveNames[$name]) {
             if ($value) {
                 $this->directiveValues[$name] = true;
             } else {
@@ -95,7 +95,7 @@ class DirectiveSet
 
     public function buildHeaderValue(Request $request, array $signatures = null)
     {
-        $policy = array();
+        $policy = [];
 
         if (isset($signatures['script-src'])) {
             $signatures['script-src'] = implode(' ', array_map(function ($value) { return sprintf('\'%s\'', $value); }, $signatures['script-src']));
@@ -129,7 +129,7 @@ class DirectiveSet
 
         if (!empty($signatures)) {
             $defaultSrc = $this->getDirective('default-src');
-            $isDefaultSrcSet = $defaultSrc !== '';
+            $isDefaultSrcSet = '' !== $defaultSrc;
 
             if ($isDefaultSrcSet && false === strpos($defaultSrc, '\'unsafe-inline\'')) {
                 $unsafeInline = $this->level1Fallback ? ' \'unsafe-inline\'' : '';
@@ -182,12 +182,12 @@ class DirectiveSet
 
     private function canNotBeFallbackedByDefault($name, $value)
     {
-        if ($name === 'default-src') {
+        if ('default-src' === $name) {
             return true;
         }
 
         // Only source-list can be fallbacked by default
-        if (self::$directiveNames[$name] !== self::TYPE_SRC_LIST) {
+        if (self::TYPE_SRC_LIST !== self::$directiveNames[$name]) {
             return true;
         }
 

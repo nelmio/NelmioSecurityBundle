@@ -11,16 +11,16 @@
 
 namespace Nelmio\SecurityBundle\EventListener;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 
 /**
  * @final
@@ -38,7 +38,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
     protected $nonceGenerator;
     protected $shaComputer;
 
-    public function __construct(DirectiveSet $report, DirectiveSet $enforce, NonceGenerator $nonceGenerator, ShaComputer $shaComputer, $compatHeaders = true, array $hosts = array(), array $contentTypes = array())
+    public function __construct(DirectiveSet $report, DirectiveSet $enforce, NonceGenerator $nonceGenerator, ShaComputer $shaComputer, $compatHeaders = true, array $hosts = [], array $contentTypes = [])
     {
         parent::__construct($contentTypes);
         $this->report = $report;
@@ -59,11 +59,11 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
             throw new \InvalidArgumentException(\sprintf('Expected instance of type %s, %s given', \class_exists(RequestEvent::class) ? RequestEvent::class : GetResponseEvent::class, \is_object($e) ? \get_class($e) : \gettype($e)));
         }
 
-        if ($e->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
         }
 
-        $this->sha = array();
+        $this->sha = [];
     }
 
     public function addSha($directive, $sha)
@@ -113,14 +113,14 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
     {
         $nonce = $this->doGetNonce();
 
-        if ($usage === null) {
+        if (null === $usage) {
             @trigger_error('Retrieving a nonce without a usage is deprecated since version 2.4, and will be removed in version 3', E_USER_DEPRECATED);
 
             $this->scriptNonce = $nonce;
             $this->styleNonce = $nonce;
-        } elseif ($usage === 'script') {
+        } elseif ('script' === $usage) {
             $this->scriptNonce = $nonce;
-        } elseif ($usage === 'style') {
+        } elseif ('style' === $usage) {
             $this->styleNonce = $nonce;
         } else {
             throw new \InvalidArgumentException('Invalid usage provided');
@@ -129,7 +129,8 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $nonce;
     }
 
-    private function doGetNonce() {
+    private function doGetNonce()
+    {
         if (null === $this->_nonce) {
             $this->_nonce = $this->nonceGenerator->generate();
         }
@@ -189,16 +190,16 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $headerValue = $directiveSet->buildHeaderValue($request, $signatures);
 
         if (!$headerValue) {
-            return array();
+            return [];
         }
 
         $hn = function ($name) use ($reportOnly) {
             return $name.($reportOnly ? '-Report-Only' : '');
         };
 
-        $headers = array(
+        $headers = [
             $hn('Content-Security-Policy') => $headerValue,
-        );
+        ];
 
         if ($compatHeaders) {
             $headers[$hn('X-Content-Security-Policy')] = $headerValue;
@@ -212,9 +213,9 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('onKernelRequest', 512),
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', 512],
             KernelEvents::RESPONSE => 'onKernelResponse',
-        );
+        ];
     }
 }

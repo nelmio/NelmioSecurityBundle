@@ -18,7 +18,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    private $referrerPolicies = array(
+    private $referrerPolicies = [
         'no-referrer',
         'no-referrer-when-downgrade',
         'same-origin',
@@ -28,7 +28,7 @@ class Configuration implements ConfigurationInterface
         'strict-origin-when-cross-origin',
         'unsafe-url',
         '',
-    );
+    ];
 
     /**
      * @return TreeBuilder
@@ -51,7 +51,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->arrayNode('names')
                             ->prototype('scalar')->end()
-                            ->defaultValue(array('*'))
+                            ->defaultValue(['*'])
                         ->end()
                         ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
                         ->scalarNode('hash_algo')->defaultValue('sha256')->end()
@@ -63,7 +63,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->arrayNode('names')
                             ->prototype('scalar')->end()
-                            ->defaultValue(array('*'))
+                            ->defaultValue(['*'])
                         ->end()
                         ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
                         ->scalarNode('algorithm')->defaultValue('rijndael-128')->end()
@@ -80,7 +80,7 @@ class Configuration implements ConfigurationInterface
                                 ->beforeNormalization()
                                     ->always(function ($v) {
                                         if (!is_array($v)) {
-                                            $v = array('header' => $v ?: 'DENY');
+                                            $v = ['header' => $v ?: 'DENY'];
                                         }
                                         if (isset($v['header'])) {
                                             $v['header'] = preg_replace_callback('{^(?:ALLOW|DENY|SAMEORIGIN|ALLOW-FROM)?}i', function ($m) { return strtoupper($m[0]); }, $v['header']);
@@ -91,7 +91,7 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                                 ->validate()
                                     ->ifTrue(function ($v) {
-                                        return isset($v['header']) && !in_array($v['header'], array('DENY', 'SAMEORIGIN', 'ALLOW'), true)
+                                        return isset($v['header']) && !in_array($v['header'], ['DENY', 'SAMEORIGIN', 'ALLOW'], true)
                                             && !preg_match('{^ALLOW-FROM \S+}', $v['header']);
                                     })
                                     ->thenInvalid('Possible header values are DENY, SAMEORIGIN, ALLOW and ALLOW-FROM [url], got: %s')
@@ -100,9 +100,9 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('header')->defaultValue('DENY')->end()
                                 ->end()
                             ->end()
-                            ->defaultValue(array('^/.*' => array('header' => 'DENY')))
+                            ->defaultValue(['^/.*' => ['header' => 'DENY']])
                         ->end()
-                        ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
+                        ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue([])->end()
                     ->end()
                 ->end()
 
@@ -140,11 +140,11 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('hsts_preload')->defaultFalse()->end()
                         ->arrayNode('whitelist')
                             ->prototype('scalar')->end()
-                            ->defaultValue(array())
+                            ->defaultValue([])
                         ->end()
                         ->arrayNode('hosts')
                             ->prototype('scalar')->end()
-                            ->defaultValue(array())
+                            ->defaultValue([])
                         ->end()
                         ->scalarNode('redirect_status_code')->defaultValue(302)->end()
                     ->end()
@@ -194,8 +194,8 @@ class Configuration implements ConfigurationInterface
             ->canBeDisabled()
             // CSP is enabled by default to ensure BC
             ->children()
-                ->arrayNode('hosts')->prototype('scalar')->end()->defaultValue(array())->end()
-                ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue(array())->end()
+                ->arrayNode('hosts')->prototype('scalar')->end()->defaultValue([])->end()
+                ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue([])->end()
                 ->arrayNode('report_endpoint')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -206,7 +206,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue('nelmio_security.csp_report.log_formatter')
                         ->end()
                         ->enumNode('log_level')
-                            ->values(array(
+                            ->values([
                                 LogLevel::ALERT,
                                 LogLevel::CRITICAL,
                                 LogLevel::DEBUG,
@@ -215,7 +215,7 @@ class Configuration implements ConfigurationInterface
                                 LogLevel::INFO,
                                 LogLevel::NOTICE,
                                 LogLevel::WARNING,
-                            ))
+                            ])
                             ->defaultValue('notice')
                         ->end()
                         ->arrayNode('filters')
@@ -233,14 +233,14 @@ class Configuration implements ConfigurationInterface
                                 ->beforeNormalization()
                                 ->always(function ($v) {
                                     if (!is_array($v)) {
-                                        return array($v);
+                                        return [$v];
                                     }
 
                                     return $v;
                                 })
                                 ->end()
                                 ->prototype('enum')
-                                    ->values(array_merge(array_keys(DirectiveSet::getNames()), array('*')))
+                                    ->values(array_merge(array_keys(DirectiveSet::getNames()), ['*']))
                                 ->end()
                             ->end()
                         ->end()
@@ -255,7 +255,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->enumNode('algorithm')
                             ->info('The algorithm to use for hashes')
-                            ->values(array('sha256', 'sha384', 'sha512'))
+                            ->values(['sha256', 'sha384', 'sha512'])
                             ->defaultValue('sha256')
                         ->end()
                     ->end()
@@ -297,10 +297,10 @@ class Configuration implements ConfigurationInterface
                         if (!is_array($v)) {
                             @trigger_error('browser_adaptive configuration is now an array. Using boolean is deprecated and will not be supported anymore in version 3', E_USER_DEPRECATED);
 
-                            return array(
+                            return [
                                 'enabled' => $v,
                                 'parser' => 'nelmio_security.ua_parser.ua_php',
-                            );
+                            ];
                         }
 
                         return $v;
@@ -314,13 +314,13 @@ class Configuration implements ConfigurationInterface
                     ->booleanNode($name)
                     ->defaultFalse()
                     ->end();
-            } elseif ($name === 'report-uri') {
+            } elseif ('report-uri' === $name) {
                 $children
                     ->arrayNode($name)
                         ->prototype('scalar')->end()
                         ->beforeNormalization()
                             ->ifString()
-                            ->then(function ($value) { return array($value); })
+                            ->then(function ($value) { return [$value]; })
                         ->end()
                     ->end();
             } elseif (DirectiveSet::TYPE_URI_REFERENCE === $type) {
@@ -346,10 +346,10 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('policies')
                     ->prototype('scalar')->end()
-                    ->defaultValue(array('no-referrer', 'no-referrer-when-downgrade'))
+                    ->defaultValue(['no-referrer', 'no-referrer-when-downgrade'])
                     ->beforeNormalization()
                         ->ifString()
-                        ->then(function ($value) { return array($value); })
+                        ->then(function ($value) { return [$value]; })
                     ->end()
                     ->validate()
                         ->always(function ($values) {

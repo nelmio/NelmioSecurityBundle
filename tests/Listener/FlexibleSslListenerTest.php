@@ -12,11 +12,11 @@
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\FlexibleSslListener;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 {

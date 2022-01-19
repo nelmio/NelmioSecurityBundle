@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +28,7 @@ class ReportTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspReportException');
         $this->expectExceptionMessage('Content-Security-Policy Endpoint called without "csp-report" data');
 
-        Report::fromRequest(new Request(array(), array(), array(), array(), array(), array(), '{}'));
+        Report::fromRequest(new Request([], [], [], [], [], [], '{}'));
     }
 
     public function testFromRequestWithInvalidJSON()
@@ -27,20 +36,20 @@ class ReportTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\InvalidPayloadException');
         $this->expectExceptionMessage('Content-Security-Policy Endpoint called with invalid JSON data');
 
-        Report::fromRequest(new Request(array(), array(), array(), array(), array(), array(), 'yolo'));
+        Report::fromRequest(new Request([], [], [], [], [], [], 'yolo'));
     }
 
     public function testFromRequest()
     {
-        $data = array(
+        $data = [
             'blocked-uri' => 'self',
             'effective-directive' => 'script-src',
             'script-sample' => 'try {  for(var lastpass_iter=0; lastpass',
-        );
+        ];
 
-        $report = Report::fromRequest(new Request(array(), array(), array(), array(), array(), array(), json_encode(array(
+        $report = Report::fromRequest(new Request([], [], [], [], [], [], json_encode([
             'csp-report' => $data,
-        ))));
+        ])));
 
         $this->assertSame($data, $report->getData());
         $this->assertFalse($report->isData());

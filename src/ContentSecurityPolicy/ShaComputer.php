@@ -18,7 +18,7 @@ class ShaComputer
 
     public function __construct($type)
     {
-        if (!in_array($type, array('sha256', 'sha384', 'sha512'), true)) {
+        if (!in_array($type, ['sha256', 'sha384', 'sha512'], true)) {
             throw new \InvalidArgumentException(sprintf('Type "%s" is not supported', $type));
         }
 

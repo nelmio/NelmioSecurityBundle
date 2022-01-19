@@ -80,7 +80,7 @@ class ContentSecurityPolicyController
 
         if ($this->logger instanceof LoggerInterface) {
             // deprecated
-            $this->logger->notice('Content-Security-Policy Violation Reported', array('csp-report' => $report->getData()));
+            $this->logger->notice('Content-Security-Policy Violation Reported', ['csp-report' => $report->getData()]);
         } else {
             $this->logger->log($report);
         }

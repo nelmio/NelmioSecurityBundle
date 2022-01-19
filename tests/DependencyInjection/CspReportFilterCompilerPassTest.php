@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\Tests\SecurityBundle\DependencyInjection\Compiler;
 
 use Nelmio\SecurityBundle\DependencyInjection\Compiler\CspReportFilterCompilerPass;
@@ -29,12 +38,12 @@ class CspReportFilterCompilerPassTest extends TestCase
         );
         $noiseDetectorDefinition->addTag('nelmio_security.csp_report_filter');
 
-        $builder->addDefinitions(array(
+        $builder->addDefinitions([
             'nelmio_security.csp_report.filter' => new Definition(
                 'Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter'
             ),
-            'nelmio_security.noise_detector' => $noiseDetectorDefinition
-        ));
+            'nelmio_security.noise_detector' => $noiseDetectorDefinition,
+        ]);
 
         $compilerPass = new CspReportFilterCompilerPass();
         $compilerPass->process($builder);

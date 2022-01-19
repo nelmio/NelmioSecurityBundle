@@ -37,7 +37,7 @@ class CustomRulesNoiseDetector implements NoiseDetectorInterface
                 continue;
             }
 
-            if ($pattern[0] === '/') {
+            if ('/' === $pattern[0]) {
                 if (preg_match($pattern, $uri)) {
                     return true;
                 }

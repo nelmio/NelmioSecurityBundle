@@ -34,7 +34,7 @@ class NelmioCSPTwigExtension extends AbstractExtension
      */
     public function getTokenParsers()
     {
-        return array(new CSPScriptParser($this->shaComputer), new CSPStyleParser($this->shaComputer));
+        return [new CSPScriptParser($this->shaComputer), new CSPStyleParser($this->shaComputer)];
     }
 
     public function getListener()
@@ -52,9 +52,9 @@ class NelmioCSPTwigExtension extends AbstractExtension
      */
     public function getFunctions()
     {
-        return array(
-            new TwigFunction('csp_nonce', array($this, 'getCSPNonce')),
-        );
+        return [
+            new TwigFunction('csp_nonce', [$this, 'getCSPNonce']),
+        ];
     }
 
     public function getCSPNonce($usage = null)
