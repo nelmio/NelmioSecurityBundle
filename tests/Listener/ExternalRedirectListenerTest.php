@@ -13,8 +13,8 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
@@ -38,23 +38,23 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
     public function provideRedirectMatcher()
     {
-        return array(
+        return [
             // internal
-            array('http://test.org/', 'http://test.org/foo', false),
-            array('http://test.org/', 'https://test.org/foo', false),
-            array('http://test.org/', '/foo', false),
-            array('http://test.org/', 'foo', false),
+            ['http://test.org/', 'http://test.org/foo', false],
+            ['http://test.org/', 'https://test.org/foo', false],
+            ['http://test.org/', '/foo', false],
+            ['http://test.org/', 'foo', false],
 
             // external
-            array('http://test.org/', 'http://example.org/foo', true),
-            array('http://test.org/', 'http://foo.test.org/', true),
-            array('http://test.org/', 'http://test.org.com/', true),
-            array('http://test.org/', 'http://foo.com/http://test.org/', true),
-            array('http://test.org/', '//foo.com/', true),
-            array('http://test.org/', "\r".'http://foo.com/', true),
-            array('http://test.org/', "\0\0".'http://foo.com/', true),
-            array('http://test.org/', "  ".'http://foo.com/', true),
-        );
+            ['http://test.org/', 'http://example.org/foo', true],
+            ['http://test.org/', 'http://foo.test.org/', true],
+            ['http://test.org/', 'http://test.org.com/', true],
+            ['http://test.org/', 'http://foo.com/http://test.org/', true],
+            ['http://test.org/', '//foo.com/', true],
+            ['http://test.org/', "\r".'http://foo.com/', true],
+            ['http://test.org/', "\0\0".'http://foo.com/', true],
+            ['http://test.org/', '  '.'http://foo.com/', true],
+        ];
     }
 
     /**
@@ -85,7 +85,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
      */
     public function testRedirectSkipsAllowedTargets()
     {
-        $listener = new ExternalRedirectListener(true, null, null, new WhitelistBasedTargetValidator(array('bar.com')));
+        $listener = new ExternalRedirectListener(true, null, null, new WhitelistBasedTargetValidator(['bar.com']));
 
         $response = $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com');
         $this->assertTrue($response->isRedirect());
@@ -106,12 +106,12 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
     public function provideRedirectWhitelistsFailing()
     {
-        return array(
-            array(array('bar.com', 'baz.com'), 'abaz.com'),
-            array(array('bar.com', 'baz.com'), 'moo.com'),
-            array(array('.co.uk'), 'telco.uk'),
-            array(array(), 'bar.com'),
-        );
+        return [
+            [['bar.com', 'baz.com'], 'abaz.com'],
+            [['bar.com', 'baz.com'], 'moo.com'],
+            [['.co.uk'], 'telco.uk'],
+            [[], 'bar.com'],
+        ];
     }
 
     /**
@@ -129,13 +129,13 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
     public function provideRedirectWhitelistsPassing()
     {
-        return array(
-            array(array('bar.com', 'baz.com'), 'bar.com'),
-            array(array('bar.com', 'baz.com'), '.baz.com'),
-            array(array('bar.com', 'baz.com'), 'foo.baz.com'),
-            array(array('.co.uk'), 'tel.co.uk'),
-            array(array(), ''),
-        );
+        return [
+            [['bar.com', 'baz.com'], 'bar.com'],
+            [['bar.com', 'baz.com'], '.baz.com'],
+            [['bar.com', 'baz.com'], 'foo.baz.com'],
+            [['.co.uk'], 'tel.co.uk'],
+            [[], ''],
+        ];
     }
 
     public function testListenerSkipsSubReqs()

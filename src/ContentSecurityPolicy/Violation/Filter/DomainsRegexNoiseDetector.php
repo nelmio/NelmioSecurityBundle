@@ -18,7 +18,7 @@ class DomainsRegexNoiseDetector implements NoiseDetectorInterface
 {
     public function match(Report $report, Request $request)
     {
-        static $patterns = array(
+        static $patterns = [
             '/^https?:\/\/.*\.pinterest\.com/',
             '/^https?:\/\/.*\.prestadb\.net/',
             '/^https?:\/\/.+\.akamaihd\.net/',
@@ -39,7 +39,7 @@ class DomainsRegexNoiseDetector implements NoiseDetectorInterface
             '/^https?:\/\/.*\.blogspot\.com/',
             '/^https?:\/\/bit\.ly/',
             '/^https?:\/\/browser\.gwdang\.com/',
-        );
+        ];
 
         if (null === $uri = $report->getUri()) {
             return false;

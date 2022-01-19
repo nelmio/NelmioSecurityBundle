@@ -18,7 +18,7 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
 {
     public function match(Report $report, Request $request)
     {
-        static $domains = array(
+        static $domains = [
             '%3c' => true,
             '1087072589.rsc.cdn77.org' => true,
             '11com.site' => true,
@@ -377,7 +377,7 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'yzy.admanaerofoil.com' => true,
             'zeromov.com' => true,
             'zillow.okta.com' => true,
-        );
+        ];
 
         if (!$domain = $report->getDomain()) {
             return false;

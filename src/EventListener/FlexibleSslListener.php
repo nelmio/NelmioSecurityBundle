@@ -11,20 +11,20 @@
 
 namespace Nelmio\SecurityBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 if (interface_exists('Symfony\Component\Security\Http\Logout\LogoutHandlerInterface')) {
     interface BaseFlexibleSslListener extends LogoutHandlerInterface
@@ -76,7 +76,7 @@ class FlexibleSslListener implements BaseFlexibleSslListener
 
     public function onLogin(InteractiveLoginEvent $e)
     {
-        $this->dispatcher->addListener('kernel.response', array($this, 'onPostLoginKernelResponse'), -1000);
+        $this->dispatcher->addListener('kernel.response', [$this, 'onPostLoginKernelResponse'], -1000);
     }
 
     /**
@@ -151,7 +151,7 @@ class FlexibleSslListener implements BaseFlexibleSslListener
     }
 
     /**
-     * Legacy method called from deprecated/removed Symfony\Component\Security\Http\Logout\LogoutHandlerInterface
+     * Legacy method called from deprecated/removed Symfony\Component\Security\Http\Logout\LogoutHandlerInterface.
      */
     public function logout(Request $request, Response $response, TokenInterface $token)
     {

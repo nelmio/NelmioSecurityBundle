@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 class UAParserCompilerPass implements CompilerPassInterface
@@ -16,6 +25,6 @@ class UAParserCompilerPass implements CompilerPassInterface
 
         $container
             ->getDefinition('nelmio_security.ua_parser')
-            ->setArguments(array(new Reference($container->getParameter('nelmio_browser_adaptive_parser'))));
+            ->setArguments([new Reference($container->getParameter('nelmio_browser_adaptive_parser'))]);
     }
 }

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\Tests\Twig;
 
 use Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension;
@@ -10,7 +19,7 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
 {
     public function testItWorksDynamically()
     {
-        $collectedShas = array();
+        $collectedShas = [];
 
         $shaComputer = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer')
             ->disableOriginalConstructor()
@@ -44,14 +53,14 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('<script type="text/javascript">console.log(\'123456\');</script>
 
 <style type="text/css">body{ background: black; }</style>
-', $twig->render('test-dynamic.twig', array('api_key' => '123456', 'color' => 'black')));
+', $twig->render('test-dynamic.twig', ['api_key' => '123456', 'color' => 'black']));
 
-        $this->assertSame(array('script-src' => array('sha-script'), 'style-src' => array('sha-style')), $collectedShas);
+        $this->assertSame(['script-src' => ['sha-script'], 'style-src' => ['sha-style']], $collectedShas);
     }
 
     public function testItWorksStatically()
     {
-        $collectedShas = array();
+        $collectedShas = [];
 
         $shaComputer = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer')
             ->disableOriginalConstructor()
@@ -84,6 +93,6 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
 <style type="text/css">body{ background: red; }</style>
 ', $twig->render('test-static.twig'));
 
-        $this->assertSame(array('script-src' => array('sha-script'), 'style-src' => array('sha-style')), $collectedShas);
+        $this->assertSame(['script-src' => ['sha-script'], 'style-src' => ['sha-style']], $collectedShas);
     }
 }

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ContentSecurityPolicyParser;
@@ -13,27 +22,27 @@ class ContentSecurityPolicyParserTest extends \PHPUnit\Framework\TestCase
     {
         $parser = new ContentSecurityPolicyParser();
 
-        $sourceList = array($source);
+        $sourceList = [$source];
         $result = $parser->parseSourceList($sourceList);
         $this->assertEquals($expected, $result, 'CSP parser should quote CSP keywords');
     }
 
     public function keywordsProvider()
     {
-        return array(
-            array('self', "'self'"),
-            array('unsafe-inline', "'unsafe-inline'"),
-            array('unsafe-eval', "'unsafe-eval'"),
-            array('unsafe-hashes', "'unsafe-hashes'"),
-            array('strict-dynamic', "'strict-dynamic'"),
-            array('report-sample', "'report-sample'"),
-            array('unsafe-allow-redirects', "'unsafe-allow-redirects'"),
-            array('none', "'none'"),
-            array('hostname', 'hostname'),
-            array('example.com', 'example.com'),
-            array('http://example.com', 'http://example.com'),
-            array('http://example.com:81', 'http://example.com:81'),
-            array('https://example.com', 'https://example.com'),
-        );
+        return [
+            ['self', "'self'"],
+            ['unsafe-inline', "'unsafe-inline'"],
+            ['unsafe-eval', "'unsafe-eval'"],
+            ['unsafe-hashes', "'unsafe-hashes'"],
+            ['strict-dynamic', "'strict-dynamic'"],
+            ['report-sample', "'report-sample'"],
+            ['unsafe-allow-redirects', "'unsafe-allow-redirects'"],
+            ['none', "'none'"],
+            ['hostname', 'hostname'],
+            ['example.com', 'example.com'],
+            ['http://example.com', 'http://example.com'],
+            ['http://example.com:81', 'http://example.com:81'],
+            ['https://example.com', 'https://example.com'],
+        ];
     }
 }

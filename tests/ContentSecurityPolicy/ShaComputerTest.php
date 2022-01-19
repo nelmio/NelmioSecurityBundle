@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
@@ -20,19 +29,19 @@ class ShaComputerTest extends \PHPUnit\Framework\TestCase
         $mdMultiline = 'sha256-FJZognZIK0t5xLh8JBt4m/9rjpkYa4lTySrcUdRWHPM=';
         $md = 'sha256-lClGOfcWqtQdAvO3zCRzZEg/4RmOMbr9/V54QO76j/A=';
 
-        return array(
-            array($mdMultiline, "
+        return [
+            [$mdMultiline, "
 
             <script>
             console.log('hello world!');
             </script>
 
-            "),
-            array($md, "<script>console.log('hello world!');</script>"),
-            array($md, "<script crossorigin=\"anonymous\">console.log('hello world!');</script>"),
-            array($md, "<SCRIPT>console.log('hello world!');</SCRIPT>"),
-            array($md, "<SCRIPT crossorigin=\"anonymous\">console.log('hello world!');</SCRIPT>"),
-        );
+            "],
+            [$md, "<script>console.log('hello world!');</script>"],
+            [$md, "<script crossorigin=\"anonymous\">console.log('hello world!');</script>"],
+            [$md, "<SCRIPT>console.log('hello world!');</SCRIPT>"],
+            [$md, "<SCRIPT crossorigin=\"anonymous\">console.log('hello world!');</SCRIPT>"],
+        ];
     }
 
     /**
@@ -49,8 +58,8 @@ class ShaComputerTest extends \PHPUnit\Framework\TestCase
         $mdMultiline = 'sha256-VbDrDAWYPqj9uExrJNmpK8bKIArMizR2+jcPhqSXO8M=';
         $md = 'sha256-dmskSo+yqoLHXIXCFWnQJvCkjkJJmENqTDRi5+il2Yw=';
 
-        return array(
-            array($mdMultiline, '
+        return [
+            [$mdMultiline, '
 
             <style>
                 body {
@@ -58,12 +67,12 @@ class ShaComputerTest extends \PHPUnit\Framework\TestCase
                 }
             </style>
 
-            '),
-            array($md, '<style>body { background-color: black; }</style>'),
-            array($md, '<style type="text/css">body { background-color: black; }</style>'),
-            array($md, '<STYLE>body { background-color: black; }</STYLE>'),
-            array($md, '<STYLE crossorigin="anonymous">body { background-color: black; }</STYLE>'),
-        );
+            '],
+            [$md, '<style>body { background-color: black; }</style>'],
+            [$md, '<style type="text/css">body { background-color: black; }</style>'],
+            [$md, '<STYLE>body { background-color: black; }</STYLE>'],
+            [$md, '<STYLE crossorigin="anonymous">body { background-color: black; }</STYLE>'],
+        ];
     }
 
     /**
@@ -79,11 +88,11 @@ class ShaComputerTest extends \PHPUnit\Framework\TestCase
 
     public function provideInvalidScriptCode()
     {
-        return array(
-            array(' <script> </script> <script> </script> '),
-            array(' <script>'),
-            array(''),
-            array(' <style></style'),
-        );
+        return [
+            [' <script> </script> <script> </script> '],
+            [' <script>'],
+            [''],
+            [' <style></style'],
+        ];
     }
 }

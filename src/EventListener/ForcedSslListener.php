@@ -12,10 +12,10 @@
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -30,7 +30,7 @@ class ForcedSslListener
     private $hosts;
     private $redirectStatusCode;
 
-    public function __construct($hstsMaxAge, $hstsSubdomains, $hstsPreload = false, array $whitelist = array(), array $hosts = array(), $redirectStatusCode = 302)
+    public function __construct($hstsMaxAge, $hstsSubdomains, $hstsPreload = false, array $whitelist = [], array $hosts = [], $redirectStatusCode = 302)
     {
         $this->hstsMaxAge = $hstsMaxAge;
         $this->hstsSubdomains = $hstsSubdomains;

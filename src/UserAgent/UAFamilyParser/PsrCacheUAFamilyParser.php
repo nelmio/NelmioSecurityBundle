@@ -12,7 +12,6 @@
 namespace Nelmio\SecurityBundle\UserAgent\UAFamilyParser;
 
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Cache\CacheException;
 
 class PsrCacheUAFamilyParser implements UAFamilyParserInterface
 {

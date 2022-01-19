@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\XssProtectionListener;
@@ -28,13 +37,13 @@ class XssProtectionListenerTest extends \PHPUnit\Framework\TestCase
 
     public function provideVariousConfigs()
     {
-        return array(
-            array('0', new XssProtectionListener(false, false)),
-            array('1', new XssProtectionListener(true, false)),
-            array('0', new XssProtectionListener(false, true)),
-            array('1; mode=block', new XssProtectionListener(true, true)),
-            array('1; mode=block; report=https://report.com/endpoint', new XssProtectionListener(true, true, 'https://report.com/endpoint')),
-        );
+        return [
+            ['0', new XssProtectionListener(false, false)],
+            ['1', new XssProtectionListener(true, false)],
+            ['0', new XssProtectionListener(false, true)],
+            ['1; mode=block', new XssProtectionListener(true, true)],
+            ['1; mode=block; report=https://report.com/endpoint', new XssProtectionListener(true, true, 'https://report.com/endpoint')],
+        ];
     }
 
     protected function callListener(XssProtectionListener $listener, $path, $masterReq)

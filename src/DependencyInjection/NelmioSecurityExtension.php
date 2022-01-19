@@ -18,16 +18,12 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\HttpKernel\Kernel;
 
 class NelmioSecurityExtension extends Extension
 {
     /**
      * Parses the configuration.
-     *
-     * @param array            $configs
-     * @param ContainerBuilder $container
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -65,7 +61,7 @@ class NelmioSecurityExtension extends Extension
             $reportDefinition = $this->buildDirectiveSetDefinition($container, $cspConfig, 'report');
 
             $cspListenerDefinition = $container->getDefinition('nelmio_security.csp_listener');
-            $cspListenerDefinition->setArguments(array($reportDefinition, $enforceDefinition, new Reference('nelmio_security.nonce_generator'), new Reference('nelmio_security.sha_computer'), (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']));
+            $cspListenerDefinition->setArguments([$reportDefinition, $enforceDefinition, new Reference('nelmio_security.nonce_generator'), new Reference('nelmio_security.sha_computer'), (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']]);
             $container->setParameter('nelmio_security.csp.hash_algorithm', $cspConfig['hash']['algorithm']);
 
             $cspViolationLogFilterDefinition = $container->getDefinition('nelmio_security.csp_report.filter');
@@ -75,24 +71,24 @@ class NelmioSecurityExtension extends Extension
             if (count($cspConfig['report_endpoint']['dismiss']) > 0) {
                 $container->getDefinition('nelmio_security.csp_report.filter.noise_detector_custom_rules')
                     ->replaceArgument(0, $cspConfig['report_endpoint']['dismiss']);
-                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_custom_rules')));
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', [new Reference('nelmio_security.csp_report.filter.noise_detector_custom_rules')]);
             }
 
             if ($cspConfig['report_endpoint']['filters']['domains']) {
-                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_domains')));
-                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_domains_regex')));
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', [new Reference('nelmio_security.csp_report.filter.noise_detector_domains')]);
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', [new Reference('nelmio_security.csp_report.filter.noise_detector_domains_regex')]);
             }
 
             if ($cspConfig['report_endpoint']['filters']['schemes']) {
-                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_schemes')));
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', [new Reference('nelmio_security.csp_report.filter.noise_detector_schemes')]);
             }
 
             if ($cspConfig['report_endpoint']['filters']['injected_scripts']) {
-                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_injected_scripts')));
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', [new Reference('nelmio_security.csp_report.filter.noise_detector_injected_scripts')]);
             }
 
             if ($cspConfig['report_endpoint']['filters']['browser_bugs']) {
-                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference('nelmio_security.csp_report.filter.noise_detector_browser_bugs')));
+                $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', [new Reference('nelmio_security.csp_report.filter.noise_detector_browser_bugs')]);
             }
 
             $loggerDefinition = $container->getDefinition('nelmio_security.csp_report.logger');
@@ -100,7 +96,7 @@ class NelmioSecurityExtension extends Extension
             $loggerDefinition->replaceArgument(1, new Reference($cspConfig['report_endpoint']['log_formatter']));
 
             if ($cspConfig['report_endpoint']['log_channel']) {
-                $loggerDefinition->addTag('monolog.logger', array('channel' => $cspConfig['report_endpoint']['log_channel']));
+                $loggerDefinition->addTag('monolog.logger', ['channel' => $cspConfig['report_endpoint']['log_channel']]);
             }
         }
 
@@ -108,7 +104,7 @@ class NelmioSecurityExtension extends Extension
             $loader->load('xss_protection.yml');
 
             $container->getDefinition('nelmio_security.xss_protection_listener')
-                ->setArguments(array($config['xss_protection']));
+                ->setArguments([$config['xss_protection']]);
         }
 
         if (!empty($config['content_type'])) {
@@ -164,7 +160,7 @@ class NelmioSecurityExtension extends Extension
             $loader->load('forced_ssl.yml');
             if ($config['forced_ssl']['hsts_max_age'] > 0) {
                 $def = $container->getDefinition('nelmio_security.forced_ssl_listener');
-                $def->addTag('kernel.event_listener', array('event' => 'kernel.response', 'method' => 'onKernelResponse'));
+                $def->addTag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse']);
             }
             $container->setParameter('nelmio_security.forced_ssl.hsts_max_age', $config['forced_ssl']['hsts_max_age']);
             $container->setParameter('nelmio_security.forced_ssl.hsts_subdomains', $config['forced_ssl']['hsts_subdomains']);
@@ -184,7 +180,7 @@ class NelmioSecurityExtension extends Extension
     {
         $directiveDefinition = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
 
-        $directiveDefinition->setFactory(array('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet', 'fromConfig'));
+        $directiveDefinition->setFactory(['Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet', 'fromConfig']);
 
         $pmDefinition = $container->getDefinition('nelmio_security.policy_manager');
 
@@ -194,12 +190,12 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_browser_adaptive_parser', $service);
 
             $uaParser = $container->getDefinition('nelmio_security.ua_parser');
-            $uaParser->setArguments(array(new Reference('nelmio_security.ua_parser.ua_php')));
+            $uaParser->setArguments([new Reference('nelmio_security.ua_parser.ua_php')]);
 
-            $pmDefinition->setArguments(array(new Reference('nelmio_security.ua_parser')));
+            $pmDefinition->setArguments([new Reference('nelmio_security.ua_parser')]);
         }
 
-        $directiveDefinition->setArguments(array($pmDefinition, $config, $type));
+        $directiveDefinition->setArguments([$pmDefinition, $config, $type]);
 
         return $directiveDefinition;
     }

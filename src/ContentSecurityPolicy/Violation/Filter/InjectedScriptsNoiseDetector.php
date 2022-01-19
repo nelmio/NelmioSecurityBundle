@@ -18,7 +18,7 @@ class InjectedScriptsNoiseDetector implements NoiseDetectorInterface
 {
     public function match(Report $report, Request $request)
     {
-        $patterns = array(
+        $patterns = [
             '/installGlobalHook\(window\)/',
             '/var lastpass_it/',
             '/Object\.defineProperty/',
@@ -38,7 +38,7 @@ class InjectedScriptsNoiseDetector implements NoiseDetectorInterface
             '/jq_relocation/',
             '/jQuery JavaScript/',
             '/jquery\.base64\.js/',
-        );
+        ];
 
         if ('self' !== $report->getUri()) {
             return false;

@@ -37,12 +37,12 @@ class ReferrerPolicyListenerTest extends \PHPUnit\Framework\TestCase
 
     public function provideVariousConfigs()
     {
-        return array(
-            array('', new ReferrerPolicyListener(array())),
-            array('no-referrer', new ReferrerPolicyListener(array('no-referrer'))),
-            array('no-referrer, strict-origin-when-cross-origin', new ReferrerPolicyListener(array('no-referrer', 'strict-origin-when-cross-origin'))),
-            array('no-referrer, no-referrer-when-downgrade, strict-origin-when-cross-origin', new ReferrerPolicyListener(array('no-referrer', 'no-referrer-when-downgrade', 'strict-origin-when-cross-origin'))),
-        );
+        return [
+            ['', new ReferrerPolicyListener([])],
+            ['no-referrer', new ReferrerPolicyListener(['no-referrer'])],
+            ['no-referrer, strict-origin-when-cross-origin', new ReferrerPolicyListener(['no-referrer', 'strict-origin-when-cross-origin'])],
+            ['no-referrer, no-referrer-when-downgrade, strict-origin-when-cross-origin', new ReferrerPolicyListener(['no-referrer', 'no-referrer-when-downgrade', 'strict-origin-when-cross-origin'])],
+        ];
     }
 
     protected function callListener(ReferrerPolicyListener $listener, $path, $masterReq)

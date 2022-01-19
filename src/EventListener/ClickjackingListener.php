@@ -23,7 +23,7 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
     private $paths;
 
-    public function __construct(array $paths, array $contentTypes = array())
+    public function __construct(array $paths, array $contentTypes = [])
     {
         parent::__construct($contentTypes);
         $this->paths = $paths;
@@ -34,7 +34,7 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
      */
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::RESPONSE => 'onKernelResponse');
+        return [KernelEvents::RESPONSE => 'onKernelResponse'];
     }
 
     /**

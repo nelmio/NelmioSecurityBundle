@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\Twig\Node;
 
 /*
@@ -21,7 +30,7 @@ class CSPNode extends Node
 
     public function __construct(Node $body, $lineno, $tag, $directive, $sha = null)
     {
-        parent::__construct(array('body' => $body), array(), $lineno, $tag);
+        parent::__construct(['body' => $body], [], $lineno, $tag);
         $this->sha = $sha;
         $this->directive = $directive;
     }
@@ -35,9 +44,9 @@ class CSPNode extends Node
 
         if (null !== $this->sha) {
             $output = "\$this->env->getExtension('Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension')->getListener()->addSha('{$this->directive}', '{$this->sha}');\necho ob_get_clean();\n";
-        } elseif ($this->directive === 'script-src') {
+        } elseif ('script-src' === $this->directive) {
             $output = "\$script = ob_get_clean();\n\$this->env->getExtension('Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension')->getListener()->addScript(\$script);\necho \$script;\n";
-        } elseif ($this->directive === 'style-src') {
+        } elseif ('style-src' === $this->directive) {
             $output = "\$style = ob_get_clean();\n\$this->env->getExtension('Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension')->getListener()->addStyle(\$style);\necho \$style;\n";
         } else {
             throw new \InvalidArgumentException(sprintf('Unable to compile for directive "%s"', $this->directive));

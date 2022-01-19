@@ -11,13 +11,13 @@
 
 namespace Nelmio\SecurityBundle\Session;
 
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\Cookie;
-use Psr\Log\LoggerInterface;
 
 /**
  * @final
@@ -82,7 +82,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
         $this->request->getSession()->save();
 
-        if ($this->cookie === false) {
+        if (false === $this->cookie) {
             if ($this->logger) {
                 $this->logger->debug('CookieSessionHandler::onKernelResponse - COOKIE not opened');
             }
@@ -90,7 +90,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
             return;
         }
 
-        if ($this->cookie === null) {
+        if (null === $this->cookie) {
             if ($this->logger) {
                 $this->logger->debug('CookieSessionHandler::onKernelResponse - CLEAR COOKIE');
             }
@@ -209,14 +209,14 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
         $content = @unserialize($this->request->cookies->get($this->cookieName));
 
-        if ($content === false) {
-            $content = array(
+        if (false === $content) {
+            $content = [
                 'expire' => strtotime('now'),
                 'data' => '',
-            );
+            ];
         }
 
-        if ($content['expire'] !== 0 && $content['expire'] < strtotime('now')) {
+        if (0 !== $content['expire'] && $content['expire'] < strtotime('now')) {
             return ''; // session expire
         }
 
@@ -235,11 +235,11 @@ class CookieSessionHandler implements \SessionHandlerInterface
             $this->logger->debug(sprintf('CookieSessionHandler::write sessionId=%s', $sessionId));
         }
 
-        $expire = $this->lifetime === 0 ? 0 : strtotime('now') + $this->lifetime;
+        $expire = 0 === $this->lifetime ? 0 : strtotime('now') + $this->lifetime;
 
         $this->cookie = new Cookie(
             $this->cookieName,
-            serialize(array('expire' => $expire, 'data' => $sessionData)),
+            serialize(['expire' => $expire, 'data' => $sessionData]),
             $expire,
             $this->path,
             $this->domain,

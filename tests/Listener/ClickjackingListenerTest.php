@@ -24,14 +24,14 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
-        $this->listener = new ClickjackingListener(array(
-            '^/frames/' => array('header' => 'ALLOW'),
-            '/frames/' => array('header' => 'SAMEORIGIN'),
-            '^.*\?[^\?]*foo=bar' => array('header' => 'ALLOW'),
-            '/this/allow' => array('header' => 'ALLOW-FROM http://biz.domain.com'),
-            '^/.*' => array('header' => 'DENY'),
-            '.*' => array('header' => 'ALLOW'),
-        ));
+        $this->listener = new ClickjackingListener([
+            '^/frames/' => ['header' => 'ALLOW'],
+            '/frames/' => ['header' => 'SAMEORIGIN'],
+            '^.*\?[^\?]*foo=bar' => ['header' => 'ALLOW'],
+            '/this/allow' => ['header' => 'ALLOW-FROM http://biz.domain.com'],
+            '^/.*' => ['header' => 'DENY'],
+            '.*' => ['header' => 'ALLOW'],
+        ]);
     }
 
     /**
@@ -45,16 +45,16 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
 
     public function provideClickjackingMatches()
     {
-        return array(
-            array('', 'DENY'),
-            array('/', 'DENY'),
-            array('/test', 'DENY'),
-            array('/path?test&foo=bar&another', null),
-            array('/path?foo=bar', null),
-            array('/frames/foo', null),
-            array('/this/allow', 'ALLOW-FROM http://biz.domain.com'),
-            array('/sub/frames/foo', 'SAMEORIGIN'),
-        );
+        return [
+            ['', 'DENY'],
+            ['/', 'DENY'],
+            ['/test', 'DENY'],
+            ['/path?test&foo=bar&another', null],
+            ['/path?foo=bar', null],
+            ['/frames/foo', null],
+            ['/this/allow', 'ALLOW-FROM http://biz.domain.com'],
+            ['/sub/frames/foo', 'SAMEORIGIN'],
+        ];
     }
 
     public function testClickjackingSkipsSubReqs()
@@ -83,7 +83,7 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create($path);
         $response = new Response();
-        $response->headers->add(array('content-type' => $contentType));
+        $response->headers->add(['content-type' => $contentType]);
 
         if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
             $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
@@ -102,12 +102,12 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
      */
     public function testClickjackingWithContentTypes($contentType, $result)
     {
-        $this->listener = new ClickjackingListener(array(
-            '^/frames/' => array('header' => 'ALLOW'),
-            '/frames/' => array('header' => 'SAMEORIGIN'),
-            '^/.*' => array('header' => 'DENY'),
-            '.*' => array('header' => 'ALLOW'),
-        ), array('text/html'));
+        $this->listener = new ClickjackingListener([
+            '^/frames/' => ['header' => 'ALLOW'],
+            '/frames/' => ['header' => 'SAMEORIGIN'],
+            '^/.*' => ['header' => 'DENY'],
+            '.*' => ['header' => 'ALLOW'],
+        ], ['text/html']);
 
         $response = $this->callListener($this->listener, '/', true, $contentType);
         $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
@@ -115,9 +115,9 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
 
     public function provideContentTypeForRestrictions()
     {
-        return array(
-            array('application/json', null),
-            array('text/html', 'DENY'),
-        );
+        return [
+            ['application/json', null],
+            ['text/html', 'DENY'],
+        ];
     }
 }

@@ -18,7 +18,7 @@ class SchemesNoiseDetector implements NoiseDetectorInterface
 {
     public function match(Report $report, Request $request)
     {
-        static $schemes = array(
+        static $schemes = [
             'chromeinvoke',
             'chromeinvokeimmediate',
             'gsa', // on mobile safari
@@ -37,7 +37,7 @@ class SchemesNoiseDetector implements NoiseDetectorInterface
             'tmtbff', // ticketmaster toolbar
             'webviewprogress',
             'webviewprogressproxy', // added by browsers in webviews
-        );
+        ];
 
         if (null === $scheme = $report->getScheme()) {
             return false;

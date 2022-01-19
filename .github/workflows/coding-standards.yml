@@ -1,0 +1,26 @@
+name: Coding Standards
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    name: PHP-CS-Fixer
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          php-version: 8.1
+          tools: composer:v2, php-cs-fixer
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v1
+
+      - name: Run PHP-CS-Fixer
+        run: php-cs-fixer fix --ansi --verbose --diff --dry-run

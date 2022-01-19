@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Nelmio SecurityBundle.
+ *
+ * (c) Nelmio <hello@nelm.io>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Nelmio\SecurityBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -13,13 +22,13 @@ class CspReportFilterCompilerPass implements CompilerPassInterface
         if (!$container->hasDefinition('nelmio_security.csp_report.filter')) {
             return;
         }
-        
+
         $services = $container->findTaggedServiceIds('nelmio_security.csp_report_filter');
 
         $cspViolationLogFilterDefinition = $container->getDefinition('nelmio_security.csp_report.filter');
 
         foreach ($services as $id => $attributes) {
-            $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', array(new Reference($id)));
+            $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', [new Reference($id)]);
         }
     }
 }

@@ -38,7 +38,7 @@ abstract class AbstractCSPParser extends AbstractTokenParser
         $lineno = $token->getLine();
 
         $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
-        $body = $this->parser->subparse(array($this, 'decideCSPScriptEnd'), true);
+        $body = $this->parser->subparse([$this, 'decideCSPScriptEnd'], true);
         $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
 
         $sha = null;
