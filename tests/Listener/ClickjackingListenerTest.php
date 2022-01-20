@@ -14,6 +14,7 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 use Nelmio\SecurityBundle\EventListener\ClickjackingListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
@@ -23,7 +24,7 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
         $this->listener = new ClickjackingListener([
             '^/frames/' => ['header' => 'ALLOW'],
             '/frames/' => ['header' => 'SAMEORIGIN'],
@@ -67,7 +68,7 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
+        if (class_exists(ResponseEvent::class)) {
             $this->expectExceptionMessage('Expected instance of type Symfony\Component\HttpKernel\Event\ResponseEvent, Symfony\Component\HttpFoundation\Response given');
         } else {
             $this->expectExceptionMessage('Expected instance of type Symfony\Component\HttpKernel\Event\FilterResponseEvent, Symfony\Component\HttpFoundation\Response given');
@@ -85,8 +86,8 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
         $response = new Response();
         $response->headers->add(['content-type' => $contentType]);
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }

@@ -11,6 +11,7 @@
 
 namespace Nelmio\SecurityBundle\DependencyInjection;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -178,9 +179,9 @@ class NelmioSecurityExtension extends Extension
 
     private function buildDirectiveSetDefinition(ContainerBuilder $container, $config, $type)
     {
-        $directiveDefinition = new Definition('Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet');
+        $directiveDefinition = new Definition(DirectiveSet::class);
 
-        $directiveDefinition->setFactory(['Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet', 'fromConfig']);
+        $directiveDefinition->setFactory([DirectiveSet::class, 'fromConfig']);
 
         $pmDefinition = $container->getDefinition('nelmio_security.policy_manager');
 

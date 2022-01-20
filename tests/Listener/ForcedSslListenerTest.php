@@ -14,6 +14,8 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 use Nelmio\SecurityBundle\EventListener\ForcedSslListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
@@ -22,7 +24,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
     }
 
     /**
@@ -112,8 +114,8 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create($uri);
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -129,8 +131,8 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create($uri);
         $response = new Response();
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }

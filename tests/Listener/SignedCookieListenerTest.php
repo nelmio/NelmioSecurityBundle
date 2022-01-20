@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
@@ -27,7 +29,7 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $this->signer = new Signer('secret', 'sha1');
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
     }
 
     /**
@@ -38,8 +40,8 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
         $listener = new SignedCookieListener($this->signer, $signedCookieNames);
         $request = Request::create('/', 'GET', [], $inputCookies);
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -71,11 +73,11 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new Response();
         foreach ($inputCookies as $name => $cookie) {
-            $response->headers->setCookie(method_exists('Symfony\\Component\\HttpFoundation\\Cookie', 'create') ? Cookie::create($name, $cookie) : new Cookie($name, $cookie));
+            $response->headers->setCookie(method_exists(Cookie::class, 'create') ? Cookie::create($name, $cookie) : new Cookie($name, $cookie));
         }
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
@@ -106,8 +108,8 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
         $listener = new SignedCookieListener($this->signer, ['*']);
         $request = Request::create('/', 'GET', [], ['foo' => 'bar']);
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -124,10 +126,10 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('/');
 
         $response = new Response();
-        $response->headers->setCookie(method_exists('Symfony\\Component\\HttpFoundation\\Cookie', 'create') ? Cookie::create('foo', 'bar') : new Cookie('foo', 'bar'));
+        $response->headers->setCookie(method_exists(Cookie::class, 'create') ? Cookie::create('foo', 'bar') : new Cookie('foo', 'bar'));
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }

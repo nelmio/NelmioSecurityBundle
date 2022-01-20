@@ -12,6 +12,7 @@
 namespace Nelmio\SecurityBundle\Tests\DependencyInjection;
 
 use Nelmio\SecurityBundle\DependencyInjection\Configuration;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Parser;
 
@@ -120,7 +121,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
 
     public function testReferrerPolicyInvalid()
     {
-        $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
+        $this->expectException(InvalidConfigurationException::class);
 
         $this->processYamlConfiguration(
             "referrer_policy:\n".

@@ -12,11 +12,15 @@
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\FlexibleSslListener;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 {
@@ -26,8 +30,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
-        $this->dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
         $this->listener = new FlexibleSslListener('auth', false, $this->dispatcher);
     }
 
@@ -35,8 +39,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create('http://localhost/');
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -52,8 +56,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('http://localhost/');
         $request->cookies->set('auth', '1');
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -69,8 +73,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create('https://localhost/');
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -86,8 +90,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('https://localhost/');
         $request->cookies->set('auth', '1');
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -104,8 +108,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new Response();
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
@@ -128,8 +132,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('http://localhost/');
         $request->cookies->set('auth', '1');
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -146,8 +150,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new Response();
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
@@ -162,8 +166,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
     public function testSecureLogout()
     {
         $response = new RedirectResponse('https://foo');
-        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
-        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+        $request = $this->getMockBuilder(Request::class)->getMock();
+        $token = $this->getMockBuilder(TokenInterface::class)->getMock();
 
         $this->listener->logout($request, $response, $token);
 
@@ -175,8 +179,8 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $unsecuredLogoutListener = new FlexibleSslListener('auth', true, $this->dispatcher);
 
         $response = new RedirectResponse('https://foo');
-        $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
-        $token = $this->getMockBuilder('Symfony\Component\Security\Core\Authentication\Token\TokenInterface')->getMock();
+        $request = $this->getMockBuilder(Request::class)->getMock();
+        $token = $this->getMockBuilder(TokenInterface::class)->getMock();
 
         $unsecuredLogoutListener->logout($request, $response, $token);
 
