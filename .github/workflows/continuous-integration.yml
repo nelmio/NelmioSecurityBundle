@@ -36,7 +36,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          coverage: none
+          coverage: pcov
           ini-values: memory_limit=-1, date.timezone=Europe/Paris, session.gc_probability=0
           php-version: ${{ matrix.php-version }}
           tools: composer:v2,flex
@@ -47,4 +47,9 @@ jobs:
             dependency-versions: ${{ matrix.dependencies }}
 
       - name: Run tests
-        run: vendor/bin/simple-phpunit
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Send coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          file: coverage.xml
