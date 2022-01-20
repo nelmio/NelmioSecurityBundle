@@ -1,0 +1,60 @@
+framework:
+  secret: my_secret
+  test: true
+
+nelmio_security:
+  external_redirects:
+    abort: true
+
+  clickjacking:
+    paths:
+      '^/clickjacking/allow.*': ALLOW
+      '^/clickjacking/deny.*': DENY
+
+  content-type:
+    nosniff: true
+
+  xss_protection:
+    enabled: true
+    mode_block: true
+    report_uri: '%router.request_context.base_url%/nelmio/xss/report'
+
+  referrer_policy:
+    enabled: true
+    policies:
+      - 'no-referrer'
+      - 'strict-origin-when-cross-origin'
+
+  csp:
+    enabled: true
+    hosts: [ ]
+    content_types: [ ]
+    enforce:
+      # see full description below
+      level1_fallback: true
+      # only send directives supported by the browser, defaults to false
+      # this is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
+      browser_adaptive:
+        enabled: false
+      report-uri: '%router.request_context.base_url%/nelmio/csp/report'
+      default-src: [ 'self' ]
+      frame-src: [ 'https://www.youtube.com' ]
+      script-src:
+        - 'self'
+        - 'unsafe-inline'
+      img-src:
+        - 'self'
+        - facebook.com
+        - flickr.com
+      block-all-mixed-content: true # defaults to false, blocks HTTP content over HTTPS transport
+      # upgrade-insecure-requests: true # defaults to false, upgrades HTTP requests to HTTPS transport
+    report:
+      # see full description below
+      level1_fallback: true
+      # only send directives supported by the browser, defaults to false
+      # this is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
+      browser_adaptive:
+        enabled: true
+      report-uri: '%router.request_context.base_url%/nelmio/csp/report'
+      script-src:
+        - 'self'
