@@ -15,8 +15,6 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -49,16 +47,8 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->shaComputer = $shaComputer;
     }
 
-    /**
-     * @param GetResponseEvent|RequestEvent $e
-     */
-    public function onKernelRequest($e)
+    public function onKernelRequest(RequestEvent $e)
     {
-        // Compatibility with Symfony < 5 and Symfony >=5
-        if (!$e instanceof GetResponseEvent && !$e instanceof RequestEvent) {
-            throw new \InvalidArgumentException(\sprintf('Expected instance of type %s, %s given', \class_exists(RequestEvent::class) ? RequestEvent::class : GetResponseEvent::class, \is_object($e) ? \get_class($e) : \gettype($e)));
-        }
-
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
         }
@@ -138,16 +128,8 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $this->_nonce;
     }
 
-    /**
-     * @param FilterResponseEvent|ResponseEvent $e
-     */
-    public function onKernelResponse($e)
+    public function onKernelResponse(ResponseEvent $e)
     {
-        // Compatibility with Symfony < 5 and Symfony >=5
-        if (!$e instanceof FilterResponseEvent && !$e instanceof ResponseEvent) {
-            throw new \InvalidArgumentException(\sprintf('Expected instance of type %s, %s given', \class_exists(ResponseEvent::class) ? ResponseEvent::class : FilterResponseEvent::class, \is_object($e) ? \get_class($e) : \gettype($e)));
-        }
-
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
         }

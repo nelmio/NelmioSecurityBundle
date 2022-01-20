@@ -147,13 +147,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new RedirectResponse('http://foo.com/');
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         $this->assertTrue($response->isRedirect());
@@ -166,13 +160,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new RedirectResponse($target);
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         return $response;

@@ -417,13 +417,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create($path);
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
-        }
-
-        $event = new $class(
+        $event = new RequestEvent(
             $this->kernel,
             $request,
             $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST
@@ -458,13 +452,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
         $response = new Response();
         $response->headers->add(['content-type' => $contentType]);
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
-        }
-
-        $event = new $class(
+        $event = new ResponseEvent(
             $this->kernel,
             $request,
             $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,

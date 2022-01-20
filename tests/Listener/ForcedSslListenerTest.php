@@ -114,13 +114,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create($uri);
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST);
         $listener->onKernelRequest($event);
 
         return $event->getResponse();
@@ -131,13 +125,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create($uri);
         $response = new Response();
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         return $response;
