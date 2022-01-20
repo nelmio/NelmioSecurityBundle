@@ -98,7 +98,7 @@ nelmio_security:
             level1_fallback: false
             browser_adaptive:
                 enabled: false
-            report-uri: %router.request_context.base_url%/nelmio/csp/report
+            report-uri: '%router.request_context.base_url%/nelmio/csp/report'
             default-src:
                 - 'none'
             script-src:
@@ -115,7 +115,7 @@ nelmio_security:
     xss_protection:
         enabled: true
         mode_block: true
-        report_uri: %router.request_context.base_url%/nelmio/xss/report
+        report_uri: '%router.request_context.base_url%/nelmio/xss/report'
 
     # Send a full URL in the `Referer` header when performing a same-origin request,
     # only send the origin of the document to secure destination (HTTPS->HTTPS),
@@ -188,7 +188,7 @@ nelmio_security:
             # this is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
             browser_adaptive:
                 enabled: false
-            report-uri: %router.request_context.base_url%/nelmio/csp/report
+            report-uri: '%router.request_context.base_url%/nelmio/csp/report'
             default-src: [ 'self' ]
             frame-src: [ 'https://www.youtube.com' ]
             script-src:
@@ -207,7 +207,7 @@ nelmio_security:
             # this is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
             browser_adaptive:
                 enabled: true
-            report-uri: %router.request_context.base_url%/nelmio/csp/report
+            report-uri: '%router.request_context.base_url%/nelmio/csp/report'
             script-src:
                 - 'self'
 ```
@@ -798,7 +798,7 @@ nelmio_security:
     xss_protection:
         enabled: true
         mode_block: true
-        report_uri: %router.request_context.base_url%/nelmio/xss/report
+        report_uri: '%router.request_context.base_url%/nelmio/xss/report'
 ```
 
 ### Referrer Policy

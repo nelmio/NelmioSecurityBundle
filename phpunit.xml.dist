@@ -17,7 +17,7 @@
     </testsuites>
 
     <php>
-        <env name="SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT" value="1"/>
+        <env name="KERNEL_CLASS" value="Nelmio\SecurityBundle\Tests\App\AppKernel"/>
     </php>
 
     <coverage>
