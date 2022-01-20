@@ -12,10 +12,14 @@
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
@@ -26,12 +30,12 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp()
     {
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
-        $this->nonceGenerator = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator')
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->nonceGenerator = $this->getMockBuilder(NonceGenerator::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->shaComputer = $this->getMockBuilder('Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer')
+        $this->shaComputer = $this->getMockBuilder(ShaComputer::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->shaComputer->expects($this->any())
@@ -419,8 +423,8 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create($path);
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -460,8 +464,8 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
         $response = new Response();
         $response->headers->add(['content-type' => $contentType]);
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }

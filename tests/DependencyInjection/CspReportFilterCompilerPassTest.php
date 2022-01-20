@@ -11,6 +11,8 @@
 
 namespace Nelmio\Tests\SecurityBundle\DependencyInjection\Compiler;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\CustomRulesNoiseDetector;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
 use Nelmio\SecurityBundle\DependencyInjection\Compiler\CspReportFilterCompilerPass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,13 +36,13 @@ class CspReportFilterCompilerPassTest extends TestCase
         $builder = new ContainerBuilder();
 
         $noiseDetectorDefinition = new Definition(
-            'Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\CustomRulesNoiseDetector'
+            CustomRulesNoiseDetector::class
         );
         $noiseDetectorDefinition->addTag('nelmio_security.csp_report_filter');
 
         $builder->addDefinitions([
             'nelmio_security.csp_report.filter' => new Definition(
-                'Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter'
+                Filter::class
             ),
             'nelmio_security.noise_detector' => $noiseDetectorDefinition,
         ]);

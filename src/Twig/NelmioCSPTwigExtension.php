@@ -44,7 +44,7 @@ class NelmioCSPTwigExtension extends AbstractExtension
 
     public function getName()
     {
-        return 'Nelmio\\SecurityBundle\\Twig\\NelmioCSPTwigExtension';
+        return NelmioCSPTwigExtension::class;
     }
 
     /**

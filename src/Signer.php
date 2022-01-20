@@ -37,7 +37,7 @@ class Signer
 
     public function verifySignedValue($signedValue)
     {
-        list($value, $signature) = $this->splitSignatureFromSignedValue($signedValue);
+        [$value, $signature] = $this->splitSignatureFromSignedValue($signedValue);
         $signature2 = $this->generateSignature($value);
 
         if (null === $signature || strlen($signature) !== strlen($signature2)) {

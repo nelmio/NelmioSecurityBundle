@@ -14,6 +14,10 @@ namespace Nelmio\SecurityBundle\Tests\Session;
 use Nelmio\SecurityBundle\Session\CookieSessionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
@@ -25,7 +29,7 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
     {
         $this->handler = new CookieSessionHandler('s');
 
-        $this->kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
+        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
     }
 
     public function testOpenWithNoRequest()
@@ -46,12 +50,12 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
     {
         $request = new Request();
         $response = new Response();
-        $session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')->getMock();
+        $session = $this->getMockBuilder(SessionInterface::class)->getMock();
         $session->expects($this->exactly(1))->method('save');
         $request->setSession($session);
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
@@ -62,8 +66,8 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 
         $this->handler->write('sessionId', 'mydata');
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
@@ -83,20 +87,20 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 
         $request = new Request();
         $response = new Response();
-        $session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')->getMock();
+        $session = $this->getMockBuilder(SessionInterface::class)->getMock();
         $session->expects($this->exactly(2))->method('save');
         $request->setSession($session);
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
 
         $this->handler->onKernelRequest(new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
@@ -111,8 +115,8 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 
         $this->handler->destroy('sessionId');
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
@@ -131,8 +135,8 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
      */
     public function testCookieNotOpened()
     {
-        $session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')->getMock();
-        $headers = $this->getMockBuilder('Symfony\Component\HttpFoundation\ResponseHeaderBag')->getMock();
+        $session = $this->getMockBuilder(SessionInterface::class)->getMock();
+        $headers = $this->getMockBuilder(ResponseHeaderBag::class)->getMock();
         $headers
             ->expects($this->any())
             ->method('clearCookie');
@@ -145,16 +149,16 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
         $request->setSession($session);
         $response->headers = $headers;
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\RequestEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\RequestEvent';
+        if (class_exists(RequestEvent::class)) {
+            $class = RequestEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
         }
 
         $this->handler->onKernelRequest(new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
-        if (class_exists('Symfony\Component\HttpKernel\Event\ResponseEvent')) {
-            $class = 'Symfony\Component\HttpKernel\Event\ResponseEvent';
+        if (class_exists(ResponseEvent::class)) {
+            $class = ResponseEvent::class;
         } else {
             $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
         }
