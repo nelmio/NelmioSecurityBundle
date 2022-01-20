@@ -32,6 +32,7 @@ return $config->setRules([
     '@PSR2' => true,
     '@Symfony' => true,
     'header_comment' => ['header' => $header],
+    'ternary_to_null_coalescing' => true,
 ])
     ->setUsingCache(true)
     ->setRiskyAllowed(true)

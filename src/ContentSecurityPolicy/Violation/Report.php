@@ -47,12 +47,12 @@ class Report
 
     public function getUri()
     {
-        return isset($this->data['blocked-uri']) ? $this->data['blocked-uri'] : null;
+        return $this->data['blocked-uri'] ?? null;
     }
 
     public function getScriptSample()
     {
-        return isset($this->data['script-sample']) ? $this->data['script-sample'] : null;
+        return $this->data['script-sample'] ?? null;
     }
 
     public function getDomain()
@@ -96,7 +96,7 @@ class Report
 
     public function getSourceFile()
     {
-        return isset($this->data['source-file']) ? $this->data['source-file'] : null;
+        return $this->data['source-file'] ?? null;
     }
 
     public function getData()
@@ -128,14 +128,14 @@ class Report
             return new self();
         }
 
-        $effective = isset($report['csp-report']['effective-directive']) ? $report['csp-report']['effective-directive'] : null;
+        $effective = $report['csp-report']['effective-directive'] ?? null;
 
         if (null === $effective && isset($report['csp-report']['violated-directive'])) {
             $split = explode(' ', $report['csp-report']['violated-directive']);
-            $effective = isset($split[0]) ? $split[0] : null;
+            $effective = $split[0] ?? null;
         }
 
-        $blocked = isset($report['csp-report']['blocked-uri']) ? $report['csp-report']['blocked-uri'] : null;
+        $blocked = $report['csp-report']['blocked-uri'] ?? null;
 
         $ret = [
             'effective-directive' => $effective,
