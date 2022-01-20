@@ -51,7 +51,7 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
         $request = new Request();
         $response = new Response();
         $session = $this->getMockBuilder(SessionInterface::class)->getMock();
-        $session->expects($this->exactly(1))->method('save');
+        $session->expects($this->once())->method('save');
         $request->setSession($session);
 
         if (class_exists(RequestEvent::class)) {
@@ -76,7 +76,7 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 
         $cookies = $response->headers->getCookies();
 
-        $this->assertEquals(1, count($cookies));
+        $this->assertCount(1, $cookies);
         $this->assertEquals('a:2:{s:6:"expire";i:0;s:4:"data";s:6:"mydata";}', $cookies[0]->getValue());
         $this->assertEquals('s', $cookies[0]->getName());
     }
@@ -109,7 +109,7 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 
         $cookies = $response->headers->getCookies();
 
-        $this->assertEquals(1, count($cookies));
+        $this->assertCount(1, $cookies);
         $this->assertEquals('a:2:{s:6:"expire";i:0;s:4:"data";s:6:"mydata";}', $cookies[0]->getValue());
         $this->assertEquals('s', $cookies[0]->getName());
 
@@ -125,7 +125,7 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
 
         $cookies = $response->headers->getCookies();
 
-        $this->assertEquals(1, count($cookies));
+        $this->assertCount(1, $cookies);
         $this->assertEquals('', $cookies[0]->getValue());
         $this->assertEquals('s', $cookies[0]->getName());
     }
@@ -138,10 +138,8 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
         $session = $this->getMockBuilder(SessionInterface::class)->getMock();
         $headers = $this->getMockBuilder(ResponseHeaderBag::class)->getMock();
         $headers
-            ->expects($this->any())
             ->method('clearCookie');
         $headers
-            ->expects($this->any())
             ->method('setCookie');
 
         $response = new Response();

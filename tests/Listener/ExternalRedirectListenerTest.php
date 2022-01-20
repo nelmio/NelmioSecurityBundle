@@ -78,7 +78,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
         $listener = new ExternalRedirectListener(false, '/override');
         $response = $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
 
-        $this->assertSame(true, $response->isRedirect());
+        $this->assertTrue($response->isRedirect());
         $this->assertSame('/override', $response->headers->get('Location'));
     }
 
@@ -156,7 +156,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
         $event = new $class($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
-        $this->assertSame(true, $response->isRedirect());
+        $this->assertTrue($response->isRedirect());
         $this->assertSame('http://foo.com/', $response->headers->get('Location'));
     }
 

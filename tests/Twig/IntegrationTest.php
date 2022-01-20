@@ -26,28 +26,28 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $shaComputer = $this->getMockBuilder(ShaComputer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $shaComputer->expects($this->exactly(1))
+        $shaComputer->expects($this->once())
             ->method('computeForScript')
-            ->will($this->returnValue('sha-script'));
-        $shaComputer->expects($this->exactly(1))
+            ->willReturn('sha-script');
+        $shaComputer->expects($this->once())
             ->method('computeForStyle')
-            ->will($this->returnValue('sha-style'));
+            ->willReturn('sha-style');
 
         $listener = $this->getMockBuilder(ContentSecurityPolicyListener::class)
             ->disableOriginalConstructor()
             ->getMock();
         $listener->expects($this->never())
             ->method('addSha');
-        $listener->expects($this->exactly(1))
+        $listener->expects($this->once())
             ->method('addScript')
-            ->will($this->returnCallback(function ($script) use (&$collectedShas, $shaComputer) {
+            ->willReturnCallback(function ($script) use (&$collectedShas, $shaComputer) {
                 $collectedShas['script-src'][] = $shaComputer->computeForScript($script);
-            }));
-        $listener->expects($this->exactly(1))
+            });
+        $listener->expects($this->once())
             ->method('addStyle')
-            ->will($this->returnCallback(function ($style) use (&$collectedShas, $shaComputer) {
+            ->willReturnCallback(function ($style) use (&$collectedShas, $shaComputer) {
                 $collectedShas['style-src'][] = $shaComputer->computeForStyle($style);
-            }));
+            });
 
         $twig = new Environment(new FilesystemLoader(__DIR__.'/templates'));
         $twig->addExtension(new NelmioCSPTwigExtension($listener, $shaComputer));
@@ -67,21 +67,21 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $shaComputer = $this->getMockBuilder(ShaComputer::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $shaComputer->expects($this->exactly(1))
+        $shaComputer->expects($this->once())
             ->method('computeForScript')
-            ->will($this->returnValue('sha-script'));
-        $shaComputer->expects($this->exactly(1))
+            ->willReturn('sha-script');
+        $shaComputer->expects($this->once())
             ->method('computeForStyle')
-            ->will($this->returnValue('sha-style'));
+            ->willReturn('sha-style');
 
         $listener = $this->getMockBuilder(ContentSecurityPolicyListener::class)
             ->disableOriginalConstructor()
             ->getMock();
         $listener->expects($this->exactly(2))
             ->method('addSha')
-            ->will($this->returnCallback(function ($directive, $sha) use (&$collectedShas) {
+            ->willReturnCallback(function ($directive, $sha) use (&$collectedShas) {
                 $collectedShas[$directive][] = $sha;
-            }));
+            });
         $listener->expects($this->never())
             ->method('addScript');
         $listener->expects($this->never())
