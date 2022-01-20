@@ -36,12 +36,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('nelmio_security', 'array');
-        if (\method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $rootNode = $treeBuilder->root('nelmio_security', 'array');
-        }
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->validate()
@@ -193,12 +188,7 @@ class Configuration implements ConfigurationInterface
     private function addCspNode()
     {
         $builder = new TreeBuilder('csp');
-        if (\method_exists($builder, 'getRootNode')) {
-            $node = $builder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $node = $builder->root('csp');
-        }
+        $node = $builder->getRootNode();
 
         $node
             ->canBeDisabled()
@@ -280,12 +270,7 @@ class Configuration implements ConfigurationInterface
     private function addReportOrEnforceNode($reportOrEnforce)
     {
         $builder = new TreeBuilder($reportOrEnforce);
-        if (\method_exists($builder, 'getRootNode')) {
-            $node = $builder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $node = $builder->root($reportOrEnforce);
-        }
+        $node = $builder->getRootNode();
 
         $children = $node->children();
         // Symfony should not normalize dashes to underlines, e.g. img-src to img_src
@@ -354,15 +339,7 @@ class Configuration implements ConfigurationInterface
     private function addReferrerPolicyNode()
     {
         $builder = new TreeBuilder('referrer_policy');
-        if (\method_exists($builder, 'getRootNode')) {
-            $node = $builder->getRootNode();
-        } else {
-            // BC layer for symfony/config 4.1 and older
-            $node = $builder->root('referrer_policy');
-        }
-
-        // for backward compatibility with PHP 5.3
-        $that = $this;
+        $node = $builder->getRootNode();
 
         $node
             ->canBeEnabled()
@@ -375,10 +352,10 @@ class Configuration implements ConfigurationInterface
                         ->then(function ($value) { return array($value); })
                     ->end()
                     ->validate()
-                        ->always(function ($values) use ($that) {
+                        ->always(function ($values) {
                             foreach ($values as $policy) {
-                                if (!in_array($policy, $that->getReferrerPolicies())) {
-                                    throw new \InvalidArgumentException(sprintf('Unknown referrer policy "%s". Possible referrer policies are "%s".', $policy, implode('", "', $that->getReferrerPolicies())));
+                                if (!in_array($policy, $this->getReferrerPolicies())) {
+                                    throw new \InvalidArgumentException(sprintf('Unknown referrer policy "%s". Possible referrer policies are "%s".', $policy, implode('", "', $this->getReferrerPolicies())));
                                 }
                             }
 

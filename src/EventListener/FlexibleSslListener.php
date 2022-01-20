@@ -109,8 +109,8 @@ class FlexibleSslListener implements BaseFlexibleSslListener
                     $cookie->getDomain(),
                     true,
                     $cookie->isHttpOnly(),
-                    method_exists($cookie, 'isRaw') ? $cookie->isRaw() : null,
-                    method_exists($cookie, 'getSameSite') ? $cookie->getSameSite() : null
+                    $cookie->isRaw(),
+                    $cookie->getSameSite()
                 ));
             }
         }
@@ -126,7 +126,7 @@ class FlexibleSslListener implements BaseFlexibleSslListener
                 false,
                 false,
                 false,
-                defined('Cookie::SAMESITE_LAX') ? Cookie::SAMESITE_LAX : null
+                Cookie::SAMESITE_LAX
             ));
         }
 
@@ -141,7 +141,7 @@ class FlexibleSslListener implements BaseFlexibleSslListener
             true,
             $params['httponly'],
             false,
-            defined('Cookie::SAMESITE_LAX') ? Cookie::SAMESITE_LAX : null
+            Cookie::SAMESITE_LAX
         ));
     }
 
