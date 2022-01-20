@@ -46,7 +46,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains, $hstsPreload);
 
         $response = $this->callListenerResp($listener, 'http://localhost/', true);
-        $this->assertSame(null, $response->headers->get('Strict-Transport-Security'));
+        $this->assertNull($response->headers->get('Strict-Transport-Security'));
     }
 
     public function provideHstsHeaders()
@@ -66,7 +66,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $listener = new ForcedSslListener(60, true);
 
         $response = $this->callListenerResp($listener, 'https://localhost/', false);
-        $this->assertSame(null, $response->headers->get('Strict-Transport-Security'));
+        $this->assertNull($response->headers->get('Strict-Transport-Security'));
     }
 
     public function testForcedSslSkipsWhitelisted()
@@ -74,13 +74,13 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $listener = new ForcedSslListener(60, true, false, ['^/foo/', 'bar']);
 
         $response = $this->callListenerReq($listener, 'http://localhost/foo/lala', true);
-        $this->assertSame(null, $response);
+        $this->assertNull($response);
 
         $response = $this->callListenerReq($listener, 'http://localhost/lala/foo/lala', true);
         $this->assertSame('https://localhost/lala/foo/lala', $response->headers->get('Location'));
 
         $response = $this->callListenerReq($listener, 'https://localhost/lala/abarb', true);
-        $this->assertSame(null, $response);
+        $this->assertNull($response);
     }
 
     public function testForcedSslOnlyUsesHosts()
@@ -88,7 +88,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $listener = new ForcedSslListener(60, true, false, [], ['^foo\.com$', '\.example\.org$']);
 
         $response = $this->callListenerReq($listener, 'http://afoo.com/foo/lala', true);
-        $this->assertSame(null, $response);
+        $this->assertNull($response);
 
         $response = $this->callListenerReq($listener, 'http://foo.com/foo/lala', true);
         $this->assertSame('https://foo.com/foo/lala', $response->headers->get('Location'));
