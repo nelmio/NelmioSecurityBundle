@@ -13,5 +13,5 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
 final class Events
 {
-    const VIOLATION_REPORT = 'csp.violation.report';
+    public const VIOLATION_REPORT = 'csp.violation.report';
 }

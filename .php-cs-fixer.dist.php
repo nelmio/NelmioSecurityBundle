@@ -32,7 +32,6 @@ return $config->setRules([
     '@PSR2' => true,
     '@Symfony' => true,
     'header_comment' => ['header' => $header],
-    'visibility_required' => ['elements' => ['property', 'method']], // Remove this line when dropping support of PHP < 7.1
 ])
     ->setUsingCache(true)
     ->setRiskyAllowed(true)

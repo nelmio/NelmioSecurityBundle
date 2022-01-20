@@ -13,11 +13,11 @@ namespace Nelmio\SecurityBundle\UserAgent;
 
 interface UserAgentParserInterface
 {
-    const BROWSER_CHROME = 'Chrome';
-    const BROWSER_OPERA = 'Opera';
-    const BROWSER_FIREFOX = 'Firefox';
-    const BROWSER_SAFARI = 'Safari';
-    const BROWSER_OTHER = 'Other';
+    public const BROWSER_CHROME = 'Chrome';
+    public const BROWSER_OPERA = 'Opera';
+    public const BROWSER_FIREFOX = 'Firefox';
+    public const BROWSER_SAFARI = 'Safari';
+    public const BROWSER_OTHER = 'Other';
 
     /**
      * @param $userAgent string The user agent to parse

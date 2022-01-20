@@ -15,12 +15,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DirectiveSet
 {
-    const TYPE_SRC_LIST = 'source-list';
-    const TYPE_SRC_LIST_NOFB = 'source-list-no-fallback';
-    const TYPE_MEDIA_TYPE_LIST = 'media-type-list';
-    const TYPE_ANCESTOR_SRC_LIST = 'ancestor-source-list';
-    const TYPE_URI_REFERENCE = 'uri-reference';
-    const TYPE_NO_VALUE = 'no-value';
+    public const TYPE_SRC_LIST = 'source-list';
+    public const TYPE_SRC_LIST_NOFB = 'source-list-no-fallback';
+    public const TYPE_MEDIA_TYPE_LIST = 'media-type-list';
+    public const TYPE_ANCESTOR_SRC_LIST = 'ancestor-source-list';
+    public const TYPE_URI_REFERENCE = 'uri-reference';
+    public const TYPE_NO_VALUE = 'no-value';
 
     private static $directiveNames = [
         'default-src' => self::TYPE_SRC_LIST,
