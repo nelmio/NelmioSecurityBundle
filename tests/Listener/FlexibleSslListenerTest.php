@@ -39,13 +39,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create('http://localhost/');
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -56,13 +50,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('http://localhost/');
         $request->cookies->set('auth', '1');
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertTrue($event->hasResponse());
@@ -73,13 +61,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
     {
         $request = Request::create('https://localhost/');
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -90,13 +72,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('https://localhost/');
         $request->cookies->set('auth', '1');
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -108,13 +84,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new Response();
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $this->listener->onPostLoginKernelResponse($event);
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
@@ -132,13 +102,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $request = Request::create('http://localhost/');
         $request->cookies->set('auth', '1');
 
-        if (class_exists(RequestEvent::class)) {
-            $class = RequestEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\GetResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, HttpKernelInterface::SUB_REQUEST);
+        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST);
         $this->listener->onKernelRequest($event);
 
         $this->assertFalse($event->hasResponse());
@@ -150,13 +114,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
 
         $response = new Response();
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
         $this->listener->onPostLoginKernelResponse($event);
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);

@@ -64,35 +64,13 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
     }
 
-    public function testWrongEventClass()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        if (class_exists(ResponseEvent::class)) {
-            $this->expectExceptionMessage('Expected instance of type Symfony\Component\HttpKernel\Event\ResponseEvent, Symfony\Component\HttpFoundation\Response given');
-        } else {
-            $this->expectExceptionMessage('Expected instance of type Symfony\Component\HttpKernel\Event\FilterResponseEvent, Symfony\Component\HttpFoundation\Response given');
-        }
-
-        $response = new Response();
-        $this->listener->onKernelResponse($response);
-
-        return $response;
-    }
-
     protected function callListener($listener, $path, $masterReq, $contentType = 'text/html')
     {
         $request = Request::create($path);
         $response = new Response();
         $response->headers->add(['content-type' => $contentType]);
 
-        if (class_exists(ResponseEvent::class)) {
-            $class = ResponseEvent::class;
-        } else {
-            $class = 'Symfony\Component\HttpKernel\Event\FilterResponseEvent';
-        }
-
-        $event = new $class($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new ResponseEvent($this->kernel, $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         return $response;
