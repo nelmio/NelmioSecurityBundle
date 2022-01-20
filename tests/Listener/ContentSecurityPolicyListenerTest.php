@@ -28,7 +28,7 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
     private $nonceGenerator;
     private $shaComputer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
         $this->nonceGenerator = $this->getMockBuilder(NonceGenerator::class)
