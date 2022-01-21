@@ -11,11 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
+namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy\Violation;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\InvalidPayloadException;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspReportException;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
 use Symfony\Component\HttpFoundation\Request;
 
 class ReportTest extends \PHPUnit\Framework\TestCase

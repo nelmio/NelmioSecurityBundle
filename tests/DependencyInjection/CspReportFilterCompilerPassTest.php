@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Nelmio\Tests\SecurityBundle\DependencyInjection\Compiler;
+namespace Nelmio\SecurityBundle\Tests\DependencyInjection;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\CustomRulesNoiseDetector;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
