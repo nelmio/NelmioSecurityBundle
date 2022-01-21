@@ -33,6 +33,7 @@ return $config->setRules([
     '@Symfony' => true,
     'declare_strict_types' => true,
     'header_comment' => ['header' => $header],
+    'strict_param' => true,
     'ternary_to_null_coalescing' => true,
 ])
     ->setUsingCache(true)
