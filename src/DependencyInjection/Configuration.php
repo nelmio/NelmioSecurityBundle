@@ -294,20 +294,6 @@ class Configuration implements ConfigurationInterface
                         ->defaultValue('nelmio_security.ua_parser.ua_php')
                     ->end()
                 ->end()
-                ->beforeNormalization()
-                    ->always(function ($v) {
-                        if (!is_array($v)) {
-                            @trigger_error('browser_adaptive configuration is now an array. Using boolean is deprecated and will not be supported anymore in version 3', E_USER_DEPRECATED);
-
-                            return [
-                                'enabled' => $v,
-                                'parser' => 'nelmio_security.ua_parser.ua_php',
-                            ];
-                        }
-
-                        return $v;
-                    })
-                ->end()
             ->end();
 
         foreach (DirectiveSet::getNames() as $name => $type) {

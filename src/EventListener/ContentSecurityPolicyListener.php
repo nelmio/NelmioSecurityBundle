@@ -101,16 +101,11 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $this->enforce;
     }
 
-    public function getNonce($usage = null)
+    public function getNonce(string $usage)
     {
         $nonce = $this->doGetNonce();
 
-        if (null === $usage) {
-            @trigger_error('Retrieving a nonce without a usage is deprecated since version 2.4, and will be removed in version 3', E_USER_DEPRECATED);
-
-            $this->scriptNonce = $nonce;
-            $this->styleNonce = $nonce;
-        } elseif ('script' === $usage) {
+        if ('script' === $usage) {
             $this->scriptNonce = $nonce;
         } elseif ('style' === $usage) {
             $this->styleNonce = $nonce;

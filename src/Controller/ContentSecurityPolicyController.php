@@ -19,38 +19,21 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\ExceptionInt
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Log\Logger;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ContentSecurityPolicyController
 {
-    protected $logger;
-    private $filter;
-    private $dispatcher;
+    private Logger $logger;
+    private Filter $filter;
+    private EventDispatcherInterface $dispatcher;
 
-    public function __construct($logger, $dispatcher = null, Filter $filter = null)
+    public function __construct(Logger $logger, EventDispatcherInterface $dispatcher, Filter $filter)
     {
         $this->logger = $logger;
         $this->filter = $filter;
         $this->dispatcher = $dispatcher;
-
-        if ($logger instanceof LoggerInterface) {
-            trigger_error(sprintf('Using a Psr\Log\LoggerInterface as first argument has been deprecated in version 2.1'.
-                ' and will not be supported anymore in version 3; use a %s instance instead.', Logger::class), E_USER_DEPRECATED);
-        }
-        if (null === $dispatcher) {
-            trigger_error(sprintf('%s\'s takes an %s instance as second argument since version 2.1; it will be required in version 3', self::class, EventDispatcherInterface::class), E_USER_DEPRECATED);
-        }
-        if (null === $filter) {
-            trigger_error(sprintf('%s\'s takes an %s instance as third argument since version 2.1; it will be required in version 3', self::class, Filter::class), E_USER_DEPRECATED);
-        }
-
-        if (null !== $dispatcher && !$dispatcher instanceof LegacyEventDispatcherInterface && !$dispatcher instanceof EventDispatcherInterface) {
-            throw new \InvalidArgumentException(sprintf('The second argument of %s() must be an instance of "%s" or "%s" ("%s" given).', __METHOD__, EventDispatcherInterface::class, LegacyEventDispatcherInterface::class, is_object($dispatcher) ? get_class($dispatcher) : ''));
-        }
     }
 
     public function indexAction(Request $request)
@@ -58,34 +41,18 @@ class ContentSecurityPolicyController
         try {
             $report = Report::fromRequest($request);
         } catch (ExceptionInterface $e) {
-            if ($this->logger instanceof LoggerInterface) {
-                // deprecated
-                $this->logger->notice($e->getMessage());
-            } else {
-                $this->logger->getLogger()->notice($e->getMessage());
-            }
+            $this->logger->getLogger()->notice($e->getMessage());
 
             return new Response($e->getMessage(), $e->getCode());
         }
 
-        if ($this->filter && $this->filter->filter($request, $report)) {
+        if ($this->filter->filter($request, $report)) {
             return new Response('', 204);
         }
 
-        if ($this->dispatcher) {
-            if ($this->dispatcher instanceof EventDispatcherInterface) {
-                $this->dispatcher->dispatch(new Event($report), Events::VIOLATION_REPORT);
-            } else {
-                $this->dispatcher->dispatch(Events::VIOLATION_REPORT, new Event($report));
-            }
-        }
+        $this->dispatcher->dispatch(new Event($report), Events::VIOLATION_REPORT);
 
-        if ($this->logger instanceof LoggerInterface) {
-            // deprecated
-            $this->logger->notice('Content-Security-Policy Violation Reported', ['csp-report' => $report->getData()]);
-        } else {
-            $this->logger->log($report);
-        }
+        $this->logger->log($report);
 
         return new Response('', 204);
     }
