@@ -105,7 +105,7 @@ class ExternalRedirectListener
                 $query = '';
                 if (count($parameters) > 0) {
                     $query = (false === strpos($this->override, '?')) ? '?' : '&';
-                    $query .= http_build_query($parameters, null, '&');
+                    $query .= http_build_query($parameters, '', '&');
                 }
                 $response->headers->set('Location', $this->override.$query);
             }

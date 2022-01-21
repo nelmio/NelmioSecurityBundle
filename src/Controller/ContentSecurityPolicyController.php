@@ -39,7 +39,7 @@ class ContentSecurityPolicyController
 
         if ($logger instanceof LoggerInterface) {
             trigger_error(sprintf('Using a Psr\Log\LoggerInterface as first argument has been deprecated in version 2.1'.
-                ' and will not be supported anymore in version 3; use a %s instance instead.', self::class, Logger::class), E_USER_DEPRECATED);
+                ' and will not be supported anymore in version 3; use a %s instance instead.', Logger::class), E_USER_DEPRECATED);
         }
         if (null === $dispatcher) {
             trigger_error(sprintf('%s\'s takes an %s instance as second argument since version 2.1; it will be required in version 3', self::class, EventDispatcherInterface::class), E_USER_DEPRECATED);
