@@ -31,6 +31,7 @@ $config = new PhpCsFixer\Config();
 return $config->setRules([
     '@PSR2' => true,
     '@Symfony' => true,
+    'declare_strict_types' => true,
     'header_comment' => ['header' => $header],
     'ternary_to_null_coalescing' => true,
 ])
