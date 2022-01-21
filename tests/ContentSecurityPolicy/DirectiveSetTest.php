@@ -17,10 +17,11 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
 use Nelmio\SecurityBundle\UserAgent\UAFamilyParser\UAFamilyParser;
 use Nelmio\SecurityBundle\UserAgent\UserAgentParser;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use UAParser\Parser;
 
-class DirectiveSetTest extends \PHPUnit\Framework\TestCase
+class DirectiveSetTest extends TestCase
 {
     public const UA_CHROME = 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36';
     public const UA_SAFARI = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12) AppleWebKit/602.1.18 (KHTML, like Gecko) Version/9.2 Safari/602.1.18';
@@ -30,8 +31,10 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideVariousConfig
+     *
+     * @param array<string, mixed> $directives
      */
-    public function testFromConfig($expected, $ua, array $directives)
+    public function testFromConfig(string $expected, string $ua, array $directives): void
     {
         $ds = DirectiveSet::fromConfig($this->createPolicyManager(), ['enforce' => array_merge(['level1_fallback' => true], $directives)], 'enforce');
 
@@ -40,12 +43,12 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected, $ds->buildHeaderValue($request));
     }
 
-    private function createPolicyManager()
+    private function createPolicyManager(): PolicyManager
     {
         return new PolicyManager(new UserAgentParser(new UAFamilyParser(Parser::create())));
     }
 
-    public function provideVariousConfig()
+    public function provideVariousConfig(): array
     {
         return [
             [
@@ -358,14 +361,17 @@ class DirectiveSetTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideConfigAndSignatures
+     *
+     * @param array<string, mixed> $config
+     * @param array<string, mixed> $signatures
      */
-    public function testBuildHeaderValueWithInlineSignatures($expected, $config, $signatures)
+    public function testBuildHeaderValueWithInlineSignatures(string $expected, array $config, array $signatures): void
     {
         $directive = DirectiveSet::fromConfig(new PolicyManager(), $config, 'enforce');
         $this->assertSame($expected, $directive->buildHeaderValue(new Request(), $signatures));
     }
 
-    public function provideConfigAndSignatures()
+    public function provideConfigAndSignatures(): array
     {
         return [
             [

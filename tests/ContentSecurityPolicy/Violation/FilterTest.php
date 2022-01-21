@@ -20,15 +20,18 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\InjectedScriptsNoiseDetector;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\SchemesNoiseDetector;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use UAParser\Parser;
 
-class FilterTest extends \PHPUnit\Framework\TestCase
+class FilterTest extends TestCase
 {
     /**
      * @dataProvider provideVariousCases
+     *
+     * @param array<string, string> $payload
      */
-    public function testScenario($expected, $request, $payload)
+    public function testScenario(bool $expected, Request $request, array $payload): void
     {
         $filter = new Filter();
         $filter->addNoiseDetector(new BrowserBugsNoiseDetector(Parser::create()));
@@ -40,7 +43,7 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected, $filter->filter($request, new Report($payload)));
     }
 
-    public function provideVariousCases()
+    public function provideVariousCases(): array
     {
         $firefox42 = new Request();
         $firefox42->headers->set('user-agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0');

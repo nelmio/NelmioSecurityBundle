@@ -14,17 +14,18 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests;
 
 use Nelmio\SecurityBundle\Signer;
+use PHPUnit\Framework\TestCase;
 
-class SignerTest extends \PHPUnit\Framework\TestCase
+class SignerTest extends TestCase
 {
-    public function testConstructorShouldVerifyHashAlgo()
+    public function testConstructorShouldVerifyHashAlgo(): void
     {
         $this->expectException('InvalidArgumentException');
 
         new Signer('secret', 'invalid_hash_algo');
     }
 
-    public function testShouldVerifyValidSignature()
+    public function testShouldVerifyValidSignature(): void
     {
         $signer = new Signer('secret', 'sha1');
 
@@ -36,7 +37,7 @@ class SignerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($signer->verifySignedValue($signedValue));
     }
 
-    public function testShouldRejectInvalidSignature()
+    public function testShouldRejectInvalidSignature(): void
     {
         $signer = new Signer('secret', 'sha1');
 
@@ -46,7 +47,7 @@ class SignerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($signer->verifySignedValue($signedValue));
     }
 
-    public function testSignatureShouldDependOnSecret()
+    public function testSignatureShouldDependOnSecret(): void
     {
         $signer1 = new Signer('secret1', 'sha1');
         $signer2 = new Signer('secret2', 'sha1');

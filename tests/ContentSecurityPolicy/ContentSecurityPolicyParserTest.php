@@ -14,13 +14,14 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ContentSecurityPolicyParser;
+use PHPUnit\Framework\TestCase;
 
-class ContentSecurityPolicyParserTest extends \PHPUnit\Framework\TestCase
+class ContentSecurityPolicyParserTest extends TestCase
 {
     /**
      * @dataProvider keywordsProvider
      */
-    public function testQuotesKeywords($source, $expected)
+    public function testQuotesKeywords(string $source, string $expected): void
     {
         $parser = new ContentSecurityPolicyParser();
 
@@ -29,7 +30,7 @@ class ContentSecurityPolicyParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $result, 'CSP parser should quote CSP keywords');
     }
 
-    public function keywordsProvider()
+    public function keywordsProvider(): array
     {
         return [
             ['self', "'self'"],

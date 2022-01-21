@@ -14,31 +14,36 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\XssProtectionListener;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class XssProtectionListenerTest extends \PHPUnit\Framework\TestCase
+class XssProtectionListenerTest extends TestCase
 {
+    /**
+     * @var Stub&HttpKernelInterface
+     */
     private $kernel;
 
     protected function setUp(): void
     {
-        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
     /**
      * @dataProvider provideVariousConfigs
      */
-    public function testVariousConfig($expectedValue, $listener)
+    public function testVariousConfig(string $expectedValue, XssProtectionListener $listener): void
     {
         $response = $this->callListener($listener, '/', true);
 
         $this->assertEquals($expectedValue, $response->headers->get('X-Xss-Protection'));
     }
 
-    public function provideVariousConfigs()
+    public function provideVariousConfigs(): array
     {
         return [
             ['0', new XssProtectionListener(false, false)],
@@ -49,7 +54,7 @@ class XssProtectionListenerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    protected function callListener(XssProtectionListener $listener, $path, $masterReq)
+    protected function callListener(XssProtectionListener $listener, string $path, bool $masterReq): Response
     {
         $request = Request::create($path);
         $response = new Response();

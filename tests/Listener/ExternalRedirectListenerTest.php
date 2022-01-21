@@ -15,32 +15,37 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
+class ExternalRedirectListenerTest extends TestCase
 {
+    /**
+     * @var Stub&HttpKernelInterface
+     */
     private $kernel;
 
     protected function setUp(): void
     {
-        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
     /**
      * @dataProvider provideRedirectMatcher
      */
-    public function testRedirectMatcher($source, $target, $expected)
+    public function testRedirectMatcher(string $source, string $target, bool $expected): void
     {
         $listener = new ExternalRedirectListener(true);
         $result = $listener->isExternalRedirect($source, $target);
         $this->assertSame($expected, $result);
     }
 
-    public function provideRedirectMatcher()
+    public function provideRedirectMatcher(): array
     {
         return [
             // internal
@@ -64,7 +69,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testRedirectMatcher
      */
-    public function testRedirectAbort()
+    public function testRedirectAbort(): void
     {
         $this->expectException(HttpException::class);
 
@@ -75,7 +80,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testRedirectMatcher
      */
-    public function testRedirectOverrides()
+    public function testRedirectOverrides(): void
     {
         $listener = new ExternalRedirectListener(false, '/override');
         $response = $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
@@ -87,7 +92,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testRedirectMatcher
      */
-    public function testRedirectSkipsAllowedTargets()
+    public function testRedirectSkipsAllowedTargets(): void
     {
         $listener = new ExternalRedirectListener(true, null, null, new WhitelistBasedTargetValidator(['bar.com']));
 
@@ -98,8 +103,10 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testRedirectMatcher
      * @dataProvider provideRedirectWhitelistsFailing
+     *
+     * @param string[] $whitelist
      */
-    public function testRedirectDoesNotSkipNonWhitelistedDomains($whitelist, $domain)
+    public function testRedirectDoesNotSkipNonWhitelistedDomains(array $whitelist, string $domain): void
     {
         $this->expectException(HttpException::class);
 
@@ -108,7 +115,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
         $this->filterResponse($listener, 'http://foo.com/', 'http://'.$domain.'/');
     }
 
-    public function provideRedirectWhitelistsFailing()
+    public function provideRedirectWhitelistsFailing(): array
     {
         return [
             [['bar.com', 'baz.com'], 'abaz.com'],
@@ -121,8 +128,10 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testRedirectMatcher
      * @dataProvider provideRedirectWhitelistsPassing
+     *
+     * @param string[] $whitelist
      */
-    public function testRedirectSkipsWhitelistedDomains($whitelist, $domain)
+    public function testRedirectSkipsWhitelistedDomains(array $whitelist, string $domain): void
     {
         $listener = new ExternalRedirectListener(true, null, null, $whitelist);
 
@@ -131,7 +140,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($response->isRedirect());
     }
 
-    public function provideRedirectWhitelistsPassing()
+    public function provideRedirectWhitelistsPassing(): array
     {
         return [
             [['bar.com', 'baz.com'], 'bar.com'],
@@ -142,7 +151,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testListenerSkipsSubReqs()
+    public function testListenerSkipsSubReqs(): void
     {
         $listener = new ExternalRedirectListener(true);
         $request = Request::create('http://test.org/');
@@ -156,7 +165,7 @@ class ExternalRedirectListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('http://foo.com/', $response->headers->get('Location'));
     }
 
-    protected function filterResponse($listener, $source, $target)
+    protected function filterResponse(ExternalRedirectListener $listener, string $source, string $target): RedirectResponse
     {
         $request = Request::create($source);
 

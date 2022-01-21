@@ -14,13 +14,14 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\DependencyInjection;
 
 use Nelmio\SecurityBundle\DependencyInjection\Configuration;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Yaml\Parser;
 
-class ConfigurationTest extends \PHPUnit\Framework\TestCase
+class ConfigurationTest extends TestCase
 {
-    public function testCspWithReportAndEnforceSubtrees()
+    public function testCspWithReportAndEnforceSubtrees(): void
     {
         $this->processYamlConfiguration(
             "csp:\n".
@@ -33,7 +34,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testReportUriScalar()
+    public function testReportUriScalar(): void
     {
         $this->processYamlConfiguration(
             "csp:\n".
@@ -42,7 +43,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testReportUriArray()
+    public function testReportUriArray(): void
     {
         $this->processYamlConfiguration(
             "csp:\n".
@@ -52,7 +53,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testReportUriValidWithMultiple()
+    public function testReportUriValidWithMultiple(): void
     {
         $this->processYamlConfiguration(
             "csp:\n".
@@ -63,7 +64,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCspWithLevel2()
+    public function testCspWithLevel2(): void
     {
         $this->processYamlConfiguration(
             "csp:\n".
@@ -75,7 +76,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testBrowserAdaptiveArray()
+    public function testBrowserAdaptiveArray(): void
     {
         $this->processYamlConfiguration(
             "csp:\n".
@@ -88,7 +89,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testReferrerPolicy()
+    public function testReferrerPolicy(): void
     {
         $this->processYamlConfiguration(
             "referrer_policy:\n".
@@ -106,7 +107,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testReferrerPolicyInvalid()
+    public function testReferrerPolicyInvalid(): void
     {
         $this->expectException(InvalidConfigurationException::class);
 
@@ -119,7 +120,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testXssProtection()
+    public function testXssProtection(): void
     {
         $this->processYamlConfiguration(
             "xss_protection:\n".
@@ -129,14 +130,17 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    private function processYamlConfiguration($config)
+    private function processYamlConfiguration(string $config): void
     {
         $parser = new Parser();
 
-        return $this->processYaml($parser->parse($config));
+        $this->processYaml($parser->parse($config));
     }
 
-    private function processYaml($parsedYaml)
+    /**
+     * @param mixed[] $parsedYaml
+     */
+    private function processYaml(array $parsedYaml): void
     {
         $processor = new Processor();
         $configDefinition = new Configuration();
