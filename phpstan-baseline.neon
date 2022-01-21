@@ -1,0 +1,17 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to method add\\(\\) on an unknown class Symfony\\\\Component\\\\Routing\\\\RouteCollectionBuilder\\.$#"
+			count: 3
+			path: tests/App/AppKernel.php
+
+		-
+			message: "#^Class Symfony\\\\Component\\\\Routing\\\\RouteCollectionBuilder not found\\.$#"
+			count: 1
+			path: tests/App/AppKernel.php
+
+		-
+			message: "#^Parameter \\$routes of method Nelmio\\\\SecurityBundle\\\\Tests\\\\App\\\\AppKernel\\:\\:configureRoutes\\(\\) has invalid type Symfony\\\\Component\\\\Routing\\\\RouteCollectionBuilder\\.$#"
+			count: 1
+			path: tests/App/AppKernel.php
+
