@@ -49,16 +49,6 @@ class ContentSecurityPolicyListenerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @group legacy
-     * @expectedDeprecation Retrieving a nonce without a usage is deprecated since version 2.4, and will be removed in version 3
-     */
-    public function testDeprecationNotice()
-    {
-        $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"]);
-        $listener->getNonce();
-    }
-
-    /**
      * @expectedException \Invalid usage provided
      */
     public function tesInvalidArgumentException()
