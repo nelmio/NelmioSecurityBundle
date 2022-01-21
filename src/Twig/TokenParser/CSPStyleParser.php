@@ -22,7 +22,7 @@ class CSPStyleParser extends AbstractCSPParser
         parent::__construct($shaComputer, 'cspstyle', 'style-src');
     }
 
-    protected function computeSha($data)
+    protected function computeSha(string $data): string
     {
         return $this->shaComputer->computeForStyle($data);
     }

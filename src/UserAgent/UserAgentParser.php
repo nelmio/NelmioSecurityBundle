@@ -17,17 +17,14 @@ use Nelmio\SecurityBundle\UserAgent\UAFamilyParser\UAFamilyParserInterface;
 
 class UserAgentParser implements UserAgentParserInterface
 {
-    private $parser;
+    private UAFamilyParserInterface $parser;
 
     public function __construct(UAFamilyParserInterface $parser)
     {
         $this->parser = $parser;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBrowser($userAgent)
+    public function getBrowser(string $userAgent): string
     {
         $name = $this->parser->getUaFamily($userAgent);
 

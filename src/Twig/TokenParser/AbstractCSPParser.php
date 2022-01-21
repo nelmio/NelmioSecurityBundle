@@ -21,21 +21,18 @@ use Twig\TokenParser\AbstractTokenParser;
 
 abstract class AbstractCSPParser extends AbstractTokenParser
 {
-    protected $shaComputer;
-    private $directive;
-    private $tag;
+    protected ShaComputer $shaComputer;
+    private string $directive;
+    private string $tag;
 
-    public function __construct(ShaComputer $shaComputer, $tag, $directive)
+    public function __construct(ShaComputer $shaComputer, string $tag, string $directive)
     {
         $this->shaComputer = $shaComputer;
         $this->tag = $tag;
         $this->directive = $directive;
     }
 
-    /**
-     * @return CSPNode
-     */
-    public function parse(Token $token)
+    public function parse(Token $token): CSPNode
     {
         $lineno = $token->getLine();
 
@@ -51,18 +48,15 @@ abstract class AbstractCSPParser extends AbstractTokenParser
         return new CSPNode($body, $lineno, $this->tag, $this->directive, $sha);
     }
 
-    public function decideCSPScriptEnd(Token $token)
+    public function decideCSPScriptEnd(Token $token): bool
     {
         return $token->test('end'.$this->tag);
     }
 
-    /**
-     * @return string
-     */
-    public function getTag()
+    public function getTag(): string
     {
         return $this->tag;
     }
 
-    abstract protected function computeSha($data);
+    abstract protected function computeSha(string $data): string;
 }

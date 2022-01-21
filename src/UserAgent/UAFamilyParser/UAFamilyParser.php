@@ -17,15 +17,15 @@ use UAParser\Parser;
 
 class UAFamilyParser implements UAFamilyParserInterface
 {
-    private $parser;
+    private Parser $parser;
 
     public function __construct(Parser $parser)
     {
         $this->parser = $parser;
     }
 
-    public function getUaFamily($userAgent)
+    public function getUaFamily(string $userAgent): string
     {
-        return strtolower($this->parser->parse((string) $userAgent)->ua->family);
+        return strtolower($this->parser->parse($userAgent)->ua->family);
     }
 }

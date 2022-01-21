@@ -22,9 +22,9 @@ interface UserAgentParserInterface
     public const BROWSER_OTHER = 'Other';
 
     /**
-     * @param string $userAgent The user agent to parse
-     *
      * @return string One of the UserAgentParserInterface::BROWSER_* constant
+     *
+     * @phpstan-return self::BROWSER_*
      */
-    public function getBrowser($userAgent);
+    public function getBrowser(string $userAgent): string;
 }

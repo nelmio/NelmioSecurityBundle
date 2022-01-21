@@ -17,12 +17,12 @@ use Psr\Cache\CacheItemPoolInterface;
 
 class PsrCacheUAFamilyParser implements UAFamilyParserInterface
 {
-    private $cache;
-    private $parser;
-    private $lifetime;
-    private $prefix;
+    private CacheItemPoolInterface $cache;
+    private UAFamilyParserInterface $parser;
+    private int $lifetime;
+    private string $prefix;
 
-    public function __construct(CacheItemPoolInterface $cache, UAFamilyParserInterface $parser, $lifetime = 0, $prefix = 'nelmio-ua-parser-')
+    public function __construct(CacheItemPoolInterface $cache, UAFamilyParserInterface $parser, int $lifetime = 0, string $prefix = 'nelmio-ua-parser-')
     {
         $this->parser = $parser;
         $this->cache = $cache;
@@ -30,7 +30,7 @@ class PsrCacheUAFamilyParser implements UAFamilyParserInterface
         $this->prefix = $prefix;
     }
 
-    public function getUaFamily($userAgent)
+    public function getUaFamily(string $userAgent): string
     {
         $id = $this->prefix.md5($userAgent);
 

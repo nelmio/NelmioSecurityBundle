@@ -27,20 +27,17 @@ use Twig\Node\Node;
 
 class CSPNode extends Node
 {
-    private $sha;
-    private $directive;
+    private ?string $sha;
+    private string $directive;
 
-    public function __construct(Node $body, $lineno, $tag, $directive, $sha = null)
+    public function __construct(Node $body, int $lineno, string $tag, string $directive, ?string $sha = null)
     {
         parent::__construct(['body' => $body], [], $lineno, $tag);
         $this->sha = $sha;
         $this->directive = $directive;
     }
 
-    /**
-     * @return void
-     */
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $body = $this->getNode('body');
 
