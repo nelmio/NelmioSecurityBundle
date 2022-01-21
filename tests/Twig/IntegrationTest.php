@@ -16,12 +16,13 @@ namespace Nelmio\SecurityBundle\Tests\Twig;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension;
+use PHPUnit\Framework\TestCase;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-class IntegrationTest extends \PHPUnit\Framework\TestCase
+class IntegrationTest extends TestCase
 {
-    public function testItWorksDynamically()
+    public function testItWorksDynamically(): void
     {
         $collectedShas = [];
 
@@ -62,7 +63,7 @@ class IntegrationTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['script-src' => ['sha-script'], 'style-src' => ['sha-style']], $collectedShas);
     }
 
-    public function testItWorksStatically()
+    public function testItWorksStatically(): void
     {
         $collectedShas = [];
 

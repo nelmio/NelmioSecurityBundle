@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Session;
 
 use Nelmio\SecurityBundle\Session\CookieSessionHandler;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -22,33 +24,37 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
+class CookieSessionHandlerTest extends TestCase
 {
-    private $handler;
+    private CookieSessionHandler $handler;
+
+    /**
+     * @var Stub&HttpKernelInterface
+     */
     private $kernel;
 
     protected function setUp(): void
     {
         $this->handler = new CookieSessionHandler('s');
 
-        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
-    public function testOpenWithNoRequest()
+    public function testOpenWithNoRequest(): void
     {
         $this->expectException('RuntimeException');
 
         $this->handler->open('foo', 'bar');
     }
 
-    public function testReadWithNoRequest()
+    public function testReadWithNoRequest(): void
     {
         $this->expectException('RuntimeException');
 
         $this->handler->read('foo');
     }
 
-    public function testOpenWithoutSessionCookie()
+    public function testOpenWithoutSessionCookie(): void
     {
         $request = new Request();
         $response = new Response();
@@ -71,7 +77,7 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('s', $cookies[0]->getName());
     }
 
-    public function testWriteDestroy()
+    public function testWriteDestroy(): void
     {
         $this->handler->write('sessionId', 'mydata');
 
@@ -105,7 +111,7 @@ class CookieSessionHandlerTest extends \PHPUnit\Framework\TestCase
     /**
      * Cookie not opened.
      */
-    public function testCookieNotOpened()
+    public function testCookieNotOpened(): void
     {
         $session = $this->getMockBuilder(SessionInterface::class)->getMock();
         $headers = $this->getMockBuilder(ResponseHeaderBag::class)->getMock();

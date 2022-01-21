@@ -14,25 +14,30 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ForcedSslListener;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
+class ForcedSslListenerTest extends TestCase
 {
+    /**
+     * @var Stub&HttpKernelInterface
+     */
     private $kernel;
 
     protected function setUp(): void
     {
-        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
     /**
      * @dataProvider provideHstsHeaders
      */
-    public function testHstsHeaders($hstsMaxAge, $hstsSubdomains, $hstsPreload, $result)
+    public function testHstsHeaders(int $hstsMaxAge, bool $hstsSubdomains, bool $hstsPreload, string $result): void
     {
         $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains, $hstsPreload);
 
@@ -43,7 +48,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider provideHstsHeaders
      */
-    public function testHstsHeadersNotSetForNonSecureRequest($hstsMaxAge, $hstsSubdomains, $hstsPreload)
+    public function testHstsHeadersNotSetForNonSecureRequest(int $hstsMaxAge, bool $hstsSubdomains, bool $hstsPreload): void
     {
         $listener = new ForcedSslListener($hstsMaxAge, $hstsSubdomains, $hstsPreload);
 
@@ -51,7 +56,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($response->headers->get('Strict-Transport-Security'));
     }
 
-    public function provideHstsHeaders()
+    public function provideHstsHeaders(): array
     {
         return [
             [60, true, false, 'max-age=60; includeSubDomains'],
@@ -63,7 +68,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testForcedSslSkipsSubReqs()
+    public function testForcedSslSkipsSubReqs(): void
     {
         $listener = new ForcedSslListener(60, true);
 
@@ -71,7 +76,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($response->headers->get('Strict-Transport-Security'));
     }
 
-    public function testForcedSslSkipsWhitelisted()
+    public function testForcedSslSkipsWhitelisted(): void
     {
         $listener = new ForcedSslListener(60, true, false, ['^/foo/', 'bar']);
 
@@ -85,7 +90,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($response);
     }
 
-    public function testForcedSslOnlyUsesHosts()
+    public function testForcedSslOnlyUsesHosts(): void
     {
         $listener = new ForcedSslListener(60, true, false, [], ['^foo\.com$', '\.example\.org$']);
 
@@ -99,7 +104,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://test.example.org/foo/lala', $response->headers->get('Location'));
     }
 
-    public function testForcedSslRedirectStatusCodes()
+    public function testForcedSslRedirectStatusCodes(): void
     {
         $listener = new ForcedSslListener(null, false);
 
@@ -112,7 +117,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(301, $response->getStatusCode());
     }
 
-    protected function callListenerReq($listener, $uri, $masterReq)
+    protected function callListenerReq(ForcedSslListener $listener, string $uri, bool $masterReq): ?Response
     {
         $request = Request::create($uri);
 
@@ -122,7 +127,7 @@ class ForcedSslListenerTest extends \PHPUnit\Framework\TestCase
         return $event->getResponse();
     }
 
-    protected function callListenerResp(ForcedSslListener $listener, $uri, $masterReq)
+    protected function callListenerResp(ForcedSslListener $listener, string $uri, bool $masterReq): Response
     {
         $request = Request::create($uri);
         $response = new Response();

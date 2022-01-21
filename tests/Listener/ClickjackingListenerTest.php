@@ -14,19 +14,24 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ClickjackingListener;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
+class ClickjackingListenerTest extends TestCase
 {
+    /**
+     * @var Stub&HttpKernelInterface
+     */
     private $kernel;
-    private $listener;
+    private ClickjackingListener $listener;
 
     protected function setUp(): void
     {
-        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
         $this->listener = new ClickjackingListener([
             '^/frames/' => ['header' => 'ALLOW'],
             '/frames/' => ['header' => 'SAMEORIGIN'],
@@ -40,13 +45,13 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider provideClickjackingMatches
      */
-    public function testClickjackingMatches($path, $result)
+    public function testClickjackingMatches(string $path, ?string $result): void
     {
         $response = $this->callListener($this->listener, $path, true);
         $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
     }
 
-    public function provideClickjackingMatches()
+    public function provideClickjackingMatches(): array
     {
         return [
             ['', 'DENY'],
@@ -60,13 +65,13 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testClickjackingSkipsSubReqs()
+    public function testClickjackingSkipsSubReqs(): void
     {
         $response = $this->callListener($this->listener, '/', false);
         $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
     }
 
-    protected function callListener($listener, $path, $masterReq, $contentType = 'text/html')
+    protected function callListener(ClickjackingListener $listener, string $path, bool $masterReq, string $contentType = 'text/html'): Response
     {
         $request = Request::create($path);
         $response = new Response();
@@ -81,7 +86,7 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider provideContentTypeForRestrictions
      */
-    public function testClickjackingWithContentTypes($contentType, $result)
+    public function testClickjackingWithContentTypes(string $contentType, ?string $result): void
     {
         $this->listener = new ClickjackingListener([
             '^/frames/' => ['header' => 'ALLOW'],
@@ -94,7 +99,7 @@ class ClickjackingListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
     }
 
-    public function provideContentTypeForRestrictions()
+    public function provideContentTypeForRestrictions(): array
     {
         return [
             ['application/json', null],

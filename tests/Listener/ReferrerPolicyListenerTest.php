@@ -14,31 +14,36 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ReferrerPolicyListener;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ReferrerPolicyListenerTest extends \PHPUnit\Framework\TestCase
+class ReferrerPolicyListenerTest extends TestCase
 {
+    /**
+     * @var Stub&HttpKernelInterface
+     */
     private $kernel;
 
     protected function setUp(): void
     {
-        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
     /**
      * @dataProvider provideVariousConfigs
      */
-    public function testVariousConfig($expectedValue, $listener)
+    public function testVariousConfig(string $expectedValue, ReferrerPolicyListener $listener): void
     {
         $response = $this->callListener($listener, '/', true);
 
         $this->assertEquals($expectedValue, $response->headers->get('Referrer-Policy'));
     }
 
-    public function provideVariousConfigs()
+    public function provideVariousConfigs(): array
     {
         return [
             ['', new ReferrerPolicyListener([])],
@@ -48,7 +53,7 @@ class ReferrerPolicyListenerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    protected function callListener(ReferrerPolicyListener $listener, $path, $masterReq)
+    protected function callListener(ReferrerPolicyListener $listener, string $path, bool $masterReq): Response
     {
         $request = Request::create($path);
         $response = new Response();

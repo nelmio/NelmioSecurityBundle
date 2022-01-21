@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\FlexibleSslListener;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,20 +26,27 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
+class FlexibleSslListenerTest extends TestCase
 {
+    /**
+     * @var Stub&HttpKernelInterface
+     */
     private $kernel;
+
+    /**
+     * @var Stub&EventDispatcherInterface
+     */
     private $dispatcher;
-    private $listener;
+    private FlexibleSslListener $listener;
 
     protected function setUp(): void
     {
-        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
-        $this->dispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
+        $this->dispatcher = $this->createStub(EventDispatcherInterface::class);
         $this->listener = new FlexibleSslListener('auth', false, $this->dispatcher);
     }
 
-    public function testKernelRequestWithNonAuthedNonSslRequest()
+    public function testKernelRequestWithNonAuthedNonSslRequest(): void
     {
         $request = Request::create('http://localhost/');
 
@@ -47,7 +56,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($event->hasResponse());
     }
 
-    public function testKernelRequestWithAuthedNonSslRequest()
+    public function testKernelRequestWithAuthedNonSslRequest(): void
     {
         $request = Request::create('http://localhost/');
         $request->cookies->set('auth', '1');
@@ -59,7 +68,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($event->getResponse()->isRedirection());
     }
 
-    public function testKernelRequestWithNonAuthedSslRequest()
+    public function testKernelRequestWithNonAuthedSslRequest(): void
     {
         $request = Request::create('https://localhost/');
 
@@ -69,7 +78,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($event->hasResponse());
     }
 
-    public function testKernelRequestWithAuthedSslRequest()
+    public function testKernelRequestWithAuthedSslRequest(): void
     {
         $request = Request::create('https://localhost/');
         $request->cookies->set('auth', '1');
@@ -80,7 +89,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($event->hasResponse());
     }
 
-    public function testPostLoginKernelResponse()
+    public function testPostLoginKernelResponse(): void
     {
         $request = Request::create('https://localhost/');
 
@@ -99,7 +108,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($cookies['']['/'][session_name()]->isSecure());
     }
 
-    public function testKernelRequestSkipsSubReqs()
+    public function testKernelRequestSkipsSubReqs(): void
     {
         $request = Request::create('http://localhost/');
         $request->cookies->set('auth', '1');
@@ -110,7 +119,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($event->hasResponse());
     }
 
-    public function testPostLoginKernelResponseSkipsSubReqs()
+    public function testPostLoginKernelResponseSkipsSubReqs(): void
     {
         $request = Request::create('https://localhost/');
 
@@ -123,7 +132,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(isset($cookies['']['/']['auth']));
     }
 
-    public function testSecureLogout()
+    public function testSecureLogout(): void
     {
         $response = new RedirectResponse('https://foo');
         $request = $this->getMockBuilder(Request::class)->getMock();
@@ -134,7 +143,7 @@ class FlexibleSslListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('https://foo', $response->headers->get('Location'));
     }
 
-    public function testUnsecuredLogout()
+    public function testUnsecuredLogout(): void
     {
         $unsecuredLogoutListener = new FlexibleSslListener('auth', true, $this->dispatcher);
 

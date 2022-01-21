@@ -17,11 +17,12 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\InvalidPaylo
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspReportException;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
-class ReportTest extends \PHPUnit\Framework\TestCase
+class ReportTest extends TestCase
 {
-    public function testFromRequestWithoutData()
+    public function testFromRequestWithoutData(): void
     {
         $this->expectException(NoDataException::class);
         $this->expectExceptionMessage('Content-Security-Policy Endpoint called without data');
@@ -29,7 +30,7 @@ class ReportTest extends \PHPUnit\Framework\TestCase
         Report::fromRequest(new Request());
     }
 
-    public function testFromRequestWithoutReportKey()
+    public function testFromRequestWithoutReportKey(): void
     {
         $this->expectException(MissingCspReportException::class);
         $this->expectExceptionMessage('Content-Security-Policy Endpoint called without "csp-report" data');
@@ -37,7 +38,7 @@ class ReportTest extends \PHPUnit\Framework\TestCase
         Report::fromRequest(new Request([], [], [], [], [], [], '{}'));
     }
 
-    public function testFromRequestWithInvalidJSON()
+    public function testFromRequestWithInvalidJSON(): void
     {
         $this->expectException(InvalidPayloadException::class);
         $this->expectExceptionMessage('Content-Security-Policy Endpoint called with invalid JSON data');
@@ -45,7 +46,7 @@ class ReportTest extends \PHPUnit\Framework\TestCase
         Report::fromRequest(new Request([], [], [], [], [], [], 'yolo'));
     }
 
-    public function testFromRequest()
+    public function testFromRequest(): void
     {
         $data = [
             'blocked-uri' => 'self',

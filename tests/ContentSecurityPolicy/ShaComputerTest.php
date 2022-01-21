@@ -14,19 +14,20 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
+use PHPUnit\Framework\TestCase;
 
-class ShaComputerTest extends \PHPUnit\Framework\TestCase
+class ShaComputerTest extends TestCase
 {
     /**
      * @dataProvider provideValidScriptCode
      */
-    public function testComputeScript($expected, $code)
+    public function testComputeScript(string $expected, string $code): void
     {
         $shaComputer = new ShaComputer('sha256');
         $this->assertSame($expected, $shaComputer->computeForScript($code));
     }
 
-    public function provideValidScriptCode()
+    public function provideValidScriptCode(): array
     {
         $mdMultiline = 'sha256-FJZognZIK0t5xLh8JBt4m/9rjpkYa4lTySrcUdRWHPM=';
         $md = 'sha256-lClGOfcWqtQdAvO3zCRzZEg/4RmOMbr9/V54QO76j/A=';
@@ -49,13 +50,13 @@ class ShaComputerTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider provideValidStyleCode
      */
-    public function testComputeStyle($expected, $code)
+    public function testComputeStyle(string $expected, string $code): void
     {
         $shaComputer = new ShaComputer('sha256');
         $this->assertSame($expected, $shaComputer->computeForStyle($code));
     }
 
-    public function provideValidStyleCode()
+    public function provideValidStyleCode(): array
     {
         $mdMultiline = 'sha256-VbDrDAWYPqj9uExrJNmpK8bKIArMizR2+jcPhqSXO8M=';
         $md = 'sha256-dmskSo+yqoLHXIXCFWnQJvCkjkJJmENqTDRi5+il2Yw=';
@@ -80,7 +81,7 @@ class ShaComputerTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider provideInvalidScriptCode
      */
-    public function testComputeScriptShouldFail($code)
+    public function testComputeScriptShouldFail(string $code): void
     {
         $this->expectException('InvalidArgumentException');
 
@@ -88,7 +89,7 @@ class ShaComputerTest extends \PHPUnit\Framework\TestCase
         $shaComputer->computeForScript($code);
     }
 
-    public function provideInvalidScriptCode()
+    public function provideInvalidScriptCode(): array
     {
         return [
             [' <script> </script> <script> </script> '],

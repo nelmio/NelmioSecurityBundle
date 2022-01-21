@@ -14,21 +14,26 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ContentTypeListener;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ContentTypeListenerTest extends \PHPUnit\Framework\TestCase
+class ContentTypeListenerTest extends TestCase
 {
+    /**
+     * @var Stub&HttpKernelInterface
+     */
     private $kernel;
 
     protected function setUp(): void
     {
-        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
-    public function testNoSniff()
+    public function testNoSniff(): void
     {
         $listener = new ContentTypeListener(true);
         $response = $this->callListener($listener, '/', true);
@@ -39,7 +44,7 @@ class ContentTypeListenerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $listener = new ContentTypeListener(false);
         $response = $this->callListener($listener, '/', true);
@@ -49,7 +54,7 @@ class ContentTypeListenerTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    protected function callListener(ContentTypeListener $listener, $path, $masterReq)
+    protected function callListener(ContentTypeListener $listener, string $path, bool $masterReq): Response
     {
         $request = Request::create($path);
         $response = new Response();

@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class CspReportFilterCompilerPassTest extends TestCase
 {
-    public function testNoExceptionIsThrownWhenCspReportFilterServiceDoesNotExist()
+    public function testNoExceptionIsThrownWhenCspReportFilterServiceDoesNotExist(): void
     {
         $builder = new ContainerBuilder();
 
@@ -33,7 +33,7 @@ class CspReportFilterCompilerPassTest extends TestCase
         $this->assertFalse($builder->has('nelmio_security.csp_report.filter'));
     }
 
-    public function testAddMethodCallsToCspReportFilter()
+    public function testAddMethodCallsToCspReportFilter(): void
     {
         $builder = new ContainerBuilder();
 

@@ -15,6 +15,8 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\SignedCookieListener;
 use Nelmio\SecurityBundle\Signer;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,21 +25,29 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
+class SignedCookieListenerTest extends TestCase
 {
-    private $signer;
+    private Signer $signer;
+
+    /**
+     * @var Stub&HttpKernelInterface
+     */
     private $kernel;
 
     protected function setUp(): void
     {
         $this->signer = new Signer('secret', 'sha1');
-        $this->kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
     /**
      * @dataProvider provideCookieReading
+     *
+     * @param list<string>          $signedCookieNames
+     * @param array<string, string> $inputCookies
+     * @param array<string, string> $expectedCookies
      */
-    public function testCookieReading($signedCookieNames, $inputCookies, $expectedCookies)
+    public function testCookieReading(array $signedCookieNames, array $inputCookies, array $expectedCookies): void
     {
         $listener = new SignedCookieListener($this->signer, $signedCookieNames);
         $request = Request::create('/', 'GET', [], $inputCookies);
@@ -48,7 +58,7 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedCookies, $request->cookies->all());
     }
 
-    public function provideCookieReading()
+    public function provideCookieReading(): array
     {
         return [
             [[], [], []],
@@ -61,8 +71,12 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideCookieWriting
+     *
+     * @param list<string>          $signedCookieNames
+     * @param array<string, string> $inputCookies
+     * @param array<string, string> $expectedCookies
      */
-    public function testCookieWriting($signedCookieNames, $inputCookies, $expectedCookies)
+    public function testCookieWriting(array $signedCookieNames, array $inputCookies, array $expectedCookies): void
     {
         $listener = new SignedCookieListener($this->signer, $signedCookieNames);
         $request = Request::create('/');
@@ -83,7 +97,7 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedCookies, $responseCookieValues);
     }
 
-    public function provideCookieWriting()
+    public function provideCookieWriting(): array
     {
         return [
             [[], [], []],
@@ -93,7 +107,7 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testCookieReadingSkipsSubReqs()
+    public function testCookieReadingSkipsSubReqs(): void
     {
         $listener = new SignedCookieListener($this->signer, ['*']);
         $request = Request::create('/', 'GET', [], ['foo' => 'bar']);
@@ -104,7 +118,7 @@ class SignedCookieListenerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('bar', $request->cookies->get('foo'));
     }
 
-    public function testCookieWritingSkipsSubReqs()
+    public function testCookieWritingSkipsSubReqs(): void
     {
         $listener = new SignedCookieListener($this->signer, ['*']);
         $request = Request::create('/');

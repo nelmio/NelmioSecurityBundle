@@ -17,7 +17,7 @@ jobs:
         with:
           coverage: none
           php-version: 8.1
-          tools: composer:v2, php-cs-fixer
+          tools: composer:v2, php-cs-fixer:3.4 # see https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/6238
 
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v1
