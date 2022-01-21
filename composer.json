@@ -24,7 +24,6 @@
         "ua-parser/uap-php": "^3.4.4"
     },
     "require-dev": {
-        "doctrine/cache": "^1.0",
         "phpstan/phpstan": "^1.4",
         "phpstan/phpstan-phpunit": "^1.0",
         "phpstan/phpstan-symfony": "^1.1",

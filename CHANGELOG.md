@@ -2,6 +2,7 @@
 * Bump minimal PHP version to 7.4
 * Dropped support for Symfony < 4.4
 * Dropped support for Twig 1
+* Removed `DoctrineCacheUAFamilyParser` (use `PsrCacheUAFamilyParser` instead)
 
 ### 2.11.0 (2022-01-18)
   * Added support for CSP "prefetch-src" directive
