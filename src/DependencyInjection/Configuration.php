@@ -356,7 +356,7 @@ class Configuration implements ConfigurationInterface
                     ->validate()
                         ->always(function ($values) {
                             foreach ($values as $policy) {
-                                if (!in_array($policy, $this->getReferrerPolicies())) {
+                                if (!in_array($policy, $this->getReferrerPolicies(), true)) {
                                     throw new \InvalidArgumentException(sprintf('Unknown referrer policy "%s". Possible referrer policies are "%s".', $policy, implode('", "', $this->getReferrerPolicies())));
                                 }
                             }
