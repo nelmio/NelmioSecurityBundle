@@ -24,17 +24,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
-use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
-
-if (interface_exists('Symfony\Component\Security\Http\Logout\LogoutHandlerInterface')) {
-    interface BaseFlexibleSslListener extends LogoutHandlerInterface
-    {
-    }
-} else {
-    interface BaseFlexibleSslListener
-    {
-    }
-}
 
 /**
  * @final
