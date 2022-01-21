@@ -1,0 +1,26 @@
+name: Static Analysis
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    name: PHPStan
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          php-version: 8.1
+          tools: composer:v2
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v1
+
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse --error-format=github
