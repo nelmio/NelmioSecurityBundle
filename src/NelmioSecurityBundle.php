@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class NelmioSecurityBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 

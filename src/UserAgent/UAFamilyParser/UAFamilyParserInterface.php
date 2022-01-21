@@ -15,5 +15,5 @@ namespace Nelmio\SecurityBundle\UserAgent\UAFamilyParser;
 
 interface UAFamilyParserInterface
 {
-    public function getUaFamily($userAgent);
+    public function getUaFamily(string $userAgent): string;
 }

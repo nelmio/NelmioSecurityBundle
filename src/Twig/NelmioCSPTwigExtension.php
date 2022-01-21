@@ -22,8 +22,8 @@ use Twig\TwigFunction;
 
 class NelmioCSPTwigExtension extends AbstractExtension
 {
-    private $listener;
-    private $shaComputer;
+    private ContentSecurityPolicyListener $listener;
+    private ShaComputer $shaComputer;
 
     public function __construct(ContentSecurityPolicyListener $listener, ShaComputer $shaComputer)
     {
@@ -31,35 +31,29 @@ class NelmioCSPTwigExtension extends AbstractExtension
         $this->shaComputer = $shaComputer;
     }
 
-    /**
-     * @return array
-     */
-    public function getTokenParsers()
+    public function getTokenParsers(): array
     {
         return [new CSPScriptParser($this->shaComputer), new CSPStyleParser($this->shaComputer)];
     }
 
-    public function getListener()
+    public function getListener(): ContentSecurityPolicyListener
     {
         return $this->listener;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return NelmioCSPTwigExtension::class;
     }
 
-    /**
-     * @return array
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('csp_nonce', [$this, 'getCSPNonce']),
         ];
     }
 
-    public function getCSPNonce($usage = null)
+    public function getCSPNonce(string $usage): string
     {
         if (null === $nonce = $this->listener->getNonce($usage)) {
             throw new \RuntimeException('You must enable nonce to use this feature');

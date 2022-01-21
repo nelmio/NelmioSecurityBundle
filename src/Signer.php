@@ -15,10 +15,10 @@ namespace Nelmio\SecurityBundle;
 
 class Signer
 {
-    private $secret;
-    private $algo;
+    private string $secret;
+    private string $algo;
 
-    public function __construct($secret, $algo)
+    public function __construct(string $secret, string $algo)
     {
         $this->secret = $secret;
         $this->algo = $algo;
@@ -28,7 +28,7 @@ class Signer
         }
     }
 
-    public function getSignedValue($value, $signature = null)
+    public function getSignedValue(string $value, ?string $signature = null): string
     {
         if (null === $signature) {
             $signature = $this->generateSignature($value);
@@ -37,7 +37,7 @@ class Signer
         return $value.'.'.$signature;
     }
 
-    public function verifySignedValue($signedValue)
+    public function verifySignedValue(string $signedValue): bool
     {
         [$value, $signature] = $this->splitSignatureFromSignedValue($signedValue);
         $signature2 = $this->generateSignature($value);
@@ -54,7 +54,7 @@ class Signer
         return 0 === $result;
     }
 
-    public function getVerifiedRawValue($signedValue)
+    public function getVerifiedRawValue(string $signedValue): string
     {
         if (!$this->verifySignedValue($signedValue)) {
             throw new \InvalidArgumentException(sprintf("The signature for '%s' was invalid.", $signedValue));
@@ -65,12 +65,15 @@ class Signer
         return $valueSignatureTuple[0];
     }
 
-    private function generateSignature($value)
+    private function generateSignature(string $value): string
     {
         return hash_hmac($this->algo, $value, $this->secret);
     }
 
-    private function splitSignatureFromSignedValue($signedValue)
+    /**
+     * @return array{string, string|null}
+     */
+    private function splitSignatureFromSignedValue(string $signedValue): array
     {
         $pos = strrpos($signedValue, '.');
         if (false === $pos) {

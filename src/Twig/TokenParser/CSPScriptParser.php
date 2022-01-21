@@ -22,7 +22,7 @@ class CSPScriptParser extends AbstractCSPParser
         parent::__construct($shaComputer, 'cspscript', 'script-src');
     }
 
-    protected function computeSha($data)
+    protected function computeSha(string $data): string
     {
         return $this->shaComputer->computeForScript($data);
     }
