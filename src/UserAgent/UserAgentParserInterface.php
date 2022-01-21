@@ -22,7 +22,7 @@ interface UserAgentParserInterface
     public const BROWSER_OTHER = 'Other';
 
     /**
-     * @param $userAgent string The user agent to parse
+     * @param string $userAgent The user agent to parse
      *
      * @return string One of the UserAgentParserInterface::BROWSER_* constant
      */

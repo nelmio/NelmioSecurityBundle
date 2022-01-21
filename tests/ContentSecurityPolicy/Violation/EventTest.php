@@ -15,7 +15,7 @@ namespace ContentSecurityPolicy\Violation;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Event;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
-use PhpUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class EventTest extends TestCase
 {

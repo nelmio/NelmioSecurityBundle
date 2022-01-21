@@ -43,6 +43,11 @@ class CookieSessionHandler implements \SessionHandlerInterface
     protected $cookie = false;
 
     /**
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
+    /**
      * @param string          $cookieName
      * @param int             $lifetime
      * @param string          $path

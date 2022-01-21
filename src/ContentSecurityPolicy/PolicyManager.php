@@ -46,6 +46,8 @@ class PolicyManager
             case UserAgentParserInterface::BROWSER_SAFARI:
                 return $this->getLevel1();
         }
+
+        return [];
     }
 
     private function getChromeDirectives()
