@@ -279,11 +279,11 @@ nelmio_security:
 ```
 
 And declare service `my_own_parser` based on one of the cached parser NelmioSecurityBundle provides or your own one.
-For instance, using the `DoctrineCacheUAFamilyParser`:
+For instance, using the `PsrCacheUAFamilyParser`:
 
 ```xml
-    <service id="my_own_parser" class="Nelmio\SecurityBundle\UserAgent\UAFamilyParser\DoctrineCacheUAFamilyParser">
-      <argument type="service" id="doctrine_cache.providers.redis_cache"/>
+    <service id="my_own_parser" class="Nelmio\SecurityBundle\UserAgent\UAFamilyParser\PsrCacheUAFamilyParser">
+      <argument type="service" id="app.my_cache.pool"/>
       <argument type="service" id="nelmio_security.ua_parser.ua_php"/>
       <argument>604800</argument>
     </service>
