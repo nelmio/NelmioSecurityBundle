@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace ContentSecurityPolicy\Violation;
+namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy\Violation;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Event;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
