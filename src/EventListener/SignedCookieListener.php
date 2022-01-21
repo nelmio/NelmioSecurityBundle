@@ -80,7 +80,7 @@ class SignedCookieListener
                     $cookie->isRaw(),
                     $cookie->getSameSite()
                 );
-                $response->headers->setCookie($signedCookie, $cookie->getPath(), $cookie->getDomain());
+                $response->headers->setCookie($signedCookie);
             }
         }
     }
