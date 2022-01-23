@@ -23,15 +23,25 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class ForcedSslListener
 {
-    private $hstsMaxAge;
-    private $hstsSubdomains;
-    private $hstsPreload;
-    private $whitelist;
-    private $hosts;
-    private $redirectStatusCode;
+    private ?int $hstsMaxAge;
+    private bool $hstsSubdomains;
+    private bool $hstsPreload;
+    private ?string $whitelist;
+    private ?string $hosts;
+    private int $redirectStatusCode;
 
-    public function __construct($hstsMaxAge, $hstsSubdomains, $hstsPreload = false, array $whitelist = [], array $hosts = [], $redirectStatusCode = 302)
-    {
+    /**
+     * @param list<string> $whitelist
+     * @param list<string> $hosts
+     */
+    public function __construct(
+        ?int $hstsMaxAge,
+        bool $hstsSubdomains,
+        bool $hstsPreload = false,
+        array $whitelist = [],
+        array $hosts = [],
+        int $redirectStatusCode = 302
+    ) {
         $this->hstsMaxAge = $hstsMaxAge;
         $this->hstsSubdomains = $hstsSubdomains;
         $this->hstsPreload = $hstsPreload;
@@ -40,7 +50,7 @@ class ForcedSslListener
         $this->redirectStatusCode = $redirectStatusCode;
     }
 
-    public function onKernelRequest(RequestEvent $e)
+    public function onKernelRequest(RequestEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -67,7 +77,7 @@ class ForcedSslListener
         $e->setResponse(new RedirectResponse('https://'.substr($request->getUri(), 7), $this->redirectStatusCode));
     }
 
-    public function onKernelResponse(ResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;

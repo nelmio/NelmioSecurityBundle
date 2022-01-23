@@ -22,23 +22,27 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
-    private $paths;
+    /**
+     * @var array<string, array<string, string>>
+     */
+    private array $paths;
 
+    /**
+     * @param array<string, array<string, string>> $paths
+     * @param list<string>                         $contentTypes
+     */
     public function __construct(array $paths, array $contentTypes = [])
     {
         parent::__construct($contentTypes);
         $this->paths = $paths;
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::RESPONSE => 'onKernelResponse'];
     }
 
-    public function onKernelResponse(ResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;

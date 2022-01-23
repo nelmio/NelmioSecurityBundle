@@ -21,14 +21,14 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class ContentTypeListener
 {
-    protected $nosniff;
+    private bool $nosniff;
 
-    public function __construct($nosniff)
+    public function __construct(bool $nosniff)
     {
         $this->nosniff = $nosniff;
     }
 
-    public function onKernelResponse(ResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;

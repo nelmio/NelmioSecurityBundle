@@ -55,10 +55,6 @@ class NelmioCSPTwigExtension extends AbstractExtension
 
     public function getCSPNonce(string $usage): string
     {
-        if (null === $nonce = $this->listener->getNonce($usage)) {
-            throw new \RuntimeException('You must enable nonce to use this feature');
-        }
-
-        return $nonce;
+        return $this->listener->getNonce($usage);
     }
 }

@@ -118,11 +118,15 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
     public function testDefaultWithAddScript(): void
     {
+        $this->nonceGenerator
+            ->method('generate')
+            ->willReturn('12345');
+
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"]);
         $response = $this->callListener($listener, '/', true, 'text/html', ['scripts' => ['<script></script>'], 'styles' => ['<style></style>']], 3);
 
         $this->assertEquals(
-            "default-src default.example.org 'self'; script-src default.example.org 'self' 'unsafe-inline' 'sha-script'; style-src default.example.org 'self' 'unsafe-inline' 'sha-style'",
+            "default-src default.example.org 'self'; script-src default.example.org 'self' 'unsafe-inline' 'sha-script' 'nonce-12345'; style-src default.example.org 'self' 'unsafe-inline' 'sha-style' 'nonce-12345'",
             $response->headers->get('Content-Security-Policy')
         );
     }
