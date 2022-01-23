@@ -15,8 +15,14 @@ namespace Nelmio\SecurityBundle\ExternalRedirect;
 
 class WhitelistBasedTargetValidator implements TargetValidator
 {
+    /**
+     * @var array|string|null
+     */
     private $whitelist;
 
+    /**
+     * @param array|string|null $whitelist
+     */
     public function __construct($whitelist = null)
     {
         if (is_array($whitelist)) {
@@ -32,12 +38,12 @@ class WhitelistBasedTargetValidator implements TargetValidator
         $this->whitelist = $whitelist;
     }
 
-    public function isTargetAllowed($target)
+    public function isTargetAllowed(string $targetUrl): bool
     {
         if (null === $this->whitelist || empty($this->whitelist)) {
             return false;
         }
 
-        return preg_match('{^'.$this->whitelist.'$}i', parse_url($target, PHP_URL_HOST)) > 0;
+        return preg_match('{^'.$this->whitelist.'$}i', parse_url($targetUrl, PHP_URL_HOST)) > 0;
     }
 }

@@ -30,18 +30,18 @@ use Symfony\Component\Security\Http\Event\LogoutEvent;
  */
 class FlexibleSslListener implements BaseFlexibleSslListener
 {
-    private $cookieName;
-    private $unsecuredLogout;
-    private $dispatcher;
+    private string $cookieName;
+    private bool $unsecuredLogout;
+    private EventDispatcherInterface $dispatcher;
 
-    public function __construct($cookieName, $unsecuredLogout, EventDispatcherInterface $dispatcher)
+    public function __construct(string $cookieName, bool $unsecuredLogout, EventDispatcherInterface $dispatcher)
     {
         $this->cookieName = $cookieName;
         $this->unsecuredLogout = $unsecuredLogout;
         $this->dispatcher = $dispatcher;
     }
 
-    public function onKernelRequest(RequestEvent $e)
+    public function onKernelRequest(RequestEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -55,12 +55,12 @@ class FlexibleSslListener implements BaseFlexibleSslListener
         }
     }
 
-    public function onLogin(InteractiveLoginEvent $e)
+    public function onLogin(InteractiveLoginEvent $e): void
     {
         $this->dispatcher->addListener('kernel.response', [$this, 'onPostLoginKernelResponse'], -1000);
     }
 
-    public function onPostLoginKernelResponse(ResponseEvent $e)
+    public function onPostLoginKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -118,7 +118,7 @@ class FlexibleSslListener implements BaseFlexibleSslListener
         ));
     }
 
-    public function onLogout(LogoutEvent $e)
+    public function onLogout(LogoutEvent $e): void
     {
         $this->logout($e->getRequest(), $e->getResponse(), $e->getToken());
     }
@@ -126,7 +126,7 @@ class FlexibleSslListener implements BaseFlexibleSslListener
     /**
      * Legacy method called from deprecated/removed Symfony\Component\Security\Http\Logout\LogoutHandlerInterface.
      */
-    public function logout(Request $request, Response $response, TokenInterface $token)
+    public function logout(Request $request, Response $response, TokenInterface $token): void
     {
         if ($this->unsecuredLogout) {
             $location = $response->headers->get('Location');

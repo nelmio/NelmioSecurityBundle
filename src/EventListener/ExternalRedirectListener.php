@@ -26,23 +26,33 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class ExternalRedirectListener
 {
-    private $abort;
-    private $override;
-    private $forwardAs;
-    private $targetValidator;
-    private $logger;
-    private $generator;
+    private bool $abort;
+    private ?string $override;
+    private ?string $forwardAs;
 
     /**
-     * @param bool                  $abort           If true, the offending redirects are turned into 403 responses, can't be combined with $override
-     * @param string                $override        Absolute path, complete URL or route name that must be used instead of the offending redirect's url
-     * @param string                $forwardAs       Name of the route-/query string parameter the blocked url will be passed to destination location
-     * @param mixed                 $targetValidator array of hosts to be whitelisted, or regex that matches whitelisted hosts, or implementation of TargetValidator
-     * @param LoggerInterface       $logger          A logger, if it's present, detected offenses are logged at the warning level
-     * @param UrlGeneratorInterface $generator       Router or equivalent that can generate a route, only if override is a route name
+     * @var TargetValidator|WhitelistBasedTargetValidator|null
      */
-    public function __construct($abort = true, $override = null, $forwardAs = null, $targetValidator = null, LoggerInterface $logger = null, UrlGeneratorInterface $generator = null)
-    {
+    private $targetValidator;
+    private ?LoggerInterface $logger;
+    private ?UrlGeneratorInterface $generator;
+
+    /**
+     * @param bool                                     $abort           If true, the offending redirects are turned into 403 responses, can't be combined with $override
+     * @param string|null                              $override        Absolute path, complete URL or route name that must be used instead of the offending redirect's url
+     * @param string|null                              $forwardAs       Name of the route-/query string parameter the blocked url will be passed to destination location
+     * @param string|list<string>|TargetValidator|null $targetValidator array of hosts to be whitelisted, or regex that matches whitelisted hosts, or implementation of TargetValidator
+     * @param LoggerInterface|null                     $logger          A logger, if it's present, detected offenses are logged at the warning level
+     * @param UrlGeneratorInterface|null               $generator       Router or equivalent that can generate a route, only if override is a route name
+     */
+    public function __construct(
+        bool $abort = true,
+        ?string $override = null,
+        ?string $forwardAs = null,
+        $targetValidator = null,
+        ?LoggerInterface $logger = null,
+        ?UrlGeneratorInterface $generator = null
+    ) {
         if ($override && $abort) {
             throw new \LogicException('The ExternalRedirectListener can not abort *and* override redirects at the same time.');
         }
@@ -61,7 +71,7 @@ class ExternalRedirectListener
         $this->generator = $generator;
     }
 
-    public function onKernelResponse(ResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -112,7 +122,7 @@ class ExternalRedirectListener
         }
     }
 
-    public function isExternalRedirect($source, $target)
+    public function isExternalRedirect(string $source, string $target): bool
     {
         // cleanup "\rhttp://foo.com/" and other null prefixeds to be scanned as valid internal redirect
         $target = trim($target);
@@ -122,16 +132,16 @@ class ExternalRedirectListener
             $target = 'proto:'.$target;
         }
 
-        $target = parse_url($target);
-        if (!isset($target['host'])) {
+        $parsedTarget = parse_url($target);
+        if (!isset($parsedTarget['host'])) {
             return false;
         }
 
-        $source = parse_url($source);
-        if (!isset($source['host'])) {
+        $parsedSource = parse_url($source);
+        if (!isset($parsedSource['host'])) {
             throw new \LogicException('The source url must include a host name.');
         }
 
-        return $source['host'] !== $target['host'];
+        return $parsedSource['host'] !== $parsedTarget['host'];
     }
 }

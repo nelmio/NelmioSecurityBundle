@@ -15,6 +15,7 @@ namespace Nelmio\SecurityBundle\Session;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -24,50 +25,38 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class CookieSessionHandler implements \SessionHandlerInterface
 {
-    protected $request;
-
-    protected $response;
-
-    protected $cookieName;
-
-    protected $lifetime;
-
-    protected $path;
-
-    protected $domain;
-
-    protected $secure;
-
-    protected $httpOnly;
-
-    protected $cookie = false;
-
+    private ?Request $request = null;
+    private string $cookieName;
+    private int $lifetime;
+    private string $path;
+    private ?string $domain;
+    private bool $secure;
+    private bool $httpOnly;
     /**
-     * @var LoggerInterface|null
+     * @var Cookie|bool|null
      */
-    private $logger;
+    private $cookie = false;
+    private ?LoggerInterface $logger;
 
-    /**
-     * @param string          $cookieName
-     * @param int             $lifetime
-     * @param string          $path
-     * @param string          $domain
-     * @param bool            $secure
-     * @param bool            $httpOnly
-     * @param LoggerInterface $logger
-     */
-    public function __construct($cookieName, $lifetime = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true, LoggerInterface $logger = null)
-    {
+    public function __construct(
+        string $cookieName,
+        int $lifetime = 0,
+        string $path = '/',
+        ?string $domain = null,
+        bool $secure = false,
+        bool $httpOnly = true,
+        ?LoggerInterface $logger = null
+    ) {
         $this->cookieName = $cookieName;
         $this->path = $path;
         $this->domain = $domain;
-        $this->lifetime = (int) $lifetime;
+        $this->lifetime = $lifetime;
         $this->secure = $secure;
         $this->httpOnly = $httpOnly;
         $this->logger = $logger;
     }
 
-    public function onKernelResponse(ResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -97,7 +86,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
         }
     }
 
-    public function onKernelRequest(RequestEvent $e)
+    public function onKernelRequest(RequestEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -110,24 +99,12 @@ class CookieSessionHandler implements \SessionHandlerInterface
         $this->request = $e->getRequest();
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function close()
+    public function close(): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function destroy($sessionId)
+    public function destroy($sessionId): bool
     {
         $this->cookie = null;
 
@@ -141,21 +118,15 @@ class CookieSessionHandler implements \SessionHandlerInterface
     /**
      * {@inheritdoc}
      *
-     * @return bool
+     * @return int|false
      */
     #[\ReturnTypeWillChange]
     public function gc($maxlifetime)
     {
-        return true;
+        return 0;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function open($savePath, $sessionId)
+    public function open($savePath, $sessionId): bool
     {
         if (!$this->request) {
             if ($this->logger) {
@@ -172,13 +143,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return string
-     */
-    #[\ReturnTypeWillChange]
-    public function read($sessionId)
+    public function read($sessionId): string
     {
         if (!$this->request) {
             if ($this->logger) {
@@ -212,13 +177,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
         return $content['data'];
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function write($sessionId, $sessionData)
+    public function write($sessionId, $sessionData): bool
     {
         if ($this->logger) {
             $this->logger->debug(sprintf('CookieSessionHandler::write sessionId=%s', $sessionId));

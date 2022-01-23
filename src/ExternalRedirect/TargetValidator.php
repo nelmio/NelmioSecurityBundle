@@ -17,10 +17,6 @@ interface TargetValidator
 {
     /**
      * Returns whether a target is acceptable.
-     *
-     * @param string $targetUrl
-     *
-     * @return bool
      */
-    public function isTargetAllowed($targetUrl);
+    public function isTargetAllowed(string $targetUrl): bool;
 }

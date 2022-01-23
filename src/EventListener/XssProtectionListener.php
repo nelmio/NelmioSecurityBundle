@@ -23,18 +23,18 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class XssProtectionListener implements EventSubscriberInterface
 {
-    private $enabled;
-    private $modeBlock;
-    private $reportUri;
+    private bool $enabled;
+    private bool $modeBlock;
+    private ?string $reportUri;
 
-    public function __construct($enabled, $modeBlock, $reportUri = null)
+    public function __construct(bool $enabled, bool $modeBlock, ?string $reportUri = null)
     {
         $this->enabled = $enabled;
         $this->modeBlock = $modeBlock;
         $this->reportUri = $reportUri;
     }
 
-    public function onKernelResponse(ResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -62,15 +62,15 @@ class XssProtectionListener implements EventSubscriberInterface
         $response->headers->set('X-XSS-Protection', $value);
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::RESPONSE => 'onKernelResponse'];
     }
 
-    public static function fromConfig(array $config)
+    /**
+     * @phpstan-param array{enabled: bool, mode_block: bool, report_uri: string|null} $config
+     */
+    public static function fromConfig(array $config): self
     {
         $enabled = $config['enabled'];
         $modeBlock = $config['mode_block'];

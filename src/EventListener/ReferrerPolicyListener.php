@@ -24,14 +24,20 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class ReferrerPolicyListener
 {
-    private $policies;
+    /**
+     * @var list<string>
+     */
+    private array $policies;
 
+    /**
+     * @param list<string> $policies
+     */
     public function __construct(array $policies)
     {
         $this->policies = $policies;
     }
 
-    public function onKernelResponse(ResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;

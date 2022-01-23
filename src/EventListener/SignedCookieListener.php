@@ -24,10 +24,17 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class SignedCookieListener
 {
-    private $signer;
+    private Signer $signer;
+
+    /**
+     * @var list<string>|true
+     */
     private $signedCookieNames;
 
-    public function __construct(Signer $signer, $signedCookieNames)
+    /**
+     * @param list<string> $signedCookieNames
+     */
+    public function __construct(Signer $signer, array $signedCookieNames)
     {
         $this->signer = $signer;
         if (in_array('*', $signedCookieNames, true)) {
@@ -37,7 +44,7 @@ class SignedCookieListener
         }
     }
 
-    public function onKernelRequest(RequestEvent $e)
+    public function onKernelRequest(RequestEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -58,7 +65,7 @@ class SignedCookieListener
         }
     }
 
-    public function onKernelResponse(ResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;

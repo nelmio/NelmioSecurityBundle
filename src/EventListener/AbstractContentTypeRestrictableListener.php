@@ -18,14 +18,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractContentTypeRestrictableListener implements EventSubscriberInterface
 {
-    protected $contentTypes;
+    /**
+     * @var list<string>
+     */
+    protected array $contentTypes;
 
+    /**
+     * @param list<string> $contentTypes
+     */
     public function __construct(array $contentTypes)
     {
         $this->contentTypes = $contentTypes;
     }
 
-    protected function isContentTypeValid(Response $response)
+    protected function isContentTypeValid(Response $response): bool
     {
         if (empty($this->contentTypes)) {
             return true;

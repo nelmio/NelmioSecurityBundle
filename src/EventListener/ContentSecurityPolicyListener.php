@@ -27,19 +27,38 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListener
 {
-    protected $report;
-    protected $enforce;
-    protected $compatHeaders;
-    protected $hosts;
-    protected $_nonce;
-    protected $scriptNonce;
-    protected $styleNonce;
-    protected $sha;
-    protected $nonceGenerator;
-    protected $shaComputer;
+    private DirectiveSet $report;
+    private DirectiveSet $enforce;
+    private bool $compatHeaders;
 
-    public function __construct(DirectiveSet $report, DirectiveSet $enforce, NonceGenerator $nonceGenerator, ShaComputer $shaComputer, $compatHeaders = true, array $hosts = [], array $contentTypes = [])
-    {
+    /**
+     * @var list<string>
+     */
+    private array $hosts;
+    private ?string $_nonce = null;
+    private ?string $scriptNonce = null;
+    private ?string $styleNonce = null;
+
+    /**
+     * @var array<string, list<string>>|null
+     */
+    private ?array $sha = null;
+    private NonceGenerator $nonceGenerator;
+    private ShaComputer $shaComputer;
+
+    /**
+     * @param list<string> $hosts
+     * @param list<string> $contentTypes
+     */
+    public function __construct(
+        DirectiveSet $report,
+        DirectiveSet $enforce,
+        NonceGenerator $nonceGenerator,
+        ShaComputer $shaComputer,
+        bool $compatHeaders = true,
+        array $hosts = [],
+        array $contentTypes = []
+    ) {
         parent::__construct($contentTypes);
         $this->report = $report;
         $this->enforce = $enforce;
@@ -49,7 +68,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->shaComputer = $shaComputer;
     }
 
-    public function onKernelRequest(RequestEvent $e)
+    public function onKernelRequest(RequestEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -58,7 +77,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->sha = [];
     }
 
-    public function addSha($directive, $sha)
+    public function addSha(string $directive, string $sha): void
     {
         if (null === $this->sha) {
             // We're not in a request context, probably in a worker
@@ -69,7 +88,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->sha[$directive][] = $sha;
     }
 
-    public function addScript($html)
+    public function addScript(string $html): void
     {
         if (null === $this->sha) {
             // We're not in a request context, probably in a worker
@@ -80,7 +99,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->sha['script-src'][] = $this->shaComputer->computeForScript($html);
     }
 
-    public function addStyle($html)
+    public function addStyle(string $html): void
     {
         if (null === $this->sha) {
             // We're not in a request context, probably in a worker
@@ -91,17 +110,17 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->sha['style-src'][] = $this->shaComputer->computeForStyle($html);
     }
 
-    public function getReport()
+    public function getReport(): DirectiveSet
     {
         return $this->report;
     }
 
-    public function getEnforcement()
+    public function getEnforcement(): DirectiveSet
     {
         return $this->enforce;
     }
 
-    public function getNonce(string $usage)
+    public function getNonce(string $usage): string
     {
         $nonce = $this->doGetNonce();
 
@@ -116,7 +135,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $nonce;
     }
 
-    private function doGetNonce()
+    private function doGetNonce(): string
     {
         if (null === $this->_nonce) {
             $this->_nonce = $this->nonceGenerator->generate();
@@ -125,7 +144,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $this->_nonce;
     }
 
-    public function onKernelResponse(ResponseEvent $e)
+    public function onKernelResponse(ResponseEvent $e): void
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
             return;
@@ -162,8 +181,18 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         $this->sha = null;
     }
 
-    private function buildHeaders(Request $request, DirectiveSet $directiveSet, $reportOnly, $compatHeaders, array $signatures = null)
-    {
+    /**
+     * @param array<string, list<string>>|null $signatures
+     *
+     * @return array<string, string>
+     */
+    private function buildHeaders(
+        Request $request,
+        DirectiveSet $directiveSet,
+        bool $reportOnly,
+        bool $compatHeaders,
+        array $signatures = null
+    ): array {
         // $signatures might be null if no KernelEvents::REQUEST has been triggered.
         // for instance if a security.authentication.failure has been dispatched
         $headerValue = $directiveSet->buildHeaderValue($request, $signatures);
@@ -187,10 +216,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         return $headers;
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => ['onKernelRequest', 512],
