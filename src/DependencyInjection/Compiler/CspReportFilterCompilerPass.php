@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class CspReportFilterCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('nelmio_security.csp_report.filter')) {
             return;

@@ -25,10 +25,7 @@ use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 
 class NelmioSecurityExtension extends Extension
 {
-    /**
-     * Parses the configuration.
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $processor = new Processor();
         $configuration = new Configuration();
@@ -179,7 +176,10 @@ class NelmioSecurityExtension extends Extension
         }
     }
 
-    private function buildDirectiveSetDefinition(ContainerBuilder $container, $config, $type)
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function buildDirectiveSetDefinition(ContainerBuilder $container, array $config, string $type): Definition
     {
         $directiveDefinition = new Definition(DirectiveSet::class);
 
