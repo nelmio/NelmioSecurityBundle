@@ -22,7 +22,7 @@ class PsrCacheUAFamilyParser implements UAFamilyParserInterface
     private $lifetime;
     private $prefix;
 
-    public function __construct(CacheItemPoolInterface $cache, UAFamilyParser $parser, $lifetime = 0, $prefix = 'nelmio-ua-parser-')
+    public function __construct(CacheItemPoolInterface $cache, UAFamilyParserInterface $parser, $lifetime = 0, $prefix = 'nelmio-ua-parser-')
     {
         $this->parser = $parser;
         $this->cache = $cache;
