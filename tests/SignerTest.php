@@ -47,6 +47,15 @@ class SignerTest extends TestCase
         $this->assertFalse($signer->verifySignedValue($signedValue));
     }
 
+    public function testThrowsExceptionWithInvalidSignature(): void
+    {
+        $signer = new Signer('secret', 'sha1');
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->assertFalse($signer->getVerifiedRawValue('invalid_signed_value'));
+    }
+
     public function testSignatureShouldDependOnSecret(): void
     {
         $signer1 = new Signer('secret1', 'sha1');

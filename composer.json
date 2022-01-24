@@ -28,8 +28,9 @@
         "phpstan/phpstan-phpunit": "^1.0",
         "phpstan/phpstan-symfony": "^1.1",
         "phpunit/phpunit": "^9.5",
-        "psr/cache": "^1.0",
+        "psr/cache": "^1.0|^2.0|^3.0",
         "symfony/browser-kit": "~4.4|~5.4|~6.0",
+        "symfony/cache": "~4.4|~5.4|~6.0",
         "symfony/phpunit-bridge": "^6.0",
         "symfony/twig-bundle": "~4.4|~5.4|~6.0",
         "twig/twig": "^2.10|^3.0"
