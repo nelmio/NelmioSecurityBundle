@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class UAParserCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasParameter('nelmio_browser_adaptive_parser')) {
             return;

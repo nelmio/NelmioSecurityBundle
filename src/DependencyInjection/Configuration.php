@@ -15,12 +15,16 @@ namespace Nelmio\SecurityBundle\DependencyInjection;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 use Psr\Log\LogLevel;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    private $referrerPolicies = [
+    /**
+     * @var list<string>
+     */
+    private array $referrerPolicies = [
         'no-referrer',
         'no-referrer-when-downgrade',
         'same-origin',
@@ -32,10 +36,7 @@ class Configuration implements ConfigurationInterface
         '',
     ];
 
-    /**
-     * @return TreeBuilder
-     */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('nelmio_security', 'array');
         $rootNode = $treeBuilder->getRootNode();
@@ -187,7 +188,7 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    private function addCspNode()
+    private function addCspNode(): ArrayNodeDefinition
     {
         $builder = new TreeBuilder('csp');
         $node = $builder->getRootNode();
@@ -269,7 +270,7 @@ class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    private function addReportOrEnforceNode($reportOrEnforce)
+    private function addReportOrEnforceNode(string $reportOrEnforce): ArrayNodeDefinition
     {
         $builder = new TreeBuilder($reportOrEnforce);
         $node = $builder->getRootNode();
@@ -324,7 +325,7 @@ class Configuration implements ConfigurationInterface
         return $children->end();
     }
 
-    private function addReferrerPolicyNode()
+    private function addReferrerPolicyNode(): ArrayNodeDefinition
     {
         $builder = new TreeBuilder('referrer_policy');
         $node = $builder->getRootNode();
@@ -356,7 +357,10 @@ class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    public function getReferrerPolicies()
+    /**
+     * @return list<string>
+     */
+    public function getReferrerPolicies(): array
     {
         return $this->referrerPolicies;
     }

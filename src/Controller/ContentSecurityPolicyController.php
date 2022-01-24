@@ -36,7 +36,7 @@ class ContentSecurityPolicyController
         $this->dispatcher = $dispatcher;
     }
 
-    public function indexAction(Request $request)
+    public function indexAction(Request $request): Response
     {
         try {
             $report = Report::fromRequest($request);
