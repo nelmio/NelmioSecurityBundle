@@ -18,8 +18,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Filter
 {
-    private $noiseDetectors = [];
+    /**
+     * @var list<NoiseDetectorInterface>
+     */
+    private array $noiseDetectors = [];
 
+    /**
+     * @param list<NoiseDetectorInterface> $noiseDetectors
+     */
     public function __construct(array $noiseDetectors = [])
     {
         foreach ($noiseDetectors as $noiseDetector) {
@@ -27,12 +33,12 @@ class Filter
         }
     }
 
-    public function addNoiseDetector(NoiseDetectorInterface $noiseDetector)
+    public function addNoiseDetector(NoiseDetectorInterface $noiseDetector): void
     {
         $this->noiseDetectors[] = $noiseDetector;
     }
 
-    public function filter(Request $request, Report $report)
+    public function filter(Request $request, Report $report): bool
     {
         foreach ($this->noiseDetectors as $noiseDetector) {
             if ($noiseDetector->match($report, $request)) {

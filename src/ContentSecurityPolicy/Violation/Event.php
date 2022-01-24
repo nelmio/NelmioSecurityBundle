@@ -13,32 +13,18 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
-if (\class_exists(\Symfony\Component\EventDispatcher\Event::class)) {
-    /**
-     * @internal
-     */
-    class BaseEvent extends \Symfony\Component\EventDispatcher\Event
-    {
-    }
-} else {
-    /**
-     * @internal
-     */
-    class BaseEvent extends \Symfony\Contracts\EventDispatcher\Event
-    {
-    }
-}
+use Symfony\Contracts\EventDispatcher\Event as SymfonyEvent;
 
-class Event extends BaseEvent
+class Event extends SymfonyEvent
 {
-    private $report;
+    private Report $report;
 
     public function __construct(Report $report)
     {
         $this->report = $report;
     }
 
-    public function getReport()
+    public function getReport(): Report
     {
         return $this->report;
     }

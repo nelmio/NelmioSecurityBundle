@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DomainsRegexNoiseDetector implements NoiseDetectorInterface
 {
-    public function match(Report $report, Request $request)
+    public function match(Report $report, Request $request): bool
     {
         static $patterns = [
             '/^https?:\/\/.*\.pinterest\.com/',

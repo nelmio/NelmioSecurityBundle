@@ -15,22 +15,17 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
 class NonceGenerator
 {
-    /**
-     * @var int
-     */
-    private $numberOfBytes;
+    private int $numberOfBytes;
 
-    public function __construct($numberOfBytes)
+    public function __construct(int $numberOfBytes)
     {
         $this->numberOfBytes = $numberOfBytes;
     }
 
     /**
      * Generates a nonce value that is later used in script and style policies.
-     *
-     * @return string
      */
-    public function generate()
+    public function generate(): string
     {
         return base64_encode(random_bytes($this->numberOfBytes));
     }

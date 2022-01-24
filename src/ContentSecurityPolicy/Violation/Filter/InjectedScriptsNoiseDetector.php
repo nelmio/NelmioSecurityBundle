@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InjectedScriptsNoiseDetector implements NoiseDetectorInterface
 {
-    public function match(Report $report, Request $request)
+    public function match(Report $report, Request $request): bool
     {
         $patterns = [
             '/installGlobalHook\(window\)/',

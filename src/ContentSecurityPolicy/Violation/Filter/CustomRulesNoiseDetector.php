@@ -18,14 +18,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CustomRulesNoiseDetector implements NoiseDetectorInterface
 {
-    private $urls;
+    /**
+     * @var array<string, array<string>>
+     */
+    private array $urls;
 
+    /**
+     * @param array<string, array<string>> $urls
+     */
     public function __construct(array $urls)
     {
         $this->urls = $urls;
     }
 
-    public function match(Report $report, Request $request)
+    public function match(Report $report, Request $request): bool
     {
         $uri = $report->getUri();
         $domain = $report->getDomain();

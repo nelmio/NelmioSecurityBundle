@@ -18,23 +18,23 @@ use Psr\Log\LoggerInterface;
 
 class Logger
 {
-    private $logger;
-    private $logFormatter;
-    private $level;
+    private LoggerInterface $logger;
+    private LogFormatterInterface $logFormatter;
+    private string $level;
 
-    public function __construct(LoggerInterface $logger, LogFormatterInterface $logFormatter, $level)
+    public function __construct(LoggerInterface $logger, LogFormatterInterface $logFormatter, string $level)
     {
         $this->logger = $logger;
         $this->logFormatter = $logFormatter;
         $this->level = $level;
     }
 
-    public function log(Report $report)
+    public function log(Report $report): void
     {
         $this->logger->log($this->level, $this->logFormatter->format($report), ['csp-report' => $report->getData()]);
     }
 
-    public function getLogger()
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
