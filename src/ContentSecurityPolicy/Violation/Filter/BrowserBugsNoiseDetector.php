@@ -19,14 +19,14 @@ use UAParser\Parser;
 
 class BrowserBugsNoiseDetector implements NoiseDetectorInterface
 {
-    private $uaParser;
+    private Parser $uaParser;
 
     public function __construct(Parser $uaParser)
     {
         $this->uaParser = $uaParser;
     }
 
-    public function match(Report $report, Request $request)
+    public function match(Report $report, Request $request): bool
     {
         // https://bugzilla.mozilla.org/show_bug.cgi?id=1026520
         if ('script-src' === $report->getDirective() && 'self' === $report->getUri()) {

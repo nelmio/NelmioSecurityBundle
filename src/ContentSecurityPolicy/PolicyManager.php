@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PolicyManager
 {
-    private $uaParser;
+    private ?UserAgentParserInterface $uaParser;
 
     public function __construct(UserAgentParserInterface $uaParser = null)
     {
@@ -28,9 +28,9 @@ class PolicyManager
     /**
      * Returns the list of supported directives for the current Request.
      *
-     * @return array
+     * @return list<string>
      */
-    public function getAvailableDirective(Request $request)
+    public function getAvailableDirective(Request $request): array
     {
         if (null === $this->uaParser) {
             return $this->getChromeDirectives();
@@ -50,12 +50,18 @@ class PolicyManager
         return [];
     }
 
-    private function getChromeDirectives()
+    /**
+     * @return list<string>
+     */
+    private function getChromeDirectives(): array
     {
         return array_merge($this->getLevel3(), $this->getDraftDirectives());
     }
 
-    private function getFirefoxDirectives()
+    /**
+     * @return list<string>
+     */
+    private function getFirefoxDirectives(): array
     {
         return array_diff(array_merge($this->getLevel3(), $this->getDraftDirectives()), [
             'block-all-mixed-content',
@@ -64,7 +70,10 @@ class PolicyManager
         ]);
     }
 
-    private function getLevel1()
+    /**
+     * @return list<string>
+     */
+    private function getLevel1(): array
     {
         static $directives = [
             'default-src',
@@ -83,7 +92,10 @@ class PolicyManager
         return $directives;
     }
 
-    private function getLevel2()
+    /**
+     * @return list<string>
+     */
+    private function getLevel2(): array
     {
         static $directives = null;
 
@@ -100,7 +112,10 @@ class PolicyManager
         return $directives;
     }
 
-    private function getLevel3()
+    /**
+     * @return list<string>
+     */
+    private function getLevel3(): array
     {
         static $directives = null;
 
@@ -116,7 +131,10 @@ class PolicyManager
         return $directives;
     }
 
-    private function getDraftDirectives()
+    /**
+     * @return list<string>
+     */
+    private function getDraftDirectives(): array
     {
         static $directives = [
             'block-all-mixed-content',

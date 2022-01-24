@@ -20,21 +20,27 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Report
 {
-    private $data;
+    /**
+     * @var array<string, string>
+     */
+    private array $data;
 
+    /**
+     * @param array<string, string> $data
+     */
     public function __construct(array $data = [])
     {
         $this->data = $data;
     }
 
-    public function setProperty($key, $value)
+    public function setProperty(string $key, string $value): self
     {
         $this->data[$key] = $value;
 
         return $this;
     }
 
-    public function getDirective()
+    public function getDirective(): ?string
     {
         if (isset($this->data['effective-directive'])) {
             return $this->data['effective-directive'];
@@ -45,45 +51,49 @@ class Report
 
             return $parts[0];
         }
+
+        return null;
     }
 
-    public function getUri()
+    public function getUri(): ?string
     {
         return $this->data['blocked-uri'] ?? null;
     }
 
-    public function getScriptSample()
+    public function getScriptSample(): ?string
     {
         return $this->data['script-sample'] ?? null;
     }
 
-    public function getDomain()
+    public function getDomain(): ?string
     {
         if (null === $uri = $this->getUri()) {
-            return;
+            return null;
         }
 
-        if (null !== $host = parse_url($uri, PHP_URL_HOST)) {
+        $host = parse_url($uri, PHP_URL_HOST);
+
+        if (null !== $host && false !== $host) {
             return $host;
         }
 
         return strtolower($uri);
     }
 
-    public function getScheme()
+    public function getScheme(): ?string
     {
         if (null === $uri = $this->getUri()) {
-            return;
+            return null;
         }
 
         if (false === $pos = strpos($uri, '://')) {
-            return;
+            return null;
         }
 
         return strtolower(substr($uri, 0, $pos));
     }
 
-    public function isData()
+    public function isData(): bool
     {
         if (null === $uri = $this->getUri()) {
             return false;
@@ -96,17 +106,20 @@ class Report
         return 'data' === $uri;
     }
 
-    public function getSourceFile()
+    public function getSourceFile(): ?string
     {
         return $this->data['source-file'] ?? null;
     }
 
-    public function getData()
+    /**
+     * @return array<string, string>
+     */
+    public function getData(): array
     {
         return $this->data;
     }
 
-    public static function fromRequest(Request $request)
+    public static function fromRequest(Request $request): self
     {
         $content = $request->getContent();
 

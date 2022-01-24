@@ -15,7 +15,10 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
 class ContentSecurityPolicyParser
 {
-    protected $keywords = [
+    /**
+     * @var list<string>
+     */
+    private array $keywords = [
         'self',
         'unsafe-inline',
         'unsafe-eval',
@@ -28,9 +31,9 @@ class ContentSecurityPolicyParser
     ];
 
     /**
-     * @param array $sourceList
+     * @param list<string>|true $sourceList
      *
-     * @return string
+     * @return string|true
      */
     public function parseSourceList($sourceList)
     {
@@ -44,14 +47,16 @@ class ContentSecurityPolicyParser
     }
 
     /**
-     * @return array
+     * @param list<string> $sourceList
+     *
+     * @return list<string>
      */
-    protected function quoteKeywords(array $sourceList)
+    private function quoteKeywords(array $sourceList): array
     {
         $keywords = $this->keywords;
 
         return array_map(
-            function ($source) use ($keywords) {
+            function (string $source) use ($keywords) {
                 if (in_array($source, $keywords, true)) {
                     return sprintf("'%s'", $source);
                 }

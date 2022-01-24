@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SchemesNoiseDetector implements NoiseDetectorInterface
 {
-    public function match(Report $report, Request $request)
+    public function match(Report $report, Request $request): bool
     {
         static $schemes = [
             'chromeinvoke',

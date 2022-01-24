@@ -18,8 +18,5 @@ use Symfony\Component\HttpFoundation\Request;
 
 interface NoiseDetectorInterface
 {
-    /**
-     * @return bool
-     */
-    public function match(Report $report, Request $request);
+    public function match(Report $report, Request $request): bool;
 }

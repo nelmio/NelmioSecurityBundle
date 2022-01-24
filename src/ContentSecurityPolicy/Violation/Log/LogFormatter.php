@@ -17,7 +17,7 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
 
 class LogFormatter implements LogFormatterInterface
 {
-    public function format(Report $report)
+    public function format(Report $report): string
     {
         return 'Content-Security-Policy Violation Reported';
     }

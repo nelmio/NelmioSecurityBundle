@@ -15,10 +15,10 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
 class ShaComputer
 {
-    private $type;
-    private $favorite;
+    private string $type;
+    private ?string $favorite = null;
 
-    public function __construct($type)
+    public function __construct(string $type)
     {
         if (!in_array($type, ['sha256', 'sha384', 'sha512'], true)) {
             throw new \InvalidArgumentException(sprintf('Type "%s" is not supported', $type));
@@ -27,7 +27,7 @@ class ShaComputer
         $this->type = $type;
     }
 
-    public function computeForScript($html)
+    public function computeForScript(string $html): string
     {
         if (1 !== preg_match_all('/<script[^>]*+>/i', $html, $m)) {
             throw new \InvalidArgumentException('Invalid script, you should use a single <script> tag.');
@@ -42,7 +42,7 @@ class ShaComputer
         return $this->compute($matches[1]);
     }
 
-    public function computeForStyle($html)
+    public function computeForStyle(string $html): string
     {
         if (1 !== preg_match_all('/<style[^>]*+>/i', $html, $m)) {
             throw new \InvalidArgumentException('Invalid script, you should use a single <style> tag.');
@@ -57,7 +57,7 @@ class ShaComputer
         return $this->compute($matches[1]);
     }
 
-    private function getFavorite()
+    private function getFavorite(): string
     {
         if (null !== $this->favorite) {
             return $this->favorite;
@@ -70,9 +70,11 @@ class ShaComputer
         if (function_exists('openssl_get_md_methods') && in_array($this->type, openssl_get_md_methods(), true)) {
             return $this->favorite = 'openssl';
         }
+
+        throw new \RuntimeException('No hash function on this platform');
     }
 
-    private function compute($data)
+    private function compute(string $data): string
     {
         switch ($this->getFavorite()) {
             case 'openssl':

@@ -24,7 +24,10 @@ class DirectiveSet
     public const TYPE_URI_REFERENCE = 'uri-reference';
     public const TYPE_NO_VALUE = 'no-value';
 
-    private static $directiveNames = [
+    /**
+     * @var array<string, string>
+     */
+    private static array $directiveNames = [
         'default-src' => self::TYPE_SRC_LIST,
         'base-uri' => self::TYPE_SRC_LIST_NOFB,
         'block-all-mixed-content' => self::TYPE_NO_VALUE,
@@ -47,21 +50,27 @@ class DirectiveSet
         'prefetch-src' => self::TYPE_SRC_LIST,
     ];
 
-    private $directiveValues = [];
-    private $level1Fallback = true;
-    private $policyManager = null;
+    /**
+     * @var array<string, string|true>
+     */
+    private array $directiveValues = [];
+    private bool $level1Fallback = true;
+    private PolicyManager $policyManager;
 
     public function __construct(PolicyManager $policyManager)
     {
         $this->policyManager = $policyManager;
     }
 
-    public function setLevel1Fallback($bool)
+    public function setLevel1Fallback(bool $bool): void
     {
-        $this->level1Fallback = (bool) $bool;
+        $this->level1Fallback = $bool;
     }
 
-    public function getDirective($name)
+    /**
+     * @return string|true
+     */
+    public function getDirective(string $name)
     {
         $this->checkDirectiveName($name);
 
@@ -72,7 +81,10 @@ class DirectiveSet
         return '';
     }
 
-    public function setDirective($name, $value)
+    /**
+     * @param string|true $value
+     */
+    public function setDirective(string $name, $value): void
     {
         $this->checkDirectiveName($name);
         if (self::TYPE_NO_VALUE === self::$directiveNames[$name]) {
@@ -88,14 +100,20 @@ class DirectiveSet
         }
     }
 
-    public function setDirectives(array $directives)
+    /**
+     * @param array<string, string|true> $directives
+     */
+    public function setDirectives(array $directives): void
     {
         foreach ($directives as $name => $value) {
             $this->setDirective($name, $value);
         }
     }
 
-    public function buildHeaderValue(Request $request, array $signatures = null)
+    /**
+     * @param array<string, list<string>>|null $signatures
+     */
+    public function buildHeaderValue(Request $request, array $signatures = null): string
     {
         $policy = [];
 
@@ -149,7 +167,10 @@ class DirectiveSet
         return implode('; ', $policy);
     }
 
-    public static function fromConfig(PolicyManager $policyManager, array $config, $kind)
+    /**
+     * @param array<string, mixed> $config
+     */
+    public static function fromConfig(PolicyManager $policyManager, array $config, string $kind): self
     {
         $directiveSet = new self($policyManager);
         $directiveSet->setLevel1Fallback(isset($config[$kind]) ? $config[$kind]['level1_fallback'] : false);
@@ -170,19 +191,22 @@ class DirectiveSet
         return $directiveSet;
     }
 
-    public static function getNames()
+    /**
+     * @return array<string, string>
+     */
+    public static function getNames(): array
     {
         return self::$directiveNames;
     }
 
-    private function checkDirectiveName($name)
+    private function checkDirectiveName(string $name): void
     {
         if (!array_key_exists($name, self::$directiveNames)) {
             throw new \InvalidArgumentException('Unknown CSP directive name: '.$name);
         }
     }
 
-    private function canNotBeFallbackedByDefault($name, $value)
+    private function canNotBeFallbackedByDefault(string $name, string $value): bool
     {
         if ('default-src' === $name) {
             return true;

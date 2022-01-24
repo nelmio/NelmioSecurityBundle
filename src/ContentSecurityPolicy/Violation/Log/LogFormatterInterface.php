@@ -19,8 +19,6 @@ interface LogFormatterInterface
 {
     /**
      * Returns a log message given a report.
-     *
-     * @return string
      */
-    public function format(Report $report);
+    public function format(Report $report): string;
 }
