@@ -69,11 +69,6 @@ load content from another domain than the page's domain.
 * **[Referrer Policy](#referrer-policy)**: `Referrer-Policy` header is added to all responses to control the `Referer` header
   that is added to requests made from your site, and for navigations away from your site by browsers.
 
-**WARNING**: The following features are now deprecated:
-
-* **[Encrypted Cookies](#encrypted-cookies)**: Specify certain cookies to be encrypted, so that the value cannot be
-  read. When you retrieve the cookie it will be automatically decrypted.
-
 ## Maximum Security Configuration (Read on for detailed recommendations!)
 
 ```yaml
@@ -456,28 +451,6 @@ nelmio_security:
     signed_cookie:
         secret: this_is_very_secret # defaults to global %secret% parameter
         hash_algo: sha512 # defaults to sha256, see `hash_algos()` for available algorithms
-```
-
-### **Encrypted Cookies**:
-
-**WARNING**: this service is now deprecated due to high coupling with deprecated mcrypt extension.
-
-Encrypts the cookie values using `nelmio_security.encrypted_cookie.secret`. It works the same as
-Signed Cookies:
-
-```yaml
-nelmio_security:
-    encrypted_cookie:
-        names: [test1, test2]
-```
-
-Additional, optional configuration settings:
-
-```yaml
-nelmio_security:
-    encrypted_cookie:
-        secret: this_is_very_secret # defaults to global %secret% parameter
-        algorithm: rijndael-256 # defaults to rijndael-128, see `mcrypt_list_algorithms()` for available algorithms
 ```
 
 ### **Clickjacking Protection**:
