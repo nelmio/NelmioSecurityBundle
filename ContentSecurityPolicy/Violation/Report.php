@@ -19,10 +19,12 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataExcept
 class Report
 {
     private $data;
+    private $userAgent;
 
-    public function __construct(array $data = array())
+    public function __construct(array $data = array(), $userAgent = null)
     {
         $this->data = $data;
+        $this->userAgent = $userAgent;
     }
 
     public function setProperty($key, $value)
@@ -103,6 +105,11 @@ class Report
     {
         return $this->data;
     }
+    
+    public function getUserAgent()
+    {
+        return $this->userAgent;
+    }
 
     public static function fromRequest(Request $request)
     {
@@ -146,6 +153,6 @@ class Report
             $ret['script-sample'] = $report['csp-report']['script-sample'];
         }
 
-        return new self($report);
+        return new self($report, $request->headers->get('User-Agent'));
     }
 }
