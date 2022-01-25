@@ -23,6 +23,7 @@ final class ExternalRedirectionTest extends WebTestCase
 
         $client->request('GET', '/external_redirect');
 
-        $this->assertResponseStatusCodeSame(403);
+        $this->assertResponseStatusCodeSame(302);
+        $this->assertResponseHeaderSame('location', '/');
     }
 }
