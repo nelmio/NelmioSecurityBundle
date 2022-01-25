@@ -19,7 +19,6 @@ use Nelmio\SecurityBundle\DependencyInjection\Compiler\CspReportFilterCompilerPa
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
 
 class CspReportFilterCompilerPassTest extends TestCase
 {
@@ -56,7 +55,7 @@ class CspReportFilterCompilerPassTest extends TestCase
 
         $this->assertCount(1, $methodCalls);
 
-        $this->assertEquals('addNoiseDetector', $methodCalls[0][0]);
-        $this->assertEquals(new Reference('nelmio_security.noise_detector'), $methodCalls[0][1][0]);
+        $this->assertSame('addNoiseDetector', $methodCalls[0][0]);
+        $this->assertSame('nelmio_security.noise_detector', (string) $methodCalls[0][1][0]);
     }
 }

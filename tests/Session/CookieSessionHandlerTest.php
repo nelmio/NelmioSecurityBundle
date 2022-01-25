@@ -73,8 +73,8 @@ class CookieSessionHandlerTest extends TestCase
         $cookies = $response->headers->getCookies();
 
         $this->assertCount(1, $cookies);
-        $this->assertEquals('a:2:{s:6:"expire";i:0;s:4:"data";s:6:"mydata";}', $cookies[0]->getValue());
-        $this->assertEquals('s', $cookies[0]->getName());
+        $this->assertSame('a:2:{s:6:"expire";i:0;s:4:"data";s:6:"mydata";}', $cookies[0]->getValue());
+        $this->assertSame('s', $cookies[0]->getName());
     }
 
     public function testWriteDestroy(): void
@@ -94,8 +94,8 @@ class CookieSessionHandlerTest extends TestCase
         $cookies = $response->headers->getCookies();
 
         $this->assertCount(1, $cookies);
-        $this->assertEquals('a:2:{s:6:"expire";i:0;s:4:"data";s:6:"mydata";}', $cookies[0]->getValue());
-        $this->assertEquals('s', $cookies[0]->getName());
+        $this->assertSame('a:2:{s:6:"expire";i:0;s:4:"data";s:6:"mydata";}', $cookies[0]->getValue());
+        $this->assertSame('s', $cookies[0]->getName());
 
         $this->handler->destroy('sessionId');
 
@@ -104,8 +104,8 @@ class CookieSessionHandlerTest extends TestCase
         $cookies = $response->headers->getCookies();
 
         $this->assertCount(1, $cookies);
-        $this->assertEquals('', $cookies[0]->getValue());
-        $this->assertEquals('s', $cookies[0]->getName());
+        $this->assertNull($cookies[0]->getValue());
+        $this->assertSame('s', $cookies[0]->getName());
     }
 
     /**

@@ -115,7 +115,7 @@ class SignedCookieListenerTest extends TestCase
         $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST);
         $listener->onKernelRequest($event);
 
-        $this->assertEquals('bar', $request->cookies->get('foo'));
+        $this->assertSame('bar', $request->cookies->get('foo'));
     }
 
     public function testCookieWritingSkipsSubReqs(): void
@@ -130,6 +130,6 @@ class SignedCookieListenerTest extends TestCase
         $listener->onKernelResponse($event);
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
-        $this->assertEquals('bar', $cookies['']['/']['foo']->getValue());
+        $this->assertSame('bar', $cookies['']['/']['foo']->getValue());
     }
 }

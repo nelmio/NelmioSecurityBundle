@@ -37,7 +37,7 @@ class ContentTypeListenerTest extends TestCase
     {
         $listener = new ContentTypeListener(true);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals(
+        $this->assertSame(
             'nosniff',
             $response->headers->get('X-Content-Type-Options'),
             'X-Content-Type-Options header should be present'

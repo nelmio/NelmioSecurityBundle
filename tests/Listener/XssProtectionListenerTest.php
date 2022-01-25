@@ -41,7 +41,7 @@ class XssProtectionListenerTest extends TestCase
     {
         $response = $this->callListener($listener, '/', true);
 
-        $this->assertEquals($expectedValue, $response->headers->get('X-Xss-Protection'));
+        $this->assertSame($expectedValue, $response->headers->get('X-Xss-Protection'));
     }
 
     public function provideVariousConfigs(): array

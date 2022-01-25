@@ -27,7 +27,7 @@ class ContentSecurityPolicyParserTest extends TestCase
 
         $sourceList = [$source];
         $result = $parser->parseSourceList($sourceList);
-        $this->assertEquals($expected, $result, 'CSP parser should quote CSP keywords');
+        $this->assertSame($expected, $result, 'CSP parser should quote CSP keywords');
     }
 
     public function keywordsProvider(): array

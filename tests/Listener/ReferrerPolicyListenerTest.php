@@ -40,7 +40,7 @@ class ReferrerPolicyListenerTest extends TestCase
     {
         $response = $this->callListener($listener, '/', true);
 
-        $this->assertEquals($expectedValue, $response->headers->get('Referrer-Policy'));
+        $this->assertSame($expectedValue, $response->headers->get('Referrer-Policy'));
     }
 
     public function provideVariousConfigs(): array
