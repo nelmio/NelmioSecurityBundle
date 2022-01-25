@@ -113,8 +113,8 @@ class CookieSessionHandlerTest extends TestCase
      */
     public function testCookieNotOpened(): void
     {
-        $session = $this->getMockBuilder(SessionInterface::class)->getMock();
-        $headers = $this->getMockBuilder(ResponseHeaderBag::class)->getMock();
+        $session = $this->createMock(SessionInterface::class);
+        $headers = $this->createMock(ResponseHeaderBag::class);
         $headers
             ->method('clearCookie');
         $headers
@@ -128,5 +128,11 @@ class CookieSessionHandlerTest extends TestCase
         $this->handler->onKernelRequest(new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
 
         $this->handler->onKernelResponse(new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
+
+        $getCookie = \Closure::bind(static function (CookieSessionHandler $handler) {
+            return $handler->cookie;
+        }, null, CookieSessionHandler::class);
+
+        $this->assertFalse($getCookie($this->handler));
     }
 }
