@@ -36,6 +36,11 @@ class BrowserBugsNoiseDetector implements NoiseDetectorInterface
                 }
             }
         }
+        
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=1445643
+        if ($report->getUri() === 'moz-extension') {
+            return true;
+        }
 
         // https://bugzilla.mozilla.org/show_bug.cgi?id=1263286
         if ($report->getDirective() === 'base-uri' && in_array($report->getUri(), array('about:blank', 'about'), true)) {
@@ -48,9 +53,12 @@ class BrowserBugsNoiseDetector implements NoiseDetectorInterface
             }
         }
 
-        // files loaded by safari extension
+        // files loaded by safari & firefox extension
         // should be allowed as in Chrome
-        if (($sourceFile = $report->getSourceFile()) !== null && 0 === strpos($sourceFile, 'safari-extension://')) {
+        if (
+            ($sourceFile = $report->getSourceFile()) !== null
+            && (0 === strpos($sourceFile, 'safari-extension://') || 'moz-extension' === $sourceFile)
+        ) {
             return true;
         }
 
