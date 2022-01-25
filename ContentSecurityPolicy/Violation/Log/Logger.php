@@ -20,7 +20,7 @@ class Logger
 
     public function log(Report $report)
     {
-        $this->logger->log($this->level, $this->logFormatter->format($report), array('csp-report' => $report->getData()));
+        $this->logger->log($this->level, $this->logFormatter->format($report), array('csp-report' => $report->getData(), 'user-agent' => $report->getUserAgent()));
     }
 
     public function getLogger()
