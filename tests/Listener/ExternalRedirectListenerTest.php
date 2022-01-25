@@ -66,9 +66,6 @@ class ExternalRedirectListenerTest extends TestCase
         ];
     }
 
-    /**
-     * @depends testRedirectMatcher
-     */
     public function testRedirectAbort(): void
     {
         $this->expectException(HttpException::class);
@@ -77,9 +74,6 @@ class ExternalRedirectListenerTest extends TestCase
         $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
     }
 
-    /**
-     * @depends testRedirectMatcher
-     */
     public function testRedirectOverrides(): void
     {
         $listener = new ExternalRedirectListener(false, '/override');
@@ -89,9 +83,6 @@ class ExternalRedirectListenerTest extends TestCase
         $this->assertSame('/override', $response->headers->get('Location'));
     }
 
-    /**
-     * @depends testRedirectMatcher
-     */
     public function testRedirectSkipsAllowedTargets(): void
     {
         $listener = new ExternalRedirectListener(true, null, null, new WhitelistBasedTargetValidator(['bar.com']));
@@ -101,7 +92,6 @@ class ExternalRedirectListenerTest extends TestCase
     }
 
     /**
-     * @depends testRedirectMatcher
      * @dataProvider provideRedirectWhitelistsFailing
      *
      * @param string[] $whitelist
@@ -126,7 +116,6 @@ class ExternalRedirectListenerTest extends TestCase
     }
 
     /**
-     * @depends testRedirectMatcher
      * @dataProvider provideRedirectWhitelistsPassing
      *
      * @param string[] $whitelist
