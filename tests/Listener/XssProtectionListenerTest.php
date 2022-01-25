@@ -16,6 +16,7 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 use Nelmio\SecurityBundle\EventListener\XssProtectionListener;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -52,6 +53,24 @@ class XssProtectionListenerTest extends TestCase
             ['1; mode=block', new XssProtectionListener(true, true)],
             ['1; mode=block; report=https://report.com/endpoint', new XssProtectionListener(true, true, 'https://report.com/endpoint')],
         ];
+    }
+
+    public function testDoesNotHasHeaderOnRedirection(): void
+    {
+        $request = Request::create('/');
+        $response = new RedirectResponse('/redirect');
+
+        $listener = new XssProtectionListener(true, true);
+
+        $event = new ResponseEvent(
+            $this->kernel,
+            $request,
+            HttpKernelInterface::MASTER_REQUEST,
+            $response
+        );
+        $listener->onKernelResponse($event);
+
+        $this->assertFalse($response->headers->has('X-Xss-Protection'));
     }
 
     protected function callListener(XssProtectionListener $listener, string $path, bool $masterReq): Response

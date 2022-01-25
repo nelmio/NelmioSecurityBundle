@@ -16,6 +16,7 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 use Nelmio\SecurityBundle\EventListener\ClickjackingListener;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -68,6 +69,16 @@ class ClickjackingListenerTest extends TestCase
     public function testClickjackingSkipsSubReqs(): void
     {
         $response = $this->callListener($this->listener, '/', false);
+        $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
+    }
+
+    public function testClickjackingSkipsOnRedirection(): void
+    {
+        $request = Request::create('/');
+        $response = new RedirectResponse('/redirect');
+
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $this->listener->onKernelResponse($event);
         $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
     }
 

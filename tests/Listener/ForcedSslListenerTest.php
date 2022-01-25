@@ -72,6 +72,9 @@ class ForcedSslListenerTest extends TestCase
     {
         $listener = new ForcedSslListener(60, true);
 
+        $response = $this->callListenerReq($listener, 'https://localhost/', false);
+        $this->assertNull($response);
+
         $response = $this->callListenerResp($listener, 'https://localhost/', false);
         $this->assertNull($response->headers->get('Strict-Transport-Security'));
     }
@@ -117,7 +120,7 @@ class ForcedSslListenerTest extends TestCase
         $this->assertSame(301, $response->getStatusCode());
     }
 
-    protected function callListenerReq(ForcedSslListener $listener, string $uri, bool $masterReq): ?Response
+    private function callListenerReq(ForcedSslListener $listener, string $uri, bool $masterReq): ?Response
     {
         $request = Request::create($uri);
 
@@ -127,7 +130,7 @@ class ForcedSslListenerTest extends TestCase
         return $event->getResponse();
     }
 
-    protected function callListenerResp(ForcedSslListener $listener, string $uri, bool $masterReq): Response
+    private function callListenerResp(ForcedSslListener $listener, string $uri, bool $masterReq): Response
     {
         $request = Request::create($uri);
         $response = new Response();

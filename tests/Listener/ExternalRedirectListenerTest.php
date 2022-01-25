@@ -74,13 +74,46 @@ class ExternalRedirectListenerTest extends TestCase
         $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
     }
 
-    public function testRedirectOverrides(): void
-    {
-        $listener = new ExternalRedirectListener(false, '/override');
-        $response = $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com/');
+    /**
+     * @dataProvider provideRedirectOverrides
+     */
+    public function testRedirectOverridesWithForwardAs(
+        string $override,
+        ?string $forwardAs,
+        string $target,
+        string $expected
+    ): void {
+        $listener = new ExternalRedirectListener(false, $override, $forwardAs);
+        $response = $this->filterResponse($listener, 'http://foo.com/', $target);
 
         $this->assertTrue($response->isRedirect());
-        $this->assertSame('/override', $response->headers->get('Location'));
+        $this->assertSame($expected, $response->headers->get('Location'));
+    }
+
+    public function provideRedirectOverrides(): iterable
+    {
+        $target = 'http://bar.com/';
+
+        yield 'simple override' => [
+            '/override',
+            null,
+            $target,
+            '/override',
+        ];
+
+        yield 'with forwardAs' => [
+            '/override',
+            'redirect_to',
+            $target,
+            sprintf('/override?redirect_to=%s', urlencode($target)),
+        ];
+
+        yield 'override with parameter and with forwardAs' => [
+            '/override?param=value',
+            'redirect_to',
+            $target,
+            sprintf('/override?param=value&redirect_to=%s', urlencode($target)),
+        ];
     }
 
     public function testRedirectSkipsAllowedTargets(): void

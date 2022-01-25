@@ -1,0 +1,21 @@
+home:
+  path: /
+  defaults:
+    _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    template: 'homepage.html.twig'
+
+clickjacking:
+  path: /clickjacking/{action}
+  defaults:
+    _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    template: 'homepage.html.twig'
+
+external_redirect:
+  path: /external_redirect
+  defaults:
+    _controller: Nelmio\SecurityBundle\Tests\App\Controller\ExternalRedirectAction
+
+csp_report:
+  path: /csp/report
+  methods: [POST]
+  defaults: { _controller: nelmio_security.csp_reporter_controller::indexAction }
