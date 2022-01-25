@@ -21,6 +21,7 @@ use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -130,6 +131,21 @@ class ContentSecurityPolicyListenerTest extends TestCase
     {
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"], false, true, ['text/html']);
         $response = $this->callListener($listener, '/', true, 'application/json');
+
+        $this->assertEquals(null, $response->headers->get('Content-Security-Policy'));
+    }
+
+    public function testWithRedirection(): void
+    {
+        $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"], false, true, ['text/html']);
+        $response = new RedirectResponse('/redirect');
+        $event = new ResponseEvent(
+            $this->kernel,
+            Request::create('/'),
+            HttpKernelInterface::MASTER_REQUEST,
+            $response
+        );
+        $listener->onKernelResponse($event);
 
         $this->assertEquals(null, $response->headers->get('Content-Security-Policy'));
     }

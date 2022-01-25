@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\App;
 
 use Nelmio\SecurityBundle\NelmioSecurityBundle;
-use Nelmio\SecurityBundle\Tests\App\Controller\ExternalRedirectAction;
-use Symfony\Bundle\FrameworkBundle\Controller\TemplateController;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
@@ -23,7 +21,6 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
-use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class AppKernel extends Kernel
 {
@@ -44,35 +41,13 @@ class AppKernel extends Kernel
     }
 
     /**
-     * Remove RouteCollectionBuilder when dropping support for Symfony < 5.4.
+     * Add RoutingConfigurator type declaration when dropping support for Symfony < 5.4.
      *
-     * @param RoutingConfigurator|RouteCollectionBuilder $routes
+     * @param RoutingConfigurator $routes
      */
     protected function configureRoutes($routes): void
     {
-        if ($routes instanceof RouteCollectionBuilder) {
-            $routes->add('/', TemplateController::class)
-                ->addDefaults(['template' => 'homepage.html.twig']);
-
-            $routes->add('/clickjacking/{action}', TemplateController::class)
-                ->addDefaults(['template' => 'homepage.html.twig']);
-
-            $routes->add('/external_redirect', ExternalRedirectAction::class);
-        } else {
-            $routes->add('home', '/')
-                ->controller(TemplateController::class)
-                ->defaults(['template' => 'homepage.html.twig'])
-            ;
-
-            $routes->add('clickjacking', '/clickjacking/{action}')
-                ->controller(TemplateController::class)
-                ->defaults(['template' => 'homepage.html.twig'])
-            ;
-
-            $routes->add('external_redirect', '/external_redirect')
-                ->controller(ExternalRedirectAction::class)
-            ;
-        }
+        $routes->import(sprintf('%s/config/routes.yaml', $this->getProjectDir()));
     }
 
     protected function configureContainer(ContainerBuilder $containerBuilder, LoaderInterface $loader): void

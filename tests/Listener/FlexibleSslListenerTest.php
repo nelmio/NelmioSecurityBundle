@@ -17,6 +17,7 @@ use Nelmio\SecurityBundle\EventListener\FlexibleSslListener;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -106,6 +107,31 @@ class FlexibleSslListenerTest extends TestCase
         $this->assertTrue(isset($cookies['']['/'][session_name()]));
         $this->assertSame(session_id(), $cookies['']['/'][session_name()]->getValue());
         $this->assertTrue($cookies['']['/'][session_name()]->isSecure());
+    }
+
+    public function testPostLoginKernelResponseForceCookiesToBeSecure(): void
+    {
+        $request = Request::create('https://localhost/');
+
+        $unsecureCookie = Cookie::create(
+            'unsecure',
+            'unsecure_value',
+            100,
+            '/',
+            null,
+            false
+        );
+        $response = new Response();
+        $response->headers->setCookie($unsecureCookie);
+
+        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $this->listener->onPostLoginKernelResponse($event);
+
+        $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
+        $this->assertInstanceOf(Cookie::class, $cookies['']['/']['unsecure']);
+        $this->assertTrue(isset($cookies['']['/']['unsecure']));
+        $this->assertSame('unsecure_value', $cookies['']['/']['unsecure']->getValue());
+        $this->assertTrue($cookies['']['/']['unsecure']->isSecure());
     }
 
     public function testKernelRequestSkipsSubReqs(): void
