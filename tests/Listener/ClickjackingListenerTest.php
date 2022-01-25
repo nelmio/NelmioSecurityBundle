@@ -49,7 +49,7 @@ class ClickjackingListenerTest extends TestCase
     public function testClickjackingMatches(string $path, ?string $result): void
     {
         $response = $this->callListener($this->listener, $path, true);
-        $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
+        $this->assertSame($result, $response->headers->get('X-Frame-Options'));
     }
 
     public function provideClickjackingMatches(): array
@@ -69,7 +69,7 @@ class ClickjackingListenerTest extends TestCase
     public function testClickjackingSkipsSubReqs(): void
     {
         $response = $this->callListener($this->listener, '/', false);
-        $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
+        $this->assertSame(null, $response->headers->get('X-Frame-Options'));
     }
 
     public function testClickjackingSkipsOnRedirection(): void
@@ -79,7 +79,7 @@ class ClickjackingListenerTest extends TestCase
 
         $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $this->listener->onKernelResponse($event);
-        $this->assertEquals(null, $response->headers->get('X-Frame-Options'));
+        $this->assertSame(null, $response->headers->get('X-Frame-Options'));
     }
 
     protected function callListener(ClickjackingListener $listener, string $path, bool $masterReq, string $contentType = 'text/html'): Response
@@ -107,7 +107,7 @@ class ClickjackingListenerTest extends TestCase
         ], ['text/html']);
 
         $response = $this->callListener($this->listener, '/', true, $contentType);
-        $this->assertEquals($result, $response->headers->get('X-Frame-Options'));
+        $this->assertSame($result, $response->headers->get('X-Frame-Options'));
     }
 
     public function provideContentTypeForRestrictions(): array

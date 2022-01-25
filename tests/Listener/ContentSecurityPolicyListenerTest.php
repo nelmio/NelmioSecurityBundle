@@ -73,7 +73,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"]);
         $response = $this->callListener($listener, '/', true);
 
-        $this->assertEquals(
+        $this->assertSame(
             "default-src default.example.org 'self'",
             $response->headers->get('Content-Security-Policy')
         );
@@ -84,7 +84,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"]);
         $response = $this->callListener($listener, '/', true, 'text/html', ['signatures' => ['script-src' => ['sha-1']]]);
 
-        $this->assertEquals(
+        $this->assertSame(
             "default-src default.example.org 'self'; script-src default.example.org 'self' 'unsafe-inline' 'sha-1'",
             $response->headers->get('Content-Security-Policy')
         );
@@ -95,7 +95,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'", 'script-src' => "'self' 'unsafe-inline'"]);
         $response = $this->callListener($listener, '/', true, 'text/html', ['signatures' => ['script-src' => ['sha-1']]]);
 
-        $this->assertEquals(
+        $this->assertSame(
             "default-src default.example.org 'self'; script-src 'self' 'unsafe-inline' 'sha-1'",
             $response->headers->get('Content-Security-Policy')
         );
@@ -110,7 +110,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"]);
         $response = $this->callListener($listener, '/', true, 'text/html', ['signatures' => ['script-src' => ['sha-1']]], 3);
 
-        $this->assertEquals(
+        $this->assertSame(
             "default-src default.example.org 'self'; script-src default.example.org 'self' 'unsafe-inline' 'sha-1' 'nonce-12345'; style-src default.example.org 'self' 'unsafe-inline' 'nonce-12345'",
             $response->headers->get('Content-Security-Policy')
         );
@@ -125,7 +125,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"]);
         $response = $this->callListener($listener, '/', true, 'text/html', ['scripts' => ['<script></script>'], 'styles' => ['<style></style>']], 3);
 
-        $this->assertEquals(
+        $this->assertSame(
             "default-src default.example.org 'self'; script-src default.example.org 'self' 'unsafe-inline' 'sha-script' 'nonce-12345'; style-src default.example.org 'self' 'unsafe-inline' 'sha-style' 'nonce-12345'",
             $response->headers->get('Content-Security-Policy')
         );
@@ -136,7 +136,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"], false, true, ['text/html']);
         $response = $this->callListener($listener, '/', true, 'application/json');
 
-        $this->assertEquals(null, $response->headers->get('Content-Security-Policy'));
+        $this->assertSame(null, $response->headers->get('Content-Security-Policy'));
     }
 
     public function testWithRedirection(): void
@@ -151,7 +151,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
         );
         $listener->onKernelResponse($event);
 
-        $this->assertEquals(null, $response->headers->get('Content-Security-Policy'));
+        $this->assertSame(null, $response->headers->get('Content-Security-Policy'));
     }
 
     public function testScript(): void
@@ -160,7 +160,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $listener = $this->buildSimpleListener(['script-src' => $script]);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals(
+        $this->assertSame(
             "script-src script.example.org 'self' 'unsafe-eval' 'strict-dynamic' 'unsafe-inline'",
             $response->headers->get('Content-Security-Policy')
         );
@@ -172,7 +172,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $listener = $this->buildSimpleListener(['object-src' => $object]);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("object-src object.example.org 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertSame("object-src object.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testStyle(): void
@@ -181,7 +181,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $listener = $this->buildSimpleListener(['style-src' => $style]);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("style-src style.example.org 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertSame("style-src style.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testImg(): void
@@ -190,7 +190,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $listener = $this->buildSimpleListener(['img-src' => $img]);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("img-src img.example.org 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertSame("img-src img.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testMedia(): void
@@ -199,7 +199,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $listener = $this->buildSimpleListener(['media-src' => $media]);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("media-src media.example.org 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertSame("media-src media.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testFrame(): void
@@ -208,7 +208,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $listener = $this->buildSimpleListener(['frame-src' => $frame]);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("frame-src frame.example.org 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertSame("frame-src frame.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testFont(): void
@@ -217,7 +217,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $listener = $this->buildSimpleListener(['font-src' => $font]);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals("font-src font.example.org 'self'", $response->headers->get('Content-Security-Policy'));
+        $this->assertSame("font-src font.example.org 'self'", $response->headers->get('Content-Security-Policy'));
     }
 
     public function testConnect(): void
@@ -226,7 +226,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $listener = $this->buildSimpleListener(['connect-src' => $connect]);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals(
+        $this->assertSame(
             "connect-src connect.example.org 'self'",
             $response->headers->get('Content-Security-Policy')
         );
@@ -238,7 +238,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $listener = $this->buildSimpleListener(['report-uri' => $reportUri]);
         $response = $this->callListener($listener, '/', true);
-        $this->assertEquals(
+        $this->assertSame(
             'report-uri http://example.org/CSPReport',
             $response->headers->get('Content-Security-Policy')
         );
@@ -344,7 +344,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $header = $response->headers->get('Content-Security-Policy');
 
-        $this->assertEquals(
+        $this->assertSame(
             'default-src example.org',
             $header,
             'Response should contain only the default as the others are equivalent'
@@ -367,7 +367,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
         ]);
         $response = $this->callListener($listener, '/', true);
 
-        $this->assertEquals(
+        $this->assertSame(
             $response->headers->get('Content-Security-Policy'),
             $response->headers->get('X-Content-Security-Policy'),
             'Response should contain non-standard X-Content-Security-Policy header'
@@ -418,9 +418,9 @@ class ContentSecurityPolicyListenerTest extends TestCase
     {
         $directiveSet = new DirectiveSet(new PolicyManager());
         $directiveSet->setDirectives(['default-src' => 'foo']);
-        $this->assertEquals('default-src foo', $directiveSet->buildHeaderValue(new Request()));
+        $this->assertSame('default-src foo', $directiveSet->buildHeaderValue(new Request()));
         $directiveSet->setDirective('default-src', '');
-        $this->assertEquals('', $directiveSet->buildHeaderValue(new Request()));
+        $this->assertSame('', $directiveSet->buildHeaderValue(new Request()));
     }
 
     /**
