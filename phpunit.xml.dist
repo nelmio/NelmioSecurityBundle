@@ -18,6 +18,7 @@
 
     <php>
         <env name="KERNEL_CLASS" value="Nelmio\SecurityBundle\Tests\App\AppKernel"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0"/>
     </php>
 
     <coverage>
