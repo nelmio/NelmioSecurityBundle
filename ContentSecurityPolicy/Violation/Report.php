@@ -131,27 +131,21 @@ class Report
 
         $report = $json['csp-report'];
 
-        if (empty($report) && (!isset($report['csp-report']) || !is_array($report['csp-report']))) {
+        if (!is_array($report) || [] === $report) {
             return new self();
         }
 
-        $effective = isset($report['csp-report']['effective-directive']) ? $report['csp-report']['effective-directive'] : null;
+        $effective = isset($report['effective-directive']) ? $report['effective-directive'] : null;
 
-        if (null === $effective && isset($report['csp-report']['violated-directive'])) {
-            $split = explode(' ', $report['csp-report']['violated-directive']);
+        if (null === $effective && isset($report['violated-directive'])) {
+            $split = explode(' ', $report['violated-directive']);
             $effective = isset($split[0]) ? $split[0] : null;
         }
 
-        $blocked = isset($report['csp-report']['blocked-uri']) ? $report['csp-report']['blocked-uri'] : null;
+        $blocked = isset($report['blocked-uri']) ? $report['blocked-uri'] : null;
 
-        $ret = array(
-            'effective-directive' => $effective,
-            'blocked-uri' => $blocked,
-        );
-
-        if (isset($report['csp-report']['script-sample'])) {
-            $ret['script-sample'] = $report['csp-report']['script-sample'];
-        }
+        $report['effective-directive'] = $effective;
+        $report['blocked-uri'] = $blocked;
 
         return new self($report, $request->headers->get('User-Agent'));
     }
