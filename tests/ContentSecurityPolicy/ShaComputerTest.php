@@ -18,6 +18,12 @@ use PHPUnit\Framework\TestCase;
 
 class ShaComputerTest extends TestCase
 {
+    public function testInvalidType(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new ShaComputer('non_supported_type');
+    }
+
     /**
      * @dataProvider provideValidScriptCode
      */
@@ -89,11 +95,32 @@ class ShaComputerTest extends TestCase
         $shaComputer->computeForScript($code);
     }
 
+    /**
+     * @dataProvider provideInvalidStyleCode
+     */
+    public function testComputeStyleShouldFail(string $code): void
+    {
+        $this->expectException('InvalidArgumentException');
+
+        $shaComputer = new ShaComputer('sha256');
+        $shaComputer->computeForScript($code);
+    }
+
     public function provideInvalidScriptCode(): array
     {
         return [
             [' <script> </script> <script> </script> '],
             [' <script>'],
+            [''],
+            [' <style></style'],
+        ];
+    }
+
+    public function provideInvalidStyleCode(): array
+    {
+        return [
+            [' <style> </style> <style> </style> '],
+            [' <style>'],
             [''],
             [' <style></style'],
         ];
