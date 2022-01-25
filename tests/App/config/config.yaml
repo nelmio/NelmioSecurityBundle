@@ -4,7 +4,7 @@ framework:
 
 nelmio_security:
   external_redirects:
-    abort: true
+    override: home
 
   clickjacking:
     paths:
