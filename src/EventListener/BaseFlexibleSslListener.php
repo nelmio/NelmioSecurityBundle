@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\EventListener;
 
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 
-if (interface_exists(LogoutHandlerInterface::class)) {
+if (version_compare(Kernel::VERSION, '5.1', '<')) {
     /**
      * @internal
      */

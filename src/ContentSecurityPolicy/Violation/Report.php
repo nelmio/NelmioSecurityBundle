@@ -123,7 +123,7 @@ class Report
     {
         $content = $request->getContent();
 
-        if (empty($content)) {
+        if ('' === $content) {
             throw new NoDataException('Content-Security-Policy Endpoint called without data', 411);
         }
 
@@ -139,7 +139,7 @@ class Report
 
         $report = $json['csp-report'];
 
-        if (empty($report) && (!isset($report['csp-report']) || !is_array($report['csp-report']))) {
+        if (!is_array($report) || [] === $report) {
             return new self();
         }
 

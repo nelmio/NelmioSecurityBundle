@@ -17,6 +17,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "symfony/framework-bundle": "~4.4|~5.4|~6.0",
+        "symfony/http-kernel": "~4.4|~5.4|~6.0",
         "symfony/security-core": "~4.4|~5.4|~6.0",
         "symfony/security-http": "~4.4|~5.4|~6.0",
         "symfony/security-csrf": "~4.4|~5.4|~6.0",
@@ -26,6 +27,7 @@
     "require-dev": {
         "phpstan/phpstan": "^1.4",
         "phpstan/phpstan-phpunit": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.1",
         "phpstan/phpstan-symfony": "^1.1",
         "phpunit/phpunit": "^9.5",
         "psr/cache": "^1.0|^2.0|^3.0",
