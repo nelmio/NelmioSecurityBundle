@@ -1,12 +1,16 @@
 includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
         - src
         - tests
     excludePaths:
         - src/EventListener/BaseFlexibleSslListener.php
     treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # Ignore typing providers in tests
+        - '#^Method Nelmio\\SecurityBundle\\Tests\\[^:]+Test::(provide\w+|\w+Provider)\(\) return type has no value type specified in iterable type (array|iterable)\.#'

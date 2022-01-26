@@ -16,12 +16,12 @@ namespace Nelmio\SecurityBundle\ExternalRedirect;
 class WhitelistBasedTargetValidator implements TargetValidator
 {
     /**
-     * @var array|string|null
+     * @var string[]|string|null
      */
     private $whitelist;
 
     /**
-     * @param array|string|null $whitelist
+     * @param string[]|string|null $whitelist
      */
     public function __construct($whitelist = null)
     {
