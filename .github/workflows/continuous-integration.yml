@@ -50,7 +50,7 @@ jobs:
             dependency-versions: ${{ matrix.dependencies }}
 
       - name: Run tests
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+        run: vendor/bin/phpunit --coverage-clover coverage.xml
 
       - name: Send coverage to Codecov
         uses: codecov/codecov-action@v2
