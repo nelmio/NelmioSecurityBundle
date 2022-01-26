@@ -45,8 +45,8 @@ class ForcedSslListener
         $this->hstsMaxAge = $hstsMaxAge;
         $this->hstsSubdomains = $hstsSubdomains;
         $this->hstsPreload = $hstsPreload;
-        $this->whitelist = $whitelist ? '('.implode('|', $whitelist).')' : null;
-        $this->hosts = $hosts ? '('.implode('|', $hosts).')' : null;
+        $this->whitelist = [] !== $whitelist ? '('.implode('|', $whitelist).')' : null;
+        $this->hosts = [] !== $hosts ? '('.implode('|', $hosts).')' : null;
         $this->redirectStatusCode = $redirectStatusCode;
     }
 
@@ -64,12 +64,12 @@ class ForcedSslListener
         }
 
         // skip whitelisted URLs
-        if ($this->whitelist && preg_match('{'.$this->whitelist.'}i', $request->getPathInfo() ?: '/')) {
+        if (null !== $this->whitelist && preg_match('{'.$this->whitelist.'}i', '' === $request->getPathInfo() ? '/' : $request->getPathInfo())) {
             return;
         }
 
         // skip non-listed hosts
-        if ($this->hosts && !preg_match('{'.$this->hosts.'}i', $request->getHost() ?: '/')) {
+        if (null !== $this->hosts && !preg_match('{'.$this->hosts.'}i', '' === $request->getHost() ? '/' : $request->getHost())) {
             return;
         }
 

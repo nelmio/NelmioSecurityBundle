@@ -32,20 +32,20 @@ class NelmioSecurityExtension extends Extension
         $config = $processor->processConfiguration($configuration, $configs);
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        if (!empty($config['signed_cookie']['names'])) {
+        if (isset($config['signed_cookie']['names']) && [] !== $config['signed_cookie']['names']) {
             $loader->load('signed_cookie.yml');
             $container->setParameter('nelmio_security.signed_cookie.names', $config['signed_cookie']['names']);
             $container->setParameter('nelmio_security.signer.secret', $config['signed_cookie']['secret']);
             $container->setParameter('nelmio_security.signer.hash_algo', $config['signed_cookie']['hash_algo']);
         }
 
-        if (!empty($config['clickjacking'])) {
+        if (isset($config['clickjacking']) && [] !== $config['clickjacking']) {
             $loader->load('clickjacking.yml');
             $container->setParameter('nelmio_security.clickjacking.paths', $config['clickjacking']['paths']);
             $container->setParameter('nelmio_security.clickjacking.content_types', $config['clickjacking']['content_types']);
         }
 
-        if (!empty($config['csp']) && $config['csp']['enabled']) {
+        if ($this->isConfigEnabled($container, $config['csp'])) {
             $loader->load('csp.yml');
 
             $cspConfig = $config['csp'];
@@ -93,19 +93,19 @@ class NelmioSecurityExtension extends Extension
             }
         }
 
-        if (!empty($config['xss_protection'])) {
+        if (isset($config['xss_protection']) && [] !== $config['xss_protection']) {
             $loader->load('xss_protection.yml');
 
             $container->getDefinition('nelmio_security.xss_protection_listener')
                 ->setArguments([$config['xss_protection']]);
         }
 
-        if (!empty($config['content_type'])) {
+        if (isset($config['content_type']) && [] !== $config['content_type']) {
             $loader->load('content_type.yml');
             $container->setParameter('nelmio_security.content_type.nosniff', $config['content_type']['nosniff']);
         }
 
-        if (!empty($config['external_redirects'])) {
+        if (isset($config['external_redirects']) && [] !== $config['external_redirects']) {
             $loader->load('external_redirects.yml');
             $container->setParameter('nelmio_security.external_redirects.override', $config['external_redirects']['override']);
             $container->setParameter('nelmio_security.external_redirects.forward_as', $config['external_redirects']['forward_as']);
@@ -128,7 +128,7 @@ class NelmioSecurityExtension extends Extension
             }
         }
 
-        if (!empty($config['flexible_ssl']) && $config['flexible_ssl']['enabled']) {
+        if ($this->isConfigEnabled($container, $config['flexible_ssl'])) {
             if (interface_exists(LogoutHandlerInterface::class)) {
                 $loader->load('flexible_ssl_legacy.yml');
             } else {
@@ -139,7 +139,7 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.flexible_ssl.unsecured_logout', $config['flexible_ssl']['unsecured_logout']);
         }
 
-        if (!empty($config['cookie_session']) && $config['cookie_session']['enabled']) {
+        if ($this->isConfigEnabled($container, $config['cookie_session'])) {
             $loader->load('cookie_session.yml');
             $container->setParameter('nelmio_security.cookie_session.name', $config['cookie_session']['name']);
             $container->setParameter('nelmio_security.cookie_session.lifetime', $config['cookie_session']['lifetime']);
@@ -149,7 +149,7 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.cookie_session.httponly', $config['cookie_session']['httponly']);
         }
 
-        if (!empty($config['forced_ssl']) && $config['forced_ssl']['enabled']) {
+        if ($this->isConfigEnabled($container, $config['forced_ssl'])) {
             $loader->load('forced_ssl.yml');
             if ($config['forced_ssl']['hsts_max_age'] > 0) {
                 $def = $container->getDefinition('nelmio_security.forced_ssl_listener');
@@ -163,14 +163,27 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.forced_ssl.redirect_status_code', $config['forced_ssl']['redirect_status_code']);
         }
 
-        if (!empty($config['referrer_policy']) && $config['referrer_policy']['enabled']) {
+        if ($this->isConfigEnabled($container, $config['referrer_policy'])) {
             $loader->load('referrer_policy.yml');
             $container->setParameter('nelmio_security.referrer_policy.policies', $config['referrer_policy']['policies']);
         }
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @phpstan-param array{
+     *  enforce?: array{
+     *      browser_adaptive: array{
+     *          enabled: bool,
+     *          parser: string
+     *      }
+     *  },
+     *  report?: array{
+     *      browser_adaptive: array{
+     *          enabled: bool,
+     *          parser: string
+     *      }
+     *  }
+     * } $config
      */
     private function buildDirectiveSetDefinition(ContainerBuilder $container, array $config, string $type): Definition
     {

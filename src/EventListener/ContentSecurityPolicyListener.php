@@ -162,12 +162,12 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
             return;
         }
 
-        if ((empty($this->hosts) || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
+        if (([] === $this->hosts || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
             $signatures = $this->sha;
-            if ($this->scriptNonce) {
+            if (null !== $this->scriptNonce) {
                 $signatures['script-src'][] = 'nonce-'.$this->scriptNonce;
             }
-            if ($this->styleNonce) {
+            if (null !== $this->styleNonce) {
                 $signatures['style-src'][] = 'nonce-'.$this->styleNonce;
             }
 
@@ -197,11 +197,11 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
         // for instance if a security.authentication.failure has been dispatched
         $headerValue = $directiveSet->buildHeaderValue($request, $signatures);
 
-        if (!$headerValue) {
+        if ('' === $headerValue) {
             return [];
         }
 
-        $hn = function ($name) use ($reportOnly) {
+        $hn = function (string $name) use ($reportOnly): string {
             return $name.($reportOnly ? '-Report-Only' : '');
         };
 

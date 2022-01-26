@@ -381,7 +381,9 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             'zillow.okta.com' => true,
         ];
 
-        if (!$domain = $report->getDomain()) {
+        $domain = $report->getDomain();
+
+        if (null === $domain) {
             return false;
         }
 

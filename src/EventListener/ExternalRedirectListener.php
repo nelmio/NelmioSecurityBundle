@@ -53,7 +53,7 @@ class ExternalRedirectListener
         ?LoggerInterface $logger = null,
         ?UrlGeneratorInterface $generator = null
     ) {
-        if ($override && $abort) {
+        if (null !== $override && $abort) {
             throw new \LogicException('The ExternalRedirectListener can not abort *and* override redirects at the same time.');
         }
         $this->abort = $abort;
@@ -92,7 +92,7 @@ class ExternalRedirectListener
             return;
         }
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->warning('External redirect detected from '.$e->getRequest()->getUri().' to '.$response->headers->get('Location'));
         }
 
@@ -100,14 +100,14 @@ class ExternalRedirectListener
             throw new HttpException(403, 'Invalid Redirect Given: '.$response->headers->get('Location'));
         }
 
-        if ($this->override) {
+        if (null !== $this->override) {
             $parameters = [];
-            if ($this->forwardAs) {
+            if (null !== $this->forwardAs) {
                 $parameters[$this->forwardAs] = $response->headers->get('Location');
             }
 
             if (false === strpos($this->override, '/')) {
-                if (!$this->generator) {
+                if (null === $this->generator) {
                     throw new \UnexpectedValueException('The listener needs a router/UrlGeneratorInterface object to override invalid redirects with routes');
                 }
                 $response->headers->set('Location', $this->generator->generate($this->override, $parameters));
@@ -133,12 +133,12 @@ class ExternalRedirectListener
         }
 
         $parsedTarget = parse_url($target);
-        if (!isset($parsedTarget['host'])) {
+        if (false === $parsedTarget || !isset($parsedTarget['host'])) {
             return false;
         }
 
         $parsedSource = parse_url($source);
-        if (!isset($parsedSource['host'])) {
+        if (false === $parsedSource || !isset($parsedSource['host'])) {
             throw new \LogicException('The source url must include a host name.');
         }
 

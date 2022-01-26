@@ -71,7 +71,7 @@ class Configuration implements ConfigurationInterface
                                 ->beforeNormalization()
                                     ->always(function ($v) {
                                         if (!is_array($v)) {
-                                            $v = ['header' => $v ?: 'DENY'];
+                                            $v = ['header' => '' === $v ? 'DENY' : $v];
                                         }
                                         if (isset($v['header'])) {
                                             $v['header'] = preg_replace_callback('{^(?:ALLOW|DENY|SAMEORIGIN|ALLOW-FROM)?}i', function ($m) { return strtoupper($m[0]); }, $v['header']);

@@ -147,18 +147,18 @@ class DirectiveSet
             }
         }
 
-        if (!empty($signatures)) {
+        if (null !== $signatures && [] !== $signatures) {
             $defaultSrc = $this->getDirective('default-src');
             $isDefaultSrcSet = '' !== $defaultSrc;
 
             if ($isDefaultSrcSet && false === strpos($defaultSrc, '\'unsafe-inline\'')) {
                 $unsafeInline = $this->level1Fallback ? ' \'unsafe-inline\'' : '';
 
-                if (empty($this->directiveValues['script-src']) && isset($signatures['script-src'])) {
+                if (!isset($this->directiveValues['script-src']) && isset($signatures['script-src'])) {
                     $policy[] = 'script-src '.$defaultSrc.$unsafeInline.' '.$signatures['script-src'];
                 }
 
-                if (empty($this->directiveValues['style-src']) && isset($signatures['style-src'])) {
+                if (!isset($this->directiveValues['style-src']) && isset($signatures['style-src'])) {
                     $policy[] = 'style-src '.$defaultSrc.$unsafeInline.' '.$signatures['style-src'];
                 }
             }

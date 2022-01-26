@@ -54,7 +54,7 @@ class XssProtectionListener implements EventSubscriberInterface
                 $value .= '; mode=block';
             }
 
-            if ($this->reportUri) {
+            if (null !== $this->reportUri) {
                 $value .= '; report='.$this->reportUri;
             }
         }
