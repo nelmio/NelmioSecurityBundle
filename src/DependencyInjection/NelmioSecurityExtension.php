@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 class NelmioSecurityExtension extends Extension
 {
@@ -129,7 +129,7 @@ class NelmioSecurityExtension extends Extension
         }
 
         if ($this->isConfigEnabled($container, $config['flexible_ssl'])) {
-            if (interface_exists(LogoutHandlerInterface::class)) {
+            if (version_compare(Kernel::VERSION, '5.1', '<')) {
                 $loader->load('flexible_ssl_legacy.yml');
             } else {
                 $loader->load('flexible_ssl.yml');

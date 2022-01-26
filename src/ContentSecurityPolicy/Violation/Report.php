@@ -131,7 +131,7 @@ class Report
     {
         $content = $request->getContent();
 
-        if (empty($content)) {
+        if ('' === $content) {
             throw new NoDataException('Content-Security-Policy Endpoint called without data', 411);
         }
 
