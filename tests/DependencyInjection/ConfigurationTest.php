@@ -23,7 +23,7 @@ class ConfigurationTest extends TestCase
 {
     public function testCspWithReportAndEnforceSubtrees(): void
     {
-        $this->processYamlConfiguration(
+        $config = $this->processYamlConfiguration(
             "csp:\n".
             "  report:\n".
             "    script-src:\n".
@@ -32,41 +32,55 @@ class ConfigurationTest extends TestCase
             "    script-src:\n".
             "      - 'self'"
         );
+
+        $this->assertIsArray($config['csp']['report']['script-src']);
+        $this->assertIsArray($config['csp']['enforce']['script-src']);
+        $this->assertSame(['self'], $config['csp']['report']['script-src']);
+        $this->assertSame(['self'], $config['csp']['enforce']['script-src']);
     }
 
     public function testReportUriScalar(): void
     {
-        $this->processYamlConfiguration(
+        $config = $this->processYamlConfiguration(
             "csp:\n".
             "  enforce:\n".
             "    report-uri: /csp/report\n"
         );
+
+        $this->assertIsArray($config['csp']['enforce']['report-uri']);
+        $this->assertSame(['/csp/report'], $config['csp']['enforce']['report-uri']);
     }
 
     public function testReportUriArray(): void
     {
-        $this->processYamlConfiguration(
+        $config = $this->processYamlConfiguration(
             "csp:\n".
             "  enforce:\n".
             "    report-uri:\n".
             "      - /csp/report\n"
         );
+
+        $this->assertIsArray($config['csp']['enforce']['report-uri']);
+        $this->assertSame(['/csp/report'], $config['csp']['enforce']['report-uri']);
     }
 
     public function testReportUriValidWithMultiple(): void
     {
-        $this->processYamlConfiguration(
+        $config = $this->processYamlConfiguration(
             "csp:\n".
             "  enforce:\n".
             "    report-uri:\n".
             "      - /csp/report1\n".
             "      - /csp/report2\n"
         );
+
+        $this->assertIsArray($config['csp']['enforce']['report-uri']);
+        $this->assertSame(['/csp/report1', '/csp/report2'], $config['csp']['enforce']['report-uri']);
     }
 
     public function testCspWithLevel2(): void
     {
-        $this->processYamlConfiguration(
+        $config = $this->processYamlConfiguration(
             "csp:\n".
             "  report:\n".
             "    script-src:\n".
@@ -74,11 +88,17 @@ class ConfigurationTest extends TestCase
             "    upgrade-insecure-requests: false\n".
             "    block-all-mixed-content: true\n"
         );
+
+        $this->assertIsArray($config['csp']['report']);
+        $this->assertIsArray($config['csp']['report']['script-src']);
+        $this->assertSame(['self'], $config['csp']['report']['script-src']);
+        $this->assertSame(false, $config['csp']['report']['upgrade-insecure-requests']);
+        $this->assertSame(true, $config['csp']['report']['block-all-mixed-content']);
     }
 
     public function testBrowserAdaptiveArray(): void
     {
-        $this->processYamlConfiguration(
+        $config = $this->processYamlConfiguration(
             "csp:\n".
             "  report:\n".
             "    script-src:\n".
@@ -87,11 +107,18 @@ class ConfigurationTest extends TestCase
             "      enabled: true\n".
             "      parser: service_name\n"
         );
+
+        $this->assertIsArray($config['csp']['report']);
+        $this->assertSame(['self'], $config['csp']['report']['script-src']);
+        $this->assertIsArray($config['csp']['report']['script-src']);
+        $this->assertIsArray($config['csp']['report']['browser_adaptive']);
+        $this->assertSame(true, $config['csp']['report']['browser_adaptive']['enabled']);
+        $this->assertSame('service_name', $config['csp']['report']['browser_adaptive']['parser']);
     }
 
     public function testReferrerPolicy(): void
     {
-        $this->processYamlConfiguration(
+        $config = $this->processYamlConfiguration(
             "referrer_policy:\n".
             "  enabled: true\n".
             "  policies:\n".
@@ -105,6 +132,19 @@ class ConfigurationTest extends TestCase
             "    - 'unsafe-url'\n".
             "    - ''\n"
         );
+
+        $this->assertIsArray($config['referrer_policy']['policies']);
+        $this->assertSame([
+            'no-referrer',
+            'no-referrer-when-downgrade',
+            'same-origin',
+            'origin',
+            'strict-origin',
+            'origin-when-cross-origin',
+            'strict-origin-when-cross-origin',
+            'unsafe-url',
+            '',
+        ], $config['referrer_policy']['policies']);
     }
 
     public function testReferrerPolicyInvalid(): void
@@ -122,32 +162,39 @@ class ConfigurationTest extends TestCase
 
     public function testXssProtection(): void
     {
-        $this->processYamlConfiguration(
+        $config = $this->processYamlConfiguration(
             "xss_protection:\n".
             "  enabled: true\n".
             "  mode_block: true\n".
             "  report_uri: https://report.com/endpoint\n"
         );
+
+        $this->assertIsArray($config['xss_protection']);
+        $this->assertSame(true, $config['xss_protection']['enabled']);
+        $this->assertSame(true, $config['xss_protection']['mode_block']);
+        $this->assertSame('https://report.com/endpoint', $config['xss_protection']['report_uri']);
     }
 
-    private function processYamlConfiguration(string $config): void
+    /**
+     * @return array<string, mixed>
+     */
+    private function processYamlConfiguration(string $config): array
     {
         $parser = new Parser();
 
-        $this->processYaml($parser->parse($config));
+        return $this->processYaml($parser->parse($config));
     }
 
     /**
      * @param mixed[] $parsedYaml
+     *
+     * @return array<string, mixed>
      */
-    private function processYaml(array $parsedYaml): void
+    private function processYaml(array $parsedYaml): array
     {
         $processor = new Processor();
         $configDefinition = new Configuration();
 
-        $processed = $processor->processConfiguration($configDefinition, [$parsedYaml]);
-
-        // if we passed without exception, the test is good
-        $this->assertTrue(true);
+        return $processor->processConfiguration($configDefinition, [$parsedYaml]);
     }
 }

@@ -26,7 +26,7 @@ class WhitelistBasedTargetValidator implements TargetValidator
     public function __construct($whitelist = null)
     {
         if (is_array($whitelist)) {
-            if ($whitelist) {
+            if ([] !== $whitelist) {
                 $whitelist = array_map(function ($el) {
                     return preg_quote(ltrim($el, '.'));
                 }, $whitelist);
@@ -40,7 +40,7 @@ class WhitelistBasedTargetValidator implements TargetValidator
 
     public function isTargetAllowed(string $targetUrl): bool
     {
-        if (null === $this->whitelist || empty($this->whitelist)) {
+        if (null === $this->whitelist || '' === $this->whitelist) {
             return false;
         }
 

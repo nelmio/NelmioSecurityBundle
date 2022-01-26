@@ -33,7 +33,7 @@ abstract class AbstractContentTypeRestrictableListener implements EventSubscribe
 
     protected function isContentTypeValid(Response $response): bool
     {
-        if (empty($this->contentTypes)) {
+        if ([] === $this->contentTypes) {
             return true;
         }
 

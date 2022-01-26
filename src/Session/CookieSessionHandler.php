@@ -62,14 +62,14 @@ class CookieSessionHandler implements \SessionHandlerInterface
             return;
         }
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->debug('CookieSessionHandler::onKernelResponse - Get the Response object');
         }
 
         $this->request->getSession()->save();
 
         if (false === $this->cookie) {
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->debug('CookieSessionHandler::onKernelResponse - COOKIE not opened');
             }
 
@@ -77,7 +77,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
         }
 
         if (null === $this->cookie) {
-            if ($this->logger) {
+            if (null !== $this->logger) {
                 $this->logger->debug('CookieSessionHandler::onKernelResponse - CLEAR COOKIE');
             }
             $e->getResponse()->headers->clearCookie($this->cookieName);
@@ -92,7 +92,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
             return;
         }
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->debug('CookieSessionHandler::onKernelRequest - Receiving the Request object');
         }
 
@@ -108,7 +108,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
     {
         $this->cookie = null;
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->debug(sprintf('CookieSessionHandler::destroy sessionId=%s', $sessionId));
         }
 
@@ -128,15 +128,15 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     public function open($savePath, $sessionId): bool
     {
-        if (!$this->request) {
-            if ($this->logger) {
+        if (null === $this->request) {
+            if (null !== $this->logger) {
                 $this->logger->critical('CookieSessionHandler::open - The Request object is missing');
             }
 
             throw new \RuntimeException('You cannot access the session without a Request object set');
         }
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->debug('CookieSessionHandler::open');
         }
 
@@ -145,15 +145,15 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     public function read($sessionId): string
     {
-        if (!$this->request) {
-            if ($this->logger) {
+        if (null === $this->request) {
+            if (null !== $this->logger) {
                 $this->logger->critical('CookieSessionHandler::read - The Request object is missing');
             }
 
             throw new \RuntimeException('You cannot access the session without a Request object set');
         }
 
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->debug(sprintf('CookieSessionHandler::read sessionId=%s', $sessionId));
         }
 
@@ -179,7 +179,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     public function write($sessionId, $sessionData): bool
     {
-        if ($this->logger) {
+        if (null !== $this->logger) {
             $this->logger->debug(sprintf('CookieSessionHandler::write sessionId=%s', $sessionId));
         }
 

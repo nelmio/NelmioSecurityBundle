@@ -83,7 +83,7 @@ class SignedCookieListenerTest extends TestCase
 
         $response = new Response();
         foreach ($inputCookies as $name => $cookie) {
-            $response->headers->setCookie(method_exists(Cookie::class, 'create') ? Cookie::create($name, $cookie) : new Cookie($name, $cookie));
+            $response->headers->setCookie(Cookie::create($name, $cookie));
         }
 
         $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
@@ -124,7 +124,7 @@ class SignedCookieListenerTest extends TestCase
         $request = Request::create('/');
 
         $response = new Response();
-        $response->headers->setCookie(method_exists(Cookie::class, 'create') ? Cookie::create('foo', 'bar') : new Cookie('foo', 'bar'));
+        $response->headers->setCookie(Cookie::create('foo', 'bar'));
 
         $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
