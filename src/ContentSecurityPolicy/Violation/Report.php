@@ -25,12 +25,15 @@ class Report
      */
     private array $data;
 
+    private ?string $userAgent;
+
     /**
      * @param array<string, string> $data
      */
-    public function __construct(array $data = [])
+    public function __construct(array $data = [], ?string $userAgent = null)
     {
         $this->data = $data;
+        $this->userAgent = $userAgent;
     }
 
     public function setProperty(string $key, string $value): self
@@ -119,6 +122,11 @@ class Report
         return $this->data;
     }
 
+    public function getUserAgent(): ?string
+    {
+        return $this->userAgent;
+    }
+
     public static function fromRequest(Request $request): self
     {
         $content = $request->getContent();
@@ -139,28 +147,22 @@ class Report
 
         $report = $json['csp-report'];
 
-        if (empty($report) && (!isset($report['csp-report']) || !is_array($report['csp-report']))) {
+        if (!is_array($report) || [] === $report) {
             return new self();
         }
 
-        $effective = $report['csp-report']['effective-directive'] ?? null;
+        $effective = $report['effective-directive'] ?? null;
 
-        if (null === $effective && isset($report['csp-report']['violated-directive'])) {
-            $split = explode(' ', $report['csp-report']['violated-directive']);
+        if (null === $effective && isset($report['violated-directive'])) {
+            $split = explode(' ', $report['violated-directive']);
             $effective = $split[0] ?? null;
         }
 
-        $blocked = $report['csp-report']['blocked-uri'] ?? null;
+        $blocked = $report['blocked-uri'] ?? null;
 
-        $ret = [
-            'effective-directive' => $effective,
-            'blocked-uri' => $blocked,
-        ];
+        $report['effective-directive'] = $effective;
+        $report['blocked-uri'] = $blocked;
 
-        if (isset($report['csp-report']['script-sample'])) {
-            $ret['script-sample'] = $report['csp-report']['script-sample'];
-        }
-
-        return new self($report);
+        return new self($report, $request->headers->get('User-Agent'));
     }
 }

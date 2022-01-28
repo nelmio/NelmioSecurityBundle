@@ -31,7 +31,7 @@ class Logger
 
     public function log(Report $report): void
     {
-        $this->logger->log($this->level, $this->logFormatter->format($report), ['csp-report' => $report->getData()]);
+        $this->logger->log($this->level, $this->logFormatter->format($report), ['csp-report' => $report->getData(), 'user-agent' => $report->getUserAgent()]);
     }
 
     public function getLogger(): LoggerInterface

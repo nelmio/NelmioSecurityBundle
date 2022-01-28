@@ -4,6 +4,10 @@
 * Dropped support for Twig 1
 * Removed `DoctrineCacheUAFamilyParser` (use `PsrCacheUAFamilyParser` instead)
 
+### 2.11.1 (xxxx-xx-xx)
+* Filter moz-extension reports
+* Log user agent along with CSP report
+
 ### 2.11.0 (2022-01-18)
   * Added support for CSP "prefetch-src" directive
   * Added support for CSP "wasm-unsafe-eval" keyword
