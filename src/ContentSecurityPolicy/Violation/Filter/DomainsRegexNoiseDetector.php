@@ -48,7 +48,7 @@ class DomainsRegexNoiseDetector implements NoiseDetectorInterface
         }
 
         foreach ($patterns as $pattern) {
-            if (preg_match($pattern, $uri)) {
+            if (1 === preg_match($pattern, $uri)) {
                 return true;
             }
         }

@@ -15,8 +15,14 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
 class NonceGenerator
 {
+    /**
+     * @var int<1, max>
+     */
     private int $numberOfBytes;
 
+    /**
+     * @param int<1, max> $numberOfBytes
+     */
     public function __construct(int $numberOfBytes)
     {
         $this->numberOfBytes = $numberOfBytes;

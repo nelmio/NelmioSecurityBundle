@@ -88,12 +88,12 @@ class DirectiveSet
     {
         $this->checkDirectiveName($name);
         if (self::TYPE_NO_VALUE === self::$directiveNames[$name]) {
-            if ($value) {
+            if (true === $value) {
                 $this->directiveValues[$name] = true;
             } else {
                 unset($this->directiveValues[$name]);
             }
-        } elseif ($value) {
+        } elseif ('' !== $value) {
             $this->directiveValues[$name] = $value;
         } else {
             unset($this->directiveValues[$name]);

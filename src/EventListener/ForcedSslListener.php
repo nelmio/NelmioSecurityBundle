@@ -64,12 +64,12 @@ class ForcedSslListener
         }
 
         // skip whitelisted URLs
-        if (null !== $this->whitelist && preg_match('{'.$this->whitelist.'}i', '' === $request->getPathInfo() ? '/' : $request->getPathInfo())) {
+        if (null !== $this->whitelist && 1 === preg_match('{'.$this->whitelist.'}i', '' === $request->getPathInfo() ? '/' : $request->getPathInfo())) {
             return;
         }
 
         // skip non-listed hosts
-        if (null !== $this->hosts && !preg_match('{'.$this->hosts.'}i', '' === $request->getHost() ? '/' : $request->getHost())) {
+        if (null !== $this->hosts && 1 !== preg_match('{'.$this->hosts.'}i', '' === $request->getHost() ? '/' : $request->getHost())) {
             return;
         }
 

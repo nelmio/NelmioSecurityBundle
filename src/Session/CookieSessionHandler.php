@@ -33,7 +33,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
     private bool $secure;
     private bool $httpOnly;
     /**
-     * @var Cookie|bool|null
+     * @var Cookie|false|null
      */
     private $cookie = false;
     private ?LoggerInterface $logger;

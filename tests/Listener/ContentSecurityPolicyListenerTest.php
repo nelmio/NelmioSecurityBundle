@@ -440,7 +440,13 @@ class ContentSecurityPolicyListenerTest extends TestCase
     }
 
     /**
-     * @param array<string, array<string|array<string>>> $digestData
+     * @param array{
+     *  signatures?: array{
+     *      script-src: list<string>
+     *  },
+     *  scripts?: list<string>,
+     *  styles?: list<string>
+     * } $digestData
      */
     private function callListener(ContentSecurityPolicyListener $listener, string $path, bool $masterReq, string $contentType = 'text/html', array $digestData = [], int $getNonce = 0): Response
     {

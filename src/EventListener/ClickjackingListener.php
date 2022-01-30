@@ -61,7 +61,7 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
         $currentPath = '' === $e->getRequest()->getRequestUri() ? '/' : $e->getRequest()->getRequestUri();
 
         foreach ($this->paths as $path => $options) {
-            if (preg_match('{'.$path.'}i', $currentPath)) {
+            if (1 === preg_match('{'.$path.'}i', $currentPath)) {
                 if ('ALLOW' === $options['header']) {
                     $response->headers->remove('X-Frame-Options');
                 } else {

@@ -83,7 +83,7 @@ class Configuration implements ConfigurationInterface
                                 ->validate()
                                     ->ifTrue(function ($v) {
                                         return isset($v['header']) && !in_array($v['header'], ['DENY', 'SAMEORIGIN', 'ALLOW'], true)
-                                            && !preg_match('{^ALLOW-FROM \S+}', $v['header']);
+                                            && 0 === preg_match('{^ALLOW-FROM \S+}', $v['header']);
                                     })
                                     ->thenInvalid('Possible header values are DENY, SAMEORIGIN, ALLOW and ALLOW-FROM [url], got: %s')
                                 ->end()

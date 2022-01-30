@@ -111,8 +111,9 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.external_redirects.forward_as', $config['external_redirects']['forward_as']);
             $container->setParameter('nelmio_security.external_redirects.abort', $config['external_redirects']['abort']);
             if ($config['external_redirects']['whitelist']) {
-                $whitelist = array_map(function ($el) {
-                    if ($host = parse_url($el, PHP_URL_HOST)) {
+                $whitelist = array_map(static function ($el) {
+                    $host = parse_url($el, PHP_URL_HOST);
+                    if (is_string($host)) {
                         return ltrim($host, '.');
                     }
 
