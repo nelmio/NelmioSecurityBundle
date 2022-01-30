@@ -55,7 +55,7 @@ class InjectedScriptsNoiseDetector implements NoiseDetectorInterface
         }
 
         foreach ($patterns as $pattern) {
-            if (preg_match($pattern, $sample)) {
+            if (1 === preg_match($pattern, $sample)) {
                 return true;
             }
         }

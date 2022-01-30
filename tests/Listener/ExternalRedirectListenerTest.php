@@ -15,7 +15,6 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
-use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,16 +24,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ExternalRedirectListenerTest extends TestCase
 {
-    /**
-     * @var Stub&HttpKernelInterface
-     */
-    private $kernel;
-
-    protected function setUp(): void
-    {
-        $this->kernel = $this->createStub(HttpKernelInterface::class);
-    }
-
     /**
      * @dataProvider provideRedirectMatcher
      */
@@ -180,7 +169,7 @@ class ExternalRedirectListenerTest extends TestCase
 
         $response = new RedirectResponse('http://foo.com/');
 
-        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
+        $event = new ResponseEvent($this->createStub(HttpKernelInterface::class), $request, HttpKernelInterface::SUB_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         $this->assertTrue($response->isRedirect());
@@ -193,7 +182,7 @@ class ExternalRedirectListenerTest extends TestCase
 
         $response = new RedirectResponse($target);
 
-        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $event = new ResponseEvent($this->createStub(HttpKernelInterface::class), $request, HttpKernelInterface::MASTER_REQUEST, $response);
         $listener->onKernelResponse($event);
 
         return $response;
