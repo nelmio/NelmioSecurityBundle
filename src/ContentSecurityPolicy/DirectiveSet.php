@@ -117,12 +117,7 @@ class DirectiveSet
     {
         $policy = [];
 
-        if (isset($signatures['script-src'])) {
-            $signatures['script-src'] = implode(' ', array_map(function ($value) { return sprintf('\'%s\'', $value); }, $signatures['script-src']));
-        }
-        if (isset($signatures['style-src'])) {
-            $signatures['style-src'] = implode(' ', array_map(function ($value) { return sprintf('\'%s\'', $value); }, $signatures['style-src']));
-        }
+        $signatures = $this->normalizeSignatures($signatures);
 
         $availableDirectives = $this->policyManager->getAvailableDirective($request);
 
@@ -149,7 +144,7 @@ class DirectiveSet
 
         if (null !== $signatures && [] !== $signatures) {
             $defaultSrc = $this->getDirective('default-src');
-            $isDefaultSrcSet = '' !== $defaultSrc;
+            $isDefaultSrcSet = '' !== $defaultSrc && true !== $defaultSrc;
 
             if ($isDefaultSrcSet && false === strpos($defaultSrc, '\'unsafe-inline\'')) {
                 $unsafeInline = $this->level1Fallback ? ' \'unsafe-inline\'' : '';
@@ -219,5 +214,39 @@ class DirectiveSet
 
         // let's fallback if directives are strictly equals
         return $value !== $this->getDirective('default-src');
+    }
+
+    /**
+     * @param array<string, list<string>>|null $signatures
+     *
+     * @return array<string, string>|null
+     */
+    private function normalizeSignatures(?array $signatures): ?array
+    {
+        if (null === $signatures) {
+            return null;
+        }
+
+        $normalizedSignatures = $signatures;
+
+        if (isset($signatures['script-src'])) {
+            $normalizedSignatures['script-src'] = implode(
+                ' ',
+                array_map(static function (string $value): string {
+                    return sprintf('\'%s\'', $value);
+                }, $signatures['script-src'])
+            );
+        }
+
+        if (isset($signatures['style-src'])) {
+            $normalizedSignatures['style-src'] = implode(
+                ' ',
+                array_map(static function (string $value): string {
+                    return sprintf('\'%s\'', $value);
+                }, $signatures['style-src'])
+            );
+        }
+
+        return $normalizedSignatures;
     }
 }
