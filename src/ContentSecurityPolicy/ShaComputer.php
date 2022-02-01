@@ -76,11 +76,22 @@ class ShaComputer
 
     private function compute(string $data): string
     {
+        return sprintf('%s-%s', $this->type, base64_encode($this->computeHash($data)));
+    }
+
+    private function computeHash(string $data): string
+    {
         switch ($this->getFavorite()) {
             case 'openssl':
-                return sprintf('%s-%s', $this->type, base64_encode(openssl_digest($data, $this->type, true)));
+                $hash = openssl_digest($data, $this->type, true);
+
+                if (false === $hash) {
+                    throw new \RuntimeException('Failed executing "openssl_digest".');
+                }
+
+                return $hash;
             case 'hash':
-                return sprintf('%s-%s', $this->type, base64_encode(hash($this->type, $data, true)));
+                return hash($this->type, $data, true);
         }
 
         throw new \RuntimeException('No hash function on this platform');
