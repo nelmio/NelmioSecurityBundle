@@ -16,7 +16,7 @@ namespace Nelmio\SecurityBundle\ExternalRedirect;
 class WhitelistBasedTargetValidator implements TargetValidator
 {
     /**
-     * @var string[]|string|null
+     * @var string|null
      */
     private $whitelist;
 
@@ -44,6 +44,12 @@ class WhitelistBasedTargetValidator implements TargetValidator
             return false;
         }
 
-        return preg_match('{^'.$this->whitelist.'$}i', parse_url($targetUrl, PHP_URL_HOST)) > 0;
+        $host = parse_url($targetUrl, PHP_URL_HOST);
+
+        if (!is_string($host)) {
+            throw new \InvalidArgumentException(sprintf('Url "%s" does not contain a host name.', $targetUrl));
+        }
+
+        return preg_match('{^'.$this->whitelist.'$}i', $host) > 0;
     }
 }

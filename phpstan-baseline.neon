@@ -1,0 +1,22 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Nelmio\\\\SecurityBundle\\\\ContentSecurityPolicy\\\\DirectiveSet\\:\\:normalizeSignatures\\(\\) should return array\\<string, string\\>\\|null but returns array\\<string, array\\<int, string\\>\\|string\\>\\.$#"
+			count: 1
+			path: src/ContentSecurityPolicy/DirectiveSet.php
+
+		-
+			message: "#^Offset 'enforce'\\|'report' does not exist on array\\{enforce\\?\\: array\\{browser_adaptive\\: array\\{enabled\\: bool, parser\\: string\\}\\}, report\\?\\: array\\{browser_adaptive\\: array\\{enabled\\: bool, parser\\: string\\}\\}\\}\\.$#"
+			count: 1
+			path: src/DependencyInjection/NelmioSecurityExtension.php
+
+		-
+			message: "#^Parameter \\#1 \\$name of class Symfony\\\\Component\\\\HttpFoundation\\\\Cookie constructor expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/EventListener/FlexibleSslListener.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of class Symfony\\\\Component\\\\HttpFoundation\\\\Cookie constructor expects string\\|null, string\\|false given\\.$#"
+			count: 1
+			path: src/EventListener/FlexibleSslListener.php
+

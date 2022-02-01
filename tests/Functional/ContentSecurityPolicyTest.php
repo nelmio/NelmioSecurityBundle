@@ -66,9 +66,7 @@ final class ContentSecurityPolicyTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('POST', '/csp/report', [], [], [], json_encode(['csp-report' => [
-            'blocked-uri' => 'translate.google.com',
-        ]]));
+        $client->request('POST', '/csp/report', [], [], [], '{"csp-report":{"blocked-uri":"translate.google.com"}}');
 
         $this->assertResponseStatusCodeSame(204);
         $this->assertSame('', $client->getResponse()->getContent());
@@ -78,7 +76,7 @@ final class ContentSecurityPolicyTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('POST', '/csp/report', [], [], [], json_encode(['csp-report' => []]));
+        $client->request('POST', '/csp/report', [], [], [], '{"csp-report":[]}');
 
         $this->assertResponseStatusCodeSame(204);
         $this->assertSame('', $client->getResponse()->getContent());

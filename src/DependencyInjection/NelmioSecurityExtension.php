@@ -185,6 +185,7 @@ class NelmioSecurityExtension extends Extension
      *      }
      *  }
      * } $config
+     * @phpstan-param 'enforce'|'report' $type
      */
     private function buildDirectiveSetDefinition(ContainerBuilder $container, array $config, string $type): Definition
     {
