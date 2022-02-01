@@ -278,6 +278,7 @@ class ContentSecurityPolicyListenerTest extends TestCase
 
         $header = $response->headers->get('Content-Security-Policy');
 
+        $this->assertIsString($header);
         $this->assertStringContainsString("default-src example.org 'self'", $header, 'Header should contain default-src');
         $this->assertStringContainsString("script-src script.example.org 'self'", $header, 'Header should contain script-src');
         $this->assertStringContainsString("object-src object.example.org 'self'", $header, 'Header should contain object-src');

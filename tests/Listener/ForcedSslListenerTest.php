@@ -76,6 +76,7 @@ class ForcedSslListenerTest extends TestCase
         $this->assertNull($response);
 
         $response = $this->callListenerReq($listener, 'http://localhost/lala/foo/lala', true);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('https://localhost/lala/foo/lala', $response->headers->get('Location'));
 
         $response = $this->callListenerReq($listener, 'https://localhost/lala/abarb', true);
@@ -90,9 +91,11 @@ class ForcedSslListenerTest extends TestCase
         $this->assertNull($response);
 
         $response = $this->callListenerReq($listener, 'http://foo.com/foo/lala', true);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('https://foo.com/foo/lala', $response->headers->get('Location'));
 
         $response = $this->callListenerReq($listener, 'http://test.example.org/foo/lala', true);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('https://test.example.org/foo/lala', $response->headers->get('Location'));
     }
 
@@ -101,11 +104,13 @@ class ForcedSslListenerTest extends TestCase
         $listener = new ForcedSslListener(null, false);
 
         $response = $this->callListenerReq($listener, '/foo/lala', true);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(302, $response->getStatusCode());
 
         $listener = new ForcedSslListener(null, false, false, [], [], 301);
 
         $response = $this->callListenerReq($listener, '/foo/lala', true);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(301, $response->getStatusCode());
     }
 

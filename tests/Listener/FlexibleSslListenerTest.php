@@ -128,7 +128,6 @@ class FlexibleSslListenerTest extends TestCase
         $this->listener->onPostLoginKernelResponse($event);
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
-        $this->assertInstanceOf(Cookie::class, $cookies['']['/']['unsecure']);
         $this->assertTrue(isset($cookies['']['/']['unsecure']));
         $this->assertSame('unsecure_value', $cookies['']['/']['unsecure']->getValue());
         $this->assertTrue($cookies['']['/']['unsecure']->isSecure());
