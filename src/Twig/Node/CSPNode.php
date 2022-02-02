@@ -42,11 +42,11 @@ class CSPNode extends Node
         $body = $this->getNode('body');
 
         if (null !== $this->sha) {
-            $output = "\$this->env->getExtension('Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension')->getListener()->addSha('{$this->directive}', '{$this->sha}');\necho ob_get_clean();\n";
+            $output = "\$this->env->getRuntime('Nelmio\SecurityBundle\Twig\CSPRuntime')->getListener()->addSha('{$this->directive}', '{$this->sha}');\necho ob_get_clean();\n";
         } elseif ('script-src' === $this->directive) {
-            $output = "\$script = ob_get_clean();\n\$this->env->getExtension('Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension')->getListener()->addScript(\$script);\necho \$script;\n";
+            $output = "\$script = ob_get_clean();\n\$this->env->getRuntime('Nelmio\SecurityBundle\Twig\CSPRuntime')->getListener()->addScript(\$script);\necho \$script;\n";
         } elseif ('style-src' === $this->directive) {
-            $output = "\$style = ob_get_clean();\n\$this->env->getExtension('Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension')->getListener()->addStyle(\$style);\necho \$style;\n";
+            $output = "\$style = ob_get_clean();\n\$this->env->getRuntime('Nelmio\SecurityBundle\Twig\CSPRuntime')->getListener()->addStyle(\$style);\necho \$style;\n";
         } else {
             throw new \InvalidArgumentException(sprintf('Unable to compile for directive "%s"', $this->directive));
         }

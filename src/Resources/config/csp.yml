@@ -76,8 +76,13 @@ services:
         arguments: ["%nelmio_security.csp.hash_algorithm%"]
 
     nelmio_security.twig_extension:
-        public: false
         class: Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension
-        arguments: ['@nelmio_security.csp_listener', '@nelmio_security.sha_computer']
+        arguments: ['@nelmio_security.sha_computer']
         tags:
             - { name: "twig.extension" }
+
+    nelmio_security.csp.runtime:
+        class: Nelmio\SecurityBundle\Twig\CSPRuntime
+        arguments: ['@nelmio_security.csp_listener']
+        tags:
+            - { name: "twig.runtime" }
