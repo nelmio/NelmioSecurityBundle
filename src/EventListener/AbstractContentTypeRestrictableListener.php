@@ -37,6 +37,10 @@ abstract class AbstractContentTypeRestrictableListener implements EventSubscribe
             return true;
         }
 
+        if (null === $response->headers->get('content-type')) {
+            return false;
+        }
+
         $contentTypeData = explode(';', $response->headers->get('content-type'), 2);
 
         return in_array(trim($contentTypeData[0]), $this->contentTypes, true);

@@ -36,7 +36,13 @@ class PolicyManager
             return $this->getChromeDirectives();
         }
 
-        switch ($this->uaParser->getBrowser($request->headers->get('user-agent'))) {
+        $userAgent = $request->headers->get('user-agent');
+
+        if (null === $userAgent) {
+            return [];
+        }
+
+        switch ($this->uaParser->getBrowser($userAgent)) {
             case UserAgentParserInterface::BROWSER_CHROME:
             case UserAgentParserInterface::BROWSER_OPERA:
             case UserAgentParserInterface::BROWSER_OTHER:

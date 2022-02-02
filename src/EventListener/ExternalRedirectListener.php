@@ -84,6 +84,11 @@ class ExternalRedirectListener
         }
 
         $target = $response->headers->get('Location');
+
+        if (null === $target) {
+            return;
+        }
+
         if (!$this->isExternalRedirect($e->getRequest()->getUri(), $target)) {
             return;
         }
