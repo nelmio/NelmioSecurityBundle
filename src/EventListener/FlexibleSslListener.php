@@ -120,7 +120,13 @@ class FlexibleSslListener implements BaseFlexibleSslListener
 
     public function onLogout(LogoutEvent $e): void
     {
-        $this->logout($e->getRequest(), $e->getResponse(), $e->getToken());
+        $response = $e->getResponse();
+
+        if (null === $response) {
+            return;
+        }
+
+        $this->doLogout($response);
     }
 
     /**
@@ -128,7 +134,12 @@ class FlexibleSslListener implements BaseFlexibleSslListener
      */
     public function logout(Request $request, Response $response, TokenInterface $token): void
     {
-        if ($this->unsecuredLogout) {
+        $this->doLogout($response);
+    }
+
+    private function doLogout(Response $response): void
+    {
+        if ($this->unsecuredLogout && null !== $response->headers->get('Location')) {
             $location = $response->headers->get('Location');
             $response->headers->set('Location', preg_replace('/^https/', 'http', $location));
         }

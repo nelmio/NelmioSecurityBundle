@@ -66,6 +66,8 @@ class CookieSessionHandler implements \SessionHandlerInterface
             $this->logger->debug('CookieSessionHandler::onKernelResponse - Get the Response object');
         }
 
+        assert(null !== $this->request);
+
         $this->request->getSession()->save();
 
         if (false === $this->cookie) {
