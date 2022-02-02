@@ -15,10 +15,12 @@ namespace Nelmio\SecurityBundle\Tests\Twig;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
+use Nelmio\SecurityBundle\Twig\CSPRuntime;
 use Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension;
 use PHPUnit\Framework\TestCase;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Twig\RuntimeLoader\RuntimeLoaderInterface;
 
 class IntegrationTest extends TestCase
 {
@@ -52,8 +54,15 @@ class IntegrationTest extends TestCase
                 $collectedShas['style-src'][] = $shaComputer->computeForStyle($style);
             });
 
+        $cspRuntime = new CSPRuntime($listener);
+
         $twig = new Environment(new FilesystemLoader(__DIR__.'/templates'));
-        $twig->addExtension(new NelmioCSPTwigExtension($listener, $shaComputer));
+        $twig->addExtension(new NelmioCSPTwigExtension($shaComputer));
+        $loader = $this->createMock(RuntimeLoaderInterface::class);
+        $loader->method('load')->willReturnMap([
+            [CSPRuntime::class, $cspRuntime],
+        ]);
+        $twig->addRuntimeLoader($loader);
 
         $this->assertSame('<script type="text/javascript">console.log(\'123456\');</script>
 
@@ -90,8 +99,15 @@ class IntegrationTest extends TestCase
         $listener->expects($this->never())
             ->method('addStyle');
 
+        $cspRuntime = new CSPRuntime($listener);
+
         $twig = new Environment(new FilesystemLoader(__DIR__.'/templates'));
-        $twig->addExtension(new NelmioCSPTwigExtension($listener, $shaComputer));
+        $twig->addExtension(new NelmioCSPTwigExtension($shaComputer));
+        $loader = $this->createMock(RuntimeLoaderInterface::class);
+        $loader->method('load')->willReturnMap([
+            [CSPRuntime::class, $cspRuntime],
+        ]);
+        $twig->addRuntimeLoader($loader);
 
         $this->assertSame('<script type="text/javascript">console.log(\'Hello\');</script>
 

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Twig;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
-use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Nelmio\SecurityBundle\Twig\TokenParser\CSPScriptParser;
 use Nelmio\SecurityBundle\Twig\TokenParser\CSPStyleParser;
 use Twig\Extension\AbstractExtension;
@@ -22,12 +21,10 @@ use Twig\TwigFunction;
 
 class NelmioCSPTwigExtension extends AbstractExtension
 {
-    private ContentSecurityPolicyListener $listener;
     private ShaComputer $shaComputer;
 
-    public function __construct(ContentSecurityPolicyListener $listener, ShaComputer $shaComputer)
+    public function __construct(ShaComputer $shaComputer)
     {
-        $this->listener = $listener;
         $this->shaComputer = $shaComputer;
     }
 
@@ -36,25 +33,10 @@ class NelmioCSPTwigExtension extends AbstractExtension
         return [new CSPScriptParser($this->shaComputer), new CSPStyleParser($this->shaComputer)];
     }
 
-    public function getListener(): ContentSecurityPolicyListener
-    {
-        return $this->listener;
-    }
-
-    public function getName(): string
-    {
-        return NelmioCSPTwigExtension::class;
-    }
-
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('csp_nonce', [$this, 'getCSPNonce']),
+            new TwigFunction('csp_nonce', [CSPRuntime::class, 'getCSPNonce']),
         ];
-    }
-
-    public function getCSPNonce(string $usage): string
-    {
-        return $this->listener->getNonce($usage);
     }
 }
