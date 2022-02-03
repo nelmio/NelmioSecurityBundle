@@ -28,6 +28,7 @@
     },
     "require-dev": {
         "phpstan/phpstan": "^1.4",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
         "phpstan/phpstan-strict-rules": "^1.1",
         "phpstan/phpstan-symfony": "^1.1",
