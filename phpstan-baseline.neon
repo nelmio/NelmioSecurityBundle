@@ -24,3 +24,13 @@ parameters:
 			message: "#^Parameter \\#1 \\$value of method Nelmio\\\\SecurityBundle\\\\Signer\\:\\:getSignedValue\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/EventListener/SignedCookieListener.php
+
+		-
+			message: """
+				#^Fetching deprecated class constant MASTER_REQUEST of class Symfony\\\\Component\\\\HttpKernel\\\\HttpKernelInterface\\:
+				since symfony/http\\-kernel 5\\.3, use MAIN_REQUEST instead\\.
+				            To ease the migration, this constant won't be removed until Symfony 7\\.0\\.$#
+			"""
+			count: 1
+			path: tests/Listener/ListenerTestCase.php
+
