@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Referrer Policy Listener.
@@ -24,6 +23,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class ReferrerPolicyListener
 {
+    use KernelEventForwardCompatibilityTrait;
+
     /**
      * @var list<string>
      */
@@ -39,7 +40,7 @@ class ReferrerPolicyListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 

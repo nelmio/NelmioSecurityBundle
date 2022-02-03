@@ -14,17 +14,15 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Session;
 
 use Nelmio\SecurityBundle\Session\CookieSessionHandler;
+use Nelmio\SecurityBundle\Tests\Listener\ListenerTestCase;
 use PHPUnit\Framework\MockObject\Stub;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class CookieSessionHandlerTest extends TestCase
+class CookieSessionHandlerTest extends ListenerTestCase
 {
     private CookieSessionHandler $handler;
 
@@ -62,13 +60,13 @@ class CookieSessionHandlerTest extends TestCase
         $session->expects($this->once())->method('save');
         $request->setSession($session);
 
-        $this->handler->onKernelRequest(new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $this->handler->onKernelRequest($this->createRequestEventWithKernel($this->kernel, $request, true));
 
         $this->assertTrue($this->handler->open('foo', 'bar'));
 
         $this->handler->write('sessionId', 'mydata');
 
-        $this->handler->onKernelResponse(new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
+        $this->handler->onKernelResponse($this->createResponseEventWithKernel($this->kernel, $request, true, $response));
 
         $cookies = $response->headers->getCookies();
 
@@ -87,9 +85,9 @@ class CookieSessionHandlerTest extends TestCase
         $session->expects($this->exactly(2))->method('save');
         $request->setSession($session);
 
-        $this->handler->onKernelRequest(new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $this->handler->onKernelRequest($this->createRequestEventWithKernel($this->kernel, $request, true));
 
-        $this->handler->onKernelResponse(new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
+        $this->handler->onKernelResponse($this->createResponseEventWithKernel($this->kernel, $request, true, $response));
 
         $cookies = $response->headers->getCookies();
 
@@ -99,7 +97,7 @@ class CookieSessionHandlerTest extends TestCase
 
         $this->handler->destroy('sessionId');
 
-        $this->handler->onKernelResponse(new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
+        $this->handler->onKernelResponse($this->createResponseEventWithKernel($this->kernel, $request, true, $response));
 
         $cookies = $response->headers->getCookies();
 
@@ -125,9 +123,9 @@ class CookieSessionHandlerTest extends TestCase
         $request->setSession($session);
         $response->headers = $headers;
 
-        $this->handler->onKernelRequest(new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $this->handler->onKernelRequest($this->createRequestEventWithKernel($this->kernel, $request, true));
 
-        $this->handler->onKernelResponse(new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response));
+        $this->handler->onKernelResponse($this->createResponseEventWithKernel($this->kernel, $request, true, $response));
 
         $getCookie = \Closure::bind(static function (CookieSessionHandler $handler) {
             return $handler->cookie;

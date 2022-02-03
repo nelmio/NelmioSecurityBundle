@@ -13,18 +13,20 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\Session;
 
+use Nelmio\SecurityBundle\EventListener\KernelEventForwardCompatibilityTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @final
  */
 class CookieSessionHandler implements \SessionHandlerInterface
 {
+    use KernelEventForwardCompatibilityTrait;
+
     private ?Request $request = null;
     private string $cookieName;
     private int $lifetime;
@@ -58,7 +60,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 
@@ -90,7 +92,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
     public function onKernelRequest(RequestEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 

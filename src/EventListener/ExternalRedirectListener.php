@@ -18,7 +18,6 @@ use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -26,6 +25,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class ExternalRedirectListener
 {
+    use KernelEventForwardCompatibilityTrait;
+
     private bool $abort;
     private ?string $override;
     private ?string $forwardAs;
@@ -73,7 +74,7 @@ class ExternalRedirectListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 

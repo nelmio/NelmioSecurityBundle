@@ -16,16 +16,13 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 use Nelmio\SecurityBundle\EventListener\SignedCookieListener;
 use Nelmio\SecurityBundle\Signer;
 use PHPUnit\Framework\MockObject\Stub;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class SignedCookieListenerTest extends TestCase
+class SignedCookieListenerTest extends ListenerTestCase
 {
     private Signer $signer;
 
@@ -52,7 +49,7 @@ class SignedCookieListenerTest extends TestCase
         $listener = new SignedCookieListener($this->signer, $signedCookieNames);
         $request = Request::create('/', 'GET', [], $inputCookies);
 
-        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+        $event = $this->createRequestEventWithKernel($this->kernel, $request, true);
         $listener->onKernelRequest($event);
 
         $this->assertSame($expectedCookies, $request->cookies->all());
@@ -86,7 +83,7 @@ class SignedCookieListenerTest extends TestCase
             $response->headers->setCookie(Cookie::create($name, $cookie));
         }
 
-        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $event = $this->createResponseEventWithKernel($this->kernel, $request, true, $response);
         $listener->onKernelResponse($event);
 
         $responseCookieValues = [];
@@ -112,7 +109,7 @@ class SignedCookieListenerTest extends TestCase
         $listener = new SignedCookieListener($this->signer, ['*']);
         $request = Request::create('/', 'GET', [], ['foo' => 'bar']);
 
-        $event = new RequestEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST);
+        $event = $this->createRequestEventWithKernel($this->kernel, $request, false);
         $listener->onKernelRequest($event);
 
         $this->assertSame('bar', $request->cookies->get('foo'));
@@ -126,7 +123,7 @@ class SignedCookieListenerTest extends TestCase
         $response = new Response();
         $response->headers->setCookie(Cookie::create('foo', 'bar'));
 
-        $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
+        $event = $this->createResponseEventWithKernel($this->kernel, $request, false, $response);
         $listener->onKernelResponse($event);
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);

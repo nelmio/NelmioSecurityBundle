@@ -14,13 +14,10 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ContentTypeListener;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ContentTypeListenerTest extends TestCase
+class ContentTypeListenerTest extends ListenerTestCase
 {
     public function testNoSniff(): void
     {
@@ -43,12 +40,12 @@ class ContentTypeListenerTest extends TestCase
         );
     }
 
-    protected function callListener(ContentTypeListener $listener, string $path, bool $masterReq): Response
+    protected function callListener(ContentTypeListener $listener, string $path, bool $mainReq): Response
     {
         $request = Request::create($path);
         $response = new Response();
 
-        $event = new ResponseEvent($this->createStub(HttpKernelInterface::class), $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        $event = $this->createResponseEvent($request, $mainReq, $response);
         $listener->onKernelResponse($event);
 
         return $response;

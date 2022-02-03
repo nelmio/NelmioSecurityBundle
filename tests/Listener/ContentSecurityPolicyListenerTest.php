@@ -20,15 +20,12 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ContentSecurityPolicyListenerTest extends TestCase
+class ContentSecurityPolicyListenerTest extends ListenerTestCase
 {
     /**
      * @var Stub&HttpKernelInterface
@@ -143,10 +140,10 @@ class ContentSecurityPolicyListenerTest extends TestCase
     {
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"], false, true, ['text/html']);
         $response = new RedirectResponse('/redirect');
-        $event = new ResponseEvent(
+        $event = $this->createResponseEventWithKernel(
             $this->kernel,
             Request::create('/'),
-            HttpKernelInterface::MASTER_REQUEST,
+            true,
             $response
         );
         $listener->onKernelResponse($event);
@@ -449,14 +446,14 @@ class ContentSecurityPolicyListenerTest extends TestCase
      *  styles?: list<string>
      * } $digestData
      */
-    private function callListener(ContentSecurityPolicyListener $listener, string $path, bool $masterReq, string $contentType = 'text/html', array $digestData = [], int $getNonce = 0): Response
+    private function callListener(ContentSecurityPolicyListener $listener, string $path, bool $mainReq, string $contentType = 'text/html', array $digestData = [], int $getNonce = 0): Response
     {
         $request = Request::create($path);
 
-        $event = new RequestEvent(
+        $event = $this->createRequestEventWithKernel(
             $this->kernel,
             $request,
-            $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST
+            $mainReq
         );
 
         $listener->onKernelRequest($event);
@@ -488,10 +485,10 @@ class ContentSecurityPolicyListenerTest extends TestCase
         $response = new Response();
         $response->headers->add(['content-type' => $contentType]);
 
-        $event = new ResponseEvent(
+        $event = $this->createResponseEventWithKernel(
             $this->kernel,
             $request,
-            $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,
+            $mainReq,
             $response
         );
         $listener->onKernelResponse($event);

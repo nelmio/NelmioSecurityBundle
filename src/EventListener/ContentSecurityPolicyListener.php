@@ -19,7 +19,6 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -27,6 +26,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListener
 {
+    use KernelEventForwardCompatibilityTrait;
+
     private DirectiveSet $report;
     private DirectiveSet $enforce;
     private bool $compatHeaders;
@@ -70,7 +71,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
 
     public function onKernelRequest(RequestEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 
@@ -146,7 +147,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 
