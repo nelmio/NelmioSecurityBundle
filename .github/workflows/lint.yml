@@ -1,0 +1,23 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  composer-normalize:
+    name: Composer
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          php-version: 8.1
+          tools: composer:v2, composer-normalize:2
+
+      - name: Composer normalize
+        run: composer-normalize --diff --dry-run

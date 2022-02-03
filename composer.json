@@ -1,9 +1,11 @@
 {
     "name": "nelmio/security-bundle",
     "description": "Extra security-related features for Symfony: signed/encrypted cookies, HTTPS/SSL/HSTS handling, cookie session storage, ...",
-    "keywords": ["security"],
-    "type": "symfony-bundle",
     "license": "MIT",
+    "type": "symfony-bundle",
+    "keywords": [
+        "security"
+    ],
     "authors": [
         {
             "name": "Nelmio",
@@ -15,13 +17,13 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
-        "symfony/framework-bundle": "~4.4|~5.4|~6.0",
-        "symfony/http-kernel": "~4.4|~5.4|~6.0",
-        "symfony/security-core": "~4.4|~5.4|~6.0",
-        "symfony/security-http": "~4.4|~5.4|~6.0",
-        "symfony/security-csrf": "~4.4|~5.4|~6.0",
-        "symfony/yaml": "~4.4|~5.4|~6.0",
+        "php": "^7.4 || ^8.0",
+        "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.0",
+        "symfony/http-kernel": "^4.4 || ^5.4 || ^6.0",
+        "symfony/security-core": "^4.4 || ^5.4 || ^6.0",
+        "symfony/security-csrf": "^4.4 || ^5.4 || ^6.0",
+        "symfony/security-http": "^4.4 || ^5.4 || ^6.0",
+        "symfony/yaml": "^4.4 || ^5.4 || ^6.0",
         "ua-parser/uap-php": "^3.4.4"
     },
     "require-dev": {
@@ -30,18 +32,22 @@
         "phpstan/phpstan-strict-rules": "^1.1",
         "phpstan/phpstan-symfony": "^1.1",
         "phpunit/phpunit": "^9.5",
-        "psr/cache": "^1.0|^2.0|^3.0",
-        "symfony/browser-kit": "~4.4|~5.4|~6.0",
-        "symfony/cache": "~4.4|~5.4|~6.0",
+        "psr/cache": "^1.0 || ^2.0 || ^3.0",
+        "symfony/browser-kit": "^4.4 || ^5.4 || ^6.0",
+        "symfony/cache": "^4.4 || ^5.4 || ^6.0",
         "symfony/phpunit-bridge": "^6.0",
-        "symfony/twig-bundle": "~4.4|~5.4|~6.0",
-        "twig/twig": "^2.10|^3.0"
+        "symfony/twig-bundle": "^4.4 || ^5.4 || ^6.0",
+        "twig/twig": "^2.10 || ^3.0"
     },
     "autoload": {
-        "psr-4": { "Nelmio\\SecurityBundle\\": "src/" }
+        "psr-4": {
+            "Nelmio\\SecurityBundle\\": "src/"
+        }
     },
     "autoload-dev": {
-        "psr-4": { "Nelmio\\SecurityBundle\\Tests\\": "tests" }
+        "psr-4": {
+            "Nelmio\\SecurityBundle\\Tests\\": "tests"
+        }
     },
     "extra": {
         "branch-alias": {
