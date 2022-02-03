@@ -14,13 +14,14 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @final
  */
 class ContentTypeListener
 {
+    use KernelEventForwardCompatibilityTrait;
+
     private bool $nosniff;
 
     public function __construct(bool $nosniff)
@@ -30,7 +31,7 @@ class ContentTypeListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 

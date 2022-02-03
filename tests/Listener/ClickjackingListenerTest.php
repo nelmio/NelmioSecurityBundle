@@ -14,14 +14,11 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ClickjackingListener;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ClickjackingListenerTest extends TestCase
+class ClickjackingListenerTest extends ListenerTestCase
 {
     private ClickjackingListener $listener;
 
@@ -71,18 +68,18 @@ class ClickjackingListenerTest extends TestCase
         $request = Request::create('/');
         $response = new RedirectResponse('/redirect');
 
-        $event = new ResponseEvent($this->createStub(HttpKernelInterface::class), $request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $event = $this->createResponseEvent($request, true, $response);
         $this->listener->onKernelResponse($event);
         $this->assertSame(null, $response->headers->get('X-Frame-Options'));
     }
 
-    protected function callListener(ClickjackingListener $listener, string $path, bool $masterReq, string $contentType = 'text/html'): Response
+    protected function callListener(ClickjackingListener $listener, string $path, bool $mainReq, string $contentType = 'text/html'): Response
     {
         $request = Request::create($path);
         $response = new Response();
         $response->headers->add(['content-type' => $contentType]);
 
-        $event = new ResponseEvent($this->createStub(HttpKernelInterface::class), $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        $event = $this->createResponseEvent($request, $mainReq, $response);
         $listener->onKernelResponse($event);
 
         return $response;

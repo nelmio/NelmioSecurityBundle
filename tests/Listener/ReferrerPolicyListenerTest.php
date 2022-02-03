@@ -14,13 +14,10 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ReferrerPolicyListener;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ReferrerPolicyListenerTest extends TestCase
+class ReferrerPolicyListenerTest extends ListenerTestCase
 {
     /**
      * @dataProvider provideVariousConfigs
@@ -42,15 +39,14 @@ class ReferrerPolicyListenerTest extends TestCase
         ];
     }
 
-    protected function callListener(ReferrerPolicyListener $listener, string $path, bool $masterReq): Response
+    protected function callListener(ReferrerPolicyListener $listener, string $path, bool $mainReq): Response
     {
         $request = Request::create($path);
         $response = new Response();
 
-        $event = new ResponseEvent(
-            $this->createStub(HttpKernelInterface::class),
+        $event = $this->createResponseEvent(
             $request,
-            $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,
+            $mainReq,
             $response
         );
         $listener->onKernelResponse($event);

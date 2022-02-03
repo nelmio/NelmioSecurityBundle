@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
@@ -30,6 +29,8 @@ use Symfony\Component\Security\Http\Event\LogoutEvent;
  */
 class FlexibleSslListener implements BaseFlexibleSslListener
 {
+    use KernelEventForwardCompatibilityTrait;
+
     private string $cookieName;
     private bool $unsecuredLogout;
     private EventDispatcherInterface $dispatcher;
@@ -43,7 +44,7 @@ class FlexibleSslListener implements BaseFlexibleSslListener
 
     public function onKernelRequest(RequestEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 
@@ -62,7 +63,7 @@ class FlexibleSslListener implements BaseFlexibleSslListener
 
     public function onPostLoginKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 

@@ -15,7 +15,6 @@ namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -23,6 +22,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class XssProtectionListener implements EventSubscriberInterface
 {
+    use KernelEventForwardCompatibilityTrait;
+
     private bool $enabled;
     private bool $modeBlock;
     private ?string $reportUri;
@@ -36,7 +37,7 @@ class XssProtectionListener implements EventSubscriberInterface
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 

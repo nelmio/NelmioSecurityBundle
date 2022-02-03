@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -22,6 +21,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
+    use KernelEventForwardCompatibilityTrait;
+
     /**
      * @var array<string, array<string, string>>
      */
@@ -44,7 +45,7 @@ class ClickjackingListener extends AbstractContentTypeRestrictableListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 

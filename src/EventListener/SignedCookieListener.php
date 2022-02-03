@@ -17,13 +17,14 @@ use Nelmio\SecurityBundle\Signer;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @final
  */
 class SignedCookieListener
 {
+    use KernelEventForwardCompatibilityTrait;
+
     private Signer $signer;
 
     /**
@@ -46,7 +47,7 @@ class SignedCookieListener
 
     public function onKernelRequest(RequestEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 
@@ -67,7 +68,7 @@ class SignedCookieListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 

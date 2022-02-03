@@ -14,14 +14,11 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\XssProtectionListener;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class XssProtectionListenerTest extends TestCase
+class XssProtectionListenerTest extends ListenerTestCase
 {
     /**
      * @dataProvider provideVariousConfigs
@@ -51,10 +48,9 @@ class XssProtectionListenerTest extends TestCase
 
         $listener = new XssProtectionListener(true, true);
 
-        $event = new ResponseEvent(
-            $this->createStub(HttpKernelInterface::class),
+        $event = $this->createResponseEvent(
             $request,
-            HttpKernelInterface::MASTER_REQUEST,
+            true,
             $response
         );
         $listener->onKernelResponse($event);
@@ -62,15 +58,14 @@ class XssProtectionListenerTest extends TestCase
         $this->assertFalse($response->headers->has('X-Xss-Protection'));
     }
 
-    protected function callListener(XssProtectionListener $listener, string $path, bool $masterReq): Response
+    protected function callListener(XssProtectionListener $listener, string $path, bool $mainReq): Response
     {
         $request = Request::create($path);
         $response = new Response();
 
-        $event = new ResponseEvent(
-            $this->createStub(HttpKernelInterface::class),
+        $event = $this->createResponseEvent(
             $request,
-            $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST,
+            $mainReq,
             $response
         );
         $listener->onKernelResponse($event);

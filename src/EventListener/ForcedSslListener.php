@@ -16,13 +16,14 @@ namespace Nelmio\SecurityBundle\EventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @final
  */
 class ForcedSslListener
 {
+    use KernelEventForwardCompatibilityTrait;
+
     private ?int $hstsMaxAge;
     private bool $hstsSubdomains;
     private bool $hstsPreload;
@@ -52,7 +53,7 @@ class ForcedSslListener
 
     public function onKernelRequest(RequestEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 
@@ -79,7 +80,7 @@ class ForcedSslListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $e->getRequestType()) {
+        if (!$this->isMainRequest($e)) {
             return;
         }
 

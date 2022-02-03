@@ -14,14 +14,10 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ForcedSslListener;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class ForcedSslListenerTest extends TestCase
+class ForcedSslListenerTest extends ListenerTestCase
 {
     /**
      * @dataProvider provideHstsHeaders
@@ -114,22 +110,22 @@ class ForcedSslListenerTest extends TestCase
         $this->assertSame(301, $response->getStatusCode());
     }
 
-    private function callListenerReq(ForcedSslListener $listener, string $uri, bool $masterReq): ?Response
+    private function callListenerReq(ForcedSslListener $listener, string $uri, bool $mainReq): ?Response
     {
         $request = Request::create($uri);
 
-        $event = new RequestEvent($this->createStub(HttpKernelInterface::class), $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST);
+        $event = $this->createRequestEvent($request, $mainReq);
         $listener->onKernelRequest($event);
 
         return $event->getResponse();
     }
 
-    private function callListenerResp(ForcedSslListener $listener, string $uri, bool $masterReq): Response
+    private function callListenerResp(ForcedSslListener $listener, string $uri, bool $mainReq): Response
     {
         $request = Request::create($uri);
         $response = new Response();
 
-        $event = new ResponseEvent($this->createStub(HttpKernelInterface::class), $request, $masterReq ? HttpKernelInterface::MASTER_REQUEST : HttpKernelInterface::SUB_REQUEST, $response);
+        $event = $this->createResponseEvent($request, $mainReq, $response);
         $listener->onKernelResponse($event);
 
         return $response;
