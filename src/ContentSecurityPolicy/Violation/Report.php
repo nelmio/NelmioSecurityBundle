@@ -141,7 +141,7 @@ class Report
             throw new InvalidPayloadException('Content-Security-Policy Endpoint called with invalid JSON data', 400);
         }
 
-        if (!isset($json['csp-report'])) {
+        if (!is_array($json) || !isset($json['csp-report'])) {
             throw new MissingCspReportException('Content-Security-Policy Endpoint called without "csp-report" data', 400);
         }
 

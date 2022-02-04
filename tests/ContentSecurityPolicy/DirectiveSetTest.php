@@ -32,7 +32,7 @@ class DirectiveSetTest extends TestCase
     /**
      * @dataProvider provideVariousConfig
      *
-     * @param array<string, mixed> $directives
+     * @param array<string, list<string>|true> $directives
      */
     public function testFromConfig(string $expected, string $ua, array $directives): void
     {
@@ -362,8 +362,12 @@ class DirectiveSetTest extends TestCase
     /**
      * @dataProvider provideConfigAndSignatures
      *
-     * @param array<string, mixed> $config
-     * @param array<string, mixed> $signatures
+     * @phpstan-param array<string, array{
+     *     enforce?: array<string, mixed>,
+     *     report?: array<string, mixed>,
+     * }> $config
+     *
+     * @param array<string, list<string>> $signatures
      */
     public function testBuildHeaderValueWithInlineSignatures(string $expected, array $config, array $signatures): void
     {
