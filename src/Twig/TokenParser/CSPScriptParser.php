@@ -15,7 +15,7 @@ namespace Nelmio\SecurityBundle\Twig\TokenParser;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
 
-class CSPScriptParser extends AbstractCSPParser
+final class CSPScriptParser extends AbstractCSPParser
 {
     public function __construct(ShaComputerInterface $shaComputer)
     {

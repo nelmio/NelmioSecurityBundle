@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\HttpKernel\Kernel;
 
-class NelmioSecurityExtension extends Extension
+final class NelmioSecurityExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {

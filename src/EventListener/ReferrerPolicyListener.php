@@ -16,12 +16,9 @@ namespace Nelmio\SecurityBundle\EventListener;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
- * Referrer Policy Listener.
- *
  * @author Andrej Hudec <pulzarraider@gmail.com>
- * @final
  */
-class ReferrerPolicyListener
+final class ReferrerPolicyListener
 {
     use KernelEventForwardCompatibilityTrait;
 

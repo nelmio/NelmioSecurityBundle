@@ -21,10 +21,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-/**
- * @final
- */
-class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListener
+final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListener
 {
     use KernelEventForwardCompatibilityTrait;
 

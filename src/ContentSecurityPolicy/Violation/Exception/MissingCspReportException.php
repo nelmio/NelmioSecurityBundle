@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception;
 
-class MissingCspReportException extends \RuntimeException implements ExceptionInterface
+final class MissingCspReportException extends \RuntimeException implements ExceptionInterface
 {
 }

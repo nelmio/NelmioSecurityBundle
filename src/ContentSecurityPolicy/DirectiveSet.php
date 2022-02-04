@@ -15,7 +15,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class DirectiveSet
+final class DirectiveSet
 {
     public const TYPE_SRC_LIST = 'source-list';
     public const TYPE_SRC_LIST_NOFB = 'source-list-no-fallback';

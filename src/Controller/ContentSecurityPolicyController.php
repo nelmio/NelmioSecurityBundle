@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class ContentSecurityPolicyController
+final class ContentSecurityPolicyController
 {
     private Logger $logger;
     private Filter $filter;

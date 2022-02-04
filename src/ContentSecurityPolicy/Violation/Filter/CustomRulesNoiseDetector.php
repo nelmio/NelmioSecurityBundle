@@ -16,7 +16,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
 use Symfony\Component\HttpFoundation\Request;
 
-class CustomRulesNoiseDetector implements NoiseDetectorInterface
+final class CustomRulesNoiseDetector implements NoiseDetectorInterface
 {
     /**
      * @var array<string, array<string>>

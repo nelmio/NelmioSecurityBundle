@@ -16,7 +16,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 use Nelmio\SecurityBundle\UserAgent\UserAgentParserInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class PolicyManager
+final class PolicyManager
 {
     private ?UserAgentParserInterface $uaParser;
 

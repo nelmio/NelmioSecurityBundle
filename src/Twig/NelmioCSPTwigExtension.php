@@ -19,7 +19,7 @@ use Nelmio\SecurityBundle\Twig\TokenParser\CSPStyleParser;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class NelmioCSPTwigExtension extends AbstractExtension
+final class NelmioCSPTwigExtension extends AbstractExtension
 {
     private ShaComputerInterface $shaComputer;
 

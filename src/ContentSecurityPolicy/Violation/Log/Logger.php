@@ -16,7 +16,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Log;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
 use Psr\Log\LoggerInterface;
 
-class Logger
+final class Logger
 {
     private LoggerInterface $logger;
     private LogFormatterInterface $logFormatter;

@@ -15,10 +15,7 @@ namespace Nelmio\SecurityBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
-/**
- * @final
- */
-class ContentTypeListener
+final class ContentTypeListener
 {
     use KernelEventForwardCompatibilityTrait;
 

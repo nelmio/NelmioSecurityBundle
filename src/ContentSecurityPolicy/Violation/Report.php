@@ -18,7 +18,7 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspRe
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException;
 use Symfony\Component\HttpFoundation\Request;
 
-class Report
+final class Report
 {
     /**
      * @var array<string, string>

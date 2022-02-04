@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
-class ContentSecurityPolicyParser
+final class ContentSecurityPolicyParser
 {
     /**
      * @var list<string>

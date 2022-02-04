@@ -20,10 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
-/**
- * @final
- */
-class CookieSessionHandler implements \SessionHandlerInterface
+final class CookieSessionHandler implements \SessionHandlerInterface
 {
     use KernelEventForwardCompatibilityTrait;
 

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
-class ShaComputer implements ShaComputerInterface
+final class ShaComputer implements ShaComputerInterface
 {
     private string $type;
     private ?string $favorite = null;
