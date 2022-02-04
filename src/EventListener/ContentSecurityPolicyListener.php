@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGeneratorInterface;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -44,8 +44,8 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
      * @var array<string, list<string>>|null
      */
     private ?array $sha = null;
-    private NonceGenerator $nonceGenerator;
-    private ShaComputer $shaComputer;
+    private NonceGeneratorInterface $nonceGenerator;
+    private ShaComputerInterface $shaComputer;
 
     /**
      * @param list<string> $hosts
@@ -54,8 +54,8 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
     public function __construct(
         DirectiveSet $report,
         DirectiveSet $enforce,
-        NonceGenerator $nonceGenerator,
-        ShaComputer $shaComputer,
+        NonceGeneratorInterface $nonceGenerator,
+        ShaComputerInterface $shaComputer,
         bool $compatHeaders = true,
         array $hosts = [],
         array $contentTypes = []

@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\Twig\TokenParser;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
 
 class CSPStyleParser extends AbstractCSPParser
 {
-    public function __construct(ShaComputer $shaComputer)
+    public function __construct(ShaComputerInterface $shaComputer)
     {
         parent::__construct($shaComputer, 'cspstyle', 'style-src');
     }
