@@ -33,6 +33,7 @@ class ConfigurationTest extends TestCase
             "      - 'self'"
         );
 
+        $this->assertIsArray($config['csp']);
         $this->assertIsArray($config['csp']['report']['script-src']);
         $this->assertIsArray($config['csp']['enforce']['script-src']);
         $this->assertSame(['self'], $config['csp']['report']['script-src']);
@@ -47,6 +48,7 @@ class ConfigurationTest extends TestCase
             "    report-uri: /csp/report\n"
         );
 
+        $this->assertIsArray($config['csp']);
         $this->assertIsArray($config['csp']['enforce']['report-uri']);
         $this->assertSame(['/csp/report'], $config['csp']['enforce']['report-uri']);
     }
@@ -60,6 +62,7 @@ class ConfigurationTest extends TestCase
             "      - /csp/report\n"
         );
 
+        $this->assertIsArray($config['csp']);
         $this->assertIsArray($config['csp']['enforce']['report-uri']);
         $this->assertSame(['/csp/report'], $config['csp']['enforce']['report-uri']);
     }
@@ -74,6 +77,7 @@ class ConfigurationTest extends TestCase
             "      - /csp/report2\n"
         );
 
+        $this->assertIsArray($config['csp']);
         $this->assertIsArray($config['csp']['enforce']['report-uri']);
         $this->assertSame(['/csp/report1', '/csp/report2'], $config['csp']['enforce']['report-uri']);
     }
@@ -89,6 +93,7 @@ class ConfigurationTest extends TestCase
             "    block-all-mixed-content: true\n"
         );
 
+        $this->assertIsArray($config['csp']);
         $this->assertIsArray($config['csp']['report']);
         $this->assertIsArray($config['csp']['report']['script-src']);
         $this->assertSame(['self'], $config['csp']['report']['script-src']);
@@ -108,6 +113,7 @@ class ConfigurationTest extends TestCase
             "      parser: service_name\n"
         );
 
+        $this->assertIsArray($config['csp']);
         $this->assertIsArray($config['csp']['report']);
         $this->assertSame(['self'], $config['csp']['report']['script-src']);
         $this->assertIsArray($config['csp']['report']['script-src']);
@@ -133,6 +139,7 @@ class ConfigurationTest extends TestCase
             "    - ''\n"
         );
 
+        $this->assertIsArray($config['referrer_policy']);
         $this->assertIsArray($config['referrer_policy']['policies']);
         $this->assertSame([
             'no-referrer',

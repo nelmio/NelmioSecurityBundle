@@ -163,7 +163,11 @@ class DirectiveSet
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @phpstan-param array{
+     *     enforce?: array<string, mixed>,
+     *     report?: array<string, mixed>,
+     * } $config
+     * @phpstan-param 'enforce'|'report' $kind
      */
     public static function fromConfig(PolicyManager $policyManager, array $config, string $kind): self
     {

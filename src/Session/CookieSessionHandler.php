@@ -167,7 +167,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
         $content = @unserialize($this->request->cookies->get($this->cookieName));
 
-        if (false === $content) {
+        if (false === $content || !is_array($content)) {
             $content = [
                 'expire' => strtotime('now'),
                 'data' => '',

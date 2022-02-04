@@ -6,6 +6,21 @@ parameters:
 			path: src/ContentSecurityPolicy/DirectiveSet.php
 
 		-
+			message: "#^Offset 'enforce'\\|'report' does not exist on array\\{enforce\\?\\: array\\<string, mixed\\>, report\\?\\: array\\<string, mixed\\>\\}\\.$#"
+			count: 1
+			path: src/ContentSecurityPolicy/DirectiveSet.php
+
+		-
+			message: "#^Parameter \\#1 \\$bool of method Nelmio\\\\SecurityBundle\\\\ContentSecurityPolicy\\\\DirectiveSet\\:\\:setLevel1Fallback\\(\\) expects bool, mixed given\\.$#"
+			count: 1
+			path: src/ContentSecurityPolicy/DirectiveSet.php
+
+		-
+			message: "#^Parameter \\#1 \\$sourceList of method Nelmio\\\\SecurityBundle\\\\ContentSecurityPolicy\\\\ContentSecurityPolicyParser\\:\\:parseSourceList\\(\\) expects array\\<int, string\\>\\|true, mixed given\\.$#"
+			count: 1
+			path: src/ContentSecurityPolicy/DirectiveSet.php
+
+		-
 			message: "#^Offset 'enforce'\\|'report' does not exist on array\\{enforce\\?\\: array\\{browser_adaptive\\: array\\{enabled\\: bool, parser\\: string\\}\\}, report\\?\\: array\\{browser_adaptive\\: array\\{enabled\\: bool, parser\\: string\\}\\}\\}\\.$#"
 			count: 1
 			path: src/DependencyInjection/NelmioSecurityExtension.php
@@ -24,6 +39,16 @@ parameters:
 			message: "#^Parameter \\#1 \\$value of method Nelmio\\\\SecurityBundle\\\\Signer\\:\\:getSignedValue\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/EventListener/SignedCookieListener.php
+
+		-
+			message: "#^Method Nelmio\\\\SecurityBundle\\\\UserAgent\\\\UAFamilyParser\\\\PsrCacheUAFamilyParser\\:\\:getUaFamily\\(\\) should return string but returns mixed\\.$#"
+			count: 1
+			path: src/UserAgent/UAFamilyParser/PsrCacheUAFamilyParser.php
+
+		-
+			message: "#^Parameter \\#1 \\$parsedYaml of method Nelmio\\\\SecurityBundle\\\\Tests\\\\DependencyInjection\\\\ConfigurationTest\\:\\:processYaml\\(\\) expects array, mixed given\\.$#"
+			count: 1
+			path: tests/DependencyInjection/ConfigurationTest.php
 
 		-
 			message: """
