@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGenerator;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGeneratorInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
@@ -33,21 +33,21 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
     private $kernel;
 
     /**
-     * @var Stub&NonceGenerator
+     * @var Stub&NonceGeneratorInterface
      */
     private $nonceGenerator;
 
     /**
-     * @var MockObject&ShaComputer
+     * @var MockObject&ShaComputerInterface
      */
     private $shaComputer;
 
     protected function setUp(): void
     {
         $this->kernel = $this->createStub(HttpKernelInterface::class);
-        $this->nonceGenerator = $this->createStub(NonceGenerator::class);
+        $this->nonceGenerator = $this->createStub(NonceGeneratorInterface::class);
 
-        $this->shaComputer = $this->createMock(ShaComputer::class);
+        $this->shaComputer = $this->createMock(ShaComputerInterface::class);
         $this->shaComputer
             ->method('computeForScript')
             ->willReturn('sha-script');

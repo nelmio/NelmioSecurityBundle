@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\Twig;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
 use Nelmio\SecurityBundle\Twig\TokenParser\CSPScriptParser;
 use Nelmio\SecurityBundle\Twig\TokenParser\CSPStyleParser;
 use Twig\Extension\AbstractExtension;
@@ -21,9 +21,9 @@ use Twig\TwigFunction;
 
 class NelmioCSPTwigExtension extends AbstractExtension
 {
-    private ShaComputer $shaComputer;
+    private ShaComputerInterface $shaComputer;
 
-    public function __construct(ShaComputer $shaComputer)
+    public function __construct(ShaComputerInterface $shaComputer)
     {
         $this->shaComputer = $shaComputer;
     }

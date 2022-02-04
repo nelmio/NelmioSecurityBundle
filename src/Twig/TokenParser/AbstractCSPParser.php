@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\Twig\TokenParser;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
 use Nelmio\SecurityBundle\Twig\Node\CSPNode;
 use Twig\Node\TextNode;
 use Twig\Token;
@@ -21,11 +21,11 @@ use Twig\TokenParser\AbstractTokenParser;
 
 abstract class AbstractCSPParser extends AbstractTokenParser
 {
-    protected ShaComputer $shaComputer;
+    protected ShaComputerInterface $shaComputer;
     private string $directive;
     private string $tag;
 
-    public function __construct(ShaComputer $shaComputer, string $tag, string $directive)
+    public function __construct(ShaComputerInterface $shaComputer, string $tag, string $directive)
     {
         $this->shaComputer = $shaComputer;
         $this->tag = $tag;

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
-class NonceGenerator
+class NonceGenerator implements NonceGeneratorInterface
 {
     /**
      * @var int<1, max>
