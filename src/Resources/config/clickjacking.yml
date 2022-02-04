@@ -1,8 +1,0 @@
-services:
-    nelmio_security.clickjacking_listener:
-        class: Nelmio\SecurityBundle\EventListener\ClickjackingListener
-        arguments:
-            - '%nelmio_security.clickjacking.paths%'
-            - '%nelmio_security.clickjacking.content_types%'
-        tags:
-            - { name: kernel.event_subscriber }

@@ -1,6 +1,0 @@
-services:
-    nelmio_security.xss_protection_listener:
-        class: Nelmio\SecurityBundle\EventListener\XssProtectionListener
-        tags:
-            - { name: kernel.event_subscriber }
-        factory: [Nelmio\SecurityBundle\EventListener\XssProtectionListener, fromConfig]
