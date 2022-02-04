@@ -1,8 +1,0 @@
-services:
-    nelmio_security.content_type_listener:
-        class: Nelmio\SecurityBundle\EventListener\ContentTypeListener
-        arguments:
-            - '%nelmio_security.content_type.nosniff%'
-
-        tags:
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
