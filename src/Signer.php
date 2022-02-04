@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle;
 
-class Signer
+final class Signer
 {
     private string $secret;
     private string $algo;

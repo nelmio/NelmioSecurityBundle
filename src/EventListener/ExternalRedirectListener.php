@@ -20,10 +20,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-/**
- * @final
- */
-class ExternalRedirectListener
+final class ExternalRedirectListener
 {
     use KernelEventForwardCompatibilityTrait;
 

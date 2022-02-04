@@ -3,6 +3,7 @@
 * Dropped support for Symfony < 4.4
 * Dropped support for Twig 1
 * Removed `DoctrineCacheUAFamilyParser` (use `PsrCacheUAFamilyParser` instead)
+* All classes have been marked as `final`
 
 ### 2.11.1 (xxxx-xx-xx)
 * Filter moz-extension reports

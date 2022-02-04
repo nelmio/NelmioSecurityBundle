@@ -24,10 +24,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 
-/**
- * @final
- */
-class FlexibleSslListener implements BaseFlexibleSslListener
+final class FlexibleSslListener implements BaseFlexibleSslListener
 {
     use KernelEventForwardCompatibilityTrait;
 

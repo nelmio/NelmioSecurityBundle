@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ExternalRedirect;
 
-class WhitelistBasedTargetValidator implements TargetValidator
+final class WhitelistBasedTargetValidator implements TargetValidator
 {
     /**
      * @var string|null

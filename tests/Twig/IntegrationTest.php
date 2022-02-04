@@ -13,11 +13,17 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\Tests\Twig;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputer;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGeneratorInterface;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Nelmio\SecurityBundle\Twig\CSPRuntime;
 use Nelmio\SecurityBundle\Twig\NelmioCSPTwigExtension;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\RuntimeLoader\RuntimeLoaderInterface;
@@ -26,9 +32,7 @@ class IntegrationTest extends TestCase
 {
     public function testItWorksDynamically(): void
     {
-        $collectedShas = [];
-
-        $shaComputer = $this->getMockBuilder(ShaComputer::class)
+        $shaComputer = $this->getMockBuilder(ShaComputerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $shaComputer->expects($this->once())
@@ -38,21 +42,14 @@ class IntegrationTest extends TestCase
             ->method('computeForStyle')
             ->willReturn('sha-style');
 
-        $listener = $this->getMockBuilder(ContentSecurityPolicyListener::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $listener->expects($this->never())
-            ->method('addSha');
-        $listener->expects($this->once())
-            ->method('addScript')
-            ->willReturnCallback(static function ($script) use (&$collectedShas, $shaComputer) {
-                $collectedShas['script-src'][] = $shaComputer->computeForScript($script);
-            });
-        $listener->expects($this->once())
-            ->method('addStyle')
-            ->willReturnCallback(static function ($style) use (&$collectedShas, $shaComputer) {
-                $collectedShas['style-src'][] = $shaComputer->computeForStyle($style);
-            });
+        $policyManager = new PolicyManager();
+
+        $listener = new ContentSecurityPolicyListener(
+            new DirectiveSet($policyManager),
+            new DirectiveSet($policyManager),
+            $this->createStub(NonceGeneratorInterface::class),
+            $shaComputer
+        );
 
         $cspRuntime = new CSPRuntime($listener);
 
@@ -63,20 +60,28 @@ class IntegrationTest extends TestCase
             [CSPRuntime::class, $cspRuntime],
         ]);
         $twig->addRuntimeLoader($loader);
+
+        $listener->onKernelRequest(new RequestEvent(
+            $this->createStub(HttpKernelInterface::class),
+            Request::create('/'),
+            $this->getMasterRequestType()
+        ));
 
         $this->assertSame('<script type="text/javascript">console.log(\'123456\');</script>
 
 <style type="text/css">body{ background: black; }</style>
 ', $twig->render('test-dynamic.twig', ['api_key' => '123456', 'color' => 'black']));
 
-        $this->assertSame(['script-src' => ['sha-script'], 'style-src' => ['sha-style']], $collectedShas);
+        $getSha = \Closure::bind(static function (ContentSecurityPolicyListener $listener): ?array {
+            return $listener->sha;
+        }, null, ContentSecurityPolicyListener::class);
+
+        $this->assertSame(['script-src' => ['sha-script'], 'style-src' => ['sha-style']], $getSha($listener));
     }
 
     public function testItWorksStatically(): void
     {
-        $collectedShas = [];
-
-        $shaComputer = $this->getMockBuilder(ShaComputer::class)
+        $shaComputer = $this->getMockBuilder(ShaComputerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $shaComputer->expects($this->once())
@@ -86,18 +91,14 @@ class IntegrationTest extends TestCase
             ->method('computeForStyle')
             ->willReturn('sha-style');
 
-        $listener = $this->getMockBuilder(ContentSecurityPolicyListener::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $listener->expects($this->exactly(2))
-            ->method('addSha')
-            ->willReturnCallback(static function ($directive, $sha) use (&$collectedShas) {
-                $collectedShas[$directive][] = $sha;
-            });
-        $listener->expects($this->never())
-            ->method('addScript');
-        $listener->expects($this->never())
-            ->method('addStyle');
+        $policyManager = new PolicyManager();
+
+        $listener = new ContentSecurityPolicyListener(
+            new DirectiveSet($policyManager),
+            new DirectiveSet($policyManager),
+            $this->createStub(NonceGeneratorInterface::class),
+            $shaComputer
+        );
 
         $cspRuntime = new CSPRuntime($listener);
 
@@ -109,11 +110,29 @@ class IntegrationTest extends TestCase
         ]);
         $twig->addRuntimeLoader($loader);
 
+        $listener->onKernelRequest(new RequestEvent(
+            $this->createStub(HttpKernelInterface::class),
+            Request::create('/'),
+            $this->getMasterRequestType()
+        ));
+
         $this->assertSame('<script type="text/javascript">console.log(\'Hello\');</script>
 
 <style type="text/css">body{ background: red; }</style>
 ', $twig->render('test-static.twig'));
 
-        $this->assertSame(['script-src' => ['sha-script'], 'style-src' => ['sha-style']], $collectedShas);
+        $getSha = \Closure::bind(static function (ContentSecurityPolicyListener $listener): ?array {
+            return $listener->sha;
+        }, null, ContentSecurityPolicyListener::class);
+
+        $this->assertSame(['script-src' => ['sha-script'], 'style-src' => ['sha-style']], $getSha($listener));
+    }
+
+    private function getMasterRequestType(): int
+    {
+        return \defined(HttpKernelInterface::class.'::MAIN_REQUEST')
+            ? HttpKernelInterface::MAIN_REQUEST
+            : HttpKernelInterface::MASTER_REQUEST
+            ;
     }
 }

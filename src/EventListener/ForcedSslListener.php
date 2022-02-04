@@ -17,10 +17,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
-/**
- * @final
- */
-class ForcedSslListener
+final class ForcedSslListener
 {
     use KernelEventForwardCompatibilityTrait;
 

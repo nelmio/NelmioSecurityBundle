@@ -18,10 +18,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
-/**
- * @final
- */
-class SignedCookieListener
+final class SignedCookieListener
 {
     use KernelEventForwardCompatibilityTrait;
 

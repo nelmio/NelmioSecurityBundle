@@ -25,7 +25,7 @@ namespace Nelmio\SecurityBundle\Twig\Node;
 use Twig\Compiler;
 use Twig\Node\Node;
 
-class CSPNode extends Node
+final class CSPNode extends Node
 {
     private ?string $sha;
     private string $directive;

@@ -18,7 +18,7 @@ use Nelmio\SecurityBundle\DependencyInjection\Compiler\UAParserCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class NelmioSecurityBundle extends Bundle
+final class NelmioSecurityBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {

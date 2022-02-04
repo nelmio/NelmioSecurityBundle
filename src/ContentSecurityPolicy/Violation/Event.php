@@ -15,7 +15,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
 use Symfony\Contracts\EventDispatcher\Event as SymfonyEvent;
 
-class Event extends SymfonyEvent
+final class Event extends SymfonyEvent
 {
     private Report $report;
 

@@ -16,7 +16,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
 use Symfony\Component\HttpFoundation\Request;
 
-class InjectedScriptsNoiseDetector implements NoiseDetectorInterface
+final class InjectedScriptsNoiseDetector implements NoiseDetectorInterface
 {
     public function match(Report $report, Request $request): bool
     {

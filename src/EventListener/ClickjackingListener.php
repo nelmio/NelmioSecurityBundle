@@ -16,10 +16,7 @@ namespace Nelmio\SecurityBundle\EventListener;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-/**
- * @final
- */
-class ClickjackingListener extends AbstractContentTypeRestrictableListener
+final class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
     use KernelEventForwardCompatibilityTrait;
 

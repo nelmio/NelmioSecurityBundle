@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
-class NonceGenerator implements NonceGeneratorInterface
+final class NonceGenerator implements NonceGeneratorInterface
 {
     /**
      * @var int<1, max>
@@ -28,9 +28,6 @@ class NonceGenerator implements NonceGeneratorInterface
         $this->numberOfBytes = $numberOfBytes;
     }
 
-    /**
-     * Generates a nonce value that is later used in script and style policies.
-     */
     public function generate(): string
     {
         return base64_encode(random_bytes($this->numberOfBytes));

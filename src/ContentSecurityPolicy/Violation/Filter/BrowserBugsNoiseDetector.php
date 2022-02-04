@@ -17,7 +17,7 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
 use Symfony\Component\HttpFoundation\Request;
 use UAParser\Parser;
 
-class BrowserBugsNoiseDetector implements NoiseDetectorInterface
+final class BrowserBugsNoiseDetector implements NoiseDetectorInterface
 {
     private Parser $uaParser;
 

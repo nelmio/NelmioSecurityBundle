@@ -15,7 +15,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Log;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
 
-class LogFormatter implements LogFormatterInterface
+final class LogFormatter implements LogFormatterInterface
 {
     public function format(Report $report): string
     {

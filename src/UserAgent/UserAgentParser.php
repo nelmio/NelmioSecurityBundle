@@ -15,7 +15,7 @@ namespace Nelmio\SecurityBundle\UserAgent;
 
 use Nelmio\SecurityBundle\UserAgent\UAFamilyParser\UAFamilyParserInterface;
 
-class UserAgentParser implements UserAgentParserInterface
+final class UserAgentParser implements UserAgentParserInterface
 {
     private UAFamilyParserInterface $parser;
 
