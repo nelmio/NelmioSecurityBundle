@@ -31,9 +31,11 @@ $config = new PhpCsFixer\Config();
 return $config->setRules([
     '@PSR2' => true,
     '@Symfony' => true,
+    '@Symfony:risky' => true,
     'declare_strict_types' => true,
     'header_comment' => ['header' => $header],
     'php_unit_strict' => true,
+    'static_lambda' => true,
     'strict_param' => true,
     'ternary_to_null_coalescing' => true,
 ])

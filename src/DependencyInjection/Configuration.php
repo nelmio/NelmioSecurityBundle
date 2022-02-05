@@ -43,7 +43,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->validate()
-                ->ifTrue(function ($v) {
+                ->ifTrue(static function ($v) {
                     return $v['forced_ssl']['enabled'] && $v['flexible_ssl']['enabled'];
                 })
                 ->thenInvalid('"forced_ssl" and "flexible_ssl" can not be used together')
@@ -69,20 +69,20 @@ class Configuration implements ConfigurationInterface
                             ->useAttributeAsKey('pattern')
                             ->prototype('array')
                                 ->beforeNormalization()
-                                    ->always(function ($v) {
-                                        if (!is_array($v)) {
+                                    ->always(static function ($v) {
+                                        if (!\is_array($v)) {
                                             $v = ['header' => '' === $v ? 'DENY' : $v];
                                         }
                                         if (isset($v['header'])) {
-                                            $v['header'] = preg_replace_callback('{^(?:ALLOW|DENY|SAMEORIGIN|ALLOW-FROM)?}i', function ($m) { return strtoupper($m[0]); }, $v['header']);
+                                            $v['header'] = preg_replace_callback('{^(?:ALLOW|DENY|SAMEORIGIN|ALLOW-FROM)?}i', static function ($m) { return strtoupper($m[0]); }, $v['header']);
                                         }
 
                                         return $v;
                                     })
                                 ->end()
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return isset($v['header']) && !in_array($v['header'], ['DENY', 'SAMEORIGIN', 'ALLOW'], true)
+                                    ->ifTrue(static function ($v) {
+                                        return isset($v['header']) && !\in_array($v['header'], ['DENY', 'SAMEORIGIN', 'ALLOW'], true)
                                             && 0 === preg_match('{^ALLOW-FROM \S+}', $v['header']);
                                     })
                                     ->thenInvalid('Possible header values are DENY, SAMEORIGIN, ALLOW and ALLOW-FROM [url], got: %s')
@@ -99,7 +99,7 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('external_redirects')
                     ->validate()
-                        ->ifTrue(function ($v) {
+                        ->ifTrue(static function ($v) {
                             return isset($v['abort']) && $v['abort'] && isset($v['override']) && $v['override'];
                         })
                         ->thenInvalid('"abort" and "override" can not be combined')
@@ -222,8 +222,8 @@ class Configuration implements ConfigurationInterface
                             ->normalizeKeys(false)
                             ->prototype('array')
                                 ->beforeNormalization()
-                                ->always(function ($v) {
-                                    if (!is_array($v)) {
+                                ->always(static function ($v) {
+                                    if (!\is_array($v)) {
                                         return [$v];
                                     }
 
@@ -297,7 +297,7 @@ class Configuration implements ConfigurationInterface
                         ->prototype('scalar')->end()
                         ->beforeNormalization()
                             ->ifString()
-                            ->then(function ($value) { return [$value]; })
+                            ->then(static function ($value) { return [$value]; })
                         ->end()
                     ->end();
             } elseif (DirectiveSet::TYPE_URI_REFERENCE === $type) {
@@ -326,12 +326,12 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(['no-referrer', 'no-referrer-when-downgrade'])
                     ->beforeNormalization()
                         ->ifString()
-                        ->then(function ($value) { return [$value]; })
+                        ->then(static function ($value) { return [$value]; })
                     ->end()
                     ->validate()
                         ->always(function ($values) {
                             foreach ($values as $policy) {
-                                if (!in_array($policy, $this->getReferrerPolicies(), true)) {
+                                if (!\in_array($policy, $this->getReferrerPolicies(), true)) {
                                     throw new \InvalidArgumentException(sprintf('Unknown referrer policy "%s". Possible referrer policies are "%s".', $policy, implode('", "', $this->getReferrerPolicies())));
                                 }
                             }

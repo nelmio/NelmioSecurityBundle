@@ -387,6 +387,6 @@ class DomainsNoiseDetector implements NoiseDetectorInterface
             return false;
         }
 
-        return array_key_exists($domain, $domains);
+        return \array_key_exists($domain, $domains);
     }
 }

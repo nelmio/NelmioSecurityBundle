@@ -20,7 +20,7 @@ class ShaComputer
 
     public function __construct(string $type)
     {
-        if (!in_array($type, ['sha256', 'sha384', 'sha512'], true)) {
+        if (!\in_array($type, ['sha256', 'sha384', 'sha512'], true)) {
             throw new \InvalidArgumentException(sprintf('Type "%s" is not supported', $type));
         }
 
@@ -63,11 +63,11 @@ class ShaComputer
             return $this->favorite;
         }
 
-        if (function_exists('hash_algos') && in_array($this->type, hash_algos(), true)) {
+        if (\function_exists('hash_algos') && \in_array($this->type, hash_algos(), true)) {
             return $this->favorite = 'hash';
         }
 
-        if (function_exists('openssl_get_md_methods') && in_array($this->type, openssl_get_md_methods(), true)) {
+        if (\function_exists('openssl_get_md_methods') && \in_array($this->type, openssl_get_md_methods(), true)) {
             return $this->favorite = 'openssl';
         }
 

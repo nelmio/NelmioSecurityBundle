@@ -74,7 +74,7 @@ class DirectiveSet
     {
         $this->checkDirectiveName($name);
 
-        if (array_key_exists($name, $this->directiveValues)) {
+        if (\array_key_exists($name, $this->directiveValues)) {
             return $this->directiveValues[$name];
         }
 
@@ -122,7 +122,7 @@ class DirectiveSet
         $availableDirectives = $this->policyManager->getAvailableDirective($request);
 
         foreach ($this->directiveValues as $name => $value) {
-            if (!in_array($name, $availableDirectives, true)) {
+            if (!\in_array($name, $availableDirectives, true)) {
                 continue;
             }
             if (true === $value) {
@@ -174,13 +174,13 @@ class DirectiveSet
         $directiveSet = new self($policyManager);
         $directiveSet->setLevel1Fallback(isset($config[$kind]) ? $config[$kind]['level1_fallback'] : false);
 
-        if (!array_key_exists($kind, $config)) {
+        if (!\array_key_exists($kind, $config)) {
             return $directiveSet;
         }
 
         $parser = new ContentSecurityPolicyParser();
         foreach (self::getNames() as $name => $type) {
-            if (!array_key_exists($name, $config[$kind])) {
+            if (!\array_key_exists($name, $config[$kind])) {
                 continue;
             }
 
@@ -200,7 +200,7 @@ class DirectiveSet
 
     private function checkDirectiveName(string $name): void
     {
-        if (!array_key_exists($name, self::$directiveNames)) {
+        if (!\array_key_exists($name, self::$directiveNames)) {
             throw new \InvalidArgumentException('Unknown CSP directive name: '.$name);
         }
     }

@@ -45,11 +45,11 @@ class BrowserBugsNoiseDetector implements NoiseDetectorInterface
         }
 
         // https://bugzilla.mozilla.org/show_bug.cgi?id=1263286
-        if ('base-uri' === $report->getDirective() && in_array($report->getUri(), ['about:blank', 'about'], true)) {
+        if ('base-uri' === $report->getDirective() && \in_array($report->getUri(), ['about:blank', 'about'], true)) {
             if (null !== $ua = $request->headers->get('user-agent')) {
                 $result = $this->uaParser->parse($ua);
 
-                if (in_array($result->ua->family, ['Firefox', 'Iceweasel', 'Firefox Mobile'], true) && $result->ua->major < 49) {
+                if (\in_array($result->ua->family, ['Firefox', 'Iceweasel', 'Firefox Mobile'], true) && $result->ua->major < 49) {
                     return true;
                 }
             }

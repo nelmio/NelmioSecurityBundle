@@ -68,7 +68,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
             $this->logger->debug('CookieSessionHandler::onKernelResponse - Get the Response object');
         }
 
-        assert(null !== $this->request);
+        \assert(null !== $this->request);
 
         $this->request->getSession()->save();
 
@@ -167,7 +167,7 @@ class CookieSessionHandler implements \SessionHandlerInterface
 
         $content = @unserialize($this->request->cookies->get($this->cookieName));
 
-        if (false === $content || !is_array($content)) {
+        if (false === $content || !\is_array($content)) {
             $content = [
                 'expire' => strtotime('now'),
                 'data' => '',

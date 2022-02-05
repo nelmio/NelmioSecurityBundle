@@ -45,12 +45,12 @@ class IntegrationTest extends TestCase
             ->method('addSha');
         $listener->expects($this->once())
             ->method('addScript')
-            ->willReturnCallback(function ($script) use (&$collectedShas, $shaComputer) {
+            ->willReturnCallback(static function ($script) use (&$collectedShas, $shaComputer) {
                 $collectedShas['script-src'][] = $shaComputer->computeForScript($script);
             });
         $listener->expects($this->once())
             ->method('addStyle')
-            ->willReturnCallback(function ($style) use (&$collectedShas, $shaComputer) {
+            ->willReturnCallback(static function ($style) use (&$collectedShas, $shaComputer) {
                 $collectedShas['style-src'][] = $shaComputer->computeForStyle($style);
             });
 
@@ -91,7 +91,7 @@ class IntegrationTest extends TestCase
             ->getMock();
         $listener->expects($this->exactly(2))
             ->method('addSha')
-            ->willReturnCallback(function ($directive, $sha) use (&$collectedShas) {
+            ->willReturnCallback(static function ($directive, $sha) use (&$collectedShas) {
                 $collectedShas[$directive][] = $sha;
             });
         $listener->expects($this->never())

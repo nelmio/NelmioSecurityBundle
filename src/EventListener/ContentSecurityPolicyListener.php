@@ -163,7 +163,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
             return;
         }
 
-        if (([] === $this->hosts || in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
+        if (([] === $this->hosts || \in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response)) {
             $signatures = $this->sha;
             if (null !== $this->scriptNonce) {
                 $signatures['script-src'][] = 'nonce-'.$this->scriptNonce;
@@ -202,7 +202,7 @@ class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListe
             return [];
         }
 
-        $hn = function (string $name) use ($reportOnly): string {
+        $hn = static function (string $name) use ($reportOnly): string {
             return $name.($reportOnly ? '-Report-Only' : '');
         };
 
