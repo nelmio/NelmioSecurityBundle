@@ -56,7 +56,7 @@ class ReportTest extends TestCase
 
         $report = Report::fromRequest(new Request([], [], [], [], [], [], json_encode([
             'csp-report' => $data,
-        ], JSON_THROW_ON_ERROR)));
+        ], \JSON_THROW_ON_ERROR)));
 
         $this->assertSame($data, $report->getData());
         $this->assertFalse($report->isData());

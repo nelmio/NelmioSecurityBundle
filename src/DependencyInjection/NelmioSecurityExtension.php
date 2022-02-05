@@ -61,7 +61,7 @@ class NelmioSecurityExtension extends Extension
 
             $container->setParameter('nelmio_security.csp.report_log_level', $cspConfig['report_endpoint']['log_level']);
 
-            if (count($cspConfig['report_endpoint']['dismiss']) > 0) {
+            if (\count($cspConfig['report_endpoint']['dismiss']) > 0) {
                 $container->getDefinition('nelmio_security.csp_report.filter.noise_detector_custom_rules')
                     ->replaceArgument(0, $cspConfig['report_endpoint']['dismiss']);
                 $cspViolationLogFilterDefinition->addMethodCall('addNoiseDetector', [new Reference('nelmio_security.csp_report.filter.noise_detector_custom_rules')]);
@@ -112,8 +112,8 @@ class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.external_redirects.abort', $config['external_redirects']['abort']);
             if ($config['external_redirects']['whitelist']) {
                 $whitelist = array_map(static function (string $el): string {
-                    $host = parse_url($el, PHP_URL_HOST);
-                    if (is_string($host)) {
+                    $host = parse_url($el, \PHP_URL_HOST);
+                    if (\is_string($host)) {
                         return ltrim($host, '.');
                     }
 

@@ -45,6 +45,6 @@ class SchemesNoiseDetector implements NoiseDetectorInterface
             return false;
         }
 
-        return in_array($scheme, $schemes, true);
+        return \in_array($scheme, $schemes, true);
     }
 }

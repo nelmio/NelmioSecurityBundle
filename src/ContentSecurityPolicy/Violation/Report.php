@@ -74,7 +74,7 @@ class Report
             return null;
         }
 
-        $host = parse_url($uri, PHP_URL_HOST);
+        $host = parse_url($uri, \PHP_URL_HOST);
 
         if (null !== $host && false !== $host) {
             return $host;
@@ -137,17 +137,17 @@ class Report
 
         $json = @json_decode($content, true);
 
-        if (JSON_ERROR_NONE !== json_last_error()) {
+        if (\JSON_ERROR_NONE !== json_last_error()) {
             throw new InvalidPayloadException('Content-Security-Policy Endpoint called with invalid JSON data', 400);
         }
 
-        if (!is_array($json) || !isset($json['csp-report'])) {
+        if (!\is_array($json) || !isset($json['csp-report'])) {
             throw new MissingCspReportException('Content-Security-Policy Endpoint called without "csp-report" data', 400);
         }
 
         $report = $json['csp-report'];
 
-        if (!is_array($report) || [] === $report) {
+        if (!\is_array($report) || [] === $report) {
             return new self();
         }
 

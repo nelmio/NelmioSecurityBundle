@@ -37,7 +37,7 @@ class ContentSecurityPolicyParser
      */
     public function parseSourceList($sourceList)
     {
-        if (!is_array($sourceList)) {
+        if (!\is_array($sourceList)) {
             return $sourceList;
         }
 
@@ -56,8 +56,8 @@ class ContentSecurityPolicyParser
         $keywords = $this->keywords;
 
         return array_map(
-            function (string $source) use ($keywords) {
-                if (in_array($source, $keywords, true)) {
+            static function (string $source) use ($keywords) {
+                if (\in_array($source, $keywords, true)) {
                     return sprintf("'%s'", $source);
                 }
 

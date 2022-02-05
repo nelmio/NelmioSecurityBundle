@@ -27,7 +27,7 @@ class UAParserCompilerPass implements CompilerPassInterface
 
         $browserAdaptativeParser = $container->getParameter('nelmio_browser_adaptive_parser');
 
-        assert(is_string($browserAdaptativeParser));
+        \assert(\is_string($browserAdaptativeParser));
 
         $container
             ->getDefinition('nelmio_security.ua_parser')

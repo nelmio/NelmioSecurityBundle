@@ -41,7 +41,7 @@ class CustomRulesNoiseDetector implements NoiseDetectorInterface
         }
 
         foreach ($this->urls as $pattern => $sources) {
-            if (!in_array('*', $sources, true) && !in_array($directive, $sources, true)) {
+            if (!\in_array('*', $sources, true) && !\in_array($directive, $sources, true)) {
                 continue;
             }
 

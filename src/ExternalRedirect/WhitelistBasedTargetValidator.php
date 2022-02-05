@@ -25,7 +25,7 @@ class WhitelistBasedTargetValidator implements TargetValidator
      */
     public function __construct($whitelist = null)
     {
-        if (is_array($whitelist)) {
+        if (\is_array($whitelist)) {
             if ([] !== $whitelist) {
                 $whitelist = array_map(static function (string $el): string {
                     return preg_quote(ltrim($el, '.'));
@@ -44,9 +44,9 @@ class WhitelistBasedTargetValidator implements TargetValidator
             return false;
         }
 
-        $host = parse_url($targetUrl, PHP_URL_HOST);
+        $host = parse_url($targetUrl, \PHP_URL_HOST);
 
-        if (!is_string($host)) {
+        if (!\is_string($host)) {
             throw new \InvalidArgumentException(sprintf('Url "%s" does not contain a host name.', $targetUrl));
         }
 

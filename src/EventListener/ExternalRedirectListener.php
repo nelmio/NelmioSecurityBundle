@@ -61,7 +61,7 @@ class ExternalRedirectListener
         $this->override = $override;
         $this->forwardAs = $forwardAs;
 
-        if (is_string($targetValidator) || is_array($targetValidator)) {
+        if (\is_string($targetValidator) || \is_array($targetValidator)) {
             $targetValidator = new WhitelistBasedTargetValidator($targetValidator);
         } elseif (null !== $targetValidator && !$targetValidator instanceof TargetValidator) {
             throw new \LogicException('$targetValidator should be an array of hosts, a regular expression, or an implementation of TargetValidator.');
@@ -119,7 +119,7 @@ class ExternalRedirectListener
                 $response->headers->set('Location', $this->generator->generate($this->override, $parameters));
             } else {
                 $query = '';
-                if (count($parameters) > 0) {
+                if (\count($parameters) > 0) {
                     $query = (false === strpos($this->override, '?')) ? '?' : '&';
                     $query .= http_build_query($parameters, '', '&');
                 }

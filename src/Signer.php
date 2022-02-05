@@ -23,7 +23,7 @@ class Signer
         $this->secret = $secret;
         $this->algo = $algo;
 
-        if (!in_array($this->algo, hash_algos(), true)) {
+        if (!\in_array($this->algo, hash_algos(), true)) {
             throw new \InvalidArgumentException(sprintf("The supplied hashing algorithm '%s' is not supported by this system.", $this->algo));
         }
     }
@@ -42,13 +42,13 @@ class Signer
         [$value, $signature] = $this->splitSignatureFromSignedValue($signedValue);
         $signature2 = $this->generateSignature($value);
 
-        if (null === $signature || strlen($signature) !== strlen($signature2)) {
+        if (null === $signature || \strlen($signature) !== \strlen($signature2)) {
             return false;
         }
 
         $result = 0;
-        for ($i = 0, $j = strlen($signature); $i < $j; ++$i) {
-            $result |= ord($signature[$i]) ^ ord($signature2[$i]);
+        for ($i = 0, $j = \strlen($signature); $i < $j; ++$i) {
+            $result |= \ord($signature[$i]) ^ \ord($signature2[$i]);
         }
 
         return 0 === $result;
