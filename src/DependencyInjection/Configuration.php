@@ -100,7 +100,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('external_redirects')
                     ->validate()
                         ->ifTrue(static function ($v) {
-                            return isset($v['abort']) && $v['abort'] && isset($v['override']) && $v['override'];
+                            return isset($v['abort'], $v['override']) && $v['abort'] && $v['override'];
                         })
                         ->thenInvalid('"abort" and "override" can not be combined')
                     ->end()
