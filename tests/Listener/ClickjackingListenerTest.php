@@ -60,7 +60,7 @@ class ClickjackingListenerTest extends ListenerTestCase
     public function testClickjackingSkipsSubReqs(): void
     {
         $response = $this->callListener($this->listener, '/', false);
-        $this->assertSame(null, $response->headers->get('X-Frame-Options'));
+        $this->assertNull($response->headers->get('X-Frame-Options'));
     }
 
     public function testClickjackingSkipsOnRedirection(): void
@@ -70,7 +70,7 @@ class ClickjackingListenerTest extends ListenerTestCase
 
         $event = $this->createResponseEvent($request, true, $response);
         $this->listener->onKernelResponse($event);
-        $this->assertSame(null, $response->headers->get('X-Frame-Options'));
+        $this->assertNull($response->headers->get('X-Frame-Options'));
     }
 
     protected function callListener(ClickjackingListener $listener, string $path, bool $mainReq, string $contentType = 'text/html'): Response

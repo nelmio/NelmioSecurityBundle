@@ -97,8 +97,8 @@ class ConfigurationTest extends TestCase
         $this->assertIsArray($config['csp']['report']);
         $this->assertIsArray($config['csp']['report']['script-src']);
         $this->assertSame(['self'], $config['csp']['report']['script-src']);
-        $this->assertSame(false, $config['csp']['report']['upgrade-insecure-requests']);
-        $this->assertSame(true, $config['csp']['report']['block-all-mixed-content']);
+        $this->assertFalse($config['csp']['report']['upgrade-insecure-requests']);
+        $this->assertTrue($config['csp']['report']['block-all-mixed-content']);
     }
 
     public function testBrowserAdaptiveArray(): void
@@ -118,7 +118,7 @@ class ConfigurationTest extends TestCase
         $this->assertSame(['self'], $config['csp']['report']['script-src']);
         $this->assertIsArray($config['csp']['report']['script-src']);
         $this->assertIsArray($config['csp']['report']['browser_adaptive']);
-        $this->assertSame(true, $config['csp']['report']['browser_adaptive']['enabled']);
+        $this->assertTrue($config['csp']['report']['browser_adaptive']['enabled']);
         $this->assertSame('service_name', $config['csp']['report']['browser_adaptive']['parser']);
     }
 
@@ -177,8 +177,8 @@ class ConfigurationTest extends TestCase
         );
 
         $this->assertIsArray($config['xss_protection']);
-        $this->assertSame(true, $config['xss_protection']['enabled']);
-        $this->assertSame(true, $config['xss_protection']['mode_block']);
+        $this->assertTrue($config['xss_protection']['enabled']);
+        $this->assertTrue($config['xss_protection']['mode_block']);
         $this->assertSame('https://report.com/endpoint', $config['xss_protection']['report_uri']);
     }
 

@@ -133,7 +133,7 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"], false, true, ['text/html']);
         $response = $this->callListener($listener, '/', true, 'application/json');
 
-        $this->assertSame(null, $response->headers->get('Content-Security-Policy'));
+        $this->assertNull($response->headers->get('Content-Security-Policy'));
     }
 
     public function testWithRedirection(): void
@@ -148,7 +148,7 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
         );
         $listener->onKernelResponse($event);
 
-        $this->assertSame(null, $response->headers->get('Content-Security-Policy'));
+        $this->assertNull($response->headers->get('Content-Security-Policy'));
     }
 
     public function testScript(): void
