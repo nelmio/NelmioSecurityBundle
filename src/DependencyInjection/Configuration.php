@@ -43,7 +43,7 @@ final class Configuration implements ConfigurationInterface
 
         $rootNode
             ->validate()
-                ->ifTrue(static function ($v) {
+                ->ifTrue(static function (array $v): bool {
                     return $v['forced_ssl']['enabled'] && $v['flexible_ssl']['enabled'];
                 })
                 ->thenInvalid('"forced_ssl" and "flexible_ssl" can not be used together')
@@ -53,7 +53,7 @@ final class Configuration implements ConfigurationInterface
                     ->fixXmlConfig('name')
                     ->children()
                         ->arrayNode('names')
-                            ->prototype('scalar')->end()
+                            ->scalarPrototype()->end()
                             ->defaultValue(['*'])
                         ->end()
                         ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
@@ -67,9 +67,9 @@ final class Configuration implements ConfigurationInterface
                         ->arrayNode('paths')
                             ->normalizeKeys(false)
                             ->useAttributeAsKey('pattern')
-                            ->prototype('array')
+                            ->arrayPrototype()
                                 ->beforeNormalization()
-                                    ->always(static function ($v) {
+                                    ->always(static function ($v): array {
                                         if (!\is_array($v)) {
                                             $v = ['header' => '' === $v ? 'DENY' : $v];
                                         }
@@ -81,7 +81,7 @@ final class Configuration implements ConfigurationInterface
                                     })
                                 ->end()
                                 ->validate()
-                                    ->ifTrue(static function ($v) {
+                                    ->ifTrue(static function (array $v): bool {
                                         return isset($v['header']) && !\in_array($v['header'], ['DENY', 'SAMEORIGIN', 'ALLOW'], true)
                                             && 0 === preg_match('{^ALLOW-FROM \S+}', $v['header']);
                                     })
@@ -93,13 +93,13 @@ final class Configuration implements ConfigurationInterface
                             ->end()
                             ->defaultValue(['^/.*' => ['header' => 'DENY']])
                         ->end()
-                        ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue([])->end()
+                        ->arrayNode('content_types')->scalarPrototype()->end()->defaultValue([])->end()
                     ->end()
                 ->end()
 
                 ->arrayNode('external_redirects')
                     ->validate()
-                        ->ifTrue(static function ($v) {
+                        ->ifTrue(static function (array $v): bool {
                             return isset($v['abort'], $v['override']) && $v['abort'] && $v['override'];
                         })
                         ->thenInvalid('"abort" and "override" can not be combined')
@@ -110,7 +110,7 @@ final class Configuration implements ConfigurationInterface
                         ->scalarNode('forward_as')->defaultNull()->end()
                         ->booleanNode('log')->defaultFalse()->end()
                         ->arrayNode('whitelist')
-                            ->prototype('scalar')->end()
+                            ->scalarPrototype()->end()
                         ->end()
                     ->end()
                 ->end()
@@ -130,11 +130,11 @@ final class Configuration implements ConfigurationInterface
                         ->booleanNode('hsts_subdomains')->defaultFalse()->end()
                         ->booleanNode('hsts_preload')->defaultFalse()->end()
                         ->arrayNode('whitelist')
-                            ->prototype('scalar')->end()
+                            ->scalarPrototype()->end()
                             ->defaultValue([])
                         ->end()
                         ->arrayNode('hosts')
-                            ->prototype('scalar')->end()
+                            ->scalarPrototype()->end()
                             ->defaultValue([])
                         ->end()
                         ->scalarNode('redirect_status_code')->defaultValue(302)->end()
@@ -185,8 +185,8 @@ final class Configuration implements ConfigurationInterface
             ->canBeDisabled()
             // CSP is enabled by default to ensure BC
             ->children()
-                ->arrayNode('hosts')->prototype('scalar')->end()->defaultValue([])->end()
-                ->arrayNode('content_types')->prototype('scalar')->end()->defaultValue([])->end()
+                ->arrayNode('hosts')->scalarPrototype()->end()->defaultValue([])->end()
+                ->arrayNode('content_types')->scalarPrototype()->end()->defaultValue([])->end()
                 ->arrayNode('report_endpoint')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -207,7 +207,7 @@ final class Configuration implements ConfigurationInterface
                                 LogLevel::NOTICE,
                                 LogLevel::WARNING,
                             ])
-                            ->defaultValue('notice')
+                            ->defaultValue(LogLevel::NOTICE)
                         ->end()
                         ->arrayNode('filters')
                             ->addDefaultsIfNotSet()
@@ -220,9 +220,9 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                         ->arrayNode('dismiss')
                             ->normalizeKeys(false)
-                            ->prototype('array')
+                            ->arrayPrototype()
                                 ->beforeNormalization()
-                                ->always(static function ($v) {
+                                ->always(static function ($v): array {
                                     if (!\is_array($v)) {
                                         return [$v];
                                     }
@@ -230,7 +230,7 @@ final class Configuration implements ConfigurationInterface
                                     return $v;
                                 })
                                 ->end()
-                                ->prototype('enum')
+                                ->enumPrototype()
                                     ->values(array_merge(array_keys(DirectiveSet::getNames()), ['*']))
                                 ->end()
                             ->end()
@@ -294,10 +294,10 @@ final class Configuration implements ConfigurationInterface
             } elseif ('report-uri' === $name) {
                 $children
                     ->arrayNode($name)
-                        ->prototype('scalar')->end()
+                        ->scalarPrototype()->end()
                         ->beforeNormalization()
                             ->ifString()
-                            ->then(static function ($value) { return [$value]; })
+                            ->then(static function (string $value): array { return [$value]; })
                         ->end()
                     ->end();
             } elseif (DirectiveSet::TYPE_URI_REFERENCE === $type) {
@@ -305,7 +305,7 @@ final class Configuration implements ConfigurationInterface
                     ->end();
             } else {
                 $children->arrayNode($name)
-                    ->prototype('scalar')
+                    ->scalarPrototype()
                     ->end();
             }
         }
@@ -322,17 +322,17 @@ final class Configuration implements ConfigurationInterface
             ->canBeEnabled()
             ->children()
                 ->arrayNode('policies')
-                    ->prototype('scalar')->end()
+                    ->scalarPrototype()->end()
                     ->defaultValue(['no-referrer', 'no-referrer-when-downgrade'])
                     ->beforeNormalization()
                         ->ifString()
-                        ->then(static function ($value) { return [$value]; })
+                        ->then(static function (string $value): array { return [$value]; })
                     ->end()
                     ->validate()
-                        ->always(function ($values) {
+                        ->always(function (array $values): array {
                             foreach ($values as $policy) {
-                                if (!\in_array($policy, $this->getReferrerPolicies(), true)) {
-                                    throw new \InvalidArgumentException(sprintf('Unknown referrer policy "%s". Possible referrer policies are "%s".', $policy, implode('", "', $this->getReferrerPolicies())));
+                                if (!\in_array($policy, $this->referrerPolicies, true)) {
+                                    throw new \InvalidArgumentException(sprintf('Unknown referrer policy "%s". Possible referrer policies are "%s".', $policy, implode('", "', $this->referrerPolicies)));
                                 }
                             }
 
@@ -343,13 +343,5 @@ final class Configuration implements ConfigurationInterface
            ->end();
 
         return $node;
-    }
-
-    /**
-     * @return list<string>
-     */
-    public function getReferrerPolicies(): array
-    {
-        return $this->referrerPolicies;
     }
 }
