@@ -58,7 +58,7 @@ class XssProtectionListenerTest extends ListenerTestCase
         $this->assertFalse($response->headers->has('X-Xss-Protection'));
     }
 
-    protected function callListener(XssProtectionListener $listener, string $path, bool $mainReq): Response
+    private function callListener(XssProtectionListener $listener, string $path, bool $mainReq): Response
     {
         $request = Request::create($path);
         $response = new Response();

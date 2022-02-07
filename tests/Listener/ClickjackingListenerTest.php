@@ -73,7 +73,7 @@ class ClickjackingListenerTest extends ListenerTestCase
         $this->assertNull($response->headers->get('X-Frame-Options'));
     }
 
-    protected function callListener(ClickjackingListener $listener, string $path, bool $mainReq, string $contentType = 'text/html'): Response
+    private function callListener(ClickjackingListener $listener, string $path, bool $mainReq, string $contentType = 'text/html'): Response
     {
         $request = Request::create($path);
         $response = new Response();

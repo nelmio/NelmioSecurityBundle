@@ -173,7 +173,7 @@ class ExternalRedirectListenerTest extends ListenerTestCase
         $this->assertSame('http://foo.com/', $response->headers->get('Location'));
     }
 
-    protected function filterResponse(ExternalRedirectListener $listener, string $source, string $target): RedirectResponse
+    private function filterResponse(ExternalRedirectListener $listener, string $source, string $target): RedirectResponse
     {
         $request = Request::create($source);
 

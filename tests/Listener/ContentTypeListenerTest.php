@@ -40,7 +40,7 @@ class ContentTypeListenerTest extends ListenerTestCase
         );
     }
 
-    protected function callListener(ContentTypeListener $listener, string $path, bool $mainReq): Response
+    private function callListener(ContentTypeListener $listener, string $path, bool $mainReq): Response
     {
         $request = Request::create($path);
         $response = new Response();

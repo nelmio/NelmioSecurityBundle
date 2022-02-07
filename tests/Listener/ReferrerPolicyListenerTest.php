@@ -39,7 +39,7 @@ class ReferrerPolicyListenerTest extends ListenerTestCase
         ];
     }
 
-    protected function callListener(ReferrerPolicyListener $listener, string $path, bool $mainReq): Response
+    private function callListener(ReferrerPolicyListener $listener, string $path, bool $mainReq): Response
     {
         $request = Request::create($path);
         $response = new Response();
