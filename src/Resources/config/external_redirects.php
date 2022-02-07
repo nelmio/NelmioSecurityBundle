@@ -12,13 +12,13 @@ declare(strict_types=1);
  */
 
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
-use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
+use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ReferenceConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->parameters()
-        ->set('nelmio_security.external_redirects.whitelist', null);
+        ->set('nelmio_security.external_redirects.allow_list', null);
 
     $containerConfigurator->services()
         ->set('nelmio_security.external_redirect_listener', ExternalRedirectListener::class)
@@ -36,10 +36,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             ])
             ->tag('monolog.logger', ['channel' => 'security'])
 
-        ->alias('nelmio_security.external_redirect.target_validator', 'nelmio_security.external_redirect.target_validator.whitelist')
+        ->alias('nelmio_security.external_redirect.target_validator', 'nelmio_security.external_redirect.target_validator.allow_list')
 
-        ->set('nelmio_security.external_redirect.target_validator.whitelist', WhitelistBasedTargetValidator::class)
+        ->set('nelmio_security.external_redirect.target_validator.allow_list', AllowListBasedTargetValidator::class)
             ->args([
-                '%nelmio_security.external_redirects.whitelist%',
+                '%nelmio_security.external_redirects.allow_list%',
             ]);
 };

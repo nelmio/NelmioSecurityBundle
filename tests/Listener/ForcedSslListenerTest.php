@@ -64,7 +64,7 @@ class ForcedSslListenerTest extends ListenerTestCase
         $this->assertNull($response->headers->get('Strict-Transport-Security'));
     }
 
-    public function testForcedSslSkipsWhitelisted(): void
+    public function testForcedSslSkipsAllowedURLs(): void
     {
         $listener = new ForcedSslListener(60, true, false, ['^/foo/', 'bar']);
 

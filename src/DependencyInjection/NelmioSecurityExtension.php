@@ -110,18 +110,6 @@ final class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.external_redirects.override', $config['external_redirects']['override']);
             $container->setParameter('nelmio_security.external_redirects.forward_as', $config['external_redirects']['forward_as']);
             $container->setParameter('nelmio_security.external_redirects.abort', $config['external_redirects']['abort']);
-            if ($config['external_redirects']['whitelist']) {
-                if ($config['external_redirects']['allow_list']) {
-                    throw new \LogicException('You cannot use external_redirects.whitelist and external_redirects.allow_list at the same time.');
-                }
-
-                @trigger_error(
-                    'external_redirects.whitelist configuration option is deprecated since nelmio/security-bundle 2.12 and will not work in 3.0, use external_redirects.allow_list instead.',
-                    \E_USER_DEPRECATED
-                );
-
-                $config['external_redirects']['allow_list'] = $config['external_redirects']['whitelist'];
-            }
 
             if ($config['external_redirects']['allow_list']) {
                 $allowList = array_map(static function (string $el): string {
@@ -134,7 +122,7 @@ final class NelmioSecurityExtension extends Extension
                 }, $config['external_redirects']['allow_list']);
                 $allowList = array_map('preg_quote', $allowList);
                 $allowList = '(?:.*\.'.implode('|.*\.', $allowList).'|'.implode('|', $allowList).')';
-                $container->setParameter('nelmio_security.external_redirects.whitelist', $allowList);
+                $container->setParameter('nelmio_security.external_redirects.allow_list', $allowList);
             }
             if (!$config['external_redirects']['log']) {
                 $def = $container->getDefinition('nelmio_security.external_redirect_listener');
@@ -172,21 +160,7 @@ final class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.forced_ssl.hsts_max_age', $config['forced_ssl']['hsts_max_age']);
             $container->setParameter('nelmio_security.forced_ssl.hsts_subdomains', $config['forced_ssl']['hsts_subdomains']);
             $container->setParameter('nelmio_security.forced_ssl.hsts_preload', $config['forced_ssl']['hsts_preload']);
-
-            if ([] !== $config['forced_ssl']['whitelist']) {
-                if ([] !== $config['forced_ssl']['allow_list']) {
-                    throw new \LogicException('You cannot use forced_ssl.whitelist and forced_ssl.allow_list at the same time.');
-                }
-
-                @trigger_error(
-                    'forced_ssl.whitelist configuration option is deprecated since nelmio/security-bundle 2.12 and will not work in 3.0, use forced_ssl.allow_list instead.',
-                    \E_USER_DEPRECATED
-                );
-
-                $config['forced_ssl']['allow_list'] = $config['forced_ssl']['whitelist'];
-            }
-
-            $container->setParameter('nelmio_security.forced_ssl.whitelist', $config['forced_ssl']['allow_list']);
+            $container->setParameter('nelmio_security.forced_ssl.allow_list', $config['forced_ssl']['allow_list']);
             $container->setParameter('nelmio_security.forced_ssl.hosts', $config['forced_ssl']['hosts']);
             $container->setParameter('nelmio_security.forced_ssl.redirect_status_code', $config['forced_ssl']['redirect_status_code']);
         }

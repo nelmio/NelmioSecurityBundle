@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\EventListener;
 
+use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
 use Nelmio\SecurityBundle\ExternalRedirect\TargetValidator;
-use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -28,10 +28,7 @@ final class ExternalRedirectListener
     private ?string $override;
     private ?string $forwardAs;
 
-    /**
-     * @var TargetValidator|WhitelistBasedTargetValidator|null
-     */
-    private $targetValidator;
+    private ?TargetValidator $targetValidator;
     private ?LoggerInterface $logger;
     private ?UrlGeneratorInterface $generator;
 
@@ -59,7 +56,7 @@ final class ExternalRedirectListener
         $this->forwardAs = $forwardAs;
 
         if (\is_string($targetValidator) || \is_array($targetValidator)) {
-            $targetValidator = new WhitelistBasedTargetValidator($targetValidator);
+            $targetValidator = new AllowListBasedTargetValidator($targetValidator);
         } elseif (null !== $targetValidator && !$targetValidator instanceof TargetValidator) {
             throw new \LogicException('$targetValidator should be an array of hosts, a regular expression, or an implementation of TargetValidator.');
         }
