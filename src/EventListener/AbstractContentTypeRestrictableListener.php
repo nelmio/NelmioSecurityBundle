@@ -21,7 +21,7 @@ abstract class AbstractContentTypeRestrictableListener implements EventSubscribe
     /**
      * @var list<string>
      */
-    protected array $contentTypes;
+    private array $contentTypes;
 
     /**
      * @param list<string> $contentTypes
