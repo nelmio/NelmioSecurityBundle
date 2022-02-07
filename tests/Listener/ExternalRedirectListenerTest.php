@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
-use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
+use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -104,27 +104,27 @@ class ExternalRedirectListenerTest extends ListenerTestCase
 
     public function testRedirectSkipsAllowedTargets(): void
     {
-        $listener = new ExternalRedirectListener(true, null, null, new WhitelistBasedTargetValidator(['bar.com']));
+        $listener = new ExternalRedirectListener(true, null, null, new AllowListBasedTargetValidator(['bar.com']));
 
         $response = $this->filterResponse($listener, 'http://foo.com/', 'http://bar.com');
         $this->assertTrue($response->isRedirect());
     }
 
     /**
-     * @dataProvider provideRedirectWhitelistsFailing
+     * @dataProvider provideRedirectAllowedListFailing
      *
-     * @param string[] $whitelist
+     * @param string[] $allowList
      */
-    public function testRedirectDoesNotSkipNonWhitelistedDomains(array $whitelist, string $domain): void
+    public function testRedirectDoesNotSkipNonAllowedDomains(array $allowList, string $domain): void
     {
         $this->expectException(HttpException::class);
 
-        $listener = new ExternalRedirectListener(true, null, null, $whitelist);
+        $listener = new ExternalRedirectListener(true, null, null, $allowList);
 
         $this->filterResponse($listener, 'http://foo.com/', 'http://'.$domain.'/');
     }
 
-    public function provideRedirectWhitelistsFailing(): array
+    public function provideRedirectAllowedListFailing(): array
     {
         return [
             [['bar.com', 'baz.com'], 'abaz.com'],
@@ -135,20 +135,20 @@ class ExternalRedirectListenerTest extends ListenerTestCase
     }
 
     /**
-     * @dataProvider provideRedirectWhitelistsPassing
+     * @dataProvider provideRedirectAllowedListPassing
      *
-     * @param string[] $whitelist
+     * @param string[] $allowList
      */
-    public function testRedirectSkipsWhitelistedDomains(array $whitelist, string $domain): void
+    public function testRedirectSkipsAllowedDomains(array $allowList, string $domain): void
     {
-        $listener = new ExternalRedirectListener(true, null, null, $whitelist);
+        $listener = new ExternalRedirectListener(true, null, null, $allowList);
 
         $response = $this->filterResponse($listener, 'http://foo.com/', 'http://'.$domain.'/');
 
         $this->assertTrue($response->isRedirect());
     }
 
-    public function provideRedirectWhitelistsPassing(): array
+    public function provideRedirectAllowedListPassing(): array
     {
         return [
             [['bar.com', 'baz.com'], 'bar.com'],

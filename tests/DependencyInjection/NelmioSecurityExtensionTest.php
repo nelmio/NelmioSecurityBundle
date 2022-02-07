@@ -19,7 +19,7 @@ use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 use Nelmio\SecurityBundle\EventListener\FlexibleSslListener;
 use Nelmio\SecurityBundle\EventListener\ForcedSslListener;
 use Nelmio\SecurityBundle\EventListener\SignedCookieListener;
-use Nelmio\SecurityBundle\ExternalRedirect\WhitelistBasedTargetValidator;
+use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
 use Nelmio\SecurityBundle\Signer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -105,13 +105,13 @@ final class NelmioSecurityExtensionTest extends TestCase
         $this->assertContainerWithParameterValue($container, 'nelmio_security.external_redirects.override', null);
         $this->assertContainerWithParameterValue($container, 'nelmio_security.external_redirects.abort', true);
         $this->assertContainerWithParameterValue($container, 'nelmio_security.external_redirects.forward_as', null);
-        $this->assertContainerWithParameterValue($container, 'nelmio_security.external_redirects.whitelist', '(?:.*\.twitter\.com|.*\.www\.facebook\.com|twitter\.com|www\.facebook\.com)');
+        $this->assertContainerWithParameterValue($container, 'nelmio_security.external_redirects.allow_list', '(?:.*\.twitter\.com|.*\.www\.facebook\.com|twitter\.com|www\.facebook\.com)');
 
         $this->assertServiceIdClass($container, 'nelmio_security.external_redirect_listener', ExternalRedirectListener::class);
-        $this->assertServiceIdClass($container, 'nelmio_security.external_redirect.target_validator.whitelist', WhitelistBasedTargetValidator::class);
+        $this->assertServiceIdClass($container, 'nelmio_security.external_redirect.target_validator.allow_list', AllowListBasedTargetValidator::class);
 
         $this->assertTrue($container->hasAlias('nelmio_security.external_redirect.target_validator'));
-        $this->assertSame('nelmio_security.external_redirect.target_validator.whitelist', (string) $container->getAlias('nelmio_security.external_redirect.target_validator'));
+        $this->assertSame('nelmio_security.external_redirect.target_validator.allow_list', (string) $container->getAlias('nelmio_security.external_redirect.target_validator'));
     }
 
     public function testLoadForcedSsl(): void
@@ -133,7 +133,7 @@ final class NelmioSecurityExtensionTest extends TestCase
         $this->assertContainerWithParameterValue($container, 'nelmio_security.forced_ssl.hsts_max_age', 2592000);
         $this->assertContainerWithParameterValue($container, 'nelmio_security.forced_ssl.hsts_subdomains', true);
         $this->assertContainerWithParameterValue($container, 'nelmio_security.forced_ssl.hsts_preload', false);
-        $this->assertContainerWithParameterValue($container, 'nelmio_security.forced_ssl.whitelist', ['^/unsecure/']);
+        $this->assertContainerWithParameterValue($container, 'nelmio_security.forced_ssl.allow_list', ['^/unsecure/']);
         $this->assertContainerWithParameterValue($container, 'nelmio_security.forced_ssl.hosts', ['^\.example\.org$']);
 
         $this->assertServiceIdClass($container, 'nelmio_security.forced_ssl_listener', ForcedSslListener::class);

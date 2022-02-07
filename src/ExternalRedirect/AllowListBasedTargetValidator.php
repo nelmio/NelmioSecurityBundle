@@ -13,34 +13,32 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ExternalRedirect;
 
-final class WhitelistBasedTargetValidator implements TargetValidator
+final class AllowListBasedTargetValidator implements TargetValidator
 {
-    /**
-     * @var string|null
-     */
-    private $whitelist;
+    private ?string $allowList;
 
     /**
-     * @param string[]|string|null $whitelist
+     * @param string[]|string|null $allowList
      */
-    public function __construct($whitelist = null)
+    public function __construct($allowList = null)
     {
-        if (\is_array($whitelist)) {
-            if ([] !== $whitelist) {
-                $whitelist = array_map(static function (string $el): string {
+        if (\is_array($allowList)) {
+            if ([] !== $allowList) {
+                $allowList = array_map(static function (string $el): string {
                     return preg_quote(ltrim($el, '.'));
-                }, $whitelist);
-                $whitelist = '(?:.*\.'.implode('|.*\.', $whitelist).'|'.implode('|', $whitelist).')';
+                }, $allowList);
+                $allowList = '(?:.*\.'.implode('|.*\.', $allowList).'|'.implode('|', $allowList).')';
             } else {
-                $whitelist = null;
+                $allowList = null;
             }
         }
-        $this->whitelist = $whitelist;
+
+        $this->allowList = $allowList;
     }
 
     public function isTargetAllowed(string $targetUrl): bool
     {
-        if (null === $this->whitelist || '' === $this->whitelist) {
+        if (null === $this->allowList || '' === $this->allowList) {
             return false;
         }
 
@@ -50,6 +48,6 @@ final class WhitelistBasedTargetValidator implements TargetValidator
             throw new \InvalidArgumentException(sprintf('Url "%s" does not contain a host name.', $targetUrl));
         }
 
-        return preg_match('{^'.$this->whitelist.'$}i', $host) > 0;
+        return preg_match('{^'.$this->allowList.'$}i', $host) > 0;
     }
 }

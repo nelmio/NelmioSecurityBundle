@@ -22,7 +22,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 '%nelmio_security.forced_ssl.hsts_max_age%',
                 '%nelmio_security.forced_ssl.hsts_subdomains%',
                 '%nelmio_security.forced_ssl.hsts_preload%',
-                '%nelmio_security.forced_ssl.whitelist%',
+                '%nelmio_security.forced_ssl.allow_list%',
                 '%nelmio_security.forced_ssl.hosts%',
                 '%nelmio_security.forced_ssl.redirect_status_code%',
             ])

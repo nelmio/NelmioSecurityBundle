@@ -24,26 +24,26 @@ final class ForcedSslListener
     private ?int $hstsMaxAge;
     private bool $hstsSubdomains;
     private bool $hstsPreload;
-    private ?string $whitelist;
+    private ?string $allowList;
     private ?string $hosts;
     private int $redirectStatusCode;
 
     /**
-     * @param list<string> $whitelist
+     * @param list<string> $allowList
      * @param list<string> $hosts
      */
     public function __construct(
         ?int $hstsMaxAge,
         bool $hstsSubdomains,
         bool $hstsPreload = false,
-        array $whitelist = [],
+        array $allowList = [],
         array $hosts = [],
         int $redirectStatusCode = 302
     ) {
         $this->hstsMaxAge = $hstsMaxAge;
         $this->hstsSubdomains = $hstsSubdomains;
         $this->hstsPreload = $hstsPreload;
-        $this->whitelist = [] !== $whitelist ? '('.implode('|', $whitelist).')' : null;
+        $this->allowList = [] !== $allowList ? '('.implode('|', $allowList).')' : null;
         $this->hosts = [] !== $hosts ? '('.implode('|', $hosts).')' : null;
         $this->redirectStatusCode = $redirectStatusCode;
     }
@@ -61,8 +61,8 @@ final class ForcedSslListener
             return;
         }
 
-        // skip whitelisted URLs
-        if (null !== $this->whitelist && 1 === preg_match('{'.$this->whitelist.'}i', '' === $request->getPathInfo() ? '/' : $request->getPathInfo())) {
+        // skip allowed URLs
+        if (null !== $this->allowList && 1 === preg_match('{'.$this->allowList.'}i', '' === $request->getPathInfo() ? '/' : $request->getPathInfo())) {
             return;
         }
 
