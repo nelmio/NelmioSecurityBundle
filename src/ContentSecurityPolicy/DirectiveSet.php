@@ -17,12 +17,18 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class DirectiveSet
 {
-    public const TYPE_SRC_LIST = 'source-list';
+    /** @internal */
     public const TYPE_SRC_LIST_NOFB = 'source-list-no-fallback';
+    /** @internal */
     public const TYPE_MEDIA_TYPE_LIST = 'media-type-list';
+    /** @internal */
     public const TYPE_ANCESTOR_SRC_LIST = 'ancestor-source-list';
+    /** @internal */
     public const TYPE_URI_REFERENCE = 'uri-reference';
+    /** @internal */
     public const TYPE_NO_VALUE = 'no-value';
+    /** @internal */
+    public const TYPE_SRC_LIST = 'source-list';
 
     /**
      * @var array<string, string>
