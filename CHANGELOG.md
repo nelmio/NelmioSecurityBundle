@@ -1,6 +1,8 @@
-### 2.11.1 (xxxx-xx-xx)
+### 2.12.0 (xxxx-xx-xx)
 * Filter moz-extension reports
 * Log user agent along with CSP report
+* Deprecated external_redirects.whitelist option in favor of external_redirects.allow_list
+* Deprecated forced_ssl.whitelist option in favor of forced_ssl.allow_list
 
 ### 2.11.0 (2022-01-18)
   * Added support for CSP "prefetch-src" directive
