@@ -135,7 +135,7 @@ class NelmioSecurityExtension extends Extension
                 }
 
                 @trigger_error(
-                    'external_redirects.whitelist configuration is deprecated and will not work in 3.0, use external_redirects.allow_list instead.',
+                    'external_redirects.whitelist configuration option is deprecated since nelmio/security-bundle 2.12 and will not work in 3.0, use external_redirects.allow_list instead.',
                     E_USER_DEPRECATED
                 );
 
@@ -197,7 +197,7 @@ class NelmioSecurityExtension extends Extension
                 }
 
                 @trigger_error(
-                    'forced_ssl.whitelist configuration is deprecated and will not work in 3.0, use forced_ssl.allow_list instead.',
+                    'forced_ssl.whitelist configuration option is deprecated since nelmio/security-bundle 2.12 and will not work in 3.0, use forced_ssl.allow_list instead.',
                     E_USER_DEPRECATED
                 );
 
