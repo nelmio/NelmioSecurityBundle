@@ -17,6 +17,7 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\ExceptionInt
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Log\Logger;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\ReportEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,9 +73,9 @@ class ContentSecurityPolicyController
 
         if ($this->dispatcher) {
             if ($this->dispatcher instanceof EventDispatcherInterface) {
-                $this->dispatcher->dispatch(new Event($report), Events::VIOLATION_REPORT);
+                $this->dispatcher->dispatch(new ReportEvent($report), Events::VIOLATION_REPORT);
             } else {
-                $this->dispatcher->dispatch(Events::VIOLATION_REPORT, new Event($report));
+                $this->dispatcher->dispatch(Events::VIOLATION_REPORT, new ReportEvent($report));
             }
         }
 

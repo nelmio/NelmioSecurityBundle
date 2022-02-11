@@ -3,6 +3,8 @@
 * Log user agent along with CSP report
 * Deprecated external_redirects.whitelist option in favor of external_redirects.allow_list
 * Deprecated forced_ssl.whitelist option in favor of forced_ssl.allow_list
+* Deprecated `Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Event` class in favor of
+  `Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\ReportEvent`.
 
 ### 2.11.0 (2022-01-18)
   * Added support for CSP "prefetch-src" directive
