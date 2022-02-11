@@ -27,6 +27,9 @@ if (\class_exists(\Symfony\Component\EventDispatcher\Event::class)) {
     }
 }
 
+/**
+ * @deprecated since nelmio/security-bundle 2.12, use ReportEvent instead.
+ */
 class Event extends BaseEvent
 {
     private $report;
