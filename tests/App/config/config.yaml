@@ -58,3 +58,12 @@ nelmio_security:
       report-uri: '%router.request_context.base_url%/nelmio/csp/report'
       script-src:
         - 'self'
+    report_endpoint:
+      dismiss:
+        # A list of key-values that should be dismissed
+        # A key is either a domain or a regular expression
+        # A value is a source or an array of source. The '*' wilcard is accepted
+        '/^data:/': 'script-src'
+        '/^https?:\/\/\d+\.\d+\.\d+\.\d+(:\d+)*/': '*'
+        'maxcdn.bootstrapcdn.com': '*'
+        'www.gstatic.com': [ 'media-src', 'img-src' ]
