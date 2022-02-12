@@ -5,6 +5,7 @@
 * Removed `DoctrineCacheUAFamilyParser` (use `PsrCacheUAFamilyParser` instead)
 * All classes have been marked as `final`
 * Renamed `WhitelistBasedTargetValidator` class to `AllowListBasedTargetValidator`
+* Removed `CookieSessionHandler`
 
 ### 2.12.0 (xxxx-xx-xx)
 * Filter moz-extension reports

@@ -55,11 +55,6 @@ load content from another domain than the page's domain.
   This will make the application detect logged-in users and redirect them to a secure URL,
   without making the session cookie insecure.
 
-* **[Cookie Session Handler](#cookie-session-handler)**: You can configure the session handler to use a cookie based storage.
-  **WARNING**: by default the session is not encrypted, it is your responsibility to properly configure the Encrypted Cookies
-  section to include the session cookie (default name: session). The size limit of a cookie is 4KB, so make sure you are not
-  storing objects or long text into session.
-
 * **[Disable Content Type Sniffing](#content-type-sniffing)**: Require that scripts are loaded using the correct mime type.
   This disables the feature that some browsers have which uses content sniffing to determine if the response is a valid
   script file or not.
@@ -728,25 +723,6 @@ security:
 
 On logout, if you would like users to be redirected to an unsecure page set ``unsecured_logout``
 to true.
-
-### Cookie Session Handler:
-
-You can configure the session handler to use a cookie based storage. There are various reasons to do this,
-but generally speaking unless you have a very good one [you should avoid it](http://wonko.com/post/why-you-probably-shouldnt-use-cookies-to-store-session-data).
-
-**WARNING**: The size limit of a cookie is 4KB, so make sure you are not storing objects or long
-strings in the session.
-
-```yaml
-framework:
-    session:
-        handler_id: nelmio_security.session.handler
-
-nelmio_security:
-    cookie_session:
-        enabled: true
-        name: session
-```
 
 ### Content Type Sniffing
 
