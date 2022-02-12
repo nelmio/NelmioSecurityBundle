@@ -75,9 +75,6 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         $this->sha = [];
     }
 
-    /**
-     * @internal
-     */
     public function addSha(string $directive, string $sha): void
     {
         if (null === $this->sha) {
@@ -89,9 +86,6 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         $this->sha[$directive][] = $sha;
     }
 
-    /**
-     * @internal
-     */
     public function addScript(string $html): void
     {
         if (null === $this->sha) {
@@ -103,9 +97,6 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         $this->sha['script-src'][] = $this->shaComputer->computeForScript($html);
     }
 
-    /**
-     * @internal
-     */
     public function addStyle(string $html): void
     {
         if (null === $this->sha) {
@@ -127,9 +118,6 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         return $this->enforce;
     }
 
-    /**
-     * @internal
-     */
     public function getNonce(string $usage): string
     {
         $nonce = $this->doGetNonce();
