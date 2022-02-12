@@ -16,6 +16,9 @@ namespace Nelmio\SecurityBundle\Twig;
 use Nelmio\SecurityBundle\EventListener\ContentSecurityPolicyListener;
 use Twig\Extension\RuntimeExtensionInterface;
 
+/**
+ * @internal
+ */
 final class CSPRuntime implements RuntimeExtensionInterface
 {
     private ContentSecurityPolicyListener $listener;
