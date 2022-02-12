@@ -2,7 +2,7 @@
 
 ## About
 
-The NelmioSecurityBundle provides additional security features for your Symfony2 application.
+The NelmioSecurityBundle provides additional security features for your Symfony application.
 
 ## Installation
 
@@ -10,17 +10,41 @@ Require the `nelmio/security-bundle` package in your composer.json and update yo
 
     $ composer require nelmio/security-bundle
 
-Add the NelmioSecurityBundle to your application's kernel:
+The bundle should be automatically enabled by Flex. In case you don't use Flex, you'll need to manually enable the
+bundle by adding the following line in the config/bundles.php file of your project:
+```php
+<?php
+// config/bundles.php
+
+return [
+    // ...
+    Nelmio\SecurityBundle\NelmioSecurityBundle::class => ['all' => true],
+    // ...
+];
+```
+
+If you don't have a `config/bundles.php` file in your project, chances are that you're using an older Symfony version.
+In this case, you should have an `app/AppKernel.php` file instead. Edit such file:
 
 ```php
-public function registerBundles()
+<?php
+// app/AppKernel.php
+
+// ...
+class AppKernel extends Kernel
 {
-    $bundles = array(
-        ...
-        new Nelmio\SecurityBundle\NelmioSecurityBundle(),
-        ...
-    );
-    ...
+    public function registerBundles()
+    {
+        $bundles = [
+            // ...
+
+            new Nelmio\SecurityBundle\NelmioSecurityBundle(),
+        ];
+
+        // ...
+    }
+
+    // ...
 }
 ```
 
@@ -530,7 +554,8 @@ another URL:
 nelmio_security:
     external_redirects:
         override: home
-
+```
+```yaml
 # redirect to another URL
 nelmio_security:
     external_redirects:
