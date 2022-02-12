@@ -22,7 +22,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Http\Event\LogoutEvent;
 
 class FlexibleSslListenerTest extends ListenerTestCase
 {
@@ -161,7 +163,13 @@ class FlexibleSslListenerTest extends ListenerTestCase
         $request = $this->getMockBuilder(Request::class)->getMock();
         $token = $this->getMockBuilder(TokenInterface::class)->getMock();
 
-        $this->listener->logout($request, $response, $token);
+        if (version_compare(Kernel::VERSION, '5.1', '<')) {
+            $this->listener->logout($request, $response, $token);
+        } else {
+            $logoutEvent = new LogoutEvent($request, $token);
+            $logoutEvent->setResponse($response);
+            $this->listener->onLogout($logoutEvent);
+        }
 
         $this->assertSame('https://foo', $response->headers->get('Location'));
     }
@@ -174,7 +182,13 @@ class FlexibleSslListenerTest extends ListenerTestCase
         $request = $this->getMockBuilder(Request::class)->getMock();
         $token = $this->getMockBuilder(TokenInterface::class)->getMock();
 
-        $unsecuredLogoutListener->logout($request, $response, $token);
+        if (version_compare(Kernel::VERSION, '5.1', '<')) {
+            $unsecuredLogoutListener->logout($request, $response, $token);
+        } else {
+            $logoutEvent = new LogoutEvent($request, $token);
+            $logoutEvent->setResponse($response);
+            $unsecuredLogoutListener->onLogout($logoutEvent);
+        }
 
         $this->assertSame('http://foo', $response->headers->get('Location'));
     }
