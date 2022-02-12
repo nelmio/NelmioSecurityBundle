@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\ContentSecurityPolicy\Violation;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\BrowserBugsNoiseDetector;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\CustomRulesNoiseDetector;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\DomainsNoiseDetector;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\DomainsRegexNoiseDetector;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
@@ -33,12 +34,17 @@ class FilterTest extends TestCase
      */
     public function testScenario(bool $expected, Request $request, array $payload): void
     {
-        $filter = new Filter();
-        $filter->addNoiseDetector(new BrowserBugsNoiseDetector(Parser::create()));
-        $filter->addNoiseDetector(new DomainsNoiseDetector());
-        $filter->addNoiseDetector(new DomainsRegexNoiseDetector());
-        $filter->addNoiseDetector(new InjectedScriptsNoiseDetector());
-        $filter->addNoiseDetector(new SchemesNoiseDetector());
+        $filter = new Filter([
+            new BrowserBugsNoiseDetector(Parser::create()),
+            new DomainsNoiseDetector(),
+            new DomainsRegexNoiseDetector(),
+            new InjectedScriptsNoiseDetector(),
+            new SchemesNoiseDetector(),
+            new CustomRulesNoiseDetector([
+                '/google\.com/' => ['script-src'],
+                'www.gstatic.com' => ['*'],
+            ]),
+        ]);
 
         $this->assertSame($expected, $filter->filter($request, new Report($payload)));
     }
@@ -205,6 +211,23 @@ window.AG_onLoad = function(func)',
             [true, new Request(), [
                 'blocked-uri' => 'sraf://img',
                 'effective-directive' => 'img-src',
+            ]],
+            [false, new Request(), [
+                'blocked-uri' => 'self',
+                'effective-directive' => 'style-src',
+            ]],
+            [false, new Request(), [
+                'blocked-uri' => 'self',
+                'effective-directive' => 'script-src',
+                'script-sample' => "\n ;(function some(window) {",
+            ]],
+            [true, new Request(), [
+                'blocked-uri' => 'https://google.com',
+                'effective-directive' => 'script-src',
+            ]],
+            [true, new Request(), [
+                'blocked-uri' => 'www.gstatic.com',
+                'effective-directive' => 'script-src',
             ]],
         ];
     }
