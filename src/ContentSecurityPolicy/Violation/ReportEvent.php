@@ -13,10 +13,6 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
-final class Events
+final class ReportEvent extends Event
 {
-    /**
-     * @deprecated since nelmio/security-bundle 2.12, use `ReportEvent::class` instead.
-     */
-    public const VIOLATION_REPORT = 'csp.violation.report';
 }

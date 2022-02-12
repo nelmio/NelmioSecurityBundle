@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\Controller;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Event;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Events;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\ExceptionInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Log\Logger;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Report;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\ReportEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -50,7 +50,7 @@ final class ContentSecurityPolicyController
             return new Response('', 204);
         }
 
-        $this->dispatcher->dispatch(new Event($report), Events::VIOLATION_REPORT);
+        $this->dispatcher->dispatch(new ReportEvent($report), Events::VIOLATION_REPORT);
 
         $this->logger->log($report);
 
