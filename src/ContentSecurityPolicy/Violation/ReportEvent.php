@@ -13,6 +13,19 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\ContentSecurityPolicy\Violation;
 
+use Symfony\Contracts\EventDispatcher\Event;
+
 final class ReportEvent extends Event
 {
+    private Report $report;
+
+    public function __construct(Report $report)
+    {
+        $this->report = $report;
+    }
+
+    public function getReport(): Report
+    {
+        return $this->report;
+    }
 }

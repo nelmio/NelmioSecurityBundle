@@ -13,12 +13,9 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Events;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\ReportEvent;
 use Nelmio\SecurityBundle\DependencyInjection\Compiler\CspReportFilterCompilerPass;
 use Nelmio\SecurityBundle\DependencyInjection\Compiler\UAParserCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\EventDispatcher\DependencyInjection\AddEventAliasesPass;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class NelmioSecurityBundle extends Bundle
@@ -29,11 +26,5 @@ final class NelmioSecurityBundle extends Bundle
 
         $container->addCompilerPass(new UAParserCompilerPass());
         $container->addCompilerPass(new CspReportFilterCompilerPass());
-
-        if (class_exists(AddEventAliasesPass::class)) {
-            $container->addCompilerPass(new AddEventAliasesPass([
-                ReportEvent::class => Events::VIOLATION_REPORT,
-            ]));
-        }
     }
 }
