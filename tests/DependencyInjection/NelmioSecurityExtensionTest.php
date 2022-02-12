@@ -97,7 +97,7 @@ final class NelmioSecurityExtensionTest extends TestCase
             [
                 'external_redirects' => [
                     'abort' => true,
-                    'whitelist' => ['twitter.com', 'https://www.facebook.com'],
+                    'allow_list' => ['twitter.com', 'https://www.facebook.com'],
                 ],
             ],
         ], $container);
@@ -121,7 +121,7 @@ final class NelmioSecurityExtensionTest extends TestCase
             [
                 'forced_ssl' => [
                     'enabled' => true,
-                    'whitelist' => ['^/unsecure/'],
+                    'allow_list' => ['^/unsecure/'],
                     'hosts' => ['^\.example\.org$'],
                     'redirect_status_code' => 301,
                     'hsts_max_age' => 2592000,
