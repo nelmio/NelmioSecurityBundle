@@ -148,18 +148,6 @@ final class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
-                ->arrayNode('cookie_session')
-                    ->canBeEnabled()
-                    ->children()
-                        ->scalarNode('name')->defaultValue('session')->end()
-                        ->scalarNode('lifetime')->defaultValue(0)->end()
-                        ->scalarNode('path')->defaultValue('/')->end()
-                        ->scalarNode('domain')->defaultNull()->end()
-                        ->booleanNode('secure')->defaultFalse()->end()
-                        ->booleanNode('httponly')->defaultTrue()->end()
-                    ->end()
-                ->end()
-
                 ->arrayNode('content_type')
                     ->children()
                         ->booleanNode('nosniff')->defaultFalse()->end()
