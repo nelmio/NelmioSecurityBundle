@@ -133,15 +133,6 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         return $nonce;
     }
 
-    private function doGetNonce(): string
-    {
-        if (null === $this->_nonce) {
-            $this->_nonce = $this->nonceGenerator->generate();
-        }
-
-        return $this->_nonce;
-    }
-
     public function onKernelResponse(ResponseEvent $e): void
     {
         if (!$this->isMainRequest($e)) {
@@ -179,6 +170,23 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         $this->sha = null;
     }
 
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', 512],
+            KernelEvents::RESPONSE => 'onKernelResponse',
+        ];
+    }
+
+    private function doGetNonce(): string
+    {
+        if (null === $this->_nonce) {
+            $this->_nonce = $this->nonceGenerator->generate();
+        }
+
+        return $this->_nonce;
+    }
+
     /**
      * @param array<string, list<string>>|null $signatures
      *
@@ -212,13 +220,5 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         }
 
         return $headers;
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::REQUEST => ['onKernelRequest', 512],
-            KernelEvents::RESPONSE => 'onKernelResponse',
-        ];
     }
 }

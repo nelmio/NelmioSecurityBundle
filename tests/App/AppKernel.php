@@ -40,21 +40,6 @@ class AppKernel extends Kernel
         ];
     }
 
-    /**
-     * Add RoutingConfigurator type declaration when dropping support for Symfony < 5.4.
-     *
-     * @param RoutingConfigurator $routes
-     */
-    protected function configureRoutes($routes): void
-    {
-        $routes->import(sprintf('%s/config/routes.yaml', $this->getProjectDir()));
-    }
-
-    protected function configureContainer(ContainerBuilder $containerBuilder, LoaderInterface $loader): void
-    {
-        $loader->load(sprintf('%s/config/config.yaml', $this->getProjectDir()));
-    }
-
     public function getCacheDir(): string
     {
         return sprintf('%scache', $this->getBaseDir());
@@ -68,6 +53,21 @@ class AppKernel extends Kernel
     public function getProjectDir(): string
     {
         return __DIR__;
+    }
+
+    /**
+     * Add RoutingConfigurator type declaration when dropping support for Symfony < 5.4.
+     *
+     * @param RoutingConfigurator $routes
+     */
+    protected function configureRoutes($routes): void
+    {
+        $routes->import(sprintf('%s/config/routes.yaml', $this->getProjectDir()));
+    }
+
+    protected function configureContainer(ContainerBuilder $containerBuilder, LoaderInterface $loader): void
+    {
+        $loader->load(sprintf('%s/config/config.yaml', $this->getProjectDir()));
     }
 
     private function getBaseDir(): string

@@ -34,6 +34,7 @@ return $config->setRules([
     '@Symfony:risky' => true,
     'declare_strict_types' => true,
     'header_comment' => ['header' => $header],
+    'ordered_class_elements' => true,
     'php_unit_strict' => true,
     'static_lambda' => true,
     'strict_param' => true,
