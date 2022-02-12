@@ -129,6 +129,8 @@ final class FlexibleSslListener implements BaseFlexibleSslListener
 
     /**
      * Legacy method called from deprecated/removed Symfony\Component\Security\Http\Logout\LogoutHandlerInterface.
+     *
+     * @internal
      */
     public function logout(Request $request, Response $response, TokenInterface $token): void
     {
