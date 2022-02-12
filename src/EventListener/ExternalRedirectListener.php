@@ -39,7 +39,7 @@ final class ExternalRedirectListener
      * @param bool                                     $abort           If true, the offending redirects are turned into 403 responses, can't be combined with $override
      * @param string|null                              $override        Absolute path, complete URL or route name that must be used instead of the offending redirect's url
      * @param string|null                              $forwardAs       Name of the route-/query string parameter the blocked url will be passed to destination location
-     * @param string|list<string>|TargetValidator|null $targetValidator array of hosts to be whitelisted, or regex that matches whitelisted hosts, or implementation of TargetValidator
+     * @param string|list<string>|TargetValidator|null $targetValidator array of hosts to be allowed, or regex that matches allowed hosts, or implementation of TargetValidator
      * @param LoggerInterface|null                     $logger          A logger, if it's present, detected offenses are logged at the warning level
      * @param UrlGeneratorInterface|null               $generator       Router or equivalent that can generate a route, only if override is a route name
      */

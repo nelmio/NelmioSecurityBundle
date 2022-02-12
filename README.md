@@ -463,7 +463,7 @@ a frame. Browsers react by showing a short explanation instead of the content, o
 The valid values for the `X-Frame-Options` header are `DENY` (prevent framing from all pages) and
 `SAMEORIGIN` (prevent framing from all pages not on the same domain). Additionally this bundle
 supports the `ALLOW` option which skips the creation of the header for the matched URLs, if you
-want to whitelist a few URLs and then DENY everything else.
+want to allow a few URLs and then DENY everything else.
 
 One more option, as of yet [not well supported](https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options),
 is to use `ALLOW-FROM uri` where `uri` can be any origin URL, from
@@ -480,7 +480,7 @@ nelmio_security:
         content_types: []
 ```
 
-Whitelist configuration (deny all but a few URLs):
+Allow list configuration (deny all but a few URLs):
 
 ```yaml
 nelmio_security:
@@ -556,15 +556,15 @@ nelmio_security:
 ```
 
 Since it's quite common to have to redirect outside the website for legit reasons,
-typically OAuth logins and such, you can whitelist a few domain names. All their subdomains
-will be whitelisted as well, so that allows you to whitelist your own website's subdomains
+typically OAuth logins and such, you can allow a few domain names. All their subdomains
+will be allowed as well, so you can allow your own website's subdomains
 if needed.
 
 ```yaml
 nelmio_security:
     external_redirects:
         abort: true
-        whitelist:
+        allow_list:
             - twitter.com
             - facebook.com
 ```
@@ -590,14 +590,14 @@ framework:
         cookie_secure: true
 ```
 
-To keep a few URLs from being force-redirected to SSL you can define a whitelist of regular
+To keep a few URLs from being force-redirected to SSL you can define an allowed list of regular
 expressions:
 
 ```yaml
 nelmio_security:
     forced_ssl:
         enabled: true
-        whitelist:
+        allow_list:
             - ^/unsecure/
 ```
 
