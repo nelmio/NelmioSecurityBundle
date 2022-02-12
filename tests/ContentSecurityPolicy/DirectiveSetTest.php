@@ -43,11 +43,6 @@ class DirectiveSetTest extends TestCase
         $this->assertSame($expected, $ds->buildHeaderValue($request));
     }
 
-    private function createPolicyManager(): PolicyManager
-    {
-        return new PolicyManager(new UserAgentParser(new UAFamilyParser(Parser::create())));
-    }
-
     public function provideVariousConfig(): array
     {
         return [
@@ -437,5 +432,10 @@ class DirectiveSetTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    private function createPolicyManager(): PolicyManager
+    {
+        return new PolicyManager(new UserAgentParser(new UAFamilyParser(Parser::create())));
     }
 }
