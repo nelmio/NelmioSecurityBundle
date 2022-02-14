@@ -99,6 +99,10 @@ nelmio_security:
     clickjacking:
         paths:
             '^/.*': DENY
+        hosts:
+            - '^foo\.com$' 
+            - '\.example\.org$'
+
     # prevents redirections outside the website's domain
     external_redirects:
         abort: true
@@ -497,6 +501,7 @@ nelmio_security:
         paths:
             '^/.*': DENY
         content_types: []
+        hosts: []
 ```
 
 Allow list configuration (deny all but a few URLs):
@@ -510,6 +515,21 @@ nelmio_security:
             '^/local/': SAMEORIGIN
             '^/.*': DENY
         content_types: []
+        hosts: []
+```
+
+Apply to certain hosts:
+
+```yaml
+nelmio_security:
+    clickjacking:
+        paths:
+            '^/iframes/': ALLOW
+            '^/.*': DENY
+        content_types: []
+        hosts:
+            - '^foo\.com$'
+            - '\.example\.org$'
 ```
 
 You can also of course only deny a few critical URLs, while leaving the rest alone:
@@ -520,6 +540,7 @@ nelmio_security:
         paths:
             '^/message/write': DENY
         content_types: []
+        hosts: []
 ```
 
 An optional `content_types` key lets you restrict the X-Frame-Options header only on some HTTP

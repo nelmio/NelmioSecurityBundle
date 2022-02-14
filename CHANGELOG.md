@@ -6,6 +6,7 @@
 * All classes have been marked as `final`
 * Renamed `WhitelistBasedTargetValidator` class to `AllowListBasedTargetValidator`
 * Removed `CookieSessionHandler`
+* Allowed to define host restriction for clickjacking protection
 
 ### 2.12.0 (xxxx-xx-xx)
 * Filter moz-extension reports
