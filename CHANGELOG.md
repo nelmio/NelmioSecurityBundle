@@ -1,4 +1,4 @@
-### 2.12.0 (xxxx-xx-xx)
+### 2.12.0 (2022-02-23)
 * Filter moz-extension reports
 * Log user agent along with CSP report
 * Deprecated external_redirects.whitelist option in favor of external_redirects.allow_list
