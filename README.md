@@ -248,7 +248,7 @@ to the default logger, to enable add the following to your routing.yml:
 ```yaml
 nelmio_security:
     path:     /nelmio/csp/report
-    defaults: { _controller: nelmio_security.csp_reporter_controller:indexAction }
+    defaults: { _controller: nelmio_security.csp_reporter_controller::indexAction }
     methods:  [POST]
 ```
 
