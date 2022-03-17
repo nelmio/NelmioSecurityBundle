@@ -1,4 +1,4 @@
-### 3.0.0 (xxxx-xx-xx)
+### 3.0.0 (2022-03-17)
 * Bump minimal PHP version to 7.4
 * Dropped support for Symfony < 4.4
 * Dropped support for Twig 1
