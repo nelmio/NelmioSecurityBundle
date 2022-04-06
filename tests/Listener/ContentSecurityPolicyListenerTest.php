@@ -441,7 +441,7 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
             "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='",
             $response->headers->get('Content-Security-Policy-Report-Only')
         );
-        
+
         // report only does not overwrite report-only header if present
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"], true);
         $response = $this->callListener($listener, '/', true, 'text/html', [], 0, ['Content-Security-Policy-Report-Only' => "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='"]);
