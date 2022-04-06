@@ -160,8 +160,12 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
                 $signatures['style-src'][] = 'nonce-'.$this->styleNonce;
             }
 
-            $response->headers->add($this->buildHeaders($request, $this->report, true, $this->compatHeaders, $signatures));
-            $response->headers->add($this->buildHeaders($request, $this->enforce, false, $this->compatHeaders, $signatures));
+            if (!$response->headers->has('Content-Security-Policy-Report-Only')) {
+                $response->headers->add($this->buildHeaders($request, $this->report, true, $this->compatHeaders, $signatures));
+            }
+            if (!$response->headers->has('Content-Security-Policy')) {
+                $response->headers->add($this->buildHeaders($request, $this->enforce, false, $this->compatHeaders, $signatures));
+            }
         }
 
         $this->_nonce = null;
