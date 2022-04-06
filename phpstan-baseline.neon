@@ -7,7 +7,7 @@ parameters:
 
 		-
 			message: "#^Offset 'enforce'\\|'report' does not exist on array\\{enforce\\?\\: array\\<string, mixed\\>, report\\?\\: array\\<string, mixed\\>\\}\\.$#"
-			count: 1
+			count: 3
 			path: src/ContentSecurityPolicy/DirectiveSet.php
 
 		-
@@ -22,7 +22,7 @@ parameters:
 
 		-
 			message: "#^Offset 'enforce'\\|'report' does not exist on array\\{enforce\\?\\: array\\{browser_adaptive\\: array\\{enabled\\: bool, parser\\: string\\}\\}, report\\?\\: array\\{browser_adaptive\\: array\\{enabled\\: bool, parser\\: string\\}\\}\\}\\.$#"
-			count: 1
+			count: 2
 			path: src/DependencyInjection/NelmioSecurityExtension.php
 
 		-
