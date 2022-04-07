@@ -421,6 +421,49 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
         $this->assertSame('', $directiveSet->buildHeaderValue(new Request()));
     }
 
+    public function testHeadersAreNotOverwrittenIfPresent(): void
+    {
+        // enforced listener does not overwrite header if present
+        $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"]);
+        $response = $this->callListener($listener, '/', true, 'text/html', [], 0, ['Content-Security-Policy' => "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='"]);
+        $this->assertSame(
+            "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='",
+            $response->headers->get('Content-Security-Policy')
+        );
+
+        // enforced listener adds the enforced header if only report-only one is present
+        $response = $this->callListener($listener, '/', true, 'text/html', [], 0, ['Content-Security-Policy-Report-Only' => "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='"]);
+        $this->assertSame(
+            "default-src default.example.org 'self'",
+            $response->headers->get('Content-Security-Policy')
+        );
+        $this->assertSame(
+            "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='",
+            $response->headers->get('Content-Security-Policy-Report-Only')
+        );
+
+        // report only does not overwrite report-only header if present
+        $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'"], true);
+        $response = $this->callListener($listener, '/', true, 'text/html', [], 0, ['Content-Security-Policy-Report-Only' => "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='"]);
+
+        $this->assertSame(
+            "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='",
+            $response->headers->get('Content-Security-Policy-Report-Only')
+        );
+
+        // report only does add report-only header if only the enforced header is present
+        $response = $this->callListener($listener, '/', true, 'text/html', [], 0, ['Content-Security-Policy' => "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='"]);
+
+        $this->assertSame(
+            "script-src 'nonce-Ij+dwUNY004wIigo1Mp19Q=='",
+            $response->headers->get('Content-Security-Policy')
+        );
+        $this->assertSame(
+            "default-src default.example.org 'self'",
+            $response->headers->get('Content-Security-Policy-Report-Only')
+        );
+    }
+
     /**
      * @param array<string, string|true> $directives
      * @param list<string>               $contentTypes
@@ -445,8 +488,9 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
      *  scripts?: list<string>,
      *  styles?: list<string>
      * } $digestData
+     * @param array<string, string> $responseHeaders
      */
-    private function callListener(ContentSecurityPolicyListener $listener, string $path, bool $mainReq, string $contentType = 'text/html', array $digestData = [], int $getNonce = 0): Response
+    private function callListener(ContentSecurityPolicyListener $listener, string $path, bool $mainReq, string $contentType = 'text/html', array $digestData = [], int $getNonce = 0, array $responseHeaders = []): Response
     {
         $request = Request::create($path);
 
@@ -484,6 +528,7 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
 
         $response = new Response();
         $response->headers->add(['content-type' => $contentType]);
+        $response->headers->add($responseHeaders);
 
         $event = $this->createResponseEventWithKernel(
             $this->kernel,
