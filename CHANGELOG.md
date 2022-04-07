@@ -1,3 +1,6 @@
+### 3.x.x (xxxx-xx-xx)
+* Fixed overriding CSP header
+
 ### 3.0.0 (2022-03-17)
 * Bump minimal PHP version to 7.4
 * Dropped support for Symfony < 4.4
