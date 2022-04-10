@@ -49,122 +49,19 @@ final class Configuration implements ConfigurationInterface
                 ->thenInvalid('"forced_ssl" and "flexible_ssl" can not be used together')
             ->end()
             ->children()
-                ->arrayNode('signed_cookie')
-                    ->fixXmlConfig('name')
-                    ->children()
-                        ->arrayNode('names')
-                            ->scalarPrototype()->end()
-                            ->defaultValue(['*'])
-                        ->end()
-                        ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
-                        ->scalarNode('hash_algo')->defaultValue('sha256')->end()
-                    ->end()
-                ->end()
+                ->append($this->getSignedCookiesNode())
 
-                ->arrayNode('clickjacking')
-                    ->fixXmlConfig('path')
-                    ->children()
-                        ->arrayNode('hosts')
-                            ->scalarPrototype()->end()
-                            ->defaultValue([])
-                        ->end()
-                        ->arrayNode('paths')
-                            ->normalizeKeys(false)
-                            ->useAttributeAsKey('pattern')
-                            ->arrayPrototype()
-                                ->beforeNormalization()
-                                    ->always(static function ($v): array {
-                                        if (!\is_array($v)) {
-                                            $v = ['header' => '' === $v ? 'DENY' : $v];
-                                        }
-                                        if (isset($v['header'])) {
-                                            $v['header'] = preg_replace_callback('{^(?:ALLOW|DENY|SAMEORIGIN|ALLOW-FROM)?}i', static function ($m) { return strtoupper($m[0]); }, $v['header']);
-                                        }
+                ->append($this->getClickjackingNode())
 
-                                        return $v;
-                                    })
-                                ->end()
-                                ->validate()
-                                    ->ifTrue(static function (array $v): bool {
-                                        return isset($v['header']) && !\in_array($v['header'], ['DENY', 'SAMEORIGIN', 'ALLOW'], true)
-                                            && 0 === preg_match('{^ALLOW-FROM \S+}', $v['header']);
-                                    })
-                                    ->thenInvalid('Possible header values are DENY, SAMEORIGIN, ALLOW and ALLOW-FROM [url], got: %s')
-                                ->end()
-                                ->children()
-                                    ->scalarNode('header')->defaultValue('DENY')->end()
-                                ->end()
-                            ->end()
-                            ->defaultValue(['^/.*' => ['header' => 'DENY']])
-                        ->end()
-                        ->arrayNode('content_types')->scalarPrototype()->end()->defaultValue([])->end()
-                    ->end()
-                ->end()
+                ->append($this->getExternalRedirectsNode())
 
-                ->arrayNode('external_redirects')
-                    ->validate()
-                        ->ifTrue(static function (array $v): bool {
-                            return isset($v['abort'], $v['override']) && $v['abort'] && $v['override'];
-                        })
-                        ->thenInvalid('"abort" and "override" can not be combined')
-                    ->end()
-                    ->children()
-                        ->booleanNode('abort')->defaultFalse()->end()
-                        ->scalarNode('override')->defaultNull()->end()
-                        ->scalarNode('forward_as')->defaultNull()->end()
-                        ->booleanNode('log')->defaultFalse()->end()
-                        ->arrayNode('allow_list')
-                            ->scalarPrototype()->end()
-                        ->end()
-                        ->arrayNode('allow_list')
-                            ->prototype('scalar')->end()
-                        ->end()
-                    ->end()
-                ->end()
+                ->append($this->getFlexibleSslNode())
 
-                ->arrayNode('flexible_ssl')
-                    ->canBeEnabled()
-                    ->children()
-                        ->scalarNode('cookie_name')->defaultValue('auth')->end()
-                        ->booleanNode('unsecured_logout')->defaultFalse()->end()
-                    ->end()
-                ->end()
+                ->append($this->getForcedSslNode())
 
-                ->arrayNode('forced_ssl')
-                    ->canBeEnabled()
-                    ->children()
-                        ->scalarNode('hsts_max_age')->defaultNull()->end()
-                        ->booleanNode('hsts_subdomains')->defaultFalse()->end()
-                        ->booleanNode('hsts_preload')->defaultFalse()->end()
-                        ->arrayNode('allow_list')
-                            ->scalarPrototype()->end()
-                            ->defaultValue([])
-                        ->end()
-                        ->arrayNode('allow_list')
-                            ->prototype('scalar')->end()
-                            ->defaultValue([])
-                        ->end()
-                        ->arrayNode('hosts')
-                            ->scalarPrototype()->end()
-                            ->defaultValue([])
-                        ->end()
-                        ->scalarNode('redirect_status_code')->defaultValue(302)->end()
-                    ->end()
-                ->end()
+                ->append($this->getContentTypeNode())
 
-                ->arrayNode('content_type')
-                    ->children()
-                        ->booleanNode('nosniff')->defaultFalse()->end()
-                    ->end()
-                ->end()
-
-                ->arrayNode('xss_protection')
-                    ->children()
-                        ->booleanNode('enabled')->defaultFalse()->end()
-                        ->booleanNode('mode_block')->defaultFalse()->end()
-                        ->scalarNode('report_uri')->defaultNull()->end()
-                    ->end()
-                ->end()
+                ->append($this->getXssProtectionNode())
 
                 ->append($this->addCspNode())
 
@@ -340,6 +237,158 @@ final class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
            ->end();
+
+        return $node;
+    }
+
+    private function getSignedCookiesNode(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('signed_cookie');
+        $node
+            ->fixXmlConfig('name')
+            ->children()
+                ->arrayNode('names')
+                    ->scalarPrototype()->end()
+                    ->defaultValue(['*'])
+                ->end()
+                ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
+                ->scalarNode('hash_algo')->defaultValue('sha256')->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    private function getClickjackingNode(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('clickjacking');
+        $node
+            ->fixXmlConfig('path')
+            ->children()
+                ->arrayNode('hosts')
+                    ->scalarPrototype()->end()
+                    ->defaultValue([])
+                ->end()
+                ->arrayNode('paths')
+                    ->normalizeKeys(false)
+                    ->useAttributeAsKey('pattern')
+                    ->arrayPrototype()
+                        ->beforeNormalization()
+                            ->always(static function ($v): array {
+                                if (!\is_array($v)) {
+                                    $v = ['header' => '' === $v ? 'DENY' : $v];
+                                }
+                                if (isset($v['header'])) {
+                                    $v['header'] = preg_replace_callback('{^(?:ALLOW|DENY|SAMEORIGIN|ALLOW-FROM)?}i', static function ($m) { return strtoupper($m[0]); }, $v['header']);
+                                }
+
+                                return $v;
+                            })
+                            ->end()
+                        ->validate()
+                            ->ifTrue(static function (array $v): bool {
+                                return isset($v['header']) && !\in_array($v['header'], ['DENY', 'SAMEORIGIN', 'ALLOW'], true)
+                                    && 0 === preg_match('{^ALLOW-FROM \S+}', $v['header']);
+                            })
+                            ->thenInvalid('Possible header values are DENY, SAMEORIGIN, ALLOW and ALLOW-FROM [url], got: %s')
+                        ->end()
+                        ->children()
+                            ->scalarNode('header')->defaultValue('DENY')->end()
+                        ->end()
+                    ->end()
+                    ->defaultValue(['^/.*' => ['header' => 'DENY']])
+                ->end()
+            ->arrayNode('content_types')->scalarPrototype()->end()->defaultValue([])->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    private function getExternalRedirectsNode(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('external_redirects');
+        $node
+            ->validate()
+                ->ifTrue(static function (array $v): bool {
+                    return isset($v['abort'], $v['override']) && $v['abort'] && $v['override'];
+                })
+                ->thenInvalid('"abort" and "override" can not be combined')
+            ->end()
+            ->children()
+                ->booleanNode('abort')->defaultFalse()->end()
+                ->scalarNode('override')->defaultNull()->end()
+                ->scalarNode('forward_as')->defaultNull()->end()
+                ->booleanNode('log')->defaultFalse()->end()
+                ->arrayNode('allow_list')
+                    ->scalarPrototype()->end()
+                ->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    private function getXssProtectionNode(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('xss_protection');
+        $node
+            ->children()
+                ->booleanNode('enabled')->defaultFalse()->end()
+                ->booleanNode('mode_block')->defaultFalse()->end()
+                ->scalarNode('report_uri')->defaultNull()->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    private function getContentTypeNode(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('content_type');
+        $node
+            ->children()
+                ->booleanNode('nosniff')->defaultFalse()->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    private function getForcedSslNode(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('forced_ssl');
+        $node
+            ->canBeEnabled()
+            ->children()
+                ->scalarNode('hsts_max_age')->defaultNull()->end()
+                ->booleanNode('hsts_subdomains')->defaultFalse()->end()
+                ->booleanNode('hsts_preload')->defaultFalse()->end()
+                ->arrayNode('allow_list')
+                    ->scalarPrototype()->end()
+                    ->defaultValue([])
+                ->end()
+                ->arrayNode('hosts')
+                    ->scalarPrototype()->end()
+                    ->defaultValue([])
+                ->end()
+            ->scalarNode('redirect_status_code')->defaultValue(302)->end()
+            ->end()
+        ->end();
+
+        return $node;
+    }
+
+    private function getFlexibleSslNode(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('flexible_ssl');
+        $node
+            ->canBeEnabled()
+            ->children()
+                ->scalarNode('cookie_name')->defaultValue('auth')->end()
+                ->booleanNode('unsecured_logout')->defaultFalse()->end()
+            ->end()
+        ->end();
 
         return $node;
     }
