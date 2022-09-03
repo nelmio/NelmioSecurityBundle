@@ -61,8 +61,8 @@ class SignedCookieListenerTest extends ListenerTestCase
             [[], [], []],
             [[], ['foo' => 'bar'], ['foo' => 'bar']],
             [['foo'], ['foo' => 'bar'], []],
-            [['foo'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
-            [['*'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
+            [['foo'], ['foo' => 'bar,ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
+            [['*'], ['foo' => 'bar,ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
         ];
     }
 
@@ -99,8 +99,8 @@ class SignedCookieListenerTest extends ListenerTestCase
         return [
             [[], [], []],
             [[], ['foo' => 'bar'], ['foo' => 'bar']],
-            [['foo'], ['foo' => 'bar'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e']],
-            [['*'], ['foo' => 'bar'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e']],
+            [['foo'], ['foo' => 'bar'], ['foo' => 'bar,ca3756f81d3728a023bdc8a622c0906f373b795e']],
+            [['*'], ['foo' => 'bar'], ['foo' => 'bar,ca3756f81d3728a023bdc8a622c0906f373b795e']],
         ];
     }
 
