@@ -72,7 +72,7 @@ final class SignedCookieListener
         $response = $e->getResponse();
 
         foreach ($response->headers->getCookies() as $cookie) {
-            if (true === $this->signedCookieNames || \in_array($cookie->getName(), $this->signedCookieNames, true)) {
+            if ($cookie->getValue() && (true === $this->signedCookieNames || \in_array($cookie->getName(), $this->signedCookieNames, true))) {
                 $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
                 $signedCookie = new Cookie(
                     $cookie->getName(),

@@ -129,4 +129,19 @@ class SignedCookieListenerTest extends ListenerTestCase
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
         $this->assertSame('bar', $cookies['']['/']['foo']->getValue());
     }
+
+    public function testCookieWritingHandlesEmptyValue(): void
+    {
+        $listener = new SignedCookieListener($this->signer, ['*']);
+        $request = Request::create('/');
+
+        $response = new Response();
+        $response->headers->setCookie(Cookie::create('foo'));
+
+        $event = $this->createResponseEventWithKernel($this->kernel, $request, true, $response);
+        $listener->onKernelResponse($event);
+
+        $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
+        $this->assertNull($cookies['']['/']['foo']->getValue());
+    }
 }
