@@ -81,6 +81,6 @@ abstract class ListenerTestCase extends TestCase
         return \defined(HttpKernelInterface::class.'::MAIN_REQUEST')
             ? HttpKernelInterface::MAIN_REQUEST
             : HttpKernelInterface::MASTER_REQUEST
-            ;
+        ;
     }
 }

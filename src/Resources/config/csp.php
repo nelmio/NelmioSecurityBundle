@@ -111,5 +111,5 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 new ReferenceConfigurator('nelmio_security.csp_listener'),
             ])
             ->tag('twig.runtime')
-        ;
+    ;
 };
