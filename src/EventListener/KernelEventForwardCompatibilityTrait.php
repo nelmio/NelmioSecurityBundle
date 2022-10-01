@@ -27,6 +27,6 @@ trait KernelEventForwardCompatibilityTrait
         return method_exists($event, 'isMainRequest')
             ? $event->isMainRequest()
             : $event->isMasterRequest()
-            ;
+        ;
     }
 }

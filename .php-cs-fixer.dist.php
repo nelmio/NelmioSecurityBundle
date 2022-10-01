@@ -43,4 +43,4 @@ return $config->setRules([
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
     ->setFinder($finder)
-    ;
+;
