@@ -53,7 +53,7 @@ class SignerTest extends TestCase
 
         $this->expectException(\InvalidArgumentException::class);
 
-        $this->assertFalse($signer->getVerifiedRawValue('invalid_signed_value'));
+        $signer->getVerifiedRawValue('invalid_signed_value');
     }
 
     public function testSignatureShouldDependOnSecret(): void
