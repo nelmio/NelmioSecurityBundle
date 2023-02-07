@@ -896,7 +896,7 @@ For better security of your site please use ``no-referrer``, ``same-origin``,
                 - 'no-referrer'
                 - 'strict-origin-when-cross-origin'
 
-.. _``Symfony Flex``: https://symfony.com/doc/current/setup/flex.html
+.. _`Symfony Flex`: https://symfony.com/doc/current/setup/flex.html
 .. _`Content Security Policy 1.0`: https://www.w3.org/TR/2012/CR-CSP-20121115/
 .. _`Content Security Policy 2.0`: https://www.w3.org/TR/2015/CR-CSP2-20150721/
 .. _`JSON payload`: https://developer.mozilla.org/en-US/docs/Security/CSP/Using_CSP_violation_reports#Sample_violation_report
