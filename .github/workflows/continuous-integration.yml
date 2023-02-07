@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -45,7 +45,7 @@ jobs:
           tools: composer:v2,flex
 
       - name: Install Composer dependencies (${{ matrix.dependencies }})
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v2
         with:
             dependency-versions: ${{ matrix.dependencies }}
 
@@ -53,6 +53,6 @@ jobs:
         run: vendor/bin/phpunit --coverage-clover coverage.xml
 
       - name: Send coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           file: coverage.xml
