@@ -18,10 +18,11 @@ jobs:
           - 7.4
           - 8.0
           - 8.1
+          - 8.2
         symfony-version:
           - 4.4.x
           - 5.4.x
-          - 6.0.x
+          - 6.2.x
         dependencies:
           - highest
         include:
@@ -30,7 +31,7 @@ jobs:
             symfony-version: 4.4
         exclude:
           - php-version: 7.4
-            symfony-version: 6.0.x
+            symfony-version: 6.2.x
 
     steps:
       - name: Checkout
