@@ -48,7 +48,7 @@ class ExternalRedirectListenerTest extends ListenerTestCase
             ['http://test.org/', '//foo.com/', true],
             ['http://test.org/', "\r".'http://foo.com/', true],
             ['http://test.org/', "\0\0".'http://foo.com/', true],
-            ['http://test.org/', '  '.'http://foo.com/', true],
+            ['http://test.org/', '  http://foo.com/', true],
         ];
     }
 
