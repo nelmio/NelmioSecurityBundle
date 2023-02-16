@@ -55,9 +55,13 @@ load content from another domain than the page's domain.
 * **Referrer Policy**: `Referrer-Policy` header is added to all responses to control the `Referer` header
   that is added to requests made from your site, and for navigations away from your site by browsers.
 
+## Usage
+
+See [the documentation][2] for usage instructions.
+
 ## License
 
 Released under the MIT License, see LICENSE.
 
 [1]: https://symfony.com/doc/current/setup/flex.html
-[2]: src/Resources/doc/index.rst
+[2]: https://symfony.com/bundles/NelmioSecurityBundle/
