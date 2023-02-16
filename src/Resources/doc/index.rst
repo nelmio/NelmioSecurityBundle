@@ -13,7 +13,7 @@ your dependencies:
 
     $ composer require nelmio/security-bundle
 
-The bundle should be automatically enabled by ``Symfony Flex``_. If you don't use
+The bundle should be automatically enabled by `Symfony Flex`_. If you don't use
 Flex, you'll need to manually enable the bundle by adding the following line in
 the ``config/bundles.php`` file of your project::
 
