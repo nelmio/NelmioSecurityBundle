@@ -28,7 +28,7 @@ the ``config/bundles.php`` file of your project::
 
 If you don't have a ``config/bundles.php`` file in your project, chances are that
 you're using an older Symfony version. In this case, you should have an
-``app/AppKernel.php`` file instead. Edit such file:
+``app/AppKernel.php`` file instead. Edit such file::
 
     <?php
     // app/AppKernel.php
@@ -53,9 +53,10 @@ you're using an older Symfony version. In this case, you should have an
 Features
 --------
 
-* **Content Security Policy**: Cross site scripting attacks (XSS) can be mitigated
-in modern browsers using a policy which instructs the browser never to execute inline scripts, or never to
-load content from another domain than the page's domain.
+* **Content Security Policy**: Cross site scripting attacks (XSS) can be
+  mitigated in modern browsers using a policy which instructs the browser never
+  to execute inline scripts, or never to load content from another domain than
+  the page's domain.
 
 * **Signed Cookies**: Specify certain cookies to be signed, so that the user cannot modify
   them. Note that they will not be encrypted, but signed only. The contents will still be
@@ -72,9 +73,8 @@ load content from another domain than the page's domain.
   that way.
 
 * **Forced HTTPS/SSL Handling**: This forces all requests to go through SSL. It will also
-  send [HSTS](http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02) headers so that
-  modern browsers supporting it can make users use HTTPS even if they enter URLs without https,
-  avoiding attacks on public Wi-Fi.
+  send `HSTS`_ headers so that modern browsers supporting it can make users use HTTPS
+  even if they enter URLs without https, avoiding attacks on public Wi-Fi.
 
 * **Flexible HTTPS/SSL Handling**: If you don't want to force all users to use HTTPS, you should
   at least use secure session cookies and force SSL for logged-in users. But then logged-in users
@@ -706,11 +706,11 @@ To change the way the redirect is done to a permanent redirect for example, you 
             enabled: true
             redirect_status_code: 301
 
-Then if you want to push it further, you can enable `HTTP Strict Transport Security (HSTS)`.
+Then if you want to push it further, you can enable `HTTP Strict Transport Security (HSTS)`_.
 This is basically sending a header to tell the browser that your site must always
-be accessed using SSL. If a user enters a http:// URL, the browser will convert it
-to https:// automatically, and will do so before making any request, which prevents
-man-in-the-middle attacks.
+be accessed using SSL. If a user enters a ``http://`` URL, the browser will convert
+it to ``https://`` automatically, and will do so before making any request, which
+prevents man-in-the-middle attacks.
 
 The browser will cache the value for as long as the specified ``hsts_max_age``
 (in seconds), and if you turn on the ``hsts_subdomains`` option, the behavior
@@ -897,6 +897,7 @@ For better security of your site please use ``no-referrer``, ``same-origin``,
                 - 'strict-origin-when-cross-origin'
 
 .. _`Symfony Flex`: https://symfony.com/doc/current/setup/flex.html
+.. _`HSTS`: http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02
 .. _`Content Security Policy 1.0`: https://www.w3.org/TR/2012/CR-CSP-20121115/
 .. _`Content Security Policy 2.0`: https://www.w3.org/TR/2015/CR-CSP2-20150721/
 .. _`JSON payload`: https://developer.mozilla.org/en-US/docs/Security/CSP/Using_CSP_violation_reports#Sample_violation_report
