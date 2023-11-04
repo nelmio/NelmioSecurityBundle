@@ -20,8 +20,6 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
  */
 final class ReferrerPolicyListener
 {
-    use KernelEventForwardCompatibilityTrait;
-
     /**
      * @var list<string>
      */
@@ -37,7 +35,7 @@ final class ReferrerPolicyListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 

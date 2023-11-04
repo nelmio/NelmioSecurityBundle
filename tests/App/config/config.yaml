@@ -1,6 +1,7 @@
 framework:
   secret: my_secret
   test: true
+  http_method_override: false
 
 nelmio_security:
   external_redirects:

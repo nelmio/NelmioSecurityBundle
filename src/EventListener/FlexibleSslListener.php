@@ -16,18 +16,14 @@ namespace Nelmio\SecurityBundle\EventListener;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 
-final class FlexibleSslListener implements BaseFlexibleSslListener
+final class FlexibleSslListener
 {
-    use KernelEventForwardCompatibilityTrait;
-
     private string $cookieName;
     private bool $unsecuredLogout;
     private EventDispatcherInterface $dispatcher;
@@ -41,7 +37,7 @@ final class FlexibleSslListener implements BaseFlexibleSslListener
 
     public function onKernelRequest(RequestEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 
@@ -60,7 +56,7 @@ final class FlexibleSslListener implements BaseFlexibleSslListener
 
     public function onPostLoginKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 
@@ -124,16 +120,6 @@ final class FlexibleSslListener implements BaseFlexibleSslListener
             return;
         }
 
-        $this->doLogout($response);
-    }
-
-    /**
-     * Legacy method called from deprecated/removed Symfony\Component\Security\Http\Logout\LogoutHandlerInterface.
-     *
-     * @internal
-     */
-    public function logout(Request $request, Response $response, TokenInterface $token): void
-    {
         $this->doLogout($response);
     }
 

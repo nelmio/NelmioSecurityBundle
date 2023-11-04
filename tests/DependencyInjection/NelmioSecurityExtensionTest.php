@@ -147,9 +147,7 @@ final class NelmioSecurityExtensionTest extends TestCase
         $this->assertSame($className, $container->findDefinition($serviceId)->getClass());
     }
 
-    /**
-     * @param mixed $value
-     */
+    /** @param mixed $value */
     private function assertContainerWithParameterValue(ContainerBuilder $container, string $parameterName, $value): void
     {
         $this->assertSame($value, $container->getParameter($parameterName));
