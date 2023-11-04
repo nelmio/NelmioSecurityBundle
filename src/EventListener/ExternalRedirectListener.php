@@ -22,8 +22,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class ExternalRedirectListener
 {
-    use KernelEventForwardCompatibilityTrait;
-
     private bool $abort;
     private ?string $override;
     private ?string $forwardAs;
@@ -68,7 +66,7 @@ final class ExternalRedirectListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 

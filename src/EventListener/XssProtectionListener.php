@@ -19,8 +19,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class XssProtectionListener implements EventSubscriberInterface
 {
-    use KernelEventForwardCompatibilityTrait;
-
     private bool $enabled;
     private bool $modeBlock;
     private ?string $reportUri;
@@ -34,7 +32,7 @@ final class XssProtectionListener implements EventSubscriberInterface
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 

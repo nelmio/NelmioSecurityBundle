@@ -20,8 +20,6 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 final class SignedCookieListener
 {
-    use KernelEventForwardCompatibilityTrait;
-
     private Signer $signer;
 
     /**
@@ -44,7 +42,7 @@ final class SignedCookieListener
 
     public function onKernelRequest(RequestEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 
@@ -65,7 +63,7 @@ final class SignedCookieListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 

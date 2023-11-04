@@ -19,8 +19,6 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 final class ForcedSslListener
 {
-    use KernelEventForwardCompatibilityTrait;
-
     private ?int $hstsMaxAge;
     private bool $hstsSubdomains;
     private bool $hstsPreload;
@@ -50,7 +48,7 @@ final class ForcedSslListener
 
     public function onKernelRequest(RequestEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 
@@ -77,7 +75,7 @@ final class ForcedSslListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 

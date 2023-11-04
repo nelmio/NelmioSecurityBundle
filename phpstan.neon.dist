@@ -16,9 +16,6 @@ parameters:
     ignoreErrors:
         - '#^Dynamic call to static method PHPUnit\\Framework\\\S+\(\)\.$#'
         - '#^Dynamic call to static method Symfony\\Bundle\\FrameworkBundle\\Test\\\S+\(\)\.$#'
-        # BC with Symfony 4.4
-        - "#^Call to function method_exists\\(\\) with Symfony\\\\Component\\\\HttpKernel\\\\Event\\\\KernelEvent and 'isMainRequest' will always evaluate to true\\.#"
-        - '#^Call to an undefined method Symfony\\Component\\HttpKernel\\Event\\KernelEvent\:\:isMasterRequest\(\)\.#'
         # Ignore typing providers in tests
         - '#^Method Nelmio\\SecurityBundle\\Tests\\[^:]+Test::(provide\w+|\w+Provider)\(\) return type has no value type specified in iterable type (array|iterable)\.#'
     dynamicConstantNames:
