@@ -22,7 +22,8 @@ jobs:
           - 8.3
         symfony-version:
           - 5.4.*
-          - 6.3.*
+          - 6.4.*
+          - 7.0.*
         dependencies:
           - highest
         include:
@@ -31,9 +32,15 @@ jobs:
             symfony-version: 5.4.*
         exclude:
           - php-version: 7.4
-            symfony-version: 6.3.*
+            symfony-version: 6.4.*
+          - php-version: 7.4
+            symfony-version: 7.0.*
           - php-version: 8.0
-            symfony-version: 6.3.*
+            symfony-version: 6.4.*
+          - php-version: 8.0
+            symfony-version: 7.0.*
+          - php-version: 8.1
+            symfony-version: 7.0.*
 
     steps:
       - name: Checkout

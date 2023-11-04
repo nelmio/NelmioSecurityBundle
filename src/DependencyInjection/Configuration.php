@@ -253,8 +253,7 @@ final class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
                 ->scalarNode('hash_algo')->defaultValue('sha256')->end()
-            ->end()
-        ->end();
+            ->end();
 
         return $node;
     }
@@ -299,8 +298,7 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue(['^/.*' => ['header' => 'DENY']])
                 ->end()
             ->arrayNode('content_types')->scalarPrototype()->end()->defaultValue([])->end()
-            ->end()
-        ->end();
+            ->end();
 
         return $node;
     }
@@ -323,8 +321,7 @@ final class Configuration implements ConfigurationInterface
                 ->arrayNode('allow_list')
                     ->scalarPrototype()->end()
                 ->end()
-            ->end()
-        ->end();
+            ->end();
 
         return $node;
     }
@@ -337,8 +334,7 @@ final class Configuration implements ConfigurationInterface
                 ->booleanNode('enabled')->defaultFalse()->end()
                 ->booleanNode('mode_block')->defaultFalse()->end()
                 ->scalarNode('report_uri')->defaultNull()->end()
-            ->end()
-        ->end();
+            ->end();
 
         return $node;
     }
@@ -349,8 +345,7 @@ final class Configuration implements ConfigurationInterface
         $node
             ->children()
                 ->booleanNode('nosniff')->defaultFalse()->end()
-            ->end()
-        ->end();
+            ->end();
 
         return $node;
     }
@@ -373,8 +368,7 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue([])
                 ->end()
             ->scalarNode('redirect_status_code')->defaultValue(302)->end()
-            ->end()
-        ->end();
+            ->end();
 
         return $node;
     }
@@ -387,8 +381,7 @@ final class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('cookie_name')->defaultValue('auth')->end()
                 ->booleanNode('unsecured_logout')->defaultFalse()->end()
-            ->end()
-        ->end();
+            ->end();
 
         return $node;
     }
