@@ -119,7 +119,7 @@ final class DirectiveSet
     /**
      * @param array<string, list<string>>|null $signatures
      */
-    public function buildHeaderValue(Request $request, array $signatures = null): string
+    public function buildHeaderValue(Request $request, ?array $signatures = null): string
     {
         $policy = [];
 

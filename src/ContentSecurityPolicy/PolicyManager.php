@@ -20,7 +20,7 @@ final class PolicyManager
 {
     private ?UserAgentParserInterface $uaParser;
 
-    public function __construct(UserAgentParserInterface $uaParser = null)
+    public function __construct(?UserAgentParserInterface $uaParser = null)
     {
         $this->uaParser = $uaParser;
     }
