@@ -19,23 +19,26 @@ jobs:
           - 8.0
           - 8.1
           - 8.2
+          - 8.3
         symfony-version:
-          - 4.4.x
-          - 5.4.x
-          - 6.2.x
+          - 4.4.*
+          - 5.4.*
+          - 6.2.*
         dependencies:
           - highest
         include:
           - php-version: 7.4
             dependencies: lowest
-            symfony-version: 4.4
+            symfony-version: 4.4.*
         exclude:
           - php-version: 7.4
-            symfony-version: 6.2.x
+            symfony-version: 6.2.*
+          - php-version: 8.0
+            symfony-version: 6.2.*
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -43,7 +46,7 @@ jobs:
           coverage: pcov
           ini-values: memory_limit=-1, date.timezone=Europe/Paris, session.gc_probability=0
           php-version: ${{ matrix.php-version }}
-          tools: composer:v2,flex
+          tools: flex
 
       - name: Install Composer dependencies (${{ matrix.dependencies }})
         uses: ramsey/composer-install@v2
