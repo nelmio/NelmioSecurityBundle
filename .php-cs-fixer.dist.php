@@ -34,6 +34,11 @@ return $config->setRules([
     '@Symfony:risky' => true,
     'declare_strict_types' => true,
     'header_comment' => ['header' => $header],
+    'modernize_strpos' => false, // @todo: Remove this line when dropping support of PHP 7.4
+    'no_superfluous_phpdoc_tags' => [
+        'allow_mixed' => true,
+    ],
+    'nullable_type_declaration_for_default_null_value' => true,
     'ordered_class_elements' => true,
     'php_unit_strict' => true,
     'static_lambda' => true,

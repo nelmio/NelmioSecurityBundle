@@ -201,7 +201,7 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         DirectiveSet $directiveSet,
         bool $reportOnly,
         bool $compatHeaders,
-        array $signatures = null
+        ?array $signatures = null
     ): array {
         // $signatures might be null if no KernelEvents::REQUEST has been triggered.
         // for instance if a security.authentication.failure has been dispatched
