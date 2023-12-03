@@ -1,4 +1,6 @@
 ### 3.x.x (xxxx-xx-xx)
+
+### 3.1.0 (2023-12-03)
 * Fixed overriding CSP header
 * Dropped support for Symfony < 5.4
 * Added support for Symfony 7
