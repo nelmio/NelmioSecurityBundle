@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 final class Report
 {
     /**
-     * @var array<string, string>
+     * @var array<string, int|string>
      */
     private array $data;
 
