@@ -115,7 +115,7 @@ final class Report
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, int|string>
      */
     public function getData(): array
     {
