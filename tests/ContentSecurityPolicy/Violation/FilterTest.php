@@ -229,6 +229,11 @@ window.AG_onLoad = function(func)',
                 'blocked-uri' => 'www.gstatic.com',
                 'effective-directive' => 'script-src',
             ]],
+            [true, new Request(), [
+                'blocked-uri' => 'inline',
+                'source-file' => 'view-source',
+                'effective-directive' => 'style-src-attr',
+            ]]
         ];
     }
 }
