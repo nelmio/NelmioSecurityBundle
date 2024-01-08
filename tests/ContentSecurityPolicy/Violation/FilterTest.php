@@ -233,7 +233,7 @@ window.AG_onLoad = function(func)',
                 'blocked-uri' => 'inline',
                 'source-file' => 'view-source',
                 'effective-directive' => 'style-src-attr',
-            ]]
+            ]],
         ];
     }
 }
