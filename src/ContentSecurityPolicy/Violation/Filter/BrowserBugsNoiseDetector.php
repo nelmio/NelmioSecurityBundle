@@ -55,6 +55,11 @@ final class BrowserBugsNoiseDetector implements NoiseDetectorInterface
             }
         }
 
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=1873553
+        if ('view-source' === $report->getSourceFile()) {
+            return true;
+        }
+
         // files loaded by safari & firefox extension
         // should be allowed as in Chrome
         if (
