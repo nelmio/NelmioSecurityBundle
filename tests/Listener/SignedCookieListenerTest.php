@@ -61,8 +61,8 @@ class SignedCookieListenerTest extends ListenerTestCase
             [[], [], []],
             [[], ['foo' => 'bar'], ['foo' => 'bar']],
             [['foo'], ['foo' => 'bar'], []],
-            [['foo'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
-            [['*'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
+            [['foo'], ['foo' => 'bar,ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
+            [['*'], ['foo' => 'bar,ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
         ];
     }
 
@@ -99,8 +99,8 @@ class SignedCookieListenerTest extends ListenerTestCase
         return [
             [[], [], []],
             [[], ['foo' => 'bar'], ['foo' => 'bar']],
-            [['foo'], ['foo' => 'bar'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e']],
-            [['*'], ['foo' => 'bar'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e']],
+            [['foo'], ['foo' => 'bar'], ['foo' => 'bar,ca3756f81d3728a023bdc8a622c0906f373b795e']],
+            [['*'], ['foo' => 'bar'], ['foo' => 'bar,ca3756f81d3728a023bdc8a622c0906f373b795e']],
         ];
     }
 
@@ -128,5 +128,20 @@ class SignedCookieListenerTest extends ListenerTestCase
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
         $this->assertSame('bar', $cookies['']['/']['foo']->getValue());
+    }
+
+    public function testCookieWritingHandlesEmptyValue(): void
+    {
+        $listener = new SignedCookieListener($this->signer, ['*']);
+        $request = Request::create('/');
+
+        $response = new Response();
+        $response->headers->setCookie(Cookie::create('foo'));
+
+        $event = $this->createResponseEventWithKernel($this->kernel, $request, true, $response);
+        $listener->onKernelResponse($event);
+
+        $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
+        $this->assertNull($cookies['']['/']['foo']->getValue());
     }
 }

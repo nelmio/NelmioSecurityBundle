@@ -34,7 +34,7 @@ final class Signer
             $signature = $this->generateSignature($value);
         }
 
-        return $value.'.'.$signature;
+        return $value.','.$signature;
     }
 
     public function verifySignedValue(string $signedValue): bool
@@ -75,7 +75,7 @@ final class Signer
      */
     private function splitSignatureFromSignedValue(string $signedValue): array
     {
-        $pos = strrpos($signedValue, '.');
+        $pos = strrpos($signedValue, ',');
         if (false === $pos) {
             return [$signedValue, null];
         }
