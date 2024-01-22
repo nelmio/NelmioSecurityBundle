@@ -374,7 +374,7 @@ class DirectiveSetTest extends TestCase
     {
         return [
             [
-                'default-src \'self\'; script-src \'self\' \'unsafe-inline\' \'sha-1\'; style-src \'self\' \'unsafe-inline\' \'sha2\'',
+                'default-src \'self\'; script-src \'self\' \'unsafe-inline\'; style-src \'self\' \'unsafe-inline\' \'sha2\'',
                 [
                     'enforce' => [
                         'level1_fallback' => true,
