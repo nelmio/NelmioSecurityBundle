@@ -298,9 +298,6 @@ Use the ``enabled`` key to enable it:
 
     # config/packages/nelmio_security.yaml
     nelmio_security:
-        csp:
-            enforce:
-                browser_adaptive:
                     enabled: true
 
 .. caution::
