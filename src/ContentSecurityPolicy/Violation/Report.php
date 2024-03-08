@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 final class Report
 {
     /**
-     * @var array<string, string>
+     * @var array<string, int|string>
      */
     private array $data;
 
@@ -115,7 +115,7 @@ final class Report
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, int|string>
      */
     public function getData(): array
     {
