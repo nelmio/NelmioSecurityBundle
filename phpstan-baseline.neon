@@ -25,10 +25,6 @@ parameters:
 			count: 1
 			path: src/EventListener/FlexibleSslListener.php
 
-		-
-			message: "#^Parameter \\#1 \\$value of method Nelmio\\\\SecurityBundle\\\\Signer\\:\\:getSignedValue\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/EventListener/SignedCookieListener.php
 
 		-
 			message: "#^Method Nelmio\\\\SecurityBundle\\\\UserAgent\\\\UAFamilyParser\\\\PsrCacheUAFamilyParser\\:\\:getUaFamily\\(\\) should return string but returns mixed\\.$#"

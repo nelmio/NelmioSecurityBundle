@@ -74,7 +74,7 @@ final class SignedCookieListener
                 $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
                 $signedCookie = new Cookie(
                     $cookie->getName(),
-                    $this->signer->getSignedValue($cookie->getValue()),
+                    $this->signer->getSignedValue((string) $cookie->getValue()),
                     $cookie->getExpiresTime(),
                     $cookie->getPath(),
                     $cookie->getDomain(),
