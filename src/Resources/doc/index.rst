@@ -86,7 +86,7 @@ Features
   This disables the feature that some browsers have which uses content sniffing to determine if the response is a valid
   script file or not.
 
-* **XSS Protection**: Enables/Disables Microsoft XSS Protection on compatible browsers (IE 8 and newer).
+* (DEPRECATED) **XSS Protection**: Enables/Disables Microsoft XSS Protection on compatible browsers (IE 8 and newer).
 
 * **Referrer Policy**: ``Referrer-Policy`` header is added to all responses to control the ``Referer`` header
   that is added to requests made from your site, and for navigations away from your site by browsers.
@@ -136,13 +136,6 @@ should read on the next sections for detailed recommendations:
         # disables content type sniffing for script resources
         content_type:
             nosniff: true
-
-        # forces Microsoft's XSS-Protection with
-        # its block mode
-        xss_protection:
-            enabled: true
-            mode_block: true
-            report_uri: '%router.request_context.base_url%/nelmio/xss/report'
 
         # Send a full URL in the ``Referer`` header when performing a same-origin request,
         # only send the origin of the document to secure destination (HTTPS->HTTPS),
@@ -867,8 +860,12 @@ content type headers. This requires using `a non-standard nosniff header from Mi
         content_type:
             nosniff: true
 
-XSS Protection
---------------
+XSS Protection (DEPRECATED)
+--------------------------
+
+.. caution::
+
+    This feature is non-standard and deprecated. It is recommended to use CSP instead : https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
 
 Enables or disables Microsoft XSS Protection on compatible browsers.
 This requires using `a non-standard X-XSS-Protection header from Microsoft`_.

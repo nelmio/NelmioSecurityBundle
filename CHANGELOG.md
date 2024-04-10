@@ -1,5 +1,17 @@
 ### 3.x.x (xxxx-xx-xx)
 
+### 3.4.0 (xxxx-xx-xx)
+* Deprecate `X-Xss-Protection` header
+
+### 3.3.0 (2024-04-10)
+* Introduce `ExternalRedirectResponse`
+
+### 3.2.0 (2024-03-08)
+* Added support for cookies with null value
+
+### 3.1.1 (2024-01-17)
+* Filter `view-source` reports
+
 ### 3.1.0 (2023-12-03)
 * Fixed overriding CSP header
 * Dropped support for Symfony < 5.4

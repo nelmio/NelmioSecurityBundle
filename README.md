@@ -50,7 +50,7 @@ load content from another domain than the page's domain.
   This disables the feature that some browsers have which uses content sniffing to determine if the response is a valid
   script file or not.
 
-* **XSS Protection**: Enables/Disables Microsoft XSS Protection on compatible browsers (IE 8 and newer).
+* (DEPRECATED) **XSS Protection**: Enables/Disables Microsoft XSS Protection on compatible browsers (IE 8 and newer).
 
 * **Referrer Policy**: `Referrer-Policy` header is added to all responses to control the `Referer` header
   that is added to requests made from your site, and for navigations away from your site by browsers.

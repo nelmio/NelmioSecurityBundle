@@ -326,14 +326,18 @@ final class Configuration implements ConfigurationInterface
         return $node;
     }
 
+    /**
+     * @deprecated since NelmioSecurityBundle 3.4.0, to be removed in 4.0.
+     */
     private function getXssProtectionNode(): ArrayNodeDefinition
     {
         $node = new ArrayNodeDefinition('xss_protection');
+        $node->setDeprecated('nelmio/security-bundle', '3.4.0', 'The "%node%" option is deprecated, use Content Security Policy without allowing "unsage-inline" scripts instead.');
         $node
             ->children()
-                ->booleanNode('enabled')->defaultFalse()->end()
-                ->booleanNode('mode_block')->defaultFalse()->end()
-                ->scalarNode('report_uri')->defaultNull()->end()
+                ->booleanNode('enabled')->end()
+                ->booleanNode('mode_block')->end()
+                ->scalarNode('report_uri')->end()
             ->end();
 
         return $node;

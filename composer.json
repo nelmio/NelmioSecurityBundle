@@ -24,7 +24,8 @@
         "symfony/security-csrf": "^5.4 || ^6.3 || ^7.0",
         "symfony/security-http": "^5.4 || ^6.3 || ^7.0",
         "symfony/yaml": "^5.4 || ^6.3 || ^7.0",
-        "ua-parser/uap-php": "^3.4.4"
+        "ua-parser/uap-php": "^3.4.4",
+        "symfony/deprecation-contracts": "^2.5 || ^3"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.4",
