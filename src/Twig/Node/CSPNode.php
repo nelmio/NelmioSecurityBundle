@@ -76,6 +76,11 @@ final class CSPNode extends Node
         } else {
             throw new \InvalidArgumentException(sprintf('Unable to compile for directive "%s"', $this->directive));
         }
-        $compiler->write("echo \$content;\n");
+
+        if (class_exists(CaptureNode::class)) {
+            $compiler->write("yield \$content;\n");
+        } else {
+            $compiler->write("echo \$content;\n");
+        }
     }
 }
