@@ -64,7 +64,7 @@ class IntegrationTest extends TestCase
         $listener->onKernelRequest(new RequestEvent(
             $this->createStub(HttpKernelInterface::class),
             Request::create('/'),
-            $this->getMasterRequestType()
+            HttpKernelInterface::MAIN_REQUEST
         ));
 
         $this->assertSame('<script type="text/javascript">console.log(\'123456\');</script>
@@ -113,7 +113,7 @@ class IntegrationTest extends TestCase
         $listener->onKernelRequest(new RequestEvent(
             $this->createStub(HttpKernelInterface::class),
             Request::create('/'),
-            $this->getMasterRequestType()
+            HttpKernelInterface::MAIN_REQUEST
         ));
 
         $this->assertSame('<script type="text/javascript">console.log(\'Hello\');</script>
@@ -126,13 +126,5 @@ class IntegrationTest extends TestCase
         }, null, ContentSecurityPolicyListener::class);
 
         $this->assertSame(['script-src' => ['sha-script'], 'style-src' => ['sha-style']], $getSha($listener));
-    }
-
-    private function getMasterRequestType(): int
-    {
-        return \defined(HttpKernelInterface::class.'::MAIN_REQUEST')
-            ? HttpKernelInterface::MAIN_REQUEST
-            : HttpKernelInterface::MASTER_REQUEST
-        ;
     }
 }

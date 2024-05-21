@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
+use Nelmio\SecurityBundle\ExternalRedirect\ExternalRedirectResponse;
 use Nelmio\SecurityBundle\ExternalRedirect\TargetValidator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -22,8 +23,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class ExternalRedirectListener
 {
-    use KernelEventForwardCompatibilityTrait;
-
     private bool $abort;
     private ?string $override;
     private ?string $forwardAs;
@@ -68,7 +67,7 @@ final class ExternalRedirectListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 
@@ -86,6 +85,13 @@ final class ExternalRedirectListener
 
         if (!$this->isExternalRedirect($e->getRequest()->getUri(), $target)) {
             return;
+        }
+
+        if ($response instanceof ExternalRedirectResponse) {
+            $targetValidator = new AllowListBasedTargetValidator($response->getAllowedHosts());
+            if ($targetValidator->isTargetAllowed($target)) {
+                return;
+            }
         }
 
         if (null !== $this->targetValidator && $this->targetValidator->isTargetAllowed($target)) {

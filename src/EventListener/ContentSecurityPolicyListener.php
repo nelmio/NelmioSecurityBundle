@@ -24,8 +24,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListener
 {
-    use KernelEventForwardCompatibilityTrait;
-
     private DirectiveSet $report;
     private DirectiveSet $enforce;
     private bool $compatHeaders;
@@ -72,7 +70,7 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
 
     public function onKernelRequest(RequestEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 
@@ -139,7 +137,7 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 
@@ -211,7 +209,7 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         DirectiveSet $directiveSet,
         bool $reportOnly,
         bool $compatHeaders,
-        array $signatures = null
+        ?array $signatures = null
     ): array {
         // $signatures might be null if no KernelEvents::REQUEST has been triggered.
         // for instance if a security.authentication.failure has been dispatched

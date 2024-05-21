@@ -17,8 +17,6 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 final class ContentTypeListener
 {
-    use KernelEventForwardCompatibilityTrait;
-
     private bool $nosniff;
 
     public function __construct(bool $nosniff)
@@ -28,7 +26,7 @@ final class ContentTypeListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 

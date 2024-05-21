@@ -15,6 +15,7 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
+use Nelmio\SecurityBundle\ExternalRedirect\ExternalRedirectResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -110,6 +111,31 @@ class ExternalRedirectListenerTest extends ListenerTestCase
         $this->assertTrue($response->isRedirect());
     }
 
+    public function testExternalRedirectResponseSkipsAllowedTargets(): void
+    {
+        $listener = new ExternalRedirectListener(true, null, null, new AllowListBasedTargetValidator(['bar.com']));
+
+        $response = $this->filterRedirectResponse($listener, 'http://foo.com/', 'http://allowed.com', ['allowed.com']);
+        $this->assertTrue($response->isRedirect());
+    }
+
+    public function testExternalRedirectResponseSkipsGlobalAllowedTargets(): void
+    {
+        $listener = new ExternalRedirectListener(true, null, null, new AllowListBasedTargetValidator(['bar.com']));
+
+        $response = $this->filterRedirectResponse($listener, 'http://foo.com/', 'http://bar.com', ['allowed.com']);
+        $this->assertTrue($response->isRedirect());
+    }
+
+    public function testExternalRedirectResponseAborts(): void
+    {
+        $this->expectException(HttpException::class);
+        $listener = new ExternalRedirectListener(true, null, null, new AllowListBasedTargetValidator(['bar.com']));
+
+        $response = $this->filterRedirectResponse($listener, 'http://foo.com/', 'http://not-allowed.com', ['allowed.com']);
+        $this->assertTrue($response->isRedirect());
+    }
+
     /**
      * @dataProvider provideRedirectAllowedListFailing
      *
@@ -178,6 +204,24 @@ class ExternalRedirectListenerTest extends ListenerTestCase
         $request = Request::create($source);
 
         $response = new RedirectResponse($target);
+
+        $event = $this->createResponseEvent($request, true, $response);
+        $listener->onKernelResponse($event);
+
+        return $response;
+    }
+
+    /**
+     * @param string[] $allowedHosts
+     */
+    private function filterRedirectResponse(
+        ExternalRedirectListener $listener,
+        string $source,
+        string $target,
+        array $allowedHosts
+    ): ExternalRedirectResponse {
+        $request = Request::create($source);
+        $response = new ExternalRedirectResponse($target, $allowedHosts);
 
         $event = $this->createResponseEvent($request, true, $response);
         $listener->onKernelResponse($event);

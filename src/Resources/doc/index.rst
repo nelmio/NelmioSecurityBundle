@@ -653,6 +653,32 @@ subdomains if needed.
                 - twitter.com
                 - facebook.com
 
+If you have a controller that can redirect to another host, you can also use `ExternalRedirectResponse` to allow the
+redirect without having to configure the hosts globally. Any hosts passed to `ExternalRedirectResponse` are in
+addition to those already configured globally.
+
+.. code-block:: yaml
+
+    # config/packages/nelmio_security.yaml
+    nelmio_security:
+        external_redirects:
+            abort: true
+            allow_list:
+                - bar.com
+
+.. code-block:: php
+
+    use Nelmio\SecurityBundle\ExternalRedirect\ExternalRedirectResponse;
+
+    // Will be allowed even though "foo.com" is not allowed globally through the config.
+    return new ExternalRedirectResponse('https://foo.com', ['foo.com', 'auth-provider.test']);
+
+    // Will not be allowed.
+    return new ExternalRedirectResponse('https://not-allowed.com', ['foo.com', 'auth-provider.test']);
+
+    // Will be allowed because "bar.com" is allowed globally through the config.
+    return new ExternalRedirectResponse('https://bar.com', ['foo.com', 'auth-provider.test']);
+
 Forced HTTPS/SSL Handling
 -------------------------
 

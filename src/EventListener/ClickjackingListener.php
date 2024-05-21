@@ -18,8 +18,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class ClickjackingListener extends AbstractContentTypeRestrictableListener
 {
-    use KernelEventForwardCompatibilityTrait;
-
     /**
      * @var array<string, array<string, string>>
      */
@@ -46,7 +44,7 @@ final class ClickjackingListener extends AbstractContentTypeRestrictableListener
 
     public function onKernelResponse(ResponseEvent $e): void
     {
-        if (!$this->isMainRequest($e)) {
+        if (!$e->isMainRequest()) {
             return;
         }
 
