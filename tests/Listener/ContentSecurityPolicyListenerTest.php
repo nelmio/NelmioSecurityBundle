@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSetBuilderInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGeneratorInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
@@ -464,6 +465,22 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
         );
     }
 
+    public function testLegacyConstructorCreatesDirectiveSetBuilder(): void
+    {
+        $reportDirectiveSet = new DirectiveSet(new PolicyManager());
+        $reportDirectiveSet->setDirective('script-src', 'https://report.deprecation-test.example.com');
+
+        $enforceDirectiveSet = new DirectiveSet(new PolicyManager());
+        $enforceDirectiveSet->setDirective('script-src', 'https://enforce.deprecation-test.example.com');
+
+        $listener = new ContentSecurityPolicyListener($reportDirectiveSet, $enforceDirectiveSet, $this->nonceGenerator, $this->shaComputer, true, []);
+
+        $response = $this->callListener($listener, '/', true);
+
+        $this->assertSame('script-src https://report.deprecation-test.example.com', $response->headers->get('Content-Security-Policy-Report-Only'));
+        $this->assertSame('script-src https://enforce.deprecation-test.example.com', $response->headers->get('Content-Security-Policy'));
+    }
+
     /**
      * @param array<string, string|true> $directives
      * @param list<string>               $contentTypes
@@ -473,11 +490,22 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
         $directiveSet = new DirectiveSet(new PolicyManager());
         $directiveSet->setDirectives($directives);
 
+        $builder = $this->createDirectiveSetBuilderMock($directiveSet);
+        $dummyBuilder = $this->createDirectiveSetBuilderMock(new DirectiveSet(new PolicyManager()));
+
         if ($reportOnly) {
-            return new ContentSecurityPolicyListener($directiveSet, new DirectiveSet(new PolicyManager()), $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
+            return new ContentSecurityPolicyListener($builder, $dummyBuilder, $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
         }
 
-        return new ContentSecurityPolicyListener(new DirectiveSet(new PolicyManager()), $directiveSet, $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
+        return new ContentSecurityPolicyListener($dummyBuilder, $builder, $this->nonceGenerator, $this->shaComputer, $compatHeaders, $contentTypes);
+    }
+
+    private function createDirectiveSetBuilderMock(DirectiveSet $directiveSet): DirectiveSetBuilderInterface
+    {
+        $mock = $this->createMock(DirectiveSetBuilderInterface::class);
+        $mock->method('buildDirectiveSet')->willReturn($directiveSet);
+
+        return $mock;
     }
 
     /**
