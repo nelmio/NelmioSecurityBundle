@@ -32,7 +32,7 @@ final class XssProtectionListener implements EventSubscriberInterface
         $this->modeBlock = $modeBlock;
         $this->reportUri = $reportUri;
 
-        trigger_deprecation('nelmio/security-bundle', '3.4.0', 'The "%s" class is deprecated, use Content Security Policy without allowing "unsage-inline" scripts instead.', __CLASS__);
+        trigger_deprecation('nelmio/security-bundle', '3.4.0', 'The "%s" class is deprecated, use Content Security Policy without allowing "unsafe-inline" scripts instead.', __CLASS__);
     }
 
     public function onKernelResponse(ResponseEvent $e): void

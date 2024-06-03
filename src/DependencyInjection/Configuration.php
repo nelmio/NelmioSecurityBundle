@@ -332,7 +332,7 @@ final class Configuration implements ConfigurationInterface
     private function getXssProtectionNode(): ArrayNodeDefinition
     {
         $node = new ArrayNodeDefinition('xss_protection');
-        $node->setDeprecated('nelmio/security-bundle', '3.4.0', 'The "%node%" option is deprecated, use Content Security Policy without allowing "unsage-inline" scripts instead.');
+        $node->setDeprecated('nelmio/security-bundle', '3.4.0', 'The "%node%" option is deprecated, use Content Security Policy without allowing "unsafe-inline" scripts instead.');
         $node
             ->children()
                 ->booleanNode('enabled')->end()
