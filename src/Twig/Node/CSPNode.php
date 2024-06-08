@@ -51,7 +51,7 @@ final class CSPNode extends Node
             $compiler
                 ->addDebugInfo($this)
                 ->indent()
-                ->write("\$content = ")
+                ->write('$content = ')
                 ->subcompile($this->getNode('body'))
                 ->raw("\n")
                 ->outdent()
