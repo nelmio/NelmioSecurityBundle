@@ -326,9 +326,6 @@ final class Configuration implements ConfigurationInterface
         return $node;
     }
 
-    /**
-     * @deprecated since NelmioSecurityBundle 3.4.0, to be removed in 4.0.
-     */
     private function getXssProtectionNode(): ArrayNodeDefinition
     {
         $node = new ArrayNodeDefinition('xss_protection');

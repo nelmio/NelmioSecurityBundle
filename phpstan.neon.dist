@@ -18,7 +18,5 @@ parameters:
         - '#^Dynamic call to static method Symfony\\Bundle\\FrameworkBundle\\Test\\\S+\(\)\.$#'
         # Ignore typing providers in tests
         - '#^Method Nelmio\\SecurityBundle\\Tests\\[^:]+Test::(provide\w+|\w+Provider)\(\) return type has no value type specified in iterable type (array|iterable)\.#'
-        # Deprecated methods
-        - '#since NelmioSecurityBundle 3.4.0, to be removed in 4.0.$#'
     dynamicConstantNames:
         - Symfony\Component\HttpKernel\Kernel::VERSION
