@@ -57,6 +57,10 @@ final class NelmioSecurityExtension extends Extension
             $cspListenerDefinition->setArguments([$reportDefinition, $enforceDefinition, new Reference('nelmio_security.nonce_generator'), new Reference('nelmio_security.sha_computer'), (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']]);
             $container->setParameter('nelmio_security.csp.hash_algorithm', $cspConfig['hash']['algorithm']);
 
+            if (isset($cspConfig['request_matcher'])) {
+                $cspListenerDefinition->setArgument(7, new Reference($cspConfig['request_matcher']));
+            }
+
             $cspViolationLogFilterDefinition = $container->getDefinition('nelmio_security.csp_report.filter');
 
             $container->setParameter('nelmio_security.csp.report_log_level', $cspConfig['report_endpoint']['log_level']);

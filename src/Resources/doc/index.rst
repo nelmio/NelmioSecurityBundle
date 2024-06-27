@@ -204,6 +204,10 @@ Finally, an optional ``hosts`` key lets you configure which hostnames (e.g. ``fo
 the CSP rule should be enforced on. If the list is empty (it is by default), all
 hostnames will use the CSP rule.
 
+If the `content_types` and `hosts` options don’t fit your needs, you can also configure a service implementing
+`Symfony\Component\HttpFoundation\RequestMatcherInterface` as `request_matcher`. Then the `content_types` and `hosts`
+options are no longer used.
+
 .. code-block:: yaml
 
     # config/packages/nelmio_security.yaml
@@ -211,6 +215,7 @@ hostnames will use the CSP rule.
         csp:
             enabled: true
             report_logger_service: logger
+            request_matcher: null
             hosts: []
             content_types: []
             enforce:
