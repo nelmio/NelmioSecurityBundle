@@ -505,6 +505,27 @@ Additional, optional configuration settings:
             secret: this_is_very_secret # defaults to global %secret% parameter
             hash_algo: sha512 # defaults to sha256, see ``hash_algos()`` for available algorithms
 
+Upgrading the hash algorithm
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Increasing computational power and security research makes upgrading to more secure hashing algorithms an important
+aspect of keeping applications secure. However, simply changing the `hash_algo` value would break existing cookies. To
+make upgrading frictionless, this bundle provides a `legacy_hash_algo` option. If your application has been using
+`sha-256` and wishes to upgrade to the more secure `sha3-256` algorithm, you can set `legacy_hash_algo` to `sha256` and
+ `hash_algo` to `sha3-256`.
+
+.. code-block:: yaml
+
+    # config/packages/nelmio_security.yaml
+    nelmio_security:
+        signed_cookie:
+            hash_algo: sha3-256
+            legacy_hash_algo: sha256
+
+.. caution::
+
+    `legacy_hash_algo` allows for downgrade attacks and should only be used as a temporary measure for backward-compatibility.
+
 Clickjacking Protection
 -----------------------
 

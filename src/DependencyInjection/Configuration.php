@@ -253,6 +253,10 @@ final class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
                 ->scalarNode('hash_algo')->defaultValue('sha256')->end()
+                ->scalarNode('legacy_hash_algo')
+                    ->defaultNull()
+                    ->info('Fallback algorithm for cookies created before 3.x (without embedded algorithm) and to allow frictionless hash algorithm upgrades. Use with caution and as a temporary measure as it allows for downgrade attacks.')
+                ->end()
             ->end();
 
         return $node;
