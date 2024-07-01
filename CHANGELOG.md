@@ -2,6 +2,7 @@
 * Added `csp > request_matcher` option to allow the use of a custom request matcher (`Symfony\Component\HttpFoundation\RequestMatcherInterface`) (#241)
 * Deprecated `X-Xss-Protection` header, use CSP instead (#342)
 * Fixed Symfony 7.1 deprecation warning (#350)
+* Fixed Twig 3.9 compatibility with yielding extensions (#344)
 
 ### 3.3.0 (2024-04-10)
 * Added `ExternalRedirectResponse` (#331)
