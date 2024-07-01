@@ -167,7 +167,10 @@ class ConfigurationTest extends TestCase
         );
     }
 
-    public function testXssProtection(): void
+    /**
+     * @group legacy
+     */
+    public function testLegacyXssProtection(): void
     {
         $config = $this->processYamlConfiguration(
             "xss_protection:\n".

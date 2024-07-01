@@ -17,6 +17,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * @deprecated since NelmioSecurityBundle 3.4.0, to be removed in 4.0.
+ */
 final class XssProtectionListener implements EventSubscriberInterface
 {
     private bool $enabled;
@@ -28,6 +31,8 @@ final class XssProtectionListener implements EventSubscriberInterface
         $this->enabled = $enabled;
         $this->modeBlock = $modeBlock;
         $this->reportUri = $reportUri;
+
+        trigger_deprecation('nelmio/security-bundle', '3.4.0', 'The "%s" class is deprecated, use Content Security Policy without allowing "unsafe-inline" scripts instead.', __CLASS__);
     }
 
     public function onKernelResponse(ResponseEvent $e): void

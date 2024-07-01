@@ -97,6 +97,7 @@ final class NelmioSecurityExtension extends Extension
             }
         }
 
+        // @deprecated since NelmioSecurityBundle 3.4.0, to be removed in 4.0.
         if (isset($config['xss_protection']) && [] !== $config['xss_protection']) {
             $loader->load('xss_protection.php');
 

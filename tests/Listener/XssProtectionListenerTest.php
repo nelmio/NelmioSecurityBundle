@@ -14,23 +14,29 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\XssProtectionListener;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @group legacy
+ */
 class XssProtectionListenerTest extends ListenerTestCase
 {
+    use ExpectDeprecationTrait;
+
     /**
-     * @dataProvider provideVariousConfigs
+     * @dataProvider provideLegacyVariousConfigs
      */
-    public function testVariousConfig(string $expectedValue, XssProtectionListener $listener): void
+    public function testLegacyVariousConfig(string $expectedValue, XssProtectionListener $listener): void
     {
         $response = $this->callListener($listener, '/', true);
 
         $this->assertSame($expectedValue, $response->headers->get('X-Xss-Protection'));
     }
 
-    public function provideVariousConfigs(): array
+    public function provideLegacyVariousConfigs(): array
     {
         return [
             ['0', new XssProtectionListener(false, false)],
@@ -41,7 +47,7 @@ class XssProtectionListenerTest extends ListenerTestCase
         ];
     }
 
-    public function testDoesNotHasHeaderOnRedirection(): void
+    public function testLegacyDoesNotHasHeaderOnRedirection(): void
     {
         $request = Request::create('/');
         $response = new RedirectResponse('/redirect');

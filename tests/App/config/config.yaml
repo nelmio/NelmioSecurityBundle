@@ -15,11 +15,6 @@ nelmio_security:
   content-type:
     nosniff: true
 
-  xss_protection:
-    enabled: true
-    mode_block: true
-    report_uri: '%router.request_context.base_url%/nelmio/xss/report'
-
   referrer_policy:
     enabled: true
     policies:
