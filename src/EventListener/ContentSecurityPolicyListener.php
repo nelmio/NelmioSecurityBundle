@@ -153,7 +153,7 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
             return;
         }
 
-        if ($this->requestMatcher) {
+        if (null !== $this->requestMatcher) {
             $match = $this->requestMatcher->matches($request);
         } else {
             $match = ([] === $this->hosts || \in_array($e->getRequest()->getHost(), $this->hosts, true)) && $this->isContentTypeValid($response);
