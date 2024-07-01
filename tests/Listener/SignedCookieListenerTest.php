@@ -33,7 +33,7 @@ class SignedCookieListenerTest extends ListenerTestCase
 
     protected function setUp(): void
     {
-        $this->signer = new Signer('secret', 'sha1');
+        $this->signer = new Signer('secret', 'sha1', 'md5');
         $this->kernel = $this->createStub(HttpKernelInterface::class);
     }
 
@@ -61,9 +61,12 @@ class SignedCookieListenerTest extends ListenerTestCase
             [[], [], []],
             [[], ['foo' => 'bar'], ['foo' => 'bar']],
             [['foo'], ['foo' => 'bar'], []],
-            [['foo'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
-            [['*'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e'], ['foo' => 'bar']],
-            [['*'], ['foo' => '.25af6174a0fcecc4d346680a72b7ce644b9a88e8'], ['foo' => '']],
+            [['foo'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e.sha1'], ['foo' => 'bar']],
+            [['*'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e.sha1'], ['foo' => 'bar']],
+            [['*'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795d.sha1'], []],
+            [['*'], ['foo' => '.25af6174a0fcecc4d346680a72b7ce644b9a88e8.sha1'], ['foo' => '']],
+            [['*'], ['legacy' => 'bar.d42bb85e6f20b90034d986ad68501a2d'], ['legacy' => 'bar']],
+            [['*'], ['legacy' => 'bar.d42bb85e6f20b90034d986ad68501a2a'], []],
         ];
     }
 
@@ -100,9 +103,9 @@ class SignedCookieListenerTest extends ListenerTestCase
         return [
             [[], [], []],
             [[], ['foo' => 'bar'], ['foo' => 'bar']],
-            [['foo'], ['foo' => 'bar'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e']],
-            [['*'], ['foo' => 'bar'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e']],
-            [['*'], ['foo' => null], ['foo' => '.25af6174a0fcecc4d346680a72b7ce644b9a88e8']],
+            [['foo'], ['foo' => 'bar'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e.sha1']],
+            [['*'], ['foo' => 'bar'], ['foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e.sha1']],
+            [['*'], ['foo' => null], ['foo' => '.25af6174a0fcecc4d346680a72b7ce644b9a88e8.sha1']],
         ];
     }
 

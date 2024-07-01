@@ -13,35 +13,53 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle;
 
-final class Signer
+final class Signer implements SignerInterface
 {
     private string $secret;
     private string $algo;
+    private ?string $legacyAlgo;
 
-    public function __construct(string $secret, string $algo)
+    /**
+     * @var non-empty-string
+     */
+    private string $separator;
+
+    /**
+     * @param non-empty-string $separator
+     */
+    public function __construct(string $secret, string $algo, ?string $legacyAlgo = null, string $separator = '.')
     {
         $this->secret = $secret;
         $this->algo = $algo;
+        $this->legacyAlgo = $legacyAlgo;
+        $this->separator = $separator;
 
         if (!\in_array($this->algo, hash_algos(), true)) {
             throw new \InvalidArgumentException(sprintf("The supplied hashing algorithm '%s' is not supported by this system.", $this->algo));
+        }
+
+        if (null !== $this->legacyAlgo && !\in_array($this->legacyAlgo, hash_algos(), true)) {
+            throw new \InvalidArgumentException(sprintf("The supplied legacy hashing algorithm '%s' is not supported by this system.", $this->legacyAlgo));
         }
     }
 
     public function getSignedValue(string $value, ?string $signature = null): string
     {
         if (null === $signature) {
-            $signature = $this->generateSignature($value);
+            $signature = $this->generateSignature($value, $this->algo);
         }
 
-        return $value.'.'.$signature;
+        return implode($this->separator, [$value, $signature, $this->algo]);
     }
 
     public function verifySignedValue(string $signedValue): bool
     {
-        [$value, $signature] = $this->splitSignatureFromSignedValue($signedValue);
-        $signature2 = $this->generateSignature($value);
+        [$value, $signature, $algorithm] = $this->splitSignedValue($signedValue);
+        if (null === $algorithm || !\in_array($algorithm, $this->allowedAlgorithms(), true)) {
+            return false;
+        }
 
+        $signature2 = $this->generateSignature($value, $algorithm);
         if (null === $signature || \strlen($signature) !== \strlen($signature2)) {
             return false;
         }
@@ -60,26 +78,47 @@ final class Signer
             throw new \InvalidArgumentException(sprintf("The signature for '%s' was invalid.", $signedValue));
         }
 
-        $valueSignatureTuple = $this->splitSignatureFromSignedValue($signedValue);
+        $valueSignatureTuple = $this->splitSignedValue($signedValue);
 
         return $valueSignatureTuple[0];
     }
 
-    private function generateSignature(string $value): string
+    private function generateSignature(string $value, string $algo): string
     {
-        return hash_hmac($this->algo, $value, $this->secret);
+        return hash_hmac($algo, $value, $this->secret);
     }
 
     /**
-     * @return array{string, string|null}
+     * @return array{string, string|null, string|null}
      */
-    private function splitSignatureFromSignedValue(string $signedValue): array
+    private function splitSignedValue(string $signedValue): array
     {
-        $pos = strrpos($signedValue, '.');
-        if (false === $pos) {
-            return [$signedValue, null];
+        $parts = explode($this->separator, $signedValue);
+        $length = \count($parts);
+        if ($length >= 3) {
+            return [
+                implode($this->separator, \array_slice($parts, 0, $length - 2)),
+                $parts[$length - 2],
+                $parts[$length - 1],
+            ];
         }
 
-        return [substr($signedValue, 0, $pos), substr($signedValue, $pos + 1)];
+        if (2 === \count($parts)) {
+            return [$parts[0], $parts[1], $this->legacyAlgo ?? $this->algo];
+        }
+
+        return [implode($this->separator, $parts), null, null];
+    }
+
+    /**
+     * @return string[]
+     */
+    private function allowedAlgorithms(): array
+    {
+        if (null === $this->legacyAlgo) {
+            return [$this->algo];
+        }
+
+        return [$this->algo, $this->legacyAlgo];
     }
 }

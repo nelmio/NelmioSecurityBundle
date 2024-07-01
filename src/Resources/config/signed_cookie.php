@@ -39,5 +39,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             ->args([
                 '%nelmio_security.signer.secret%',
                 '%nelmio_security.signer.hash_algo%',
+                '%nelmio_security.signer.legacy_hash_algo%',
+                '.',
             ]);
 };

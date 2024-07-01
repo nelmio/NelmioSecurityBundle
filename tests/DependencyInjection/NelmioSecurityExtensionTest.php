@@ -42,6 +42,7 @@ final class NelmioSecurityExtensionTest extends TestCase
                     'names' => ['name1', 'name2'],
                     'secret' => 's3cr3t',
                     'hash_algo' => 'hash',
+                    'legacy_hash_algo' => 'legacy_hash',
                 ],
             ],
         ], $container);
@@ -49,6 +50,7 @@ final class NelmioSecurityExtensionTest extends TestCase
         $this->assertContainerWithParameterValue($container, 'nelmio_security.signed_cookie.names', ['name1', 'name2']);
         $this->assertContainerWithParameterValue($container, 'nelmio_security.signer.secret', 's3cr3t');
         $this->assertContainerWithParameterValue($container, 'nelmio_security.signer.hash_algo', 'hash');
+        $this->assertContainerWithParameterValue($container, 'nelmio_security.signer.legacy_hash_algo', 'legacy_hash');
 
         $this->assertServiceIdClass($container, 'nelmio_security.signed_cookie_listener', SignedCookieListener::class);
         $this->assertServiceIdClass($container, 'nelmio_security.signer', Signer::class);
