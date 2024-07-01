@@ -1,14 +1,13 @@
-### 3.x.x (xxxx-xx-xx)
-* Added `csp > request_matcher` option to allow the use of a custom request matcher (`Symfony\Component\HttpFoundation\RequestMatcherInterface`)
-
 ### 3.4.0 (xxxx-xx-xx)
-* Deprecate `X-Xss-Protection` header
+* Added `csp > request_matcher` option to allow the use of a custom request matcher (`Symfony\Component\HttpFoundation\RequestMatcherInterface`) (#241)
+* Deprecated `X-Xss-Protection` header, use CSP instead (#342)
+* Fixed Symfony 7.1 deprecation warning (#350)
 
 ### 3.3.0 (2024-04-10)
-* Introduce `ExternalRedirectResponse`
+* Added `ExternalRedirectResponse` (#331)
 
 ### 3.2.0 (2024-03-08)
-* Added support for cookies with null value
+* Added support for cookies with null value (#338)
 
 ### 3.1.1 (2024-01-17)
 * Filter `view-source` reports
