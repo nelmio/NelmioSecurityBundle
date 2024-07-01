@@ -34,6 +34,7 @@ class FilterTest extends TestCase
      * @dataProvider provideVariousCases
      *
      * @param array<string, string> $payload
+     *
      * @phpstan-param ReportData $payload
      */
     public function testScenario(bool $expected, Request $request, array $payload): void

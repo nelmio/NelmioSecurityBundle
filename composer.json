@@ -57,7 +57,7 @@
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "phpstan": "phpstan"
+        "phpstan": "phpstan",
+        "test": "phpunit"
     }
 }
