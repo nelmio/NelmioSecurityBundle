@@ -25,12 +25,16 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use UAParser\Parser;
 
+/**
+ * @phpstan-import-type ReportData from Report
+ */
 class FilterTest extends TestCase
 {
     /**
      * @dataProvider provideVariousCases
      *
      * @param array<string, string> $payload
+     * @phpstan-param ReportData $payload
      */
     public function testScenario(bool $expected, Request $request, array $payload): void
     {

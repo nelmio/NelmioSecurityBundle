@@ -18,10 +18,14 @@ use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\MissingCspRe
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Exception\NoDataException;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @phpstan-type ReportData array{document-uri?: string, referrer?: string, blocked-uri?: string, effective-directive?: string, violated-directive?: string, original-policy?: string, disposition?: string, status-code?: int, script-sample?: string, source-file?: string, line-number?: int, column-number?: int}
+ */
 final class Report
 {
     /**
-     * @var array<string, string>
+     * @var array<string, int|string>
+     * @phpstan-var ReportData
      */
     private array $data;
 
@@ -29,6 +33,7 @@ final class Report
 
     /**
      * @param array<string, string> $data
+     * @phpstan-param ReportData $data
      */
     public function __construct(array $data = [], ?string $userAgent = null)
     {
@@ -36,8 +41,17 @@ final class Report
         $this->userAgent = $userAgent;
     }
 
-    public function setProperty(string $key, string $value): self
+    /**
+     * @param string|int $value
+     * @phpstan-template K of key-of<ReportData>
+     * @phpstan-param K $key
+     * @phpstan-param ReportData[K] $value
+     */
+    public function setProperty(string $key, $value): self
     {
+        if (!is_string($value) && !is_int($value)) {
+            throw new \TypeError('Expected string or int, got '.gettype($value));
+        }
         $this->data[$key] = $value;
 
         return $this;
@@ -115,7 +129,8 @@ final class Report
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, int|string>
+     * @phpstan-return ReportData
      */
     public function getData(): array
     {
