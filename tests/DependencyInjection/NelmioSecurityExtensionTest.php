@@ -22,10 +22,15 @@ use Nelmio\SecurityBundle\EventListener\SignedCookieListener;
 use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
 use Nelmio\SecurityBundle\Signer;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class NelmioSecurityExtensionTest extends TestCase
 {
+    use ExpectDeprecationTrait {
+        ExpectDeprecationTrait::expectDeprecation as bridgeExpectDeprecation;
+    }
+
     private NelmioSecurityExtension $extension;
 
     protected function setUp(): void
@@ -52,6 +57,23 @@ final class NelmioSecurityExtensionTest extends TestCase
 
         $this->assertServiceIdClass($container, 'nelmio_security.signed_cookie_listener', SignedCookieListener::class);
         $this->assertServiceIdClass($container, 'nelmio_security.signer', Signer::class);
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testDeprecatedSignedCookieDefaultAlgorithm(): void
+    {
+        $this->bridgeExpectDeprecation('Since nelmio/security-bundle 3.4.0: The default value for `signed_cookie.hash_algo` is deprecated and will change in 4.0. You should configure an algorithm explicitly.');
+
+        $container = new ContainerBuilder();
+        $this->extension->load([
+            [
+                'signed_cookie' => [],
+            ],
+        ], $container);
+
+        $this->assertContainerWithParameterValue($container, 'nelmio_security.signer.hash_algo', 'sha256');
     }
 
     public function testLoadClickJacking(): void

@@ -35,7 +35,13 @@ final class NelmioSecurityExtension extends Extension
             $loader->load('signed_cookie.php');
             $container->setParameter('nelmio_security.signed_cookie.names', $config['signed_cookie']['names']);
             $container->setParameter('nelmio_security.signer.secret', $config['signed_cookie']['secret']);
-            $container->setParameter('nelmio_security.signer.hash_algo', $config['signed_cookie']['hash_algo']);
+
+            if (isset($config['signed_cookie']['hash_algo'])) {
+                $container->setParameter('nelmio_security.signer.hash_algo', $config['signed_cookie']['hash_algo']);
+            } else {
+                trigger_deprecation('nelmio/security-bundle', '3.4.0', 'The default value for `signed_cookie.hash_algo` is deprecated and will change in 4.0. You should configure an algorithm explicitly.');
+                $container->setParameter('nelmio_security.signer.hash_algo', 'sha256');
+            }
         }
 
         if (isset($config['clickjacking']) && [] !== $config['clickjacking']) {

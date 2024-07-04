@@ -253,7 +253,7 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue(['*'])
                 ->end()
                 ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
-                ->scalarNode('hash_algo')->defaultValue('sha256')->end()
+                ->scalarNode('hash_algo')->end()
             ->end();
 
         return $node;
