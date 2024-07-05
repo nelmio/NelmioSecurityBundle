@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\EventListener;
 
-use Nelmio\SecurityBundle\Signer;
+use Nelmio\SecurityBundle\Signer\SignerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 final class SignedCookieListener
 {
-    private Signer $signer;
+    private SignerInterface $signer;
 
     /**
      * @var list<string>|true
@@ -30,7 +30,7 @@ final class SignedCookieListener
     /**
      * @param list<string> $signedCookieNames
      */
-    public function __construct(Signer $signer, array $signedCookieNames)
+    public function __construct(SignerInterface $signer, array $signedCookieNames)
     {
         $this->signer = $signer;
         if (\in_array('*', $signedCookieNames, true)) {

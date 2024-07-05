@@ -36,6 +36,8 @@ final class NelmioSecurityExtension extends Extension
             $container->setParameter('nelmio_security.signed_cookie.names', $config['signed_cookie']['names']);
             $container->setParameter('nelmio_security.signer.secret', $config['signed_cookie']['secret']);
             $container->setParameter('nelmio_security.signer.hash_algo', $config['signed_cookie']['hash_algo']);
+            $container->setParameter('nelmio_security.signer.legacy_hash_algo', $config['signed_cookie']['legacy_hash_algo']);
+            $container->setParameter('nelmio_security.signer.separator', $config['signed_cookie']['separator']);
         }
 
         if (isset($config['clickjacking']) && [] !== $config['clickjacking']) {

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 use Nelmio\SecurityBundle\EventListener\SignedCookieListener;
 use Nelmio\SecurityBundle\Signer;
+use Nelmio\SecurityBundle\Signer\SignerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ReferenceConfigurator;
 
@@ -39,5 +40,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             ->args([
                 '%nelmio_security.signer.secret%',
                 '%nelmio_security.signer.hash_algo%',
-            ]);
+                '%nelmio_security.signer.legacy_hash_algo%',
+                '%nelmio_security.signer.separator%',
+            ])
+
+        ->alias(SignerInterface::class, 'nelmio_security.signer')
+    ;
 };

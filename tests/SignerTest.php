@@ -25,6 +25,13 @@ class SignerTest extends TestCase
         new Signer('secret', 'invalid_hash_algo');
     }
 
+    public function testConstructorShouldVerifyHashLegacyAlgo(): void
+    {
+        $this->expectException('InvalidArgumentException');
+
+        new Signer('secret', hash_algos()[0], 'invalid_hash_algo');
+    }
+
     public function testShouldVerifyValidSignature(): void
     {
         $signer = new Signer('secret', 'sha1');
@@ -47,6 +54,14 @@ class SignerTest extends TestCase
         $this->assertFalse($signer->verifySignedValue($signedValue));
     }
 
+    public function testShouldRejectMissingSignature(): void
+    {
+        $signer = new Signer('secret', 'sha1');
+
+        $this->assertFalse($signer->verifySignedValue('foobar'));
+        $this->assertFalse($signer->verifySignedValue('foobar.'));
+    }
+
     public function testThrowsExceptionWithInvalidSignature(): void
     {
         $signer = new Signer('secret', 'sha1');
@@ -62,5 +77,45 @@ class SignerTest extends TestCase
         $signer2 = new Signer('secret2', 'sha1');
 
         $this->assertNotSame($signer1->getSignedValue('foobar'), $signer2->getSignedValue('foobar'));
+    }
+
+    public function testHandlesValueWithSeparator(): void
+    {
+        $value = 'foo.bar';
+
+        $signer = new Signer('secret1', 'sha3-256', null, '.');
+        $signature = $signer->getSignedValue($value);
+
+        $this->assertTrue($signer->verifySignedValue($signature));
+        $this->assertSame($value, $signer->getVerifiedRawValue($signature));
+    }
+
+    public function testHandlesCustomSeparator(): void
+    {
+        $value = 'foobar';
+
+        $signer = new Signer('secret1', 'sha3-256', null, ';');
+        $signature = $signer->getSignedValue($value);
+
+        $this->assertTrue($signer->verifySignedValue($signature));
+        $this->assertSame($value, $signer->getVerifiedRawValue($signature));
+        $this->assertStringContainsString(';', $signature);
+    }
+
+    public function testShouldVerifyValidLegacySignature(): void
+    {
+        $value = 'foobar.7f5c0e9cb2f07137b1c0249108d5c400a3c39be5';
+
+        $signer = new Signer('secret', 'sha3-256', 'sha1');
+
+        $this->assertTrue($signer->verifySignedValue($value));
+    }
+
+    public function testShouldRejectInvalidLegacySignature(): void
+    {
+        $signer = new Signer('secret', 'sha3-256', 'sha256');
+
+        $this->assertFalse($signer->verifySignedValue('foobar.not_a_signature'));
+        $this->assertFalse($signer->verifySignedValue('foobar.7f5c0e9cb2f07137b1c0249108d5c400a3c39be5'));
     }
 }
