@@ -118,4 +118,16 @@ class SignerTest extends TestCase
         $this->assertFalse($signer->verifySignedValue('foobar.not_a_signature'));
         $this->assertFalse($signer->verifySignedValue('foobar.7f5c0e9cb2f07137b1c0249108d5c400a3c39be5'));
     }
+
+    public function shouldNotRequireUpgradeForDefaultAlgorithm(): void
+    {
+        $signer = new Signer('secret', 'sha3-256', 'sha256');
+        $this->assertFalse($signer->needsUpgrade('foobar.039c77168ddbd0686efe9ac99194fcea8f66be5cd2097ab0c03965b24b168ddb'));
+    }
+
+    public function shouldRequireUpgradeForLegacyAlgorithm(): void
+    {
+        $signer = new Signer('secret', 'sha3-256', 'sha256');
+        $this->assertFalse($signer->needsUpgrade('foobar.4fcc06915b43d8a49aff193441e9e18654e6a27c2c428b02e8fcc41ccc2299f9'));
+    }
 }

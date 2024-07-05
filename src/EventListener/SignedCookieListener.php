@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\EventListener;
 
+use Nelmio\SecurityBundle\SignedCookie\LegacySignatureCookieTracker;
+use Nelmio\SecurityBundle\SignedCookie\LegacySignatureCookieTrackerInterface;
+use Nelmio\SecurityBundle\SignedCookie\SignatureUpgradeCheckerInterface;
 use Nelmio\SecurityBundle\Signer\SignerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -27,12 +30,15 @@ final class SignedCookieListener
      */
     private $signedCookieNames;
 
+    private LegacySignatureCookieTrackerInterface $legacySignatureCookieTracker;
+
     /**
      * @param list<string> $signedCookieNames
      */
-    public function __construct(SignerInterface $signer, array $signedCookieNames)
+    public function __construct(SignerInterface $signer, array $signedCookieNames, ?LegacySignatureCookieTrackerInterface $legacySignatureCookieTracker = null)
     {
         $this->signer = $signer;
+        $this->legacySignatureCookieTracker = $legacySignatureCookieTracker ?? new LegacySignatureCookieTracker();
         if (\in_array('*', $signedCookieNames, true)) {
             $this->signedCookieNames = true;
         } else {
@@ -46,17 +52,25 @@ final class SignedCookieListener
             return;
         }
 
+        $this->legacySignatureCookieTracker->clear();
+
         $request = $e->getRequest();
 
         $names = true === $this->signedCookieNames ? $request->cookies->keys() : $this->signedCookieNames;
         foreach ($names as $name) {
-            if ($request->cookies->has($name)) {
-                $cookie = $request->cookies->get($name);
-                if ($this->signer->verifySignedValue($cookie)) {
-                    $request->cookies->set($name, $this->signer->getVerifiedRawValue($cookie));
-                } else {
-                    $request->cookies->remove($name);
+            if (!$request->cookies->has($name)) {
+                continue;
+            }
+
+            $cookie = $request->cookies->get($name);
+            if ($this->signer->verifySignedValue($cookie)) {
+                $request->cookies->set($name, $this->signer->getVerifiedRawValue($cookie));
+
+                if ($this->signer instanceof SignatureUpgradeCheckerInterface && $this->signer->needsUpgrade($cookie)) {
+                    $this->legacySignatureCookieTracker->flagForUpgrade($name);
                 }
+            } else {
+                $request->cookies->remove($name);
             }
         }
     }
