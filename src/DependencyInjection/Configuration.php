@@ -338,9 +338,9 @@ final class Configuration implements ConfigurationInterface
         $node->setDeprecated('nelmio/security-bundle', '3.4.0', 'The "%node%" option is deprecated, use Content Security Policy without allowing "unsafe-inline" scripts instead.');
         $node
             ->children()
-                ->booleanNode('enabled')->end()
-                ->booleanNode('mode_block')->end()
-                ->scalarNode('report_uri')->end()
+                ->booleanNode('enabled')->defaultFalse()->end()
+                ->booleanNode('mode_block')->defaultFalse()->end()
+                ->scalarNode('report_uri')->defaultNull()->end()
             ->end();
 
         return $node;
