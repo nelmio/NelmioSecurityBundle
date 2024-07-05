@@ -42,6 +42,9 @@ final class NelmioSecurityExtension extends Extension
                 trigger_deprecation('nelmio/security-bundle', '3.4.0', 'The default value for `signed_cookie.hash_algo` is deprecated and will change in 4.0. You should configure an algorithm explicitly.');
                 $container->setParameter('nelmio_security.signer.hash_algo', 'sha256');
             }
+
+            $container->setParameter('nelmio_security.signer.legacy_hash_algo', $config['signed_cookie']['legacy_hash_algo']);
+            $container->setParameter('nelmio_security.signer.separator', $config['signed_cookie']['separator']);
         }
 
         if (isset($config['clickjacking']) && [] !== $config['clickjacking']) {
