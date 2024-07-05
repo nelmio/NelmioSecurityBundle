@@ -253,7 +253,7 @@ final class Configuration implements ConfigurationInterface
                     ->defaultValue(['*'])
                 ->end()
                 ->scalarNode('secret')->defaultValue('%kernel.secret%')->end()
-                ->scalarNode('hash_algo')->defaultValue('sha256')->end()
+                ->scalarNode('hash_algo')->end()
                 ->scalarNode('legacy_hash_algo')
                     ->defaultNull()
                     ->info('Fallback algorithm to allow for frictionless hash algorithm upgrades. Use with caution and as a temporary measure as it allows for downgrade attacks.')
