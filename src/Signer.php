@@ -71,11 +71,8 @@ final class Signer implements SignerInterface
         }
 
         $expectedLegacySignature = $this->generateSignature($value, $this->legacyAlgo);
-        if (hash_equals($expectedLegacySignature, $signature)) {
-            return true;
-        }
 
-        return false;
+        return hash_equals($expectedLegacySignature, $signature);
     }
 
     public function getVerifiedRawValue(string $signedValue): string
