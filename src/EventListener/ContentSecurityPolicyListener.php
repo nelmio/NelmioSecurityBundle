@@ -256,7 +256,7 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         if ($builderOrDirectiveSet instanceof DirectiveSet) {
             trigger_deprecation(
                 'nelmio/security-bundle',
-                '3.3',
+                '3.5',
                 sprintf(
                     'Passing %s directly to the %s constructor is deprecated and will be removed in 4.0. Pass a %s instead.',
                     DirectiveSet::class,
