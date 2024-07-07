@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Twig;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSetBuilderInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGeneratorInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\PolicyManager;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
@@ -45,8 +46,8 @@ class IntegrationTest extends TestCase
         $policyManager = new PolicyManager();
 
         $listener = new ContentSecurityPolicyListener(
-            new DirectiveSet($policyManager),
-            new DirectiveSet($policyManager),
+            $this->createDirectiveSetBuilderMock(new DirectiveSet($policyManager)),
+            $this->createDirectiveSetBuilderMock(new DirectiveSet($policyManager)),
             $this->createStub(NonceGeneratorInterface::class),
             $shaComputer
         );
@@ -94,8 +95,8 @@ class IntegrationTest extends TestCase
         $policyManager = new PolicyManager();
 
         $listener = new ContentSecurityPolicyListener(
-            new DirectiveSet($policyManager),
-            new DirectiveSet($policyManager),
+            $this->createDirectiveSetBuilderMock(new DirectiveSet($policyManager)),
+            $this->createDirectiveSetBuilderMock(new DirectiveSet($policyManager)),
             $this->createStub(NonceGeneratorInterface::class),
             $shaComputer
         );
@@ -126,5 +127,13 @@ class IntegrationTest extends TestCase
         }, null, ContentSecurityPolicyListener::class);
 
         $this->assertSame(['script-src' => ['sha-script'], 'style-src' => ['sha-style']], $getSha($listener));
+    }
+
+    private function createDirectiveSetBuilderMock(DirectiveSet $directiveSet): DirectiveSetBuilderInterface
+    {
+        $mock = $this->createMock(DirectiveSetBuilderInterface::class);
+        $mock->method('buildDirectiveSet')->willReturn($directiveSet);
+
+        return $mock;
     }
 }
