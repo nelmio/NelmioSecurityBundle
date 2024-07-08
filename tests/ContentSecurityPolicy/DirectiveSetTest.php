@@ -65,7 +65,8 @@ class DirectiveSetTest extends TestCase
                 'style-src style.example.org \'self\'; '.
                 'upgrade-insecure-requests; '.
                 'report-uri http://report-uri; '.
-                'worker-src worker.example.com \'self\'',
+                'worker-src worker.example.com \'self\'; '.
+                'report-to csp-endpoint',
                 self::UA_CHROME,
                 [
                     'default-src' => ['example.org', "'self'"],
@@ -80,6 +81,7 @@ class DirectiveSetTest extends TestCase
                     'connect-src' => ['connect.example.org', "'self'"],
                     'worker-src' => ['worker.example.com', "'self'"],
                     'report-uri' => ['http://report-uri'],
+                    'report-to' => 'csp-endpoint',
                     'base-uri' => ['base-uri.example.org', "'self'"],
                     'child-src' => ['child-src.example.org', "'self'"],
                     'form-action' => ['form-action.example.org', "'self'"],
@@ -106,7 +108,8 @@ class DirectiveSetTest extends TestCase
                 'style-src style.example.org \'self\'; '.
                 'upgrade-insecure-requests; '.
                 'report-uri http://report-uri; '.
-                'worker-src worker.example.com \'self\'',
+                'worker-src worker.example.com \'self\'; '.
+                'report-to csp-endpoint',
                 self::UA_FIREFOX,
                 [
                     'default-src' => ['example.org', "'self'"],
@@ -121,6 +124,7 @@ class DirectiveSetTest extends TestCase
                     'connect-src' => ['connect.example.org', "'self'"],
                     'worker-src' => ['worker.example.com', "'self'"],
                     'report-uri' => ['http://report-uri'],
+                    'report-to' => 'csp-endpoint',
                     'base-uri' => ['base-uri.example.org', "'self'"],
                     'child-src' => ['child-src.example.org', "'self'"],
                     'form-action' => ['form-action.example.org', "'self'"],
@@ -149,7 +153,8 @@ class DirectiveSetTest extends TestCase
                 'style-src style.example.org \'self\'; '.
                 'upgrade-insecure-requests; '.
                 'report-uri http://report-uri; '.
-                'worker-src worker.example.com \'self\'',
+                'worker-src worker.example.com \'self\'; '.
+                'report-to csp-endpoint',
                 self::UA_IE,
                 [
                     'default-src' => ['example.org', "'self'"],
@@ -163,6 +168,7 @@ class DirectiveSetTest extends TestCase
                     'connect-src' => ['connect.example.org', "'self'"],
                     'worker-src' => ['worker.example.com', "'self'"],
                     'report-uri' => ['http://report-uri'],
+                    'report-to' => 'csp-endpoint',
                     'base-uri' => ['base-uri.example.org', "'self'"],
                     'child-src' => ['child-src.example.org', "'self'"],
                     'form-action' => ['form-action.example.org', "'self'"],
@@ -192,7 +198,8 @@ class DirectiveSetTest extends TestCase
                 'style-src style.example.org \'self\'; '.
                 'upgrade-insecure-requests; '.
                 'report-uri http://report-uri; '.
-                'worker-src worker.example.com \'self\'',
+                'worker-src worker.example.com \'self\'; '.
+                'report-to csp-endpoint',
                 self::UA_OPERA,
                 [
                     'default-src' => ['example.org', "'self'"],
@@ -207,6 +214,7 @@ class DirectiveSetTest extends TestCase
                     'connect-src' => ['connect.example.org', "'self'"],
                     'worker-src' => ['worker.example.com', "'self'"],
                     'report-uri' => ['http://report-uri'],
+                    'report-to' => 'csp-endpoint',
                     'base-uri' => ['base-uri.example.org', "'self'"],
                     'child-src' => ['child-src.example.org', "'self'"],
                     'form-action' => ['form-action.example.org', "'self'"],
@@ -241,6 +249,7 @@ class DirectiveSetTest extends TestCase
                     'connect-src' => ['connect.example.org', "'self'"],
                     'worker-src' => ['worker.example.com', "'self'"],
                     'report-uri' => ['http://report-uri'],
+                    'report-to' => 'csp-endpoint',
                     'base-uri' => ['base-uri.example.org', "'self'"],
                     'child-src' => ['child-src.example.org', "'self'"],
                     'form-action' => ['form-action.example.org', "'self'"],
@@ -267,7 +276,8 @@ class DirectiveSetTest extends TestCase
                 'script-src script.example.org \'self\'; '.
                 'style-src style.example.org \'self\'; '.
                 'report-uri http://report-uri; '.
-                'worker-src worker.example.com \'self\'',
+                'worker-src worker.example.com \'self\'; '.
+                'report-to csp-endpoint',
                 self::UA_CHROME,
                 [
                     'default-src' => ['example.org', "'self'"],
@@ -281,6 +291,7 @@ class DirectiveSetTest extends TestCase
                     'connect-src' => ['connect.example.org', "'self'"],
                     'worker-src' => ['worker.example.com', "'self'"],
                     'report-uri' => ['http://report-uri'],
+                    'report-to' => 'csp-endpoint',
                     'base-uri' => ['base-uri.example.org', "'self'"],
                     'child-src' => ['child-src.example.org', "'self'"],
                     'form-action' => ['form-action.example.org', "'self'"],
