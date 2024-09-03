@@ -37,7 +37,11 @@ final class CSPNode extends Node
     public function __construct(Node $body, int $lineno, string $tag, string $directive, ?string $sha = null)
     {
         if (class_exists(CaptureNode::class)) {
-            $body = new CaptureNode($body, $lineno);
+            if (TwigVersion::needsNodeTag()) {
+                $body = new CaptureNode($body, $lineno, $tag);
+            } else {
+                $body = new CaptureNode($body, $lineno);
+            }
             $body->setAttribute('raw', true);
         }
 
