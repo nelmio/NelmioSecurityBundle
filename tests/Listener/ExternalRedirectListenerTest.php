@@ -92,14 +92,14 @@ class ExternalRedirectListenerTest extends ListenerTestCase
             '/override',
             'redirect_to',
             $target,
-            sprintf('/override?redirect_to=%s', urlencode($target)),
+            \sprintf('/override?redirect_to=%s', urlencode($target)),
         ];
 
         yield 'override with parameter and with forwardAs' => [
             '/override?param=value',
             'redirect_to',
             $target,
-            sprintf('/override?param=value&redirect_to=%s', urlencode($target)),
+            \sprintf('/override?param=value&redirect_to=%s', urlencode($target)),
         ];
     }
 

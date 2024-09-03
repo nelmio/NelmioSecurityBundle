@@ -22,6 +22,7 @@ namespace Nelmio\SecurityBundle\Twig\Node;
  * file that was distributed with this source code.
  */
 
+use Nelmio\SecurityBundle\Twig\Version as TwigVersion;
 use Twig\Attribute\YieldReady;
 use Twig\Compiler;
 use Twig\Node\CaptureNode;
@@ -36,11 +37,19 @@ final class CSPNode extends Node
     public function __construct(Node $body, int $lineno, string $tag, string $directive, ?string $sha = null)
     {
         if (class_exists(CaptureNode::class)) {
-            $body = new CaptureNode($body, $lineno, $tag);
+            if (TwigVersion::needsNodeTag()) {
+                $body = new CaptureNode($body, $lineno, $tag);
+            } else {
+                $body = new CaptureNode($body, $lineno);
+            }
             $body->setAttribute('raw', true);
         }
 
-        parent::__construct(['body' => $body], [], $lineno, $tag);
+        if (TwigVersion::needsNodeTag()) {
+            parent::__construct(['body' => $body], [], $lineno, $tag);
+        } else {
+            parent::__construct(['body' => $body], [], $lineno);
+        }
         $this->sha = $sha;
         $this->directive = $directive;
     }
@@ -74,7 +83,7 @@ final class CSPNode extends Node
         } elseif ('style-src' === $this->directive) {
             $compiler->write("\$this->env->getRuntime('Nelmio\SecurityBundle\Twig\CSPRuntime')->getListener()->addStyle(\$content);\n");
         } else {
-            throw new \InvalidArgumentException(sprintf('Unable to compile for directive "%s"', $this->directive));
+            throw new \InvalidArgumentException(\sprintf('Unable to compile for directive "%s"', $this->directive));
         }
 
         if (class_exists(CaptureNode::class)) {
