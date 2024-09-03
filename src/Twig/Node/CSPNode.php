@@ -74,7 +74,7 @@ final class CSPNode extends Node
         } elseif ('style-src' === $this->directive) {
             $compiler->write("\$this->env->getRuntime('Nelmio\SecurityBundle\Twig\CSPRuntime')->getListener()->addStyle(\$content);\n");
         } else {
-            throw new \InvalidArgumentException(sprintf('Unable to compile for directive "%s"', $this->directive));
+            throw new \InvalidArgumentException(\sprintf('Unable to compile for directive "%s"', $this->directive));
         }
 
         if (class_exists(CaptureNode::class)) {

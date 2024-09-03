@@ -243,7 +243,7 @@ final class DirectiveSet
             $normalizedSignatures['script-src'] = implode(
                 ' ',
                 array_map(static function (string $value): string {
-                    return sprintf('\'%s\'', $value);
+                    return \sprintf('\'%s\'', $value);
                 }, $signatures['script-src'])
             );
         }
@@ -252,7 +252,7 @@ final class DirectiveSet
             $normalizedSignatures['style-src'] = implode(
                 ' ',
                 array_map(static function (string $value): string {
-                    return sprintf('\'%s\'', $value);
+                    return \sprintf('\'%s\'', $value);
                 }, $signatures['style-src'])
             );
         }

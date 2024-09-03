@@ -58,7 +58,7 @@ final class ContentSecurityPolicyParser
         return array_map(
             static function (string $source) use ($keywords) {
                 if (\in_array($source, $keywords, true)) {
-                    return sprintf("'%s'", $source);
+                    return \sprintf("'%s'", $source);
                 }
 
                 return $source;

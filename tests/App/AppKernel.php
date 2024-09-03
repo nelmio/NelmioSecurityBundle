@@ -42,12 +42,12 @@ class AppKernel extends Kernel
 
     public function getCacheDir(): string
     {
-        return sprintf('%scache', $this->getBaseDir());
+        return \sprintf('%scache', $this->getBaseDir());
     }
 
     public function getLogDir(): string
     {
-        return sprintf('%slog', $this->getBaseDir());
+        return \sprintf('%slog', $this->getBaseDir());
     }
 
     public function getProjectDir(): string
@@ -62,16 +62,16 @@ class AppKernel extends Kernel
      */
     protected function configureRoutes($routes): void
     {
-        $routes->import(sprintf('%s/config/routes.yaml', $this->getProjectDir()));
+        $routes->import(\sprintf('%s/config/routes.yaml', $this->getProjectDir()));
     }
 
     protected function configureContainer(ContainerBuilder $containerBuilder, LoaderInterface $loader): void
     {
-        $loader->load(sprintf('%s/config/config.yaml', $this->getProjectDir()));
+        $loader->load(\sprintf('%s/config/config.yaml', $this->getProjectDir()));
     }
 
     private function getBaseDir(): string
     {
-        return sprintf('%s/nelmio-security-bundle/var/', sys_get_temp_dir());
+        return \sprintf('%s/nelmio-security-bundle/var/', sys_get_temp_dir());
     }
 }
