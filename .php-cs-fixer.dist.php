@@ -44,6 +44,7 @@ return $config->setRules([
     'static_lambda' => true,
     'strict_param' => true,
     'ternary_to_null_coalescing' => true,
+    'trailing_comma_in_multiline' => ['elements' => ['arrays']],
 ])
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
