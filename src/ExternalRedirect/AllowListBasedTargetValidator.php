@@ -45,7 +45,7 @@ final class AllowListBasedTargetValidator implements TargetValidator
         $host = parse_url($targetUrl, \PHP_URL_HOST);
 
         if (!\is_string($host)) {
-            throw new \InvalidArgumentException(sprintf('Url "%s" does not contain a host name.', $targetUrl));
+            throw new \InvalidArgumentException(\sprintf('Url "%s" does not contain a host name.', $targetUrl));
         }
 
         return preg_match('{^'.$this->allowList.'$}i', $host) > 0;

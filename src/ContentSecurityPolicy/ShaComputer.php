@@ -21,7 +21,7 @@ final class ShaComputer implements ShaComputerInterface
     public function __construct(string $type)
     {
         if (!\in_array($type, ['sha256', 'sha384', 'sha512'], true)) {
-            throw new \InvalidArgumentException(sprintf('Type "%s" is not supported', $type));
+            throw new \InvalidArgumentException(\sprintf('Type "%s" is not supported', $type));
         }
 
         $this->type = $type;
@@ -76,7 +76,7 @@ final class ShaComputer implements ShaComputerInterface
 
     private function compute(string $data): string
     {
-        return sprintf('%s-%s', $this->type, base64_encode($this->computeHash($data)));
+        return \sprintf('%s-%s', $this->type, base64_encode($this->computeHash($data)));
     }
 
     private function computeHash(string $data): string

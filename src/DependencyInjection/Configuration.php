@@ -229,7 +229,7 @@ final class Configuration implements ConfigurationInterface
                         ->always(function (array $values): array {
                             foreach ($values as $policy) {
                                 if (!\in_array($policy, $this->referrerPolicies, true)) {
-                                    throw new \InvalidArgumentException(sprintf('Unknown referrer policy "%s". Possible referrer policies are "%s".', $policy, implode('", "', $this->referrerPolicies)));
+                                    throw new \InvalidArgumentException(\sprintf('Unknown referrer policy "%s". Possible referrer policies are "%s".', $policy, implode('", "', $this->referrerPolicies)));
                                 }
                             }
 

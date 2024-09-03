@@ -37,11 +37,11 @@ final class Signer implements SignerInterface
         $this->separator = $separator;
 
         if (!\in_array($this->algo, hash_algos(), true)) {
-            throw new \InvalidArgumentException(sprintf("The supplied hashing algorithm '%s' is not supported by this system.", $this->algo));
+            throw new \InvalidArgumentException(\sprintf("The supplied hashing algorithm '%s' is not supported by this system.", $this->algo));
         }
 
         if (null !== $this->legacyAlgo && !\in_array($this->legacyAlgo, hash_algos(), true)) {
-            throw new \InvalidArgumentException(sprintf("The supplied legacy hashing algorithm '%s' is not supported by this system.", $this->legacyAlgo));
+            throw new \InvalidArgumentException(\sprintf("The supplied legacy hashing algorithm '%s' is not supported by this system.", $this->legacyAlgo));
         }
     }
 
@@ -78,7 +78,7 @@ final class Signer implements SignerInterface
     public function getVerifiedRawValue(string $signedValue): string
     {
         if (!$this->verifySignedValue($signedValue)) {
-            throw new \InvalidArgumentException(sprintf("The signature for '%s' was invalid.", $signedValue));
+            throw new \InvalidArgumentException(\sprintf("The signature for '%s' was invalid.", $signedValue));
         }
 
         $valueSignatureTuple = $this->splitSignatureFromSignedValue($signedValue);
