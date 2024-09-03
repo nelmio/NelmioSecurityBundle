@@ -20,3 +20,4 @@ parameters:
         - '#^Method Nelmio\\SecurityBundle\\Tests\\[^:]+Test::(provide\w+|\w+Provider)\(\) return type has no value type specified in iterable type (array|iterable)\.#'
     dynamicConstantNames:
         - Symfony\Component\HttpKernel\Kernel::VERSION
+        - Twig\Environment::VERSION_ID
