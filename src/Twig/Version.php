@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\Twig;
 
+use Twig\Environment;
+
 /**
  * @internal
  */
@@ -20,6 +22,10 @@ final class Version
 {
     public static function needsNodeTag(): bool
     {
-        return \Twig\Environment::VERSION_ID < 301200;
+        if (Environment::MAJOR_VERSION < 3) {
+            return true;
+        }
+
+        return Environment::MAJOR_VERSION === 3 && Environment::MINOR_VERSION < 12;
     }
 }
