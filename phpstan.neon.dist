@@ -28,4 +28,5 @@ parameters:
 
     dynamicConstantNames:
         - Symfony\Component\HttpKernel\Kernel::VERSION
-        - Twig\Environment::VERSION_ID
+        - Twig\Environment::MAJOR_VERSION
+        - Twig\Environment::MINOR_VERSION
