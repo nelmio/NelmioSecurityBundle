@@ -29,6 +29,8 @@ final class DirectiveSet
     public const TYPE_NO_VALUE = 'no-value';
     /** @internal */
     public const TYPE_SRC_LIST = 'source-list';
+    /** @internal */
+    public const TYPE_REPORTING_GROUP = 'reporting-group';
 
     /**
      * @var array<string, string>
@@ -54,6 +56,7 @@ final class DirectiveSet
         'report-uri' => self::TYPE_URI_REFERENCE,
         'worker-src' => self::TYPE_SRC_LIST,
         'prefetch-src' => self::TYPE_SRC_LIST,
+        'report-to' => self::TYPE_REPORTING_GROUP,
     ];
 
     /**

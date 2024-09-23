@@ -188,7 +188,8 @@ scripts or ``eval()`` you can use ``'unsafe-inline'`` and ``'unsafe-eval'``.
 
 Apart from content types, the policy also accepts ``report-uri`` which should be
 a URI where a browser can POST a `JSON payload`_ to whenever a policy directive
-is violated.
+is violated. As of v3.5, a ``report-to`` directive can be included as well to configure a
+reporting endpoint (see `Reporting API`_), which is intended to replace the deprecated ``report-uri`` directive.
 
 An optional ``content_types`` key lets you restrict the Content Security Policy
 headers only on some HTTP response given their content type.
@@ -961,3 +962,4 @@ For better security of your site please use ``no-referrer``, ``same-origin``,
 .. _`a non-standard nosniff header from Microsoft`: http://msdn.microsoft.com/en-us/library/ie/gg622941.aspx
 .. _`a non-standard X-XSS-Protection header from Microsoft`: http://blogs.msdn.com/b/ieinternals/archive/2011/01/31/controlling-the-internet-explorer-xss-filter-with-the-x-xss-protection-http-header.aspx
 .. _`referrer policies`: https://www.w3.org/TR/referrer-policy/#referrer-policies
+.. _`Reporting API`: https://www.w3.org/TR/reporting-1/

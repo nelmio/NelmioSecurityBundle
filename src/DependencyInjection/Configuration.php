@@ -197,7 +197,7 @@ final class Configuration implements ConfigurationInterface
                             ->then(static function (string $value): array { return [$value]; })
                         ->end()
                     ->end();
-            } elseif (DirectiveSet::TYPE_URI_REFERENCE === $type) {
+            } elseif (\in_array($type, [DirectiveSet::TYPE_URI_REFERENCE, DirectiveSet::TYPE_REPORTING_GROUP], true)) {
                 $children->scalarNode($name)
                     ->end();
             } else {
