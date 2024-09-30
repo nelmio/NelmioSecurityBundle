@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
 use Nelmio\SecurityBundle\EventListener\SignedCookieListener;
+use Nelmio\SecurityBundle\SignedCookie\LegacySignatureCookieTrackerInterface;
 use Nelmio\SecurityBundle\Signer;
 use PHPUnit\Framework\MockObject\Stub;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -133,5 +134,35 @@ class SignedCookieListenerTest extends ListenerTestCase
 
         $cookies = $response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY);
         $this->assertSame('bar', $cookies['']['/']['foo']->getValue());
+    }
+
+    public function testTrackerIsClearedOnRequest(): void
+    {
+        $tracker = $this->createMock(LegacySignatureCookieTrackerInterface::class);
+        $tracker->expects(self::once())
+            ->method('clear');
+
+        $listener = new SignedCookieListener($this->signer, ['*'], $tracker);
+        $request = Request::create('/');
+
+        $event = $this->createRequestEventWithKernel($this->kernel, $request, true);
+        $listener->onKernelRequest($event);
+    }
+
+    public function testFlagsLegacyCookieForUpgrade(): void
+    {
+        $tracker = $this->createMock(LegacySignatureCookieTrackerInterface::class);
+        $tracker->expects(self::once())
+            ->method('flagForUpgrade')
+            ->with('legacy');
+
+        $listener = new SignedCookieListener($this->signer, ['*'], $tracker);
+        $request = Request::create('/', Request::METHOD_GET, [], [
+            'legacy' => 'bar.d42bb85e6f20b90034d986ad68501a2d',
+            'foo' => 'bar.ca3756f81d3728a023bdc8a622c0906f373b795e',
+        ]);
+
+        $event = $this->createRequestEventWithKernel($this->kernel, $request, true);
+        $listener->onKernelRequest($event);
     }
 }
