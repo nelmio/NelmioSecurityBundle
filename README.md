@@ -7,8 +7,9 @@ The NelmioSecurityBundle provides additional security features for your Symfony 
 ## Installation
 
 Require the `nelmio/security-bundle` package in your composer.json and update your dependencies:
-
-    $ composer require nelmio/security-bundle
+```bash
+composer require nelmio/security-bundle
+```
 
 The bundle should be automatically enabled by [Symfony Flex][1]. If you don't use
 Flex, you'll need to enable it manually as explained [in the docs][2].
