@@ -51,7 +51,7 @@ final class SignedCookieListener
         $names = true === $this->signedCookieNames ? $request->cookies->keys() : $this->signedCookieNames;
         foreach ($names as $name) {
             if ($request->cookies->has($name)) {
-                $cookie = $request->cookies->get($name);
+                $cookie = $request->cookies->get($name, '');
                 if ($this->signer->verifySignedValue($cookie)) {
                     $request->cookies->set($name, $this->signer->getVerifiedRawValue($cookie));
                 } else {
