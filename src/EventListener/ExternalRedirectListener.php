@@ -17,6 +17,7 @@ use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
 use Nelmio\SecurityBundle\ExternalRedirect\ExternalRedirectResponse;
 use Nelmio\SecurityBundle\ExternalRedirect\TargetValidator;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -130,8 +131,15 @@ final class ExternalRedirectListener
 
     public function isExternalRedirect(string $source, string $target): bool
     {
-        // cleanup "\rhttp://foo.com/" and other null prefixeds to be scanned as valid internal redirect
-        $target = trim($target);
+        if (false !== ($i = strpos($target, '\\')) && $i < strcspn($target, '?#')) {
+            throw new BadRequestException('Invalid URI: A URI cannot contain a backslash.');
+        }
+        if (\strlen($target) !== strcspn($target, "\r\n\t")) {
+            throw new BadRequestException('Invalid URI: A URI cannot contain CR/LF/TAB characters.');
+        }
+        if ('' !== $target && (\ord($target[0]) <= 32 || \ord($target[-1]) <= 32)) {
+            throw new BadRequestException('Invalid URI: A URI must not start nor end with ASCII control characters or spaces.');
+        }
 
         // handle protocol-relative URLs that parse_url() doesn't like
         if ('//' === substr($target, 0, 2)) {
