@@ -16,6 +16,7 @@ namespace Nelmio\SecurityBundle\Tests\Listener;
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
 use Nelmio\SecurityBundle\ExternalRedirect\ExternalRedirectResponse;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -28,7 +29,11 @@ class ExternalRedirectListenerTest extends ListenerTestCase
     public function testRedirectMatcher(string $source, string $target, bool $expected): void
     {
         $listener = new ExternalRedirectListener(true);
-        $result = $listener->isExternalRedirect($source, $target);
+        try {
+            $result = $listener->isExternalRedirect($source, $target);
+        } catch (BadRequestException $e) {
+            $result = true;
+        }
         $this->assertSame($expected, $result);
     }
 
@@ -40,6 +45,8 @@ class ExternalRedirectListenerTest extends ListenerTestCase
             ['http://test.org/', 'https://test.org/foo', false],
             ['http://test.org/', '/foo', false],
             ['http://test.org/', 'foo', false],
+            ['http://test.org/', 'http://test.org/?\\', false],
+            ['http://test.org/', 'http://test.org/#\\', false],
 
             // external
             ['http://test.org/', 'http://example.org/foo', true],
@@ -50,6 +57,11 @@ class ExternalRedirectListenerTest extends ListenerTestCase
             ['http://test.org/', "\r".'http://foo.com/', true],
             ['http://test.org/', "\0\0".'http://foo.com/', true],
             ['http://test.org/', '  http://foo.com/', true],
+            ['http://test.org/', '  http://test.org/', true],
+            ['http://test.org/', "\r".'http://test.org/', true],
+            ['http://test.org/', "\0".'http://test.org/', true],
+            ['http://test.org/', 'http://\test.org/', true],
+            ['http://test.org/', 'http://evil.com\@test.org/', true],
         ];
     }
 
