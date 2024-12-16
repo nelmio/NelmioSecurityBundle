@@ -526,6 +526,12 @@ to `sha256` and `hash_algo` to `sha3-256`.
     The `legacy_hash_algo` option can expose your application to downgrade attacks and should only be used temporarily
     for backward compatibility.
 
+To shorten the timeframe with `legacy_hash_algo` enabled, the bundle can actively upgrade existing cookies with a legacy
+signature. To do this, your app needs to register a service that implements `UpgradedCookieBuilderInterface` and tag it
+with `nelmio_security.upgraded_cookie_builder` in the container. The service is responsible for creating the `Cookie`
+from the provided name and value, so your application can set the appropriate cookie properties, such as expiration and
+path.
+
 Clickjacking Protection
 -----------------------
 

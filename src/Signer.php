@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle;
 
+use Nelmio\SecurityBundle\SignedCookie\SignatureUpgradeCheckerInterface;
 use Nelmio\SecurityBundle\Signer\SignerInterface;
 
-final class Signer implements SignerInterface
+final class Signer implements SignerInterface, SignatureUpgradeCheckerInterface
 {
     private string $secret;
     private string $algo;
@@ -84,6 +85,21 @@ final class Signer implements SignerInterface
         $valueSignatureTuple = $this->splitSignatureFromSignedValue($signedValue);
 
         return $valueSignatureTuple[0];
+    }
+
+    public function needsUpgrade(string $signedValue): bool
+    {
+        if (null === $this->legacyAlgo) {
+            return false;
+        }
+        [$value, $signature] = $this->splitSignatureFromSignedValue($signedValue);
+        if (null === $signature) {
+            return false;
+        }
+
+        $expectedLegacySignature = $this->generateSignature($value, $this->legacyAlgo);
+
+        return hash_equals($expectedLegacySignature, $signature);
     }
 
     private function generateSignature(string $value, string $algo): string
