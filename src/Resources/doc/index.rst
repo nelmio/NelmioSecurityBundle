@@ -50,6 +50,17 @@ you're using an older Symfony version. In this case, you should have an
         // ...
     }
 
+In order to inject ``ContentSecurityPolicyListener`` in a service, it needs to be manually configured:
+
+.. code-block:: yaml
+
+    # config/services.yaml
+    services:
+        App\CustomService:
+            arguments:
+                - '@nelmio_security.csp_listener'
+
+
 Features
 --------
 
