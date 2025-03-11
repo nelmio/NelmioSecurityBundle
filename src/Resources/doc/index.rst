@@ -114,7 +114,7 @@ should read on the next sections for detailed recommendations:
     nelmio_security:
         # signs/verifies all cookies
         signed_cookie:
-            names: ['*']
+            names: ['*'] # Beware: Login won't work if all cookies are signed.
         # prevents framing of the entire site
         clickjacking:
             paths:
@@ -503,7 +503,7 @@ later, you can specify ``*`` as a cookie name to have all cookies signed automat
     # config/packages/nelmio_security.yaml
     nelmio_security:
         signed_cookie:
-            names: ['*']
+            names: ['*'] # Beware: Login won't work if all cookies are signed.
 
 Additional, optional configuration settings:
 
