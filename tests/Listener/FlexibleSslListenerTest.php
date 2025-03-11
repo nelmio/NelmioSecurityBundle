@@ -64,7 +64,6 @@ class FlexibleSslListenerTest extends ListenerTestCase
         $this->listener->onKernelRequest($event);
 
         $this->assertTrue($event->hasResponse());
-        $this->assertInstanceOf(Response::class, $event->getResponse());
         $this->assertTrue($event->getResponse()->isRedirection());
     }
 

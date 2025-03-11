@@ -257,7 +257,7 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
             trigger_deprecation(
                 'nelmio/security-bundle',
                 '3.5',
-                sprintf(
+                \sprintf(
                     'Passing %s directly to the %s constructor is deprecated and will be removed in 4.0. Pass a %s instead.',
                     DirectiveSet::class,
                     self::class,
@@ -268,6 +268,6 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
             return new LegacyDirectiveSetBuilder($builderOrDirectiveSet);
         }
 
-        throw new \InvalidArgumentException(sprintf('The %s constructor %s expects a or %s.', self::class, DirectiveSetBuilderInterface::class, DirectiveSet::class));
+        throw new \InvalidArgumentException(\sprintf('The %s constructor %s expects a or %s.', self::class, DirectiveSetBuilderInterface::class, DirectiveSet::class));
     }
 }
