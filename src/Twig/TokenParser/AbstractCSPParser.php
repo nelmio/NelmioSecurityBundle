@@ -42,7 +42,7 @@ abstract class AbstractCSPParser extends AbstractTokenParser
 
         $sha = null;
         if ($body instanceof TextNode) {
-            assert(is_string($body->getAttribute('data')));
+            \assert(\is_string($body->getAttribute('data')));
             $sha = $this->computeSha($body->getAttribute('data'));
         }
 
