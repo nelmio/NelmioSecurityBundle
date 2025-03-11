@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\EventListener;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSetBuilderInterface;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\LegacyDirectiveSetBuilder;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGeneratorInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\ShaComputerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +26,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictableListener
 {
-    private DirectiveSet $report;
-    private DirectiveSet $enforce;
+    private DirectiveSetBuilderInterface $reportDirectiveSetBuilder;
+    private DirectiveSetBuilderInterface $enforceDirectiveSetBuilder;
     private bool $compatHeaders;
 
     /**
@@ -45,12 +47,14 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
     private ?RequestMatcherInterface $requestMatcher;
 
     /**
-     * @param list<string> $hosts
-     * @param list<string> $contentTypes
+     * @param DirectiveSetBuilderInterface|DirectiveSet $reportDirectiveSetBuilder
+     * @param DirectiveSetBuilderInterface|DirectiveSet $enforceDirectiveSetBuilder
+     * @param list<string>                              $hosts
+     * @param list<string>                              $contentTypes
      */
     public function __construct(
-        DirectiveSet $report,
-        DirectiveSet $enforce,
+        $reportDirectiveSetBuilder,
+        $enforceDirectiveSetBuilder,
         NonceGeneratorInterface $nonceGenerator,
         ShaComputerInterface $shaComputer,
         bool $compatHeaders = true,
@@ -59,8 +63,8 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         ?RequestMatcherInterface $requestMatcher = null
     ) {
         parent::__construct($contentTypes);
-        $this->report = $report;
-        $this->enforce = $enforce;
+        $this->reportDirectiveSetBuilder = $this->ensureDirectiveSetBuilder($reportDirectiveSetBuilder);
+        $this->enforceDirectiveSetBuilder = $this->ensureDirectiveSetBuilder($enforceDirectiveSetBuilder);
         $this->compatHeaders = $compatHeaders;
         $this->hosts = $hosts;
         $this->nonceGenerator = $nonceGenerator;
@@ -110,14 +114,20 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         $this->sha['style-src'][] = $this->shaComputer->computeForStyle($html);
     }
 
+    /**
+     * @deprecated Use `nelmio_security.directive_set_builder.report` instead.
+     */
     public function getReport(): DirectiveSet
     {
-        return $this->report;
+        return $this->reportDirectiveSetBuilder->buildDirectiveSet();
     }
 
+    /**
+     * @deprecated Use `nelmio_security.directive_set_builder.enforce` instead.
+     */
     public function getEnforcement(): DirectiveSet
     {
-        return $this->enforce;
+        return $this->enforceDirectiveSetBuilder->buildDirectiveSet();
     }
 
     public function getNonce(string $usage): string
@@ -169,10 +179,10 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
             }
 
             if (!$response->headers->has('Content-Security-Policy-Report-Only')) {
-                $response->headers->add($this->buildHeaders($request, $this->report, true, $this->compatHeaders, $signatures));
+                $response->headers->add($this->buildHeaders($request, $this->reportDirectiveSetBuilder->buildDirectiveSet(), true, $this->compatHeaders, $signatures));
             }
             if (!$response->headers->has('Content-Security-Policy')) {
-                $response->headers->add($this->buildHeaders($request, $this->enforce, false, $this->compatHeaders, $signatures));
+                $response->headers->add($this->buildHeaders($request, $this->enforceDirectiveSetBuilder->buildDirectiveSet(), false, $this->compatHeaders, $signatures));
             }
         }
 
@@ -232,5 +242,32 @@ final class ContentSecurityPolicyListener extends AbstractContentTypeRestrictabl
         }
 
         return $headers;
+    }
+
+    /**
+     * @param DirectiveSetBuilderInterface|DirectiveSet $builderOrDirectiveSet
+     */
+    private function ensureDirectiveSetBuilder($builderOrDirectiveSet): DirectiveSetBuilderInterface
+    {
+        if ($builderOrDirectiveSet instanceof DirectiveSetBuilderInterface) {
+            return $builderOrDirectiveSet;
+        }
+
+        if ($builderOrDirectiveSet instanceof DirectiveSet) {
+            trigger_deprecation(
+                'nelmio/security-bundle',
+                '3.5',
+                sprintf(
+                    'Passing %s directly to the %s constructor is deprecated and will be removed in 4.0. Pass a %s instead.',
+                    DirectiveSet::class,
+                    self::class,
+                    DirectiveSetBuilderInterface::class
+                )
+            );
+
+            return new LegacyDirectiveSetBuilder($builderOrDirectiveSet);
+        }
+
+        throw new \InvalidArgumentException(sprintf('The %s constructor %s expects a or %s.', self::class, DirectiveSetBuilderInterface::class, DirectiveSet::class));
     }
 }

@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\DependencyInjection;
 
-use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ConfigurationDirectiveSetBuilder;
+use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSetBuilderInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -59,11 +60,17 @@ final class NelmioSecurityExtension extends Extension
 
             $cspConfig = $config['csp'];
 
-            $enforceDefinition = $this->buildDirectiveSetDefinition($container, $cspConfig, 'enforce');
-            $reportDefinition = $this->buildDirectiveSetDefinition($container, $cspConfig, 'report');
+            $enforceDefinition = $this->createDirectiveSetBuilder($container, $cspConfig, 'enforce');
+            $reportDefinition = $this->createDirectiveSetBuilder($container, $cspConfig, 'report');
+
+            $container->addDefinitions([
+                'nelmio_security.directive_set_builder.report' => $reportDefinition,
+                'nelmio_security.directive_set_builder.enforce' => $enforceDefinition,
+            ]);
 
             $cspListenerDefinition = $container->getDefinition('nelmio_security.csp_listener');
-            $cspListenerDefinition->setArguments([$reportDefinition, $enforceDefinition, new Reference('nelmio_security.nonce_generator'), new Reference('nelmio_security.sha_computer'), (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']]);
+            $cspListenerDefinition->setArguments([new Reference('nelmio_security.directive_set_builder.report'), new Reference('nelmio_security.directive_set_builder.enforce'), new Reference('nelmio_security.nonce_generator'), new Reference('nelmio_security.sha_computer'), (bool) $cspConfig['compat_headers'], $cspConfig['hosts'], $cspConfig['content_types']]);
+
             $container->setParameter('nelmio_security.csp.hash_algorithm', $cspConfig['hash']['algorithm']);
 
             if (isset($cspConfig['request_matcher'])) {
@@ -188,11 +195,11 @@ final class NelmioSecurityExtension extends Extension
      * } $config
      * @phpstan-param 'enforce'|'report' $type
      */
-    private function buildDirectiveSetDefinition(ContainerBuilder $container, array $config, string $type): Definition
+    private function createDirectiveSetBuilder(ContainerBuilder $container, array $config, string $type): Definition
     {
-        $directiveDefinition = new Definition(DirectiveSet::class);
+        $builderDefinition = new Definition(DirectiveSetBuilderInterface::class);
 
-        $directiveDefinition->setFactory([DirectiveSet::class, 'fromConfig']);
+        $builderDefinition->setFactory([ConfigurationDirectiveSetBuilder::class, 'create']);
 
         $pmDefinition = $container->getDefinition('nelmio_security.policy_manager');
 
@@ -207,8 +214,8 @@ final class NelmioSecurityExtension extends Extension
             $pmDefinition->setArguments([new Reference('nelmio_security.ua_parser')]);
         }
 
-        $directiveDefinition->setArguments([$pmDefinition, $config, $type]);
+        $builderDefinition->setArguments([$pmDefinition, $config, $type]);
 
-        return $directiveDefinition;
+        return $builderDefinition;
     }
 }
