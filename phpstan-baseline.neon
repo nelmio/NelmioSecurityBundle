@@ -71,3 +71,19 @@ parameters:
 			"""
 			count: 1
 			path: tests/Listener/XssProtectionListenerTest.php
+
+		-
+			message: """
+				#^Call to deprecated method getEnforcement\\(\\) of class Nelmio\\\\SecurityBundle\\\\EventListener\\\\ContentSecurityPolicyListener\\:
+				Use `nelmio_security\\.directive_set_builder\\.enforce` instead\\.$#
+			"""
+			count: 1
+			path: tests/Listener/ContentSecurityPolicyListenerTest.php
+
+		-
+			message: """
+				#^Call to deprecated method getReport\\(\\) of class Nelmio\\\\SecurityBundle\\\\EventListener\\\\ContentSecurityPolicyListener\\:
+				Use `nelmio_security\\.directive_set_builder\\.report` instead\\.$#
+			"""
+			count: 1
+			path: tests/Listener/ContentSecurityPolicyListenerTest.php

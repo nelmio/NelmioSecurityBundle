@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\Tests\Listener;
 
+use Nelmio\SecurityBundle\ContentSecurityPolicy\ConfigurationDirectiveSetBuilder;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSetBuilderInterface;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\NonceGeneratorInterface;
@@ -479,6 +480,42 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
 
         $this->assertSame('script-src https://report.deprecation-test.example.com', $response->headers->get('Content-Security-Policy-Report-Only'));
         $this->assertSame('script-src https://enforce.deprecation-test.example.com', $response->headers->get('Content-Security-Policy'));
+    }
+
+    public function testChangesThroughGetReportAreReflectedInTheHeader(): void
+    {
+        $listener = new ContentSecurityPolicyListener(
+            new ConfigurationDirectiveSetBuilder(new PolicyManager(), [], 'report'),
+            new ConfigurationDirectiveSetBuilder(new PolicyManager(), [], 'enforce'),
+            $this->nonceGenerator,
+            $this->shaComputer
+        );
+
+        $report = $listener->getReport();
+        $report->setDirective('script-src', 'https://example.test');
+
+        $response = $this->callListener($listener, '/', true);
+
+        $header = $response->headers->get('Content-Security-Policy-Report-Only');
+        $this->assertSame('script-src https://example.test', $header);
+    }
+
+    public function testChangesThroughGetEnforcementAreReflectedInTheHeader(): void
+    {
+        $listener = new ContentSecurityPolicyListener(
+            new ConfigurationDirectiveSetBuilder(new PolicyManager(), [], 'report'),
+            new ConfigurationDirectiveSetBuilder(new PolicyManager(), [], 'enforce'),
+            $this->nonceGenerator,
+            $this->shaComputer
+        );
+
+        $enforce = $listener->getEnforcement();
+        $enforce->setDirective('script-src', 'https://example.test');
+
+        $response = $this->callListener($listener, '/', true);
+
+        $header = $response->headers->get('Content-Security-Policy');
+        $this->assertSame('script-src https://example.test', $header);
     }
 
     /**
