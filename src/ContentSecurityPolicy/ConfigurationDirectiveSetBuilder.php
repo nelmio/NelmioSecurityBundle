@@ -15,20 +15,7 @@ namespace Nelmio\SecurityBundle\ContentSecurityPolicy;
 
 class ConfigurationDirectiveSetBuilder implements DirectiveSetBuilderInterface
 {
-    private PolicyManager $policyManager;
-
-    /**
-     * @phpstan-var array{
-     *       enforce?: array<string, mixed>,
-     *       report?: array<string, mixed>,
-     *   } $config
-     */
-    private array $config;
-
-    /**
-     * @phpstan-var 'enforce'|'report' $kind
-     */
-    private string $kind;
+    private DirectiveSet $directiveSet;
 
     /**
      * @phpstan-param array{
@@ -39,14 +26,12 @@ class ConfigurationDirectiveSetBuilder implements DirectiveSetBuilderInterface
      */
     public function __construct(PolicyManager $policyManager, array $config, string $kind)
     {
-        $this->policyManager = $policyManager;
-        $this->config = $config;
-        $this->kind = $kind;
+        $this->directiveSet = DirectiveSet::fromConfig($policyManager, $config, $kind);
     }
 
     public function buildDirectiveSet(): DirectiveSet
     {
-        return DirectiveSet::fromConfig($this->policyManager, $this->config, $this->kind);
+        return $this->directiveSet;
     }
 
     /**
