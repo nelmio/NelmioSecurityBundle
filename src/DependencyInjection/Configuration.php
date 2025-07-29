@@ -66,6 +66,8 @@ final class Configuration implements ConfigurationInterface
                 ->append($this->addCspNode())
 
                 ->append($this->addReferrerPolicyNode())
+
+                ->append($this->addCrossOriginPolicyNodes())
             ->end()
         ->end();
 
@@ -388,6 +390,32 @@ final class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('cookie_name')->defaultValue('auth')->end()
                 ->booleanNode('unsecured_logout')->defaultFalse()->end()
+            ->end();
+
+        return $node;
+    }
+
+    private function addCrossOriginPolicyNodes(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('cross_origin_policy');
+        $node
+            ->canBeEnabled()
+            ->children()
+                ->enumNode('coep')
+                    ->defaultValue('unsafe-none')
+                    ->values(['unsafe-none', 'require-corp', 'credentialless'])
+                    ->info('Cross-Origin-Embedder-Policy (COEP) header value')
+                ->end()
+                ->enumNode('coop')
+                    ->defaultValue('unsafe-none')
+                    ->values(['unsafe-none', 'same-origin-allow-popups', 'same-origin', 'noopener-allow-popups'])
+                    ->info('Cross-Origin-Opener-Policy (COOP) header value')
+                ->end()
+                ->enumNode('corp')
+                    ->defaultValue('same-site')
+                    ->values(['same-site', 'same-origin', 'cross-origin'])
+                    ->info('Cross-Origin Resource Policy (CORP) header value')
+                ->end()
             ->end();
 
         return $node;

@@ -368,12 +368,12 @@ class DirectiveSetTest extends TestCase
     /**
      * @dataProvider provideConfigAndSignatures
      *
+     * @param array<string, list<string>> $signatures
+     *
      * @phpstan-param array<string, array{
      *     enforce?: array<string, mixed>,
      *     report?: array<string, mixed>,
      * }> $config
-     *
-     * @param array<string, list<string>> $signatures
      */
     public function testBuildHeaderValueWithInlineSignatures(string $expected, array $config, array $signatures): void
     {

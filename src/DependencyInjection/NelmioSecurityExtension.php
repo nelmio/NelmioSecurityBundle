@@ -176,6 +176,13 @@ final class NelmioSecurityExtension extends Extension
             $loader->load('referrer_policy.php');
             $container->setParameter('nelmio_security.referrer_policy.policies', $config['referrer_policy']['policies']);
         }
+
+        if ($this->isConfigEnabled($container, $config['cross_origin_policy'])) {
+            $loader->load('cross_origin_policy.php');
+            $container->setParameter('nelmio_security.cross_origin_policy.coep', $config['cross_origin_policy']['coep']);
+            $container->setParameter('nelmio_security.cross_origin_policy.coop', $config['cross_origin_policy']['coop']);
+            $container->setParameter('nelmio_security.cross_origin_policy.corp', $config['cross_origin_policy']['corp']);
+        }
     }
 
     /**

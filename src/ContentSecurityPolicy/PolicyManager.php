@@ -51,9 +51,9 @@ final class PolicyManager
                 return $this->getFirefoxDirectives();
             case UserAgentParserInterface::BROWSER_SAFARI:
                 return $this->getLevel1();
+            default:
+                return [];
         }
-
-        return [];
     }
 
     /**

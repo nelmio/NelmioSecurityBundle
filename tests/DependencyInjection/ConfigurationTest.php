@@ -154,6 +154,25 @@ class ConfigurationTest extends TestCase
         ], $config['referrer_policy']['policies']);
     }
 
+    public function testCrossOriginPolicy(): void
+    {
+        $config = $this->processYamlConfiguration(
+            "cross_origin_policy:\n".
+            "  enabled: true\n".
+            "  coep: credentialless\n".
+            "  coop: same-origin-allow-popups\n".
+            "  corp: same-site\n"
+        );
+
+        $this->assertIsArray($config['cross_origin_policy']);
+        $this->assertIsString($config['cross_origin_policy']['coep']);
+        $this->assertSame('credentialless', $config['cross_origin_policy']['coep']);
+        $this->assertIsString($config['cross_origin_policy']['coop']);
+        $this->assertSame('same-origin-allow-popups', $config['cross_origin_policy']['coop']);
+        $this->assertIsString($config['cross_origin_policy']['corp']);
+        $this->assertSame('same-site', $config['cross_origin_policy']['corp']);
+    }
+
     public function testReferrerPolicyInvalid(): void
     {
         $this->expectException(InvalidConfigurationException::class);
