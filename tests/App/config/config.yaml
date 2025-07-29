@@ -21,6 +21,12 @@ nelmio_security:
       - 'no-referrer'
       - 'strict-origin-when-cross-origin'
 
+  cross_origin_policy:
+    enabled: true
+    coep: credentialless
+    coop: same-origin
+    corp: cross-origin
+
   csp:
     enabled: true
     hosts: [ ]
