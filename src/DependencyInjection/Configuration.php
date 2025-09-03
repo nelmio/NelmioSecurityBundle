@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\DependencyInjection;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
+use Nelmio\SecurityBundle\EventListener\PermissionsPolicyListener;
 use Psr\Log\LogLevel;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -66,6 +67,8 @@ final class Configuration implements ConfigurationInterface
                 ->append($this->addCspNode())
 
                 ->append($this->addReferrerPolicyNode())
+
+                ->append($this->addPermissionsPolicyNode())
             ->end()
         ->end();
 
@@ -391,5 +394,87 @@ final class Configuration implements ConfigurationInterface
             ->end();
 
         return $node;
+    }
+
+    private function addPermissionsPolicyNode(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('permissions_policy');
+
+        $validDirectives = [
+            'camera',
+            'microphone',
+            'geolocation',
+            'fullscreen',
+            'payment',
+            'accelerometer',
+            'gyroscope',
+            'magnetometer',
+            'usb',
+            'autoplay',
+            'encrypted-media',
+            'picture-in-picture',
+            'display-capture',
+            'web-share',
+            'clipboard-read',
+            'clipboard-write',
+            'gamepad',
+            'speaker-selection',
+            'conversion-measurement',
+            'focus-without-user-activation',
+            'hid',
+            'idle-detection',
+            'local-fonts',
+            'midi',
+            'otp-credentials',
+            'publickey-credentials-get',
+            'screen-wake-lock',
+            'serial',
+            'storage-access',
+            'window-placement',
+            'xr-spatial-tracking',
+            'interest-cohort'
+        ];
+
+        $node->canBeEnabled();
+        $policiesNode = $node
+            ->children()
+                ->arrayNode('policies')
+                    ->children();
+
+        foreach ($validDirectives as $directive) {
+            $configKey = \str_replace('-', '_', $directive);
+
+            $policiesNode
+                ->arrayNode($configKey)
+                    ->scalarPrototype()->end()
+                        ->defaultValue([])
+                        ->validate()
+                            ->ifTrue(static function (array $values): bool {
+                                if ([] === $values) {
+                                    return false;
+                                }
+
+                                foreach ($values as $value) {
+                                    if (\in_array($value, PermissionsPolicyListener::ALLOWED_VALUES, true)) {
+                                        return false;
+                                    }
+
+                                    if (0 !== \preg_match('/^https?:\/\//', $value)) {
+                                        return false;
+                                    }
+                                }
+
+                                return true;
+                            })
+                            ->thenInvalid('Possible header values are *, self, src or a valid url starting with https:// got: %s')
+                        ->end()
+                    ->end()
+                ->end();
+        }
+
+        return $policiesNode
+            ->end()
+            ->end()
+            ->end();
     }
 }
