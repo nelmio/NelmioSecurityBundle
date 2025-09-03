@@ -57,6 +57,48 @@ final class PermissionsPolicyListenerTest extends ListenerTestCase
         $this->assertNull($response->headers->get('Permissions-Policy'));
     }
 
+    public function testFirefoxUserAgentSkipsPermissionsPolicy(): void
+    {
+        $listener = new PermissionsPolicyListener(['camera' => ['self']]);
+
+        $request = Request::create('/');
+        $request->headers->set('user-agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0');
+        $response = new Response();
+
+        $event = $this->createResponseEvent($request, true, $response);
+        $listener->onKernelResponse($event);
+
+        $this->assertNull($response->headers->get('Permissions-Policy'));
+    }
+
+    public function testSafariUserAgentSkipsPermissionsPolicy(): void
+    {
+        $listener = new PermissionsPolicyListener(['camera' => ['self']]);
+
+        $request = Request::create('/');
+        $request->headers->set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15');
+        $response = new Response();
+
+        $event = $this->createResponseEvent($request, true, $response);
+        $listener->onKernelResponse($event);
+
+        $this->assertNull($response->headers->get('Permissions-Policy'));
+    }
+
+    public function testCaseSensitiveUserAgentMatching(): void
+    {
+        $listener = new PermissionsPolicyListener(['camera' => ['self']]);
+
+        $request = Request::create('/');
+        $request->headers->set('user-agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 FIREFOX/91.0');
+        $response = new Response();
+
+        $event = $this->createResponseEvent($request, true, $response);
+        $listener->onKernelResponse($event);
+
+        $this->assertNull($response->headers->get('Permissions-Policy'));
+    }
+
     private function callListener(PermissionsPolicyListener $listener, string $path, bool $mainReq): Response
     {
         $request = Request::create($path);

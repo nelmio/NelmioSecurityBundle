@@ -52,17 +52,18 @@ final class PermissionsPolicyListener
             return;
         }
 
+        // Firefox and Safari do not support Permissions-Policy header in general
+        $userAgent = \strtolower($e->getRequest()->headers->get('user-agent', ''));
+        if (0 !== \preg_match('/\b(firefox|safari)\b/', $userAgent)) {
+            return;
+        }
+
         $response = $e->getResponse();
 
         $policies = [];
         foreach ($this->policies as $name => $values) {
             $values = \array_map(static fn(string $value): string => \in_array($value, self::ALLOWED_VALUES, true) ? $value : \sprintf('"%s"', $value), $values);
-
             $policies[] = \sprintf('%s=(%s)', \str_replace('_', '-', $name), \implode(' ', $values));
-        }
-
-        if ([] === $policies) {
-            return;
         }
 
         $response->headers->set('Permissions-Policy', \implode(', ', $policies));
