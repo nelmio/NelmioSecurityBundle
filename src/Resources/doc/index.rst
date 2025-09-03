@@ -136,7 +136,7 @@ should read on the next sections for detailed recommendations:
                 level1_fallback: false
                 browser_adaptive:
                     enabled: false
-                report-uri: '%router.request_context.base_url%/nelmio/csp/report'
+                report-uri: '%router.request_context.base_url%/my-csp-report'
                 default-src:
                     - 'none'
                 script-src:
@@ -230,7 +230,7 @@ options are no longer used.
                 # this is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
                 browser_adaptive:
                     enabled: false
-                report-uri: '%router.request_context.base_url%/nelmio/csp/report'
+                report-uri: '%router.request_context.base_url%/my-csp-report'
                 default-src: [ 'self' ]
                 frame-src: [ 'https://www.youtube.com' ]
                 script-src:
@@ -249,7 +249,7 @@ options are no longer used.
                 # this is a port of https://github.com/twitter/secureheaders/blob/83a564a235c8be1a8a3901373dbc769da32f6ed7/lib/secure_headers/headers/policy_management.rb#L97
                 browser_adaptive:
                     enabled: true
-                report-uri: '%router.request_context.base_url%/nelmio/csp/report'
+                report-uri: '%router.request_context.base_url%/my-csp-report'
                 script-src:
                     - 'self'
 
@@ -260,19 +260,19 @@ The above configuration would enforce the following policy:
 * JavaScript from same origin and from inline ``<script>`` tags
 * Images from same origin, ``facebook.com`` and ``flickr.com``
 
-Any violation of the enforced policy would be posted to ``/nelmio/csp/report``.
+Any violation of the enforced policy would be posted to ``/my-csp-report``.
 
 In addition, the configuration only reports but doesn't enforce the policy that
 JavaScript may only be executed when it comes from the same server.
 
 The bundle provides a default reporting implementation that logs violations as notices
-to the default logger, to enable add the following to your routing.yml:
+to the default logger, to enable add the following to your ``routes.yaml``:
 
 .. code-block:: yaml
 
-    # config/routing.yaml
+    # config/routes.yaml
     nelmio_security:
-        path:     /nelmio/csp/report
+        path:     /my-csp-report
         defaults: { _controller: nelmio_security.csp_reporter_controller::indexAction }
         methods:  [POST]
 
@@ -439,13 +439,13 @@ Reporting
 ~~~~~~~~~
 
 Using the ``report-uri`` you can easily collect violation using the ``ContentSecurityPolicyController``.
-Here's an configuration example using ``routing.yml``:
+Here's an configuration example using ``routes.yaml``:
 
 .. code-block:: yaml
 
     # config/routes.yaml
     csp_report:
-        path: /csp/report
+        path: /my-csp-report
         methods: [POST]
         defaults: { _controller: nelmio_security.csp_reporter_controller::indexAction }
 
