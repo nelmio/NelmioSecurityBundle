@@ -207,4 +207,75 @@ class ConfigurationTest extends TestCase
 
         return $processor->processConfiguration($configDefinition, [$parsedYaml]);
     }
+
+    public function testPermissionsPolicyWithValidConfiguration(): void
+    {
+        $config = $this->processYamlConfiguration(
+            "permissions_policy:\n".
+            "  enabled: true\n".
+            "  policies:\n".
+            "    camera: ['self']\n".
+            "    microphone: []\n".
+            "    geolocation: ['*']\n".
+            "    encrypted_media: ['self', 'https://trusted-cdn.com']\n".
+            "    interest_cohort: []\n"
+        );
+
+        $this->assertIsArray($config['permissions_policy']);
+        $this->assertTrue($config['permissions_policy']['enabled']);
+        $this->assertIsArray($config['permissions_policy']['policies']);
+
+        $policies = $config['permissions_policy']['policies'];
+        $this->assertSame(['self'], $policies['camera']);
+        $this->assertSame([], $policies['microphone']);
+        $this->assertSame(['*'], $policies['geolocation']);
+        $this->assertSame(['self', 'https://trusted-cdn.com'], $policies['encrypted_media']);
+        $this->assertSame([], $policies['interest_cohort']);
+    }
+
+    public function testPermissionsPolicyWithEmptyPolicies(): void
+    {
+        $config = $this->processYamlConfiguration(
+            "permissions_policy:\n".
+            "  enabled: true\n".
+            "  policies: {}\n"
+        );
+
+        $this->assertIsArray($config['permissions_policy']);
+        $this->assertTrue($config['permissions_policy']['enabled']);
+        $this->assertIsArray($config['permissions_policy']['policies']);
+    }
+
+    public function testPermissionsPolicyWithInvalidValue(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Possible header values are *, self, src or a valid url starting with https://');
+
+        $this->processYamlConfiguration(
+            "permissions_policy:\n".
+            "  enabled: true\n".
+            "  policies:\n".
+            "    camera: ['invalid-value']\n"
+        );
+    }
+
+    public function testPermissionsPolicyWithAllValidValues(): void
+    {
+        $config = $this->processYamlConfiguration(
+            "permissions_policy:\n".
+            "  policies:\n".
+            "    camera: ['*']\n".
+            "    microphone: ['self']\n".
+            "    geolocation: ['src']\n".
+            "    fullscreen: ['https://example.com']\n".
+            "    payment: ['https://secure-payment.com:8443']\n"
+        );
+
+        $policies = $config['permissions_policy']['policies'];
+        $this->assertSame(['*'], $policies['camera']);
+        $this->assertSame(['self'], $policies['microphone']);
+        $this->assertSame(['src'], $policies['geolocation']);
+        $this->assertSame(['https://example.com'], $policies['fullscreen']);
+        $this->assertSame(['https://secure-payment.com:8443'], $policies['payment']);
+    }
 }

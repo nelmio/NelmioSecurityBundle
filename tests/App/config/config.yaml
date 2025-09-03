@@ -63,3 +63,17 @@ nelmio_security:
         '/^https?:\/\/\d+\.\d+\.\d+\.\d+(:\d+)*/': '*'
         'maxcdn.bootstrapcdn.com': '*'
         'www.gstatic.com': [ 'media-src', 'img-src' ]
+
+  permissions_policy:
+    enabled: true
+    policies:
+      # Block camera access completely
+      camera: []
+      # Allow microphone only for same origin
+      microphone: ['self']
+      # Allow geolocation from any origin
+      geolocation: ['*']
+      # Allow fullscreen from self and specific domain
+      fullscreen: ['self', 'https://trusted-domain.com']
+      # Block interest-cohort (FLoC)
+      interest_cohort: []

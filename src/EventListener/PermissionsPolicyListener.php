@@ -48,6 +48,10 @@ final class PermissionsPolicyListener
             return;
         }
 
+        if ([] === $this->policies) {
+            return;
+        }
+
         $response = $e->getResponse();
 
         $policies = [];
