@@ -176,6 +176,11 @@ final class NelmioSecurityExtension extends Extension
             $loader->load('referrer_policy.php');
             $container->setParameter('nelmio_security.referrer_policy.policies', $config['referrer_policy']['policies']);
         }
+
+        if ($this->isConfigEnabled($container, $config['permissions_policy'])) {
+            $loader->load('permissions_policy.php');
+            $container->setParameter('nelmio_security.permissions_policy.policies', $config['permissions_policy']['policies']);
+        }
     }
 
     /**
