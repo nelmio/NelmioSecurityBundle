@@ -39,7 +39,8 @@
         "symfony/cache": "^5.4 || ^6.3 || ^7.0",
         "symfony/phpunit-bridge": "^6.3 || ^7.0",
         "symfony/twig-bundle": "^5.4 || ^6.3 || ^7.0",
-        "twig/twig": "^2.10 || ^3.0"
+        "twig/twig": "^2.10 || ^3.0",
+        "friendsofphp/php-cs-fixer": "^3.87"
     },
     "autoload": {
         "psr-4": {
