@@ -60,6 +60,6 @@
     "scripts": {
         "phpstan": "phpstan",
         "test": "phpunit",
-        "cs": "php-cs-fixer fix --diff --dry-run"
+        "cs": "php-cs-fixer fix --diff"
     }
 }
