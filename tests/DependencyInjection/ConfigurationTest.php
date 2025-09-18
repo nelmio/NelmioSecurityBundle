@@ -185,29 +185,6 @@ class ConfigurationTest extends TestCase
         $this->assertSame('https://report.com/endpoint', $config['xss_protection']['report_uri']);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function processYamlConfiguration(string $config): array
-    {
-        $parser = new Parser();
-
-        return $this->processYaml($parser->parse($config));
-    }
-
-    /**
-     * @param mixed[] $parsedYaml
-     *
-     * @return array<string, mixed>
-     */
-    private function processYaml(array $parsedYaml): array
-    {
-        $processor = new Processor();
-        $configDefinition = new Configuration();
-
-        return $processor->processConfiguration($configDefinition, [$parsedYaml]);
-    }
-
     public function testPermissionsPolicyWithValidConfiguration(): void
     {
         $config = $this->processYamlConfiguration(
@@ -277,5 +254,28 @@ class ConfigurationTest extends TestCase
         $this->assertSame(['src'], $policies['geolocation']);
         $this->assertSame(['https://example.com'], $policies['fullscreen']);
         $this->assertSame(['https://secure-payment.com:8443'], $policies['payment']);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function processYamlConfiguration(string $config): array
+    {
+        $parser = new Parser();
+
+        return $this->processYaml($parser->parse($config));
+    }
+
+    /**
+     * @param mixed[] $parsedYaml
+     *
+     * @return array<string, mixed>
+     */
+    private function processYaml(array $parsedYaml): array
+    {
+        $processor = new Processor();
+        $configDefinition = new Configuration();
+
+        return $processor->processConfiguration($configDefinition, [$parsedYaml]);
     }
 }

@@ -401,7 +401,7 @@ final class Configuration implements ConfigurationInterface
         $node = new ArrayNodeDefinition('permissions_policy');
 
         /**
-         * Default values are as per
+         * Default values are as per:
          * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy#directives
          */
         $validDirectives = [
@@ -456,7 +456,7 @@ final class Configuration implements ConfigurationInterface
                     ->children();
 
         foreach ($validDirectives as $directive => $values) {
-            $configKey = \str_replace('-', '_', $directive);
+            $configKey = str_replace('-', '_', $directive);
 
             $policiesNode
                 ->arrayNode($configKey)
@@ -473,7 +473,7 @@ final class Configuration implements ConfigurationInterface
                                         return false;
                                     }
 
-                                    if (0 !== \preg_match('/^https?:\/\//', $value)) {
+                                    if (0 !== preg_match('/^https?:\/\//', $value)) {
                                         return false;
                                     }
                                 }

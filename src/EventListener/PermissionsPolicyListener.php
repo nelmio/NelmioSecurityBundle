@@ -56,10 +56,10 @@ final class PermissionsPolicyListener
 
         $policies = [];
         foreach ($this->policies as $name => $values) {
-            $values = \array_map(static fn(string $value): string => \in_array($value, self::ALLOWED_VALUES, true) ? $value : \sprintf('"%s"', $value), $values);
-            $policies[] = \sprintf('%s=(%s)', \str_replace('_', '-', $name), \implode(' ', $values));
+            $values = array_map(static fn (string $value): string => \in_array($value, self::ALLOWED_VALUES, true) ? $value : \sprintf('"%s"', $value), $values);
+            $policies[] = \sprintf('%s=(%s)', str_replace('_', '-', $name), implode(' ', $values));
         }
 
-        $response->headers->set('Permissions-Policy', \implode(', ', $policies));
+        $response->headers->set('Permissions-Policy', implode(', ', $policies));
     }
 }
