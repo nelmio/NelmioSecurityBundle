@@ -20,4 +20,4 @@ jobs:
           tools: composer:v2, composer-normalize:2
 
       - name: Composer normalize
-        run: composer-normalize --diff --dry-run
+        run: composer-normalize --diff --dry-run -v
