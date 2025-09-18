@@ -72,6 +72,6 @@ class AppKernel extends Kernel
 
     private function getBaseDir(): string
     {
-        return \sprintf('%s/nelmio-security-bundle/var333/', sys_get_temp_dir());
+        return \sprintf('%s/nelmio-security-bundle/var/', sys_get_temp_dir());
     }
 }
