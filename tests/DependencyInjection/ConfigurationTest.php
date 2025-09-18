@@ -199,9 +199,11 @@ class ConfigurationTest extends TestCase
         );
 
         $this->assertIsArray($config['permissions_policy']);
+        $this->assertArrayHasKey('policies', $config['permissions_policy']);
         $this->assertTrue($config['permissions_policy']['enabled']);
         $this->assertIsArray($config['permissions_policy']['policies']);
 
+        /** @var array{camera: string[], microphone: string[], geolocation: string[], encrypted_media: string[], interest_cohort: string[]} $policies */
         $policies = $config['permissions_policy']['policies'];
         $this->assertSame(['self'], $policies['camera']);
         $this->assertSame([], $policies['microphone']);
@@ -248,6 +250,12 @@ class ConfigurationTest extends TestCase
             "    payment: ['https://secure-payment.com:8443']\n"
         );
 
+        $this->assertIsArray($config['permissions_policy']);
+        $this->assertArrayHasKey('policies', $config['permissions_policy']);
+        $this->assertTrue($config['permissions_policy']['enabled']);
+        $this->assertIsArray($config['permissions_policy']['policies']);
+
+        /** @var array{camera: string[], microphone: string[], geolocation: string[], fullscreen: string[], payment: string[]} $policies */
         $policies = $config['permissions_policy']['policies'];
         $this->assertSame(['*'], $policies['camera']);
         $this->assertSame(['self'], $policies['microphone']);

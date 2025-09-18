@@ -402,6 +402,7 @@ final class Configuration implements ConfigurationInterface
 
         /**
          * Default values are as per:
+         *
          * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy#directives
          */
         $validDirectives = [

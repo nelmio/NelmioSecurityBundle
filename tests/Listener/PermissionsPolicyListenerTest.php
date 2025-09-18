@@ -30,7 +30,7 @@ final class PermissionsPolicyListenerTest extends ListenerTestCase
     }
 
     /**
-     * @return iterable<int, array<string|null, PermissionsPolicyListener>>
+     * @return iterable<int, array{0: string|null, 1: PermissionsPolicyListener}>
      */
     public function provideVariousConfigs(): iterable
     {
