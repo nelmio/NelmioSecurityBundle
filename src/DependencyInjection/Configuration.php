@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Nelmio\SecurityBundle\DependencyInjection;
 
 use Nelmio\SecurityBundle\ContentSecurityPolicy\DirectiveSet;
-use Nelmio\SecurityBundle\EventListener\PermissionsPolicyListener;
+use Nelmio\SecurityBundle\PermissionsPolicy\Mapping;
 use Psr\Log\LogLevel;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -400,89 +400,37 @@ final class Configuration implements ConfigurationInterface
     {
         $node = new ArrayNodeDefinition('permissions_policy');
 
-        /**
-         * Default values are as per:
-         *
-         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy#directives
-         */
-        $validDirectives = [
-            'accelerometer' => ['self'],
-            'ambient_light_sensor' => ['self'],
-            'attribution_reporting' => ['*'],
-            'autoplay' => ['self'],
-            'bluetooth' => ['self'],
-            'browsing_topics' => ['*'],
-            'camera' => ['self'],
-            'captured_surface_control' => ['self'],
-            'compute_pressure' => ['self'],
-            'cross_origin_isolated' => ['self'],
-            'deferred_fetch' => ['self'],
-            'deferred_fetch_minimal' => ['*'],
-            'display_capture' => ['self'],
-            'encrypted_media' => ['self'],
-            'fullscreen' => ['self'],
-            'gamepad' => ['self'],
-            'geolocation' => ['self'],
-            'gyroscope' => ['self'],
-            'hid' => ['self'],
-            'identity_credentials_get' => ['self'],
-            'idle_detection' => ['self'],
-            'interest_cohort' => [],
-            'language_detector' => ['self'],
-            'local_fonts' => ['self'],
-            'magnetometer' => ['self'],
-            'microphone' => ['self'],
-            'midi' => ['self'],
-            'otp_credentials' => ['self'],
-            'payment' => ['self'],
-            'picture_in_picture' => ['*'],
-            'publickey_credentials_create' => ['self'],
-            'publickey_credentials_get' => ['self'],
-            'screen_wake_lock' => ['self'],
-            'serial' => ['self'],
-            'speaker_selection' => ['self'],
-            'storage_access' => ['*'],
-            'summarizer' => ['self'],
-            'translator' => ['self'],
-            'usb' => ['self'],
-            'web_share' => ['self'],
-            'window_management' => ['self'],
-            'xr_spatial_tracking' => ['self'],
-        ];
-
         $node->canBeEnabled();
         $policiesNode = $node
             ->children()
                 ->arrayNode('policies')
                     ->children();
 
-        foreach ($validDirectives as $directive => $values) {
+        foreach (Mapping::all() as $directive => $values) {
             $configKey = str_replace('-', '_', $directive);
 
             $policiesNode
-                ->arrayNode($configKey)
-                    ->scalarPrototype()->end()
-                        ->defaultValue($values)
-                        ->validate()
-                            ->ifTrue(static function (array $values): bool {
-                                if ([] === $values) {
+                ->variableNode($configKey)
+                    ->defaultNull()
+                    ->validate()
+                        ->ifTrue(static function ($values): bool {
+                            if (null === $values || 'default' === $values || (\is_array($values) && [] === $values)) {
+                                return false;
+                            }
+
+                            foreach ($values as $value) {
+                                if (\in_array($value, Mapping::ALLOWED_VALUES, true)) {
                                     return false;
                                 }
 
-                                foreach ($values as $value) {
-                                    if (\in_array($value, PermissionsPolicyListener::ALLOWED_VALUES, true)) {
-                                        return false;
-                                    }
-
-                                    if (0 !== preg_match('/^https?:\/\//', $value)) {
-                                        return false;
-                                    }
+                                if (0 !== preg_match('/^https?:\/\//', $value)) {
+                                    return false;
                                 }
+                            }
 
-                                return true;
-                            })
-                            ->thenInvalid('Possible header values are *, self, src or a valid url starting with https:// got: %s')
-                        ->end()
+                            return true;
+                        })
+                        ->thenInvalid('Possible header values are *, self, src or a valid url starting with https:// got: %s')
                     ->end()
                 ->end();
         }

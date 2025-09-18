@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Nelmio\SecurityBundle\EventListener;
 
+use Nelmio\SecurityBundle\PermissionsPolicy\Mapping;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
@@ -20,15 +21,6 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
  */
 final class PermissionsPolicyListener
 {
-    /**
-     * @var list<string>
-     */
-    public const ALLOWED_VALUES = [
-        '*',
-        'self',
-        'src',
-    ];
-
     /**
      * @var array<string, string[]>
      */
@@ -55,9 +47,21 @@ final class PermissionsPolicyListener
         $response = $e->getResponse();
 
         $policies = [];
+        /* @var array|string|null $values */
         foreach ($this->policies as $name => $values) {
-            $values = array_map(static fn (string $value): string => \in_array($value, self::ALLOWED_VALUES, true) ? $value : \sprintf('"%s"', $value), $values);
-            $policies[] = \sprintf('%s=(%s)', str_replace('_', '-', $name), implode(' ', $values));
+            $name = str_replace('_', '-', $name);
+
+            if (null === $values) {
+                continue;
+            }
+
+            if ('default' === $values) {
+                $values = Mapping::get($name);
+            } else {
+                $values = array_map(static fn (string $value): string => \in_array($value, Mapping::ALLOWED_VALUES, true) ? $value : \sprintf('"%s"', $value), $values);
+            }
+
+            $policies[] = \sprintf('%s=(%s)', $name, implode(' ', $values));
         }
 
         $response->headers->set('Permissions-Policy', implode(', ', $policies));
