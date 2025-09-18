@@ -34,67 +34,23 @@ final class PermissionsPolicyListenerTest extends ListenerTestCase
      */
     public function provideVariousConfigs(): iterable
     {
-        return [
-            [null, new PermissionsPolicyListener([])],
-            ['camera=()', new PermissionsPolicyListener(['camera' => []])],
-            ['camera=(self)', new PermissionsPolicyListener(['camera' => ['self']])],
-            ['camera=(*)', new PermissionsPolicyListener(['camera' => ['*']])],
-            ['camera=(src)', new PermissionsPolicyListener(['camera' => ['src']])],
-            ['camera=("https://example.com")', new PermissionsPolicyListener(['camera' => ['https://example.com']])],
-            ['camera=(self "https://example.com")', new PermissionsPolicyListener(['camera' => ['self', 'https://example.com']])],
-            ['camera=(), microphone=(self)', new PermissionsPolicyListener(['camera' => [], 'microphone' => ['self']])],
-            ['camera=(self), microphone=(*), geolocation=()', new PermissionsPolicyListener(['camera' => ['self'], 'microphone' => ['*'], 'geolocation' => []])],
-            ['encrypted-media=(self "https://cdn.example.com")', new PermissionsPolicyListener(['encrypted_media' => ['self', 'https://cdn.example.com']])],
-            ['interest-cohort=()', new PermissionsPolicyListener(['interest_cohort' => []])],
-        ];
+        yield [null, new PermissionsPolicyListener([])];
+        yield ['camera=()', new PermissionsPolicyListener(['camera' => []])];
+        yield ['camera=(self)', new PermissionsPolicyListener(['camera' => ['self']])];
+        yield ['camera=(*)', new PermissionsPolicyListener(['camera' => ['*']])];
+        yield ['camera=(src)', new PermissionsPolicyListener(['camera' => ['src']])];
+        yield ['camera=("https://example.com")', new PermissionsPolicyListener(['camera' => ['https://example.com']])];
+        yield ['camera=(self "https://example.com")', new PermissionsPolicyListener(['camera' => ['self', 'https://example.com']])];
+        yield ['camera=(), microphone=(self)', new PermissionsPolicyListener(['camera' => [], 'microphone' => ['self']])];
+        yield ['camera=(self), microphone=(*), geolocation=()', new PermissionsPolicyListener(['camera' => ['self'], 'microphone' => ['*'], 'geolocation' => []])];
+        yield ['encrypted-media=(self "https://cdn.example.com")', new PermissionsPolicyListener(['encrypted_media' => ['self', 'https://cdn.example.com']])];
+        yield ['interest-cohort=()', new PermissionsPolicyListener(['interest_cohort' => []])];
     }
 
     public function testSubRequest(): void
     {
         $listener = new PermissionsPolicyListener(['camera' => ['self']]);
         $response = $this->callListener($listener, '/', false);
-
-        $this->assertNull($response->headers->get('Permissions-Policy'));
-    }
-
-    public function testFirefoxUserAgentSkipsPermissionsPolicy(): void
-    {
-        $listener = new PermissionsPolicyListener(['camera' => ['self']]);
-
-        $request = Request::create('/');
-        $request->headers->set('user-agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0');
-        $response = new Response();
-
-        $event = $this->createResponseEvent($request, true, $response);
-        $listener->onKernelResponse($event);
-
-        $this->assertNull($response->headers->get('Permissions-Policy'));
-    }
-
-    public function testSafariUserAgentSkipsPermissionsPolicy(): void
-    {
-        $listener = new PermissionsPolicyListener(['camera' => ['self']]);
-
-        $request = Request::create('/');
-        $request->headers->set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15');
-        $response = new Response();
-
-        $event = $this->createResponseEvent($request, true, $response);
-        $listener->onKernelResponse($event);
-
-        $this->assertNull($response->headers->get('Permissions-Policy'));
-    }
-
-    public function testCaseSensitiveUserAgentMatching(): void
-    {
-        $listener = new PermissionsPolicyListener(['camera' => ['self']]);
-
-        $request = Request::create('/');
-        $request->headers->set('user-agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 FIREFOX/91.0');
-        $response = new Response();
-
-        $event = $this->createResponseEvent($request, true, $response);
-        $listener->onKernelResponse($event);
 
         $this->assertNull($response->headers->get('Permissions-Policy'));
     }

@@ -52,12 +52,6 @@ final class PermissionsPolicyListener
             return;
         }
 
-        // Firefox and Safari do not support Permissions-Policy header in general
-        $userAgent = \strtolower($e->getRequest()->headers->get('user-agent', ''));
-        if (0 !== \preg_match('/\b(firefox|safari)\b/', $userAgent)) {
-            return;
-        }
-
         $response = $e->getResponse();
 
         $policies = [];

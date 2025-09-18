@@ -102,6 +102,9 @@ Features
 * **Referrer Policy**: ``Referrer-Policy`` header is added to all responses to control the ``Referer`` header
   that is added to requests made from your site, and for navigations away from your site by browsers.
 
+* **Permissions Policy**: ``Permissions-Policy`` header is added to control which features and APIs can be
+  used in the browser.
+
 Maximum Security Configuration
 ------------------------------
 
@@ -171,6 +174,29 @@ should read on the next sections for detailed recommendations:
     #    flexible_ssl:
     #        cookie_name: auth
     #        unsecured_logout: false
+
+        permissions_policy:
+            # Media permissions
+            camera: []
+            microphone: []
+
+            # Location and sensors
+            geolocation: []
+            accelerometer: []
+            gyroscope: []
+            magnetometer: []
+
+            # Privacy features
+            interest_cohort: []           # Disable FLoC tracking
+
+            # Payment and authentication
+            payment: ['self']
+            publickey_credentials_get: ['self']
+
+            # Display and interaction
+            fullscreen: ['self']
+            picture_in_picture: ['self']
+            autoplay: []
 
 Content Security Policy
 -----------------------
@@ -965,11 +991,6 @@ The ``Permissions-Policy`` header allows you to control which web platform featu
 can be used in the browser. This helps prevent malicious third-party content from
 accessing sensitive APIs like camera, microphone, or geolocation.
 
-.. note::
-
-    Firefox and Safari do not currently support the ``Permissions-Policy`` header,
-    so the bundle automatically skips setting this header for these browsers.
-
 Basic configuration:
 
 .. code-block:: yaml
@@ -1027,38 +1048,96 @@ Common permissions policies:
 
 Available directive names (automatically converted from snake_case to kebab-case):
 
-* ``accelerometer``
-* ``ambient_light_sensor`` (becomes ``ambient-light-sensor``)
-* ``autoplay``
-* ``battery``
-* ``camera``
-* ``cross_origin_isolated`` (becomes ``cross-origin-isolated``)
-* ``display_capture`` (becomes ``display-capture``)
-* ``document_domain`` (becomes ``document-domain``)
-* ``encrypted_media`` (becomes ``encrypted-media``)
-* ``execution_while_not_rendered`` (becomes ``execution-while-not-rendered``)
-* ``execution_while_out_of_viewport`` (becomes ``execution-while-out-of-viewport``)
-* ``fullscreen``
-* ``gamepad``
-* ``geolocation``
-* ``gyroscope``
-* ``hid``
-* ``idle_detection`` (becomes ``idle-detection``)
-* ``interest_cohort`` (becomes ``interest-cohort``)
-* ``keyboard_map`` (becomes ``keyboard-map``)
-* ``magnetometer``
-* ``microphone``
-* ``midi``
-* ``navigation_override`` (becomes ``navigation-override``)
-* ``payment``
-* ``picture_in_picture`` (becomes ``picture-in-picture``)
-* ``publickey_credentials_get`` (becomes ``publickey-credentials-get``)
-* ``screen_wake_lock`` (becomes ``screen-wake-lock``)
-* ``serial``
-* ``sync_xhr`` (becomes ``sync-xhr``)
-* ``usb``
-* ``web_share`` (becomes ``web-share``)
-* ``xr_spatial_tracking`` (becomes ``xr-spatial-tracking``)
+.. list-table:: Permissions-Policy Directives & Default Allowlist
+   :header-rows: 1
+   :widths: 40 40
+
+   * - Directive
+     - Default allowlist
+   * - accelerometer
+     - self
+   * - ambient_light_sensor
+     - self
+   * - attribution_reporting
+     - *
+   * - autoplay
+     - self
+   * - bluetooth
+     - self
+   * - browsing_topics
+     - *
+   * - camera
+     - self
+   * - captured_surface_control
+     - self
+   * - compute_pressure
+     - self
+   * - cross_origin_isolated
+     - self
+   * - deferred_fetch
+     - self
+   * - deferred_fetch_minimal
+     - *
+   * - display_capture
+     - self
+   * - encrypted_media
+     - self
+   * - fullscreen
+     - self
+   * - gamepad
+     - self
+   * - geolocation
+     - self
+   * - gyroscope
+     - self
+   * - hid
+     - self
+   * - identity_credentials_get
+     - self
+   * - idle_detection
+     - self
+   * - interest_cohort
+     - none
+   * - language_detector
+     - self
+   * - local_fonts
+     - self
+   * - magnetometer
+     - self
+   * - microphone
+     - self
+   * - midi
+     - self
+   * - otp_credentials
+     - self
+   * - payment
+     - self
+   * - picture_in_picture
+     - *
+   * - publickey_credentials_create
+     - self
+   * - publickey_credentials_get
+     - self
+   * - screen_wake_lock
+     - self
+   * - serial
+     - self
+   * - speaker_selection
+     - self
+   * - storage_access
+     - *
+   * - summarizer
+     - self
+   * - translator
+     - self
+   * - usb
+     - self
+   * - web_share
+     - self
+   * - window_management
+     - self
+   * - xr_spatial_tracking
+     - self
 
 .. caution::
 
@@ -1091,3 +1170,4 @@ the ``Permissions-Policy`` header to avoid compatibility issues.
 .. _`a non-standard X-XSS-Protection header from Microsoft`: http://blogs.msdn.com/b/ieinternals/archive/2011/01/31/controlling-the-internet-explorer-xss-filter-with-the-x-xss-protection-http-header.aspx
 .. _`referrer policies`: https://www.w3.org/TR/referrer-policy/#referrer-policies
 .. _`Reporting API`: https://www.w3.org/TR/reporting-1/
+.. _`permissions policy`: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy

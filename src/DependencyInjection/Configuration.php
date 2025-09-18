@@ -400,39 +400,53 @@ final class Configuration implements ConfigurationInterface
     {
         $node = new ArrayNodeDefinition('permissions_policy');
 
+        /**
+         * Default values are as per
+         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy#directives
+         */
         $validDirectives = [
-            'camera',
-            'microphone',
-            'geolocation',
-            'fullscreen',
-            'payment',
-            'accelerometer',
-            'gyroscope',
-            'magnetometer',
-            'usb',
-            'autoplay',
-            'encrypted-media',
-            'picture-in-picture',
-            'display-capture',
-            'web-share',
-            'clipboard-read',
-            'clipboard-write',
-            'gamepad',
-            'speaker-selection',
-            'conversion-measurement',
-            'focus-without-user-activation',
-            'hid',
-            'idle-detection',
-            'local-fonts',
-            'midi',
-            'otp-credentials',
-            'publickey-credentials-get',
-            'screen-wake-lock',
-            'serial',
-            'storage-access',
-            'window-placement',
-            'xr-spatial-tracking',
-            'interest-cohort'
+            'accelerometer' => ['self'],
+            'ambient_light_sensor' => ['self'],
+            'attribution_reporting' => ['*'],
+            'autoplay' => ['self'],
+            'bluetooth' => ['self'],
+            'browsing_topics' => ['*'],
+            'camera' => ['self'],
+            'captured_surface_control' => ['self'],
+            'compute_pressure' => ['self'],
+            'cross_origin_isolated' => ['self'],
+            'deferred_fetch' => ['self'],
+            'deferred_fetch_minimal' => ['*'],
+            'display_capture' => ['self'],
+            'encrypted_media' => ['self'],
+            'fullscreen' => ['self'],
+            'gamepad' => ['self'],
+            'geolocation' => ['self'],
+            'gyroscope' => ['self'],
+            'hid' => ['self'],
+            'identity_credentials_get' => ['self'],
+            'idle_detection' => ['self'],
+            'interest_cohort' => [],
+            'language_detector' => ['self'],
+            'local_fonts' => ['self'],
+            'magnetometer' => ['self'],
+            'microphone' => ['self'],
+            'midi' => ['self'],
+            'otp_credentials' => ['self'],
+            'payment' => ['self'],
+            'picture_in_picture' => ['*'],
+            'publickey_credentials_create' => ['self'],
+            'publickey_credentials_get' => ['self'],
+            'screen_wake_lock' => ['self'],
+            'serial' => ['self'],
+            'speaker_selection' => ['self'],
+            'storage_access' => ['*'],
+            'summarizer' => ['self'],
+            'translator' => ['self'],
+            'usb' => ['self'],
+            'web_share' => ['self'],
+            'window_management' => ['self'],
+            'xr_spatial_tracking' => ['self'],
         ];
 
         $node->canBeEnabled();
@@ -441,13 +455,13 @@ final class Configuration implements ConfigurationInterface
                 ->arrayNode('policies')
                     ->children();
 
-        foreach ($validDirectives as $directive) {
+        foreach ($validDirectives as $directive => $values) {
             $configKey = \str_replace('-', '_', $directive);
 
             $policiesNode
                 ->arrayNode($configKey)
                     ->scalarPrototype()->end()
-                        ->defaultValue([])
+                        ->defaultValue($values)
                         ->validate()
                             ->ifTrue(static function (array $values): bool {
                                 if ([] === $values) {
