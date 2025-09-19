@@ -998,6 +998,7 @@ Basic configuration:
     # config/packages/nelmio_security.yaml
     nelmio_security:
         permissions_policy:
+            payment: default              # Use default allowlist for payment directive
             camera: []                    # Disable camera for all origins
             microphone: ['self']          # Allow microphone for same origin only
             geolocation: ['*']            # Allow geolocation for all origins
@@ -1011,6 +1012,8 @@ The above configuration would generate the following header:
 
 Supported directive values:
 
+* ``~`` or ``null`` to disable the directive entirely (default)
+* ``default`` to use the default allowlist for the directive defined in the _`specifications`: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy
 * ``[]`` or empty array - Disallows the feature for all origins
 * ``['self']`` - Allows the feature for the same origin as the document
 * ``['*']`` - Allows the feature for all origins
