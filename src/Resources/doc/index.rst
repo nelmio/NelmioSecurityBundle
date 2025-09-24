@@ -1025,11 +1025,11 @@ Common permissions policies:
             picture_in_picture: ['self']
             autoplay: []
 
-Available directive names (automatically converted from snake_case to kebab-case):
+Available directive names (automatically converted from ``snake_case`` to ``kebab-case``):
 
 .. list-table:: Permissions-Policy Directives & Default Allowlist
    :header-rows: 1
-   :widths: 40 40
+   :widths: 100 40
 
    * - Directive
      - Default allowlist
@@ -1038,13 +1038,13 @@ Available directive names (automatically converted from snake_case to kebab-case
    * - ambient_light_sensor
      - self
    * - attribution_reporting
-     - *
+     - \*
    * - autoplay
      - self
    * - bluetooth
      - self
    * - browsing_topics
-     - *
+     - \*
    * - camera
      - self
    * - captured_surface_control
@@ -1056,7 +1056,7 @@ Available directive names (automatically converted from snake_case to kebab-case
    * - deferred_fetch
      - self
    * - deferred_fetch_minimal
-     - *
+     - \*
    * - display_capture
      - self
    * - encrypted_media
@@ -1092,7 +1092,7 @@ Available directive names (automatically converted from snake_case to kebab-case
    * - payment
      - self
    * - picture_in_picture
-     - *
+     - \*
    * - publickey_credentials_create
      - self
    * - publickey_credentials_get
@@ -1104,7 +1104,7 @@ Available directive names (automatically converted from snake_case to kebab-case
    * - speaker_selection
      - self
    * - storage_access
-     - *
+     - \*
    * - summarizer
      - self
    * - translator
@@ -1122,16 +1122,6 @@ Available directive names (automatically converted from snake_case to kebab-case
 
     Some directive names are experimental and may not be supported by all browsers.
     Using unsupported directives will generate console warnings in browsers like Chrome.
-
-Browser compatibility:
-
-* **Chrome 88+**: Full support
-* **Edge 88+**: Full support
-* **Firefox**: Not supported (header is skipped automatically)
-* **Safari**: Not supported (header is skipped automatically)
-
-The bundle automatically detects Firefox and Safari user agents and skips sending
-the ``Permissions-Policy`` header to avoid compatibility issues.
 
 .. _`Symfony Flex`: https://symfony.com/doc/current/setup/flex.html
 .. _`HSTS`: http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02
