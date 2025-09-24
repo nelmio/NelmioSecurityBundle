@@ -1027,96 +1027,52 @@ Common permissions policies:
 
 Available directive names (automatically converted from ``snake_case`` to ``kebab-case``):
 
-.. list-table:: Permissions-Policy Directives & Default Allowlist
-   :header-rows: 1
-   :widths: 100 40
-
-   * - Directive
-     - Default allowlist
-   * - accelerometer
-     - self
-   * - ambient_light_sensor
-     - self
-   * - attribution_reporting
-     - \*
-   * - autoplay
-     - self
-   * - bluetooth
-     - self
-   * - browsing_topics
-     - \*
-   * - camera
-     - self
-   * - captured_surface_control
-     - self
-   * - compute_pressure
-     - self
-   * - cross_origin_isolated
-     - self
-   * - deferred_fetch
-     - self
-   * - deferred_fetch_minimal
-     - \*
-   * - display_capture
-     - self
-   * - encrypted_media
-     - self
-   * - fullscreen
-     - self
-   * - gamepad
-     - self
-   * - geolocation
-     - self
-   * - gyroscope
-     - self
-   * - hid
-     - self
-   * - identity_credentials_get
-     - self
-   * - idle_detection
-     - self
-   * - interest_cohort
-     - none
-   * - language_detector
-     - self
-   * - local_fonts
-     - self
-   * - magnetometer
-     - self
-   * - microphone
-     - self
-   * - midi
-     - self
-   * - otp_credentials
-     - self
-   * - payment
-     - self
-   * - picture_in_picture
-     - \*
-   * - publickey_credentials_create
-     - self
-   * - publickey_credentials_get
-     - self
-   * - screen_wake_lock
-     - self
-   * - serial
-     - self
-   * - speaker_selection
-     - self
-   * - storage_access
-     - \*
-   * - summarizer
-     - self
-   * - translator
-     - self
-   * - usb
-     - self
-   * - web_share
-     - self
-   * - window_management
-     - self
-   * - xr_spatial_tracking
-     - self
+=============================  ======================
+Directive                      Default allowlist
+=============================  ======================
+accelerometer                  self
+ambient_light_sensor           self
+attribution_reporting          \*
+autoplay                       self
+bluetooth                      self
+browsing_topics                \*
+camera                         self
+captured_surface_control       self
+compute_pressure               self
+cross_origin_isolated          self
+deferred_fetch                 self
+deferred_fetch_minimal         \*
+display_capture                self
+encrypted_media                self
+fullscreen                     self
+gamepad                        self
+geolocation                    self
+gyroscope                      self
+hid                            self
+identity_credentials_get       self
+idle_detection                 self
+interest_cohort                none
+language_detector              self
+local_fonts                    self
+magnetometer                   self
+microphone                     self
+midi                           self
+otp_credentials                self
+payment                        self
+picture_in_picture             \*
+publickey_credentials_create   self
+publickey_credentials_get      self
+screen_wake_lock               self
+serial                         self
+speaker_selection              self
+storage_access                 \*
+summarizer                     self
+translator                     self
+usb                            self
+web_share                      self
+window_management              self
+xr_spatial_tracking            self
+=============================  ======================
 
 .. caution::
 
