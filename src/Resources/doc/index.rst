@@ -152,27 +152,29 @@ should read on the next sections for detailed recommendations:
     #        unsecured_logout: false
 
         permissions_policy:
-            # Media permissions
-            camera: []
-            microphone: []
+            enabled: true
+            policies:
+                # Media permissions
+                camera: []
+                microphone: []
 
-            # Location and sensors
-            geolocation: []
-            accelerometer: []
-            gyroscope: []
-            magnetometer: []
+                # Location and sensors
+                geolocation: []
+                accelerometer: []
+                gyroscope: []
+                magnetometer: []
 
-            # Privacy features
-            interest_cohort: []           # Disable FLoC tracking
+                # Privacy features
+                interest_cohort: []           # Disable FLoC tracking
 
-            # Payment and authentication
-            payment: ['self']
-            publickey_credentials_get: ['self']
+                # Payment and authentication
+                payment: ['self']
+                publickey_credentials_get: ['self']
 
-            # Display and interaction
-            fullscreen: ['self']
-            picture_in_picture: ['self']
-            autoplay: []
+                # Display and interaction
+                fullscreen: ['self']
+                picture_in_picture: ['self']
+                autoplay: []
 
 Content Security Policy
 -----------------------
@@ -974,11 +976,13 @@ Basic configuration:
     # config/packages/nelmio_security.yaml
     nelmio_security:
         permissions_policy:
-            payment: default              # Use default allowlist for payment directive
-            camera: []                    # Disable camera for all origins
-            microphone: ['self']          # Allow microphone for same origin only
-            geolocation: ['*']            # Allow geolocation for all origins
-            payment: ['self', 'https://payments.example.com']
+            enabled: true
+            policies:
+                payment: default              # Use default allowlist for payment directive
+                camera: []                    # Disable camera for all origins
+                microphone: ['self']          # Allow microphone for same origin only
+                geolocation: ['*']            # Allow geolocation for all origins
+                payment: ['self', 'https://payments.example.com']
 
 The above configuration would generate the following header:
 
@@ -1003,27 +1007,29 @@ Common permissions policies:
     # config/packages/nelmio_security.yaml
     nelmio_security:
         permissions_policy:
-            # Media permissions
-            camera: []
-            microphone: []
+            enabled: true
+            policies:
+                # Media permissions
+                camera: []
+                microphone: []
 
-            # Location and sensors
-            geolocation: []
-            accelerometer: []
-            gyroscope: []
-            magnetometer: []
+                # Location and sensors
+                geolocation: []
+                accelerometer: []
+                gyroscope: []
+                magnetometer: []
 
-            # Privacy features
-            interest_cohort: []           # Disable FLoC tracking
+                # Privacy features
+                interest_cohort: []           # Disable FLoC tracking
 
-            # Payment and authentication
-            payment: ['self']
-            publickey_credentials_get: ['self']
+                # Payment and authentication
+                payment: ['self']
+                publickey_credentials_get: ['self']
 
-            # Display and interaction
-            fullscreen: ['self']
-            picture_in_picture: ['self']
-            autoplay: []
+                # Display and interaction
+                fullscreen: ['self']
+                picture_in_picture: ['self']
+                autoplay: []
 
 Available directive names (automatically converted from ``snake_case`` to ``kebab-case``):
 
