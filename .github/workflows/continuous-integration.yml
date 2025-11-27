@@ -24,7 +24,7 @@ jobs:
         symfony-version:
           - 5.4.*
           - 6.4.*
-          - 7.0.*
+          - 7.3.*
           - 8.0.*
         dependencies:
           - highest
@@ -36,13 +36,13 @@ jobs:
           - php-version: 7.4
             symfony-version: 6.4.*
           - php-version: 7.4
-            symfony-version: 7.0.*
+            symfony-version: 7.3.*
           - php-version: 8.0
             symfony-version: 6.4.*
           - php-version: 8.0
-            symfony-version: 7.0.*
+            symfony-version: 7.3.*
           - php-version: 8.1
-            symfony-version: 7.0.*
+            symfony-version: 7.3.*
           - php-version: 7.4
             symfony-version: 8.0.*
           - php-version: 8.0
