@@ -1,5 +1,8 @@
 # This CHANGELOG is here for historical reasons only, for newer changelog entries see github releases
 
+### Unreleased
+* Added support for Symfony 8 and PHP 8.4
+
 ### 3.3.0 (2024-04-10)
 * Added `ExternalRedirectResponse` (#331)
 
