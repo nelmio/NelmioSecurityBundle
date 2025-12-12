@@ -81,6 +81,10 @@ Features
 * **Permissions Policy**: ``Permissions-Policy`` header is added to control which features and APIs can be
   used in the browser.
 
+* **Cross-Origin Isolation**: ``Cross-Origin-Embedder-Policy``, ``Cross-Origin-Opener-Policy``, and
+  ``Cross-Origin-Resource-Policy`` headers enable cross-origin isolation and control how resources can be
+  embedded in or accessed from other origins.
+
 Maximum Security Configuration
 ------------------------------
 
@@ -175,6 +179,14 @@ should read on the next sections for detailed recommendations:
                 fullscreen: ['self']
                 picture_in_picture: ['self']
                 autoplay: []
+
+        cross_origin_isolation:
+            enabled: true
+            paths:
+                '^/.*':
+                    coep: require-corp
+                    coop: same-origin
+                    corp: same-origin
 
 Content Security Policy
 -----------------------
@@ -1084,6 +1096,193 @@ xr_spatial_tracking            self
 
     Some directive names are experimental and may not be supported by all browsers.
     Using unsupported directives will generate console warnings in browsers like Chrome.
+
+Cross-Origin Isolation
+----------------------
+
+Cross-origin isolation enables powerful web platform features like ``SharedArrayBuffer`` and
+high-resolution timers by providing stronger security guarantees. The ``Cross-Origin-Embedder-Policy``,
+``Cross-Origin-Opener-Policy``, and ``Cross-Origin-Resource-Policy`` headers control how your site
+resources can be embedded in or accessed from other origins.
+
+Basic configuration (permissive, does not enable isolation):
+
+.. code-block:: yaml
+
+    # config/packages/nelmio_security.yaml
+    nelmio_security:
+        cross_origin_isolation:
+            enabled: true
+            paths:
+                # Permissive values for all paths (no isolation)
+                '^/.*':
+                    coep: unsafe-none
+                    coop: unsafe-none
+                    corp: same-site
+
+Strict isolation (required for SharedArrayBuffer):
+
+.. code-block:: yaml
+
+    # config/packages/nelmio_security.yaml
+    nelmio_security:
+        cross_origin_isolation:
+            enabled: true
+            paths:
+                '^/.*':
+                    coep: require-corp
+                    coop: same-origin
+                    corp: same-origin
+
+Path-based configuration with different policies:
+
+.. code-block:: yaml
+
+    # config/packages/nelmio_security.yaml
+    nelmio_security:
+        cross_origin_isolation:
+            enabled: true
+            paths:
+                # Strict isolation for admin area (enables SharedArrayBuffer)
+                '^/admin':
+                    coep: require-corp
+                    coop: same-origin
+                    corp: same-origin
+                # More permissive for API endpoints
+                '^/api':
+                    coep: unsafe-none
+                    coop: unsafe-none
+                    corp: cross-origin
+                # Permissive for everything else
+                '^/.*':
+                    coep: unsafe-none
+                    coop: unsafe-none
+                    corp: same-site
+
+Report-Only mode (testing without blocking):
+
+.. code-block:: yaml
+
+    # config/packages/nelmio_security.yaml
+    nelmio_security:
+        cross_origin_isolation:
+            enabled: true
+            paths:
+                # Test strict isolation without blocking (reports violations only)
+                '^/.*':
+                    coep:
+                        value: require-corp
+                        report_only: true
+                    coop:
+                        value: same-origin
+                        report_only: true
+
+Report violations to an endpoint:
+
+.. code-block:: yaml
+
+    # config/packages/nelmio_security.yaml
+    nelmio_security:
+        cross_origin_isolation:
+            enabled: true
+            paths:
+                '^/.*':
+                    coep:
+                        value: require-corp
+                        report_to: "coi-endpoint"
+                    coop:
+                        value: same-origin
+                        report_to: "coi-endpoint"
+
+Combine Report-Only with reporting endpoint (test and monitor):
+
+.. code-block:: yaml
+
+    # config/packages/nelmio_security.yaml
+    nelmio_security:
+        cross_origin_isolation:
+            enabled: true
+            paths:
+                '^/.*':
+                    coep:
+                        value: require-corp
+                        report_only: true
+                        report_to: "coi-endpoint"
+                    coop:
+                        value: same-origin
+                        report_only: true
+                        report_to: "coi-endpoint"
+
+.. note::
+
+    When using ``report-to``, you need to configure the Reporting API endpoints separately
+    using the ``Report-To`` or ``Reporting-Endpoints`` headers. This is typically done with
+    the CSP ``report-to`` directive or a separate listener.
+
+Header descriptions:
+
+**Cross-Origin-Embedder-Policy (COEP)**
+
+Controls whether cross-origin resources can be embedded in the page.
+
+* ``unsafe-none`` (default) - No restrictions on embedding cross-origin resources
+* ``require-corp`` - Cross-origin resources must have appropriate CORP headers
+* ``credentialless`` - Allow cross-origin resources without credentials
+
+**Cross-Origin-Opener-Policy (COOP)**
+
+Controls whether a document can open cross-origin windows and prevents other origins
+from opening your page in a popup.
+
+* ``unsafe-none`` (default) - No restrictions
+* ``same-origin-allow-popups`` - Allows opening popups to other origins
+* ``same-origin`` - Strict same-origin policy for all windows
+* ``noopener-allow-popups`` - Allow popups but with noopener behavior
+
+**Cross-Origin-Resource-Policy (CORP)**
+
+Controls which origins can load this resource.
+
+* ``same-site`` (default) - Only same-site requests can load the resource
+* ``same-origin`` - Only same-origin requests can load the resource
+* ``cross-origin`` - Any origin can load the resource
+
+**Report-Only mode**
+
+Both COEP and COOP support a "Report-Only" mode where violations are reported but not blocked.
+This is useful for testing policies before enforcing them.
+
+For simple configurations without reporting, use the string format::
+
+    coep: require-corp
+    coop: same-origin
+
+For advanced configurations with Report-Only mode or violation reporting, use the expanded format::
+
+    coep:
+        value: require-corp
+        report_only: true        # Uses Cross-Origin-Embedder-Policy-Report-Only header
+        report_to: "endpoint"    # Sends violations to named endpoint
+    coop:
+        value: same-origin
+        report_only: true        # Uses Cross-Origin-Opener-Policy-Report-Only header
+        report_to: "endpoint"    # Sends violations to named endpoint
+
+You can use any combination of these options. Both ``report_only`` and ``report_to`` are optional
+and can be used independently or together.
+
+.. note::
+
+    Using ``require-corp`` for COEP and ``same-origin`` for COOP enables cross-origin
+    isolation, which is required for some powerful web platform features like
+    ``SharedArrayBuffer``. However, this requires all embedded resources (images, scripts,
+    styles) to either be same-origin or have appropriate CORP headers.
+
+.. tip::
+
+    Use Report-Only mode to test cross-origin isolation policies in production without
+    breaking your site. Monitor the reports to identify resources that need CORP headers
+    before switching to enforce mode.
 
 .. _`Symfony Flex`: https://symfony.com/doc/current/setup/flex.html
 .. _`HSTS`: http://tools.ietf.org/html/draft-hodges-strict-transport-sec-02
