@@ -69,6 +69,8 @@ final class Configuration implements ConfigurationInterface
                 ->append($this->addReferrerPolicyNode())
 
                 ->append($this->addPermissionsPolicyNode())
+
+                ->append($this->addCrossOriginIsolationNodes())
             ->end()
         ->end();
 
@@ -391,6 +393,81 @@ final class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('cookie_name')->defaultValue('auth')->end()
                 ->booleanNode('unsecured_logout')->defaultFalse()->end()
+            ->end();
+
+        return $node;
+    }
+
+    private function addCrossOriginIsolationNodes(): ArrayNodeDefinition
+    {
+        $node = new ArrayNodeDefinition('cross_origin_isolation');
+        $node
+            ->canBeEnabled()
+            ->fixXmlConfig('path')
+            ->children()
+                ->arrayNode('paths')
+                    ->normalizeKeys(false)
+                    ->useAttributeAsKey('pattern')
+                    ->arrayPrototype()
+                        ->children()
+                            ->arrayNode('coep')
+                                ->info('Cross-Origin-Embedder-Policy (COEP) header. Can be a string (unsafe-none, require-corp, credentialless) or an array with value, report_only, and report_to')
+                                ->addDefaultsIfNotSet()
+                                ->beforeNormalization()
+                                    ->ifString()
+                                    ->then(static function (string $v): array {
+                                        return ['value' => $v];
+                                    })
+                                ->end()
+                                ->children()
+                                    ->enumNode('value')
+                                        ->values(['unsafe-none', 'require-corp', 'credentialless'])
+                                        ->info('The COEP policy value')
+                                        ->isRequired()
+                                    ->end()
+                                    ->booleanNode('report_only')
+                                        ->defaultFalse()
+                                        ->info('Use Cross-Origin-Embedder-Policy-Report-Only header instead of Cross-Origin-Embedder-Policy')
+                                    ->end()
+                                    ->scalarNode('report_to')
+                                        ->defaultNull()
+                                        ->info('Reporting endpoint name for COEP violations (requires Reporting API configuration)')
+                                    ->end()
+                                ->end()
+                            ->end()
+                            ->arrayNode('coop')
+                                ->info('Cross-Origin-Opener-Policy (COOP) header. Can be a string (unsafe-none, same-origin-allow-popups, same-origin, noopener-allow-popups) or an array with value, report_only, and report_to')
+                                ->addDefaultsIfNotSet()
+                                ->beforeNormalization()
+                                    ->ifString()
+                                    ->then(static function (string $v): array {
+                                        return ['value' => $v];
+                                    })
+                                ->end()
+                                ->children()
+                                    ->enumNode('value')
+                                        ->values(['unsafe-none', 'same-origin-allow-popups', 'same-origin', 'noopener-allow-popups'])
+                                        ->info('The COOP policy value')
+                                        ->isRequired()
+                                    ->end()
+                                    ->booleanNode('report_only')
+                                        ->defaultFalse()
+                                        ->info('Use Cross-Origin-Opener-Policy-Report-Only header instead of Cross-Origin-Opener-Policy')
+                                    ->end()
+                                    ->scalarNode('report_to')
+                                        ->defaultNull()
+                                        ->info('Reporting endpoint name for COOP violations (requires Reporting API configuration)')
+                                    ->end()
+                                ->end()
+                            ->end()
+                            ->enumNode('corp')
+                                ->values(['same-site', 'same-origin', 'cross-origin'])
+                                ->info('Cross-Origin-Resource-Policy (CORP) header')
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->requiresAtLeastOneElement()
+                ->end()
             ->end();
 
         return $node;
