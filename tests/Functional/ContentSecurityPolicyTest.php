@@ -55,7 +55,7 @@ final class ContentSecurityPolicyTest extends WebTestCase
         $this->assertSame($errorContent, $client->getResponse()->getContent());
     }
 
-    public function provideInvalidRequests(): iterable
+    public static function provideInvalidRequests(): iterable
     {
         yield 'without data' => [null, 411, 'Content-Security-Policy Endpoint called without data'];
         yield 'invalid JSON' => ['invalid_json', 400, 'Content-Security-Policy Endpoint called with invalid JSON data'];

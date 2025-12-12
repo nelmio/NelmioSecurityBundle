@@ -85,7 +85,7 @@ class ClickjackingListenerTest extends ListenerTestCase
         $this->assertSame('ALLOW', $response->headers->get('X-Frame-Options'));
     }
 
-    public function provideClickjackingMatches(): array
+    public static function provideClickjackingMatches(): array
     {
         return [
             ['', 'DENY'],
@@ -131,7 +131,7 @@ class ClickjackingListenerTest extends ListenerTestCase
         $this->assertSame($result, $response->headers->get('X-Frame-Options'));
     }
 
-    public function provideContentTypeForRestrictions(): array
+    public static function provideContentTypeForRestrictions(): array
     {
         return [
             ['application/json', null],

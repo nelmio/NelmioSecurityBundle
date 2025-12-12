@@ -43,7 +43,7 @@ class DirectiveSetTest extends TestCase
         $this->assertSame($expected, $ds->buildHeaderValue($request));
     }
 
-    public function provideVariousConfig(): array
+    public static function provideVariousConfig(): array
     {
         return [
             [
@@ -381,7 +381,7 @@ class DirectiveSetTest extends TestCase
         $this->assertSame($expected, $directive->buildHeaderValue(new Request(), $signatures));
     }
 
-    public function provideConfigAndSignatures(): array
+    public static function provideConfigAndSignatures(): array
     {
         return [
             [

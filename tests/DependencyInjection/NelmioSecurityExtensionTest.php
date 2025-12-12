@@ -22,15 +22,10 @@ use Nelmio\SecurityBundle\EventListener\SignedCookieListener;
 use Nelmio\SecurityBundle\ExternalRedirect\AllowListBasedTargetValidator;
 use Nelmio\SecurityBundle\Signer;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class NelmioSecurityExtensionTest extends TestCase
 {
-    use ExpectDeprecationTrait {
-        ExpectDeprecationTrait::expectDeprecation as bridgeExpectDeprecation;
-    }
-
     private NelmioSecurityExtension $extension;
 
     protected function setUp(): void
@@ -68,16 +63,35 @@ final class NelmioSecurityExtensionTest extends TestCase
      */
     public function testDeprecatedSignedCookieDefaultAlgorithm(): void
     {
-        $this->bridgeExpectDeprecation('Since nelmio/security-bundle 3.4.0: The default value for `signed_cookie.hash_algo` is deprecated and will change in 4.0. You should configure an algorithm explicitly.');
+        $deprecations = [];
+        $previousHandler = set_error_handler(static function (int $type, string $message) use (&$deprecations, &$previousHandler): bool {
+            if (\E_USER_DEPRECATED === $type) {
+                $deprecations[] = $message;
 
-        $container = new ContainerBuilder();
-        $this->extension->load([
-            [
-                'signed_cookie' => [],
-            ],
-        ], $container);
+                return true;
+            }
 
-        $this->assertContainerWithParameterValue($container, 'nelmio_security.signer.hash_algo', 'sha256');
+            return $previousHandler ? $previousHandler($type, $message, '', 0) : false;
+        });
+
+        try {
+            $container = new ContainerBuilder();
+            $this->extension->load([
+                [
+                    'signed_cookie' => [],
+                ],
+            ], $container);
+
+            $this->assertContainerWithParameterValue($container, 'nelmio_security.signer.hash_algo', 'sha256');
+
+            $this->assertCount(1, $deprecations, 'Expected exactly one deprecation');
+            $this->assertStringContainsString(
+                'The default value for `signed_cookie.hash_algo` is deprecated',
+                $deprecations[0]
+            );
+        } finally {
+            restore_error_handler();
+        }
     }
 
     public function testLoadClickJacking(): void
