@@ -37,7 +37,7 @@ class ExternalRedirectListenerTest extends ListenerTestCase
         $this->assertSame($expected, $result);
     }
 
-    public function provideRedirectMatcher(): array
+    public static function provideRedirectMatcher(): array
     {
         return [
             // internal
@@ -89,7 +89,7 @@ class ExternalRedirectListenerTest extends ListenerTestCase
         $this->assertSame($expected, $response->headers->get('Location'));
     }
 
-    public function provideRedirectOverrides(): iterable
+    public static function provideRedirectOverrides(): iterable
     {
         $target = 'http://bar.com/';
 
@@ -162,7 +162,7 @@ class ExternalRedirectListenerTest extends ListenerTestCase
         $this->filterResponse($listener, 'http://foo.com/', 'http://'.$domain.'/');
     }
 
-    public function provideRedirectAllowedListFailing(): array
+    public static function provideRedirectAllowedListFailing(): array
     {
         return [
             [['bar.com', 'baz.com'], 'abaz.com'],
@@ -186,7 +186,7 @@ class ExternalRedirectListenerTest extends ListenerTestCase
         $this->assertTrue($response->isRedirect());
     }
 
-    public function provideRedirectAllowedListPassing(): array
+    public static function provideRedirectAllowedListPassing(): array
     {
         return [
             [['bar.com', 'baz.com'], 'bar.com'],

@@ -41,7 +41,7 @@ class ForcedSslListenerTest extends ListenerTestCase
         $this->assertNull($response->headers->get('Strict-Transport-Security'));
     }
 
-    public function provideHstsHeaders(): array
+    public static function provideHstsHeaders(): array
     {
         return [
             [60, true, false, 'max-age=60; includeSubDomains'],

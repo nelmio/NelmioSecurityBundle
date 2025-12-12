@@ -32,7 +32,7 @@ final class PermissionsPolicyListenerTest extends ListenerTestCase
     /**
      * @return iterable<int, array{0: string|null, 1: PermissionsPolicyListener}>
      */
-    public function provideVariousConfigs(): iterable
+    public static function provideVariousConfigs(): iterable
     {
         yield [null, new PermissionsPolicyListener([])];
         yield ['camera=()', new PermissionsPolicyListener(['camera' => []])];

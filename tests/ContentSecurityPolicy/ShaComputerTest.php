@@ -33,7 +33,7 @@ class ShaComputerTest extends TestCase
         $this->assertSame($expected, $shaComputer->computeForScript($code));
     }
 
-    public function provideValidScriptCode(): array
+    public static function provideValidScriptCode(): array
     {
         $mdMultiline = 'sha256-FJZognZIK0t5xLh8JBt4m/9rjpkYa4lTySrcUdRWHPM=';
         $md = 'sha256-lClGOfcWqtQdAvO3zCRzZEg/4RmOMbr9/V54QO76j/A=';
@@ -62,7 +62,7 @@ class ShaComputerTest extends TestCase
         $this->assertSame($expected, $shaComputer->computeForStyle($code));
     }
 
-    public function provideValidStyleCode(): array
+    public static function provideValidStyleCode(): array
     {
         $mdMultiline = 'sha256-VbDrDAWYPqj9uExrJNmpK8bKIArMizR2+jcPhqSXO8M=';
         $md = 'sha256-dmskSo+yqoLHXIXCFWnQJvCkjkJJmENqTDRi5+il2Yw=';
@@ -106,7 +106,7 @@ class ShaComputerTest extends TestCase
         $shaComputer->computeForScript($code);
     }
 
-    public function provideInvalidScriptCode(): array
+    public static function provideInvalidScriptCode(): array
     {
         return [
             [' <script> </script> <script> </script> '],
@@ -116,7 +116,7 @@ class ShaComputerTest extends TestCase
         ];
     }
 
-    public function provideInvalidStyleCode(): array
+    public static function provideInvalidStyleCode(): array
     {
         return [
             [' <style> </style> <style> </style> '],

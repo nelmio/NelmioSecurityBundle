@@ -30,7 +30,7 @@ class ContentSecurityPolicyParserTest extends TestCase
         $this->assertSame($expected, $result, 'CSP parser should quote CSP keywords');
     }
 
-    public function keywordsProvider(): array
+    public static function keywordsProvider(): array
     {
         return [
             ['self', "'self'"],

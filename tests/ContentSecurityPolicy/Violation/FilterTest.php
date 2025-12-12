@@ -54,7 +54,7 @@ class FilterTest extends TestCase
         $this->assertSame($expected, $filter->filter($request, new Report($payload)));
     }
 
-    public function provideVariousCases(): array
+    public static function provideVariousCases(): array
     {
         $firefox42 = new Request();
         $firefox42->headers->set('user-agent', 'Mozilla/5.0 (X11; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0');

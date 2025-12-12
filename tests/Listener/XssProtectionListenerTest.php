@@ -36,7 +36,7 @@ class XssProtectionListenerTest extends ListenerTestCase
         $this->assertSame($expectedValue, $response->headers->get('X-Xss-Protection'));
     }
 
-    public function provideLegacyVariousConfigs(): array
+    public static function provideLegacyVariousConfigs(): array
     {
         return [
             ['0', new XssProtectionListener(false, false)],

@@ -29,7 +29,7 @@ class ReferrerPolicyListenerTest extends ListenerTestCase
         $this->assertSame($expectedValue, $response->headers->get('Referrer-Policy'));
     }
 
-    public function provideVariousConfigs(): array
+    public static function provideVariousConfigs(): array
     {
         return [
             ['', new ReferrerPolicyListener([])],
