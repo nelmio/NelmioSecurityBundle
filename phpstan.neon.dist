@@ -11,7 +11,7 @@ parameters:
         - src
         - tests
     excludePaths:
-        - src/EventListener/BaseFlexibleSslListener.php
+        - src/EventListener/BaseFlexibleSslListener.php (?)
     treatPhpDocTypesAsCertain: false
     ignoreErrors:
         - '#^Dynamic call to static method PHPUnit\\Framework\\\S+\(\)\.$#'

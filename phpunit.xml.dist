@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         backupGlobals="false"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         failOnWarning="true"
          failOnRisky="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         bootstrap="vendor/autoload.php"
+         bootstrap="tests/autoload.php"
 >
     <testsuites>
         <testsuite name="NelmioSecurityBundle Test Suite">
@@ -23,13 +18,13 @@
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0"/>
     </php>
 
-    <coverage>
+    <source>
         <include>
             <directory suffix=".php">./src/</directory>
         </include>
-    </coverage>
+    </source>
 
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
-    </listeners>
+    <extensions>
+        <bootstrap class="Symfony\Bridge\PhpUnit\SymfonyExtension"/>
+    </extensions>
 </phpunit>

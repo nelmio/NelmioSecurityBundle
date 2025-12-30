@@ -1,89 +1,157 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method Nelmio\\\\SecurityBundle\\\\ContentSecurityPolicy\\\\DirectiveSet\\:\\:normalizeSignatures\\(\\) should return array\\<string, string\\>\\|null but returns array\\<string, array\\<int, string\\>\\|string\\>\\.$#"
+			message: '#^Method Nelmio\\SecurityBundle\\ContentSecurityPolicy\\DirectiveSet\:\:normalizeSignatures\(\) should return array\<string, string\>\|null but returns array\<string, list\<string\>\|string\>\.$#'
+			identifier: return.type
 			count: 1
 			path: src/ContentSecurityPolicy/DirectiveSet.php
 
 		-
-			message: "#^Parameter \\#1 \\$bool of method Nelmio\\\\SecurityBundle\\\\ContentSecurityPolicy\\\\DirectiveSet\\:\\:setLevel1Fallback\\(\\) expects bool, mixed given\\.$#"
+			message: '#^Parameter \#1 \$bool of method Nelmio\\SecurityBundle\\ContentSecurityPolicy\\DirectiveSet\:\:setLevel1Fallback\(\) expects bool, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/ContentSecurityPolicy/DirectiveSet.php
 
 		-
-			message: "#^Parameter \\#1 \\$sourceList of method Nelmio\\\\SecurityBundle\\\\ContentSecurityPolicy\\\\ContentSecurityPolicyParser\\:\\:parseSourceList\\(\\) expects array\\<int, string\\>\\|true, mixed given\\.$#"
+			message: '#^Parameter \#1 \$sourceList of method Nelmio\\SecurityBundle\\ContentSecurityPolicy\\ContentSecurityPolicyParser\:\:parseSourceList\(\) expects list\<string\>\|true, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/ContentSecurityPolicy/DirectiveSet.php
 
 		-
-			message: "#^Property Nelmio\\\\SecurityBundle\\\\ContentSecurityPolicy\\\\Violation\\\\Report\\:\\:\\$data \\(array\\{document\\-uri\\?\\: string, referrer\\?\\: string, blocked\\-uri\\?\\: string, effective\\-directive\\?\\: string, violated\\-directive\\?\\: string, original\\-policy\\?\\: string, disposition\\?\\: string, status\\-code\\?\\: int, \\.\\.\\.\\}\\) does not accept array\\{document\\-uri\\?\\: int\\|string, referrer\\?\\: int\\|string, blocked\\-uri\\?\\: int\\|string, effective\\-directive\\?\\: int\\|string, violated\\-directive\\?\\: int\\|string, original\\-policy\\?\\: int\\|string, disposition\\?\\: int\\|string, status\\-code\\?\\: int\\|string, \\.\\.\\.\\}\\.$#"
+			message: '#^Method Nelmio\\SecurityBundle\\ContentSecurityPolicy\\PolicyManager\:\:getFirefoxDirectives\(\) should return list\<string\> but returns array\<int\<0, max\>, string\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/ContentSecurityPolicy/PolicyManager.php
+
+		-
+			message: '#^Parameter \#1 \$data of class Nelmio\\SecurityBundle\\ContentSecurityPolicy\\Violation\\Report constructor expects array\{document\-uri\?\: string, referrer\?\: string, blocked\-uri\?\: string, effective\-directive\?\: string, violated\-directive\?\: string, original\-policy\?\: string, disposition\?\: string, status\-code\?\: int, \.\.\.\}, non\-empty\-array given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/ContentSecurityPolicy/Violation/Report.php
 
 		-
-			message: "#^Parameter \\#1 \\$name of class Symfony\\\\Component\\\\HttpFoundation\\\\Cookie constructor expects string, string\\|false given\\.$#"
+			message: '#^Property Nelmio\\SecurityBundle\\ContentSecurityPolicy\\Violation\\Report\:\:\$data \(array\{document\-uri\?\: string, referrer\?\: string, blocked\-uri\?\: string, effective\-directive\?\: string, violated\-directive\?\: string, original\-policy\?\: string, disposition\?\: string, status\-code\?\: int, \.\.\.\}\) does not accept array\{document\-uri\?\: int\|string, referrer\?\: int\|string, blocked\-uri\?\: int\|string, effective\-directive\?\: int\|string, violated\-directive\?\: int\|string, original\-policy\?\: int\|string, disposition\?\: int\|string, status\-code\?\: int\|string, \.\.\.\}\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/ContentSecurityPolicy/Violation/Report.php
+
+		-
+			message: '#^Parameter \#1 \$name of class Symfony\\Component\\HttpFoundation\\Cookie constructor expects string, string\|false given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/EventListener/FlexibleSslListener.php
 
 		-
-			message: "#^Parameter \\#2 \\$value of class Symfony\\\\Component\\\\HttpFoundation\\\\Cookie constructor expects string\\|null, string\\|false given\\.$#"
+			message: '#^Parameter \#2 \$value of class Symfony\\Component\\HttpFoundation\\Cookie constructor expects string\|null, string\|false given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/EventListener/FlexibleSslListener.php
 
 		-
-			message: """
-				#^Fetching class constant class of deprecated class Nelmio\\\\SecurityBundle\\\\EventListener\\\\XssProtectionListener\\:
-				since NelmioSecurityBundle 3\\.4\\.0, to be removed in 4\\.0\\.$#
-			"""
+			message: '''
+				#^Access to constant on deprecated class Nelmio\\SecurityBundle\\EventListener\\XssProtectionListener\:
+				since NelmioSecurityBundle 3\.4\.0, to be removed in 4\.0\.$#
+			'''
+			identifier: classConstant.deprecatedClass
 			count: 2
 			path: src/Resources/config/xss_protection.php
 
 		-
-			message: "#^Method Nelmio\\\\SecurityBundle\\\\UserAgent\\\\UAFamilyParser\\\\PsrCacheUAFamilyParser\\:\\:getUaFamily\\(\\) should return string but returns mixed\\.$#"
+			message: '#^Method Nelmio\\SecurityBundle\\UserAgent\\UAFamilyParser\\PsrCacheUAFamilyParser\:\:getUaFamily\(\) should return string but returns mixed\.$#'
+			identifier: return.type
 			count: 1
 			path: src/UserAgent/UAFamilyParser/PsrCacheUAFamilyParser.php
 
 		-
-			message: "#^Parameter \\#1 \\$parsedYaml of method Nelmio\\\\SecurityBundle\\\\Tests\\\\DependencyInjection\\\\ConfigurationTest\\:\\:processYaml\\(\\) expects array, mixed given\\.$#"
+			message: '#^Cannot access offset ''report\-uri'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
+			path: tests/DependencyInjection/ConfigurationTest.php
+
+		-
+			message: '#^Cannot access offset ''script\-src'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: tests/DependencyInjection/ConfigurationTest.php
+
+		-
+			message: '#^Parameter \#1 \$parsedYaml of method Nelmio\\SecurityBundle\\Tests\\DependencyInjection\\ConfigurationTest\:\:processYaml\(\) expects array\<mixed\>, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/DependencyInjection/ConfigurationTest.php
 
 		-
-			message: """
-				#^Instantiation of deprecated class Nelmio\\\\SecurityBundle\\\\EventListener\\\\XssProtectionListener\\:
-				since NelmioSecurityBundle 3\\.4\\.0, to be removed in 4\\.0\\.$#
-			"""
+			message: '#^Only booleans are allowed in a ternary operator condition, \(callable\)\|null given\.$#'
+			identifier: ternary.condNotBoolean
+			count: 1
+			path: tests/DependencyInjection/NelmioSecurityExtensionTest.php
+
+		-
+			message: '''
+				#^Call to deprecated method getEnforcement\(\) of class Nelmio\\SecurityBundle\\EventListener\\ContentSecurityPolicyListener\:
+				Use `nelmio_security\.directive_set_builder\.enforce` instead\.$#
+			'''
+			identifier: method.deprecated
+			count: 1
+			path: tests/Listener/ContentSecurityPolicyListenerTest.php
+
+		-
+			message: '''
+				#^Call to deprecated method getReport\(\) of class Nelmio\\SecurityBundle\\EventListener\\ContentSecurityPolicyListener\:
+				Use `nelmio_security\.directive_set_builder\.report` instead\.$#
+			'''
+			identifier: method.deprecated
+			count: 1
+			path: tests/Listener/ContentSecurityPolicyListenerTest.php
+
+		-
+			message: '#^Parameter \#4 \$targetValidator of class Nelmio\\SecurityBundle\\EventListener\\ExternalRedirectListener constructor expects list\<string\>\|Nelmio\\SecurityBundle\\ExternalRedirect\\TargetValidator\|string\|null, array\<string\> given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Listener/ExternalRedirectListenerTest.php
+
+		-
+			message: '''
+				#^Call to method __construct\(\) of deprecated class Nelmio\\SecurityBundle\\EventListener\\XssProtectionListener\:
+				since NelmioSecurityBundle 3\.4\.0, to be removed in 4\.0\.$#
+			'''
+			identifier: method.deprecatedClass
 			count: 6
 			path: tests/Listener/XssProtectionListenerTest.php
 
 		-
-			message: """
-				#^Parameter \\$listener of method Nelmio\\\\SecurityBundle\\\\Tests\\\\Listener\\\\XssProtectionListenerTest\\:\\:callListener\\(\\) has typehint with deprecated class Nelmio\\\\SecurityBundle\\\\EventListener\\\\XssProtectionListener\\:
-				since NelmioSecurityBundle 3\\.4\\.0, to be removed in 4\\.0\\.$#
-			"""
+			message: '''
+				#^Call to method onKernelResponse\(\) of deprecated class Nelmio\\SecurityBundle\\EventListener\\XssProtectionListener\:
+				since NelmioSecurityBundle 3\.4\.0, to be removed in 4\.0\.$#
+			'''
+			identifier: method.deprecatedClass
+			count: 2
+			path: tests/Listener/XssProtectionListenerTest.php
+
+		-
+			message: '''
+				#^Instantiation of deprecated class Nelmio\\SecurityBundle\\EventListener\\XssProtectionListener\:
+				since NelmioSecurityBundle 3\.4\.0, to be removed in 4\.0\.$#
+			'''
+			identifier: new.deprecatedClass
+			count: 6
+			path: tests/Listener/XssProtectionListenerTest.php
+
+		-
+			message: '''
+				#^Parameter \$listener of method Nelmio\\SecurityBundle\\Tests\\Listener\\XssProtectionListenerTest\:\:callListener\(\) has typehint with deprecated class Nelmio\\SecurityBundle\\EventListener\\XssProtectionListener\:
+				since NelmioSecurityBundle 3\.4\.0, to be removed in 4\.0\.$#
+			'''
+			identifier: parameter.deprecatedClass
 			count: 1
 			path: tests/Listener/XssProtectionListenerTest.php
 
 		-
-			message: """
-				#^Parameter \\$listener of method Nelmio\\\\SecurityBundle\\\\Tests\\\\Listener\\\\XssProtectionListenerTest\\:\\:testLegacyVariousConfig\\(\\) has typehint with deprecated class Nelmio\\\\SecurityBundle\\\\EventListener\\\\XssProtectionListener\\:
-				since NelmioSecurityBundle 3\\.4\\.0, to be removed in 4\\.0\\.$#
-			"""
+			message: '''
+				#^Parameter \$listener of method Nelmio\\SecurityBundle\\Tests\\Listener\\XssProtectionListenerTest\:\:testLegacyVariousConfig\(\) has typehint with deprecated class Nelmio\\SecurityBundle\\EventListener\\XssProtectionListener\:
+				since NelmioSecurityBundle 3\.4\.0, to be removed in 4\.0\.$#
+			'''
+			identifier: parameter.deprecatedClass
 			count: 1
 			path: tests/Listener/XssProtectionListenerTest.php
-
-		-
-			message: """
-				#^Call to deprecated method getEnforcement\\(\\) of class Nelmio\\\\SecurityBundle\\\\EventListener\\\\ContentSecurityPolicyListener\\:
-				Use `nelmio_security\\.directive_set_builder\\.enforce` instead\\.$#
-			"""
-			count: 1
-			path: tests/Listener/ContentSecurityPolicyListenerTest.php
-
-		-
-			message: """
-				#^Call to deprecated method getReport\\(\\) of class Nelmio\\\\SecurityBundle\\\\EventListener\\\\ContentSecurityPolicyListener\\:
-				Use `nelmio_security\\.directive_set_builder\\.report` instead\\.$#
-			"""
-			count: 1
-			path: tests/Listener/ContentSecurityPolicyListenerTest.php

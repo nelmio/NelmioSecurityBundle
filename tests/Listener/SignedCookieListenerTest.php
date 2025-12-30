@@ -55,7 +55,7 @@ class SignedCookieListenerTest extends ListenerTestCase
         $this->assertSame($expectedCookies, $request->cookies->all());
     }
 
-    public function provideCookieReading(): array
+    public static function provideCookieReading(): array
     {
         return [
             [[], [], []],
@@ -98,7 +98,7 @@ class SignedCookieListenerTest extends ListenerTestCase
         $this->assertSame($expectedCookies, $responseCookieValues);
     }
 
-    public function provideCookieWriting(): array
+    public static function provideCookieWriting(): array
     {
         return [
             [[], [], []],
