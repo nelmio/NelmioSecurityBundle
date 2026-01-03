@@ -21,6 +21,36 @@ nelmio_security:
       - 'no-referrer'
       - 'strict-origin-when-cross-origin'
 
+  cross_origin_isolation:
+    enabled: true
+    paths:
+      '^/admin':
+        coep: require-corp
+        coop: same-origin
+        corp: same-origin
+      '^/api':
+        coep: unsafe-none
+        corp: cross-origin
+      '^/articles':
+        coop: same-origin-allow-popups
+      '^/test-report-only':
+        coep: require-corp
+        coop: same-origin
+        report_only: true
+      '^/test-report-to':
+        coep: require-corp
+        coop: same-origin
+        report_to: coi-endpoint
+      '^/test-report-combined':
+        coep: require-corp
+        coop: same-origin
+        report_only: true
+        report_to: coi-endpoint
+      '^/.*':
+        coep: credentialless
+        coop: same-origin
+        corp: cross-origin
+
   csp:
     enabled: true
     hosts: [ ]

@@ -154,6 +154,59 @@ class ConfigurationTest extends TestCase
         ], $config['referrer_policy']['policies']);
     }
 
+    public function testCrossOriginIsolation(): void
+    {
+        $config = $this->processYamlConfiguration(
+            "cross_origin_isolation:\n".
+            "  enabled: true\n".
+            "  paths:\n".
+            "    '^/admin':\n".
+            "      coep: credentialless\n".
+            "      coop: same-origin-allow-popups\n".
+            "      corp: same-origin\n".
+            "    '^/.*':\n".
+            "      coep: unsafe-none\n".
+            "      coop: unsafe-none\n".
+            "      corp: same-site\n"
+        );
+
+        $this->assertIsArray($config['cross_origin_isolation']);
+        $this->assertIsArray($config['cross_origin_isolation']['paths']);
+        $this->assertArrayHasKey('^/admin', $config['cross_origin_isolation']['paths']);
+        $this->assertSame('credentialless', $config['cross_origin_isolation']['paths']['^/admin']['coep']);
+        $this->assertFalse($config['cross_origin_isolation']['paths']['^/admin']['report_only']);
+        $this->assertNull($config['cross_origin_isolation']['paths']['^/admin']['report_to']);
+        $this->assertSame('same-origin-allow-popups', $config['cross_origin_isolation']['paths']['^/admin']['coop']);
+        $this->assertSame('same-origin', $config['cross_origin_isolation']['paths']['^/admin']['corp']);
+        $this->assertArrayHasKey('^/.*', $config['cross_origin_isolation']['paths']);
+        $this->assertSame('unsafe-none', $config['cross_origin_isolation']['paths']['^/.*']['coep']);
+        $this->assertSame('unsafe-none', $config['cross_origin_isolation']['paths']['^/.*']['coop']);
+        $this->assertSame('same-site', $config['cross_origin_isolation']['paths']['^/.*']['corp']);
+    }
+
+    public function testCrossOriginIsolationDisabled(): void
+    {
+        $config = $this->processYamlConfiguration(
+            "cross_origin_isolation:\n".
+            "  enabled: false\n"
+        );
+
+        $this->assertIsArray($config['cross_origin_isolation']);
+        $this->assertFalse($config['cross_origin_isolation']['enabled']);
+    }
+
+    public function testCrossOriginIsolationWithEmptyPaths(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('The path "nelmio_security.cross_origin_isolation.paths" should have at least 1 element(s) defined.');
+
+        $this->processYamlConfiguration(
+            "cross_origin_isolation:\n".
+            "  enabled: true\n".
+            "  paths: {}\n"
+        );
+    }
+
     public function testReferrerPolicyInvalid(): void
     {
         $this->expectException(InvalidConfigurationException::class);
