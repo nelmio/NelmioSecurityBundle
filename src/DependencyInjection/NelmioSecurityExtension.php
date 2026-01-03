@@ -181,6 +181,12 @@ final class NelmioSecurityExtension extends Extension
             $loader->load('permissions_policy.php');
             $container->setParameter('nelmio_security.permissions_policy.policies', $config['permissions_policy']['policies']);
         }
+
+        if ($this->isConfigEnabled($container, $config['cross_origin_isolation'])) {
+            $loader->load('cross_origin_isolation.php');
+            $container->getDefinition('nelmio_security.cross_origin_isolation_listener')
+                ->replaceArgument(0, $config['cross_origin_isolation']['paths']);
+        }
     }
 
     /**
