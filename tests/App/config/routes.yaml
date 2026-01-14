@@ -19,3 +19,57 @@ csp_report:
   path: /csp/report
   methods: [POST]
   defaults: { _controller: nelmio_security.csp_reporter_controller::indexAction }
+
+# Routes for testing cross-origin isolation
+admin:
+  path: /admin/{path}
+  requirements:
+    path: ".*"
+  defaults:
+    _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    template: 'homepage.html.twig'
+    path: ''
+
+api:
+  path: /api/{path}
+  requirements:
+    path: ".*"
+  defaults:
+    _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    template: 'homepage.html.twig'
+    path: ''
+
+articles:
+  path: /articles/{path}
+  requirements:
+    path: ".*"
+  defaults:
+    _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    template: 'homepage.html.twig'
+    path: ''
+
+other:
+  path: /other/{path}
+  requirements:
+    path: ".+"
+  defaults:
+    _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    template: 'homepage.html.twig'
+
+test_report_only:
+  path: /test-report-only
+  defaults:
+    _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    template: 'homepage.html.twig'
+
+test_report_to:
+  path: /test-report-to
+  defaults:
+    _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    template: 'homepage.html.twig'
+
+test_report_combined:
+  path: /test-report-combined
+  defaults:
+    _controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    template: 'homepage.html.twig'

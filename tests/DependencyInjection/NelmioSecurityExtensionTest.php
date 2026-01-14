@@ -15,6 +15,7 @@ namespace Nelmio\SecurityBundle\Tests\DependencyInjection;
 
 use Nelmio\SecurityBundle\DependencyInjection\NelmioSecurityExtension;
 use Nelmio\SecurityBundle\EventListener\ClickjackingListener;
+use Nelmio\SecurityBundle\EventListener\CrossOriginPolicyListener;
 use Nelmio\SecurityBundle\EventListener\ExternalRedirectListener;
 use Nelmio\SecurityBundle\EventListener\FlexibleSslListener;
 use Nelmio\SecurityBundle\EventListener\ForcedSslListener;
@@ -180,6 +181,64 @@ final class NelmioSecurityExtensionTest extends TestCase
 
         $listener = $container->findDefinition('nelmio_security.forced_ssl_listener');
         $this->assertCount(2, $listener->getTag('kernel.event_listener'));
+    }
+
+    public function testLoadCrossOriginIsolation(): void
+    {
+        $container = new ContainerBuilder();
+        $this->extension->load([
+            [
+                'cross_origin_isolation' => [
+                    'enabled' => true,
+                    'paths' => [
+                        '^/admin' => [
+                            'coep' => 'require-corp',
+                            'coop' => 'same-origin',
+                            'corp' => 'same-origin',
+                        ],
+                        '^/.*' => [
+                            'coep' => 'unsafe-none',
+                            'coop' => 'unsafe-none',
+                            'corp' => 'same-site',
+                        ],
+                    ],
+                ],
+            ],
+        ], $container);
+
+        $this->assertServiceIdClass($container, 'nelmio_security.cross_origin_isolation_listener', CrossOriginPolicyListener::class);
+
+        $definition = $container->getDefinition('nelmio_security.cross_origin_isolation_listener');
+        $this->assertSame([
+            '^/admin' => [
+                'coep' => 'require-corp',
+                'coop' => 'same-origin',
+                'corp' => 'same-origin',
+                'report_only' => false,
+                'report_to' => null,
+            ],
+            '^/.*' => [
+                'coep' => 'unsafe-none',
+                'coop' => 'unsafe-none',
+                'corp' => 'same-site',
+                'report_only' => false,
+                'report_to' => null,
+            ],
+        ], $definition->getArgument(0));
+    }
+
+    public function testCrossOriginIsolationDisabled(): void
+    {
+        $container = new ContainerBuilder();
+        $this->extension->load([
+            [
+                'cross_origin_isolation' => [
+                    'enabled' => false,
+                ],
+            ],
+        ], $container);
+
+        $this->assertFalse($container->hasDefinition('nelmio_security.cross_origin_isolation_listener'));
     }
 
     private function assertServiceIdClass(ContainerBuilder $container, string $serviceId, string $className): void
