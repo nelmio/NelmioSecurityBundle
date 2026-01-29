@@ -56,6 +56,11 @@ load content from another domain than the page's domain.
 * **Referrer Policy**: `Referrer-Policy` header is added to all responses to control the `Referer` header
   that is added to requests made from your site, and for navigations away from your site by browsers.
 
+## Testing
+
+The bundle provides PHPUnit assertions to test security headers in your application.
+See [TESTING.md](TESTING.md) for details.
+
 ## Usage
 
 See [the documentation][2] for usage instructions.
