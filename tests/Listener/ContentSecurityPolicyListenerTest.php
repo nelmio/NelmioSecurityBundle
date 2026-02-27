@@ -89,13 +89,13 @@ class ContentSecurityPolicyListenerTest extends ListenerTestCase
         );
     }
 
-    public function testEvenWithUnsafeInlineItAppliesSignature(): void
+    public function testDoesNotApplySignatureWithUnsafeInline(): void
     {
         $listener = $this->buildSimpleListener(['default-src' => "default.example.org 'self'", 'script-src' => "'self' 'unsafe-inline'"]);
         $response = $this->callListener($listener, '/', true, 'text/html', ['signatures' => ['script-src' => ['sha-1']]]);
 
         $this->assertSame(
-            "default-src default.example.org 'self'; script-src 'self' 'unsafe-inline' 'sha-1'",
+            "default-src default.example.org 'self'; script-src 'self' 'unsafe-inline'",
             $response->headers->get('Content-Security-Policy')
         );
     }

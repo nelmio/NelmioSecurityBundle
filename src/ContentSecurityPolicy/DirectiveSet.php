@@ -143,6 +143,9 @@ final class DirectiveSet
                 // this is the recommended way to deal with this.
                 if (false === strpos($value, '\'unsafe-inline\'') && $this->level1Fallback) {
                     $policy[] = $name.' '.$value.' \'unsafe-inline\' '.$signatures[$name];
+                // Do not add any signatures if 'unsafe-inline' is allowed anyway
+                } elseif (false !== strpos($value, '\'unsafe-inline\'')) {
+                    $policy[] = $name.' '.$value;
                 } else {
                     $policy[] = $name.' '.$value.' '.$signatures[$name];
                 }
